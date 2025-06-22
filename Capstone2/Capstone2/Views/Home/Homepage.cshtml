@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Welcome to Grush Catering";
+}
+
+<!-- Bootstrap Hero Section -->
+<div class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start">
+            <h1 class="display-4 fw-bold">Delicious Catering for All Occasions</h1>
+            <p class="lead mt-3">
+                Grush Catering Services offers affordable, customizable catering packages for birthdays, weddings, and corporate events. Taste, quality, and service—guaranteed.
+            </p>
+            <a class="btn btn-primary btn-lg mt-3" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="~/images/GRUSH.jpg" class="img-fluid rounded shadow" alt="Catering food sample" />
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container py-5">
+    <h2 class="text-center mb-4">Why Choose Us?</h2>
+    <div class="row text-center">
+        <div class="col-md-4">
+            <i class="bi bi-star-fill text-warning" style="font-size: 2rem;"></i>
+            <h4 class="mt-3">Premium Quality</h4>
+            <p>Only the best ingredients go into our dishes. You’ll taste the difference!</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-wallet2 text-success" style="font-size: 2rem;"></i>
+            <h4 class="mt-3">Affordable Packages</h4>
+            <p>Customize your menu according to your budget without sacrificing quality.</p>
+        </div>
+        <div class="col-md-4">
+            <i class="bi bi-truck text-info" style="font-size: 2rem;"></i>
+            <h4 class="mt-3">Reliable Delivery</h4>
+            <p>We deliver on time, every time—hot, fresh, and ready to serve.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action Section -->
+<div class="bg-light py-5 text-center">
+    <h3 class="mb-3">Ready to make your event unforgettable?</h3>
+    <a class="btn btn-outline-primary btn-lg" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
+</div>

@@ -1,0 +1,71 @@
+﻿@model Capstone2.Models.Menu
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Menu</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MenuId" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <div class="dishType">
+                    <select asp-for="DishType" id="DishType">
+                        <option selected value="MAINDISH">Main</option>
+                        <option value="SIDEDISH">Side</option>
+                        <option value="DESSERTS">Dessert</option>
+                        <option value="SOFTDRINKS">Soft Drinks</option>
+                        <option value="RICE">Rice</option>
+                    </select>
+                </div>
+                <label asp-for="Category" class="control-label"></label>
+                <select asp-for="Category" class="form-control" id="CategoryType">
+                    <option value="Pork">Pork</option>
+                    <option value="Beef">Beef</option>
+                    <option value="Chicken">Chicken</option>
+                    <option value="Seafood">Seafood</option>
+                    <option value="Vegetables">Vegetables</option>
+                    <option value="Noodles & Pasta">Noodles & Pasta</option>
+                    <option value="Salad">Salad</option>
+                    <option value="Dessert">Dessert</option>
+                    <option value="SoftDrinks">Soft Drinks</option>
+                    <option value="Rice">Rice</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Upload Image</label>
+                <input type="file" value="@Model.ImagePath" name="ImageFile" class="form-control" />
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <img src="@Model.ImagePath"
+                         alt="@Model.Name"
+                         style="width:150px;height:150px;object-fit:cover;border-radius:6px" />
+                }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

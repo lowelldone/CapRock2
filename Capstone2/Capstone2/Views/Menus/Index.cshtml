@@ -1,0 +1,226 @@
+﻿@model IEnumerable<Capstone2.Models.Menu>
+
+@{
+    ViewData["Title"] = "Food Menu";
+
+    var mainDishCategories = new[] { "Pork", "Beef", "Chicken", "Seafood" };
+    var sideDishCategories = new[] { "Noodles & Pasta", "Salad", "Vegetables" };
+
+    var mainDishes = Model.Where(m => mainDishCategories.Contains(m.Category));
+    var sideDishes = Model.Where(m => sideDishCategories.Contains(m.Category));
+    var desserts = Model.Where(m => m.Category == "Dessert");
+    var softDrinks = Model.Where(m => m.Category == "SoftDrinks");
+    var rice = Model.Where(m => m.Category == "Rice");
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Food Menu</h2>
+        <a asp-action="Create" class="btn btn-primary">+ Add New Dish</a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body">
+            <form asp-controller="Menus" asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-10">
+                    <input type="text" name="searchString" class="form-control" placeholder="Search dishes by name..." />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-primary w-100">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Dishes Table -->
+    <h4 class="fw-bold" style="justify-content: center; display: flex;">Main Dishes</h4>
+    @foreach (var category in mainDishCategories)
+    {
+        var items = mainDishes.Where(m => m.Category == category).ToList();
+        if (items.Count == 0) { continue; }
+
+        <div class="mb-3">
+            <h5 class="fw-semibold">@category</h5>
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in items)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@item.Category</td>
+                                    <td>@($"P{item.Price:0.00}")</td>
+                                    <td class="text-end">
+                                        <a asp-action="Edit" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    <!-- Side Dishes Table -->
+    <h4 class="fw-bold mt-5" style = "justify-content: center; display: flex">Side Dishes</h4>
+    @foreach (var category in sideDishCategories)
+    {
+        var items = sideDishes.Where(m => m.Category == category).ToList();
+        if (items.Count == 0) { continue; }
+
+        <div class="mb-3">
+            <h5 class="fw-semibold">@category</h5>
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in items)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@item.Category</td>
+                                    <td>@($"P{item.Price:0.00}")</td>
+                                    <td class="text-end">
+                                        <a asp-action="Edit" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    <!-- Desserts Table -->
+    @if (desserts.Any())
+    {
+        <h4 class="fw-bold mt-5" style="justify-content: center; display: flex">Desserts</h4>
+        <div class="mb-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in desserts)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@item.Category</td>
+                                    <td>@($"P{item.Price:0.00}")</td>
+                                    <td class="text-end">
+                                        <a asp-action="Edit" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Soft Drinks Table -->
+    @if (desserts.Any())
+    {
+        <h4 class="fw-bold mt-5" style="justify-content: center; display: flex">Soft Drinks</h4>
+        <div class="mb-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in softDrinks)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@item.Category</td>
+                                    <td>@($"P{item.Price:0.00}")</td>
+                                    <td class="text-end">
+                                        <a asp-action="Edit" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    <!-- Rice Table -->
+    @if (rice.Any())
+    {
+        <h4 class="fw-bold mt-5" style="justify-content: center; display: flex">Rice</h4>
+        <div class="mb-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in rice)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>@item.Category</td>
+                                    <td>@($"P{item.Price:0.00}")</td>
+                                    <td class="text-end">
+                                        <a asp-action="Edit" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

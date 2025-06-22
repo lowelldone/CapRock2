@@ -1,0 +1,92 @@
+﻿@model Capstone2.Models.MenuPackages
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>MenuPackages</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MenuPackageId" />
+            <div class="form-group">
+                <label asp-for="MenuPackageName" class="control-label"></label>
+                <input asp-for="MenuPackageName" class="form-control" />
+                <span asp-validation-for="MenuPackageName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NoOfMainDish" class="control-label"></label>
+                <input asp-for="NoOfMainDish" class="form-control" />
+                <span asp-validation-for="NoOfMainDish" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NoOfSideDish" class="control-label"></label>
+                <div>
+                    <input type="checkbox" id="NoOfSideDishcbx" class="toggle-input" data-target="#NoOfSideDish" />
+                    <label for="NoOfSideDishcbx">Optional</label>
+                    <input asp-for="NoOfSideDish" class="form-control input-res" value="1" id="NoOfSideDish" />
+                </div>
+                <span asp-validation-for="NoOfSideDish" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NoOfDessert" class="control-label"></label>
+                <div>
+                    <input type="checkbox" id="NoOfDessertcbx" class="toggle-input" data-target="#NoOfDessert" />
+                    <label for="NoOfDessertcbx">Optional</label>
+                    <input asp-for="NoOfDessert" class="form-control input-res" value="1" id="NoOfDessert" />
+                </div>
+                <span asp-validation-for="NoOfDessert" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NoOfRice" class="control-label"></label>
+                <div>
+                    <input type="checkbox" id="NoOfRicecbx" class="toggle-input" data-target="#NoOfRice" />
+                    <label for="NoOfRicecbx">Optional</label>
+                    <input asp-for="NoOfRice" class="form-control input-res" value="1" id="NoOfRice" />
+                </div>
+                <span asp-validation-for="NoOfRice" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NoOfSoftDrinks" class="control-label"></label>
+                <div>
+                    <input type="checkbox" id="NoOfSoftDrinkscbx" class="toggle-input" data-target="#NoOfSoftDrinks" />
+                    <label for="NoOfSoftDrinkscbx">Optional</label>
+                    <input asp-for="NoOfSoftDrinks" class="form-control input-res" value="1" id="NoOfSoftDrinks" />
+                </div>
+                <span asp-validation-for="NoOfSoftDrinks" class="text-danger"></span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    $(function () {
+        $('.toggle-input').on('change', function () {
+            const target = $(this).data('target');
+            const isChecked = $(this).is(':checked');
+            $(target).val(isChecked ? null : 1);
+            $(target).prop('hidden', isChecked);
+        });
+
+        $('.input-res').on('change', function () {
+            if ($(this).val() < 1) {
+                $(this).val(1);
+            }
+        });
+    });
+</script>

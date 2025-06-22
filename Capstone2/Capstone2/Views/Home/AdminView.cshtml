@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="hero-section">
+    <h1>Welcome to the Catering System</h1>
+    <p>Efficiently manage your customers, suppliers, and inventory with ease.</p>
+    <a href="@Url.Action("Index", "Customers")" class="btn btn-primary mt-3">Get Started</a>
+</div>
+
+<div class="row text-center mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Customer Management</h5>
+                <p class="card-text">Track and manage customer data, preferences, and orders.</p>
+                <a href="@Url.Action("Index", "Customers")" class="btn btn-outline-primary">View Customers</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Supplier Tracking</h5>
+                <p class="card-text">Monitor suppliers and ensure timely stock replenishment.</p>
+                <a href="@Url.Action("Index", "Suppliers")" class="btn btn-outline-primary">View Suppliers</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="card-title">Material Inventory</h5>
+                <p class="card-text">Manage and view available materials and stock levels.</p>
+                <a href="@Url.Action("Index", "Materials")" class="btn btn-outline-primary">View Materials</a>
+            </div>
+        </div>
+    </div>
+</div>

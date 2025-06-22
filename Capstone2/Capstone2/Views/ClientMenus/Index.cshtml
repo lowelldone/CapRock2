@@ -1,0 +1,200 @@
+﻿@model IEnumerable<Capstone2.Models.Menu>
+
+@{
+    ViewData["Title"] = "Food Menu";
+    var desiredOrder = new[] {
+        "MAINDISH",
+        "SIDEDISH",
+        "DESSERTS",
+        "SOFTDRINKS",
+        "RICE"
+    };
+
+    // 2) group by DishType, then order by position in desiredOrder,
+    //    then inside each group still group by Category
+    var groupedByDishType =
+        Model
+         .GroupBy(m => m.DishType)
+         .OrderBy(g => Array.IndexOf(desiredOrder, g.Key))
+         .Select(dt => new
+         {
+             DishType = dt.Key,
+             CategoryGroups = dt
+                                .GroupBy(m => m.Category)
+                                .ToList()
+         })
+         .ToList();
+}
+
+<h1>Food Menu</h1>
+
+<div style="gap: 30px;">
+    <!-- Left Column: Food Menu -->
+    <div style="flex: 2;">
+        @foreach (var dish in groupedByDishType)
+        {
+            <hr />
+            <h2 style="text-transform: uppercase; text-align: center;">
+                 @(
+                  // Nicely format the header text:
+                  dish.DishType switch
+                  {
+                      "MAINDISH" => "Main Dish",
+                      "SIDEDISH" => "Side Dish",
+                      "DESSERTS" => "Desserts",
+                      "SOFTDRINKS" => "Soft Drinks",
+                      "RICE" => "Rice",
+                      _ => dish.DishType
+                  }
+                  )
+            </h2>
+
+            @foreach (var cat in dish.CategoryGroups)
+            {
+                <h3>@cat.Key</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                    @foreach (var item in cat)
+                    {
+                        <div style="border:1px solid #ccc;border-radius:8px;padding:10px;width:200px;text-align:center;">
+                            <b>@item.Name</b>
+                            <div style="margin:10px 0;">
+                                @if (!string.IsNullOrEmpty(item.ImagePath))
+                                {
+                                    <img src="@item.ImagePath"
+                                         alt="@item.Name"
+                                         style="width:150px;height:150px;object-fit:cover;border-radius:6px" />
+                                }
+                                else
+                                {
+                                    <span>No image</span>
+                                }
+                            </div>
+                            <div><strong>@($"P{item.Price:0.00}")</strong></div>
+                            <div class="input-group quantity-selector" style="max-width:140px;margin-top:10px;">
+                                <button class="btn btn-outline-secondary decrement-item"
+                                        data-target="#food@(item.MenuId)"
+                                        type="button">
+                                    −
+                                </button>
+                                <input type="number"
+                                       class="form-control text-center food-no"
+                                       id="food@(item.MenuId)"
+                                       value="0"
+                                       min="1" />
+                                <button class="btn btn-outline-secondary increment-item"
+                                        data-target="#food@(item.MenuId)"
+                                        type="button">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Floating Order Button and Summary -->
+    <div style="position: fixed; bottom: 30px; right: 1px; width: 300px; z-index: 1050;">
+
+        <!-- Order Summary Panel (initially hidden above the button) -->
+        <div id="orderSummary" class="border rounded p-3 bg-light shadow mb-2"
+             style="display: none; position: absolute; bottom: 50px; right: 0; width: 100%;">
+            <h4>Your Order</h4>
+            <ul id="orderList" class="list-unstyled">
+                <li>No items ordered yet.</li>
+            </ul>
+            <div id="orderTotal" class="fw-bold mt-2"></div>
+            <button class="btn btn-success mt-3 w-100">Submit Order</button>
+        </div>
+
+        <!-- Button always fixed at bottom -->
+        <div class="text-end">
+            <button id="toggleOrder" class="btn btn-outline-primary w-100">Show Order Summary</button>
+        </div>
+    </div>
+</</div>
+
+<script>
+    let order = [];
+
+    $(function () {
+        $(".increment-item").click(function () {
+            let inputSelector = $(this).data('target');
+            let $input = $(inputSelector);
+            $input.val(parseInt($input.val()) + 1);
+            updateOrder($input);
+        });
+
+        $(".decrement-item").click(function () {
+            let inputSelector = $(this).data('target');
+            let $input = $(inputSelector);
+            let newValue = parseInt($input.val()) - 1;
+            $input.val(newValue < 0 ? 0 : newValue);
+            updateOrder($input);
+        });
+
+        $(".food-no").on('change', function () {
+            $(this).val($(this).val() < 0 ? 0 : $(this).val());
+            updateOrder($(this));
+        });
+
+        function updateOrder($input) {
+            const id = $input.attr("id").replace("food", ""); // Get MenuId
+            const $card = $input.closest(".quantity-selector").parent(); // go to outer card
+
+            const name = $card.find("b").text().trim();
+            const priceText = $card.find("strong").filter(function () {
+                return $(this).text().startsWith('P');
+            }).first().text().replace("P", "").trim();
+
+            const price = parseFloat(priceText);
+            const quantity = parseInt($input.val());
+
+            console.log(name);
+
+            if (!isNaN(price) && quantity > 0) {
+                order[id] = { name, price, quantity };
+            } else {
+                delete order[id];
+            }
+
+            refreshOrderList();
+        }
+
+        function refreshOrderList() {
+            const $orderList = $("#orderList");
+            const $orderTotal = $("#orderTotal");
+            $orderList.empty();
+
+            const keys = Object.keys(order);
+            if (keys.length === 0) {
+                $orderList.append("<li>No items ordered yet.</li>");
+                $orderTotal.text("");
+                return;
+            }
+
+            let grandTotal = 0;
+
+            keys.forEach(id => {
+                const item = order[id];
+                const total = item.quantity * item.price;
+                grandTotal += total;
+                $orderList.append(`<li>${item.name} x ${item.quantity} = P${total.toFixed(2)}</li>`);
+            });
+
+            $orderTotal.text(`Total Price: P${grandTotal.toFixed(2)}`);
+        }
+
+        $("#toggleOrder").click(function () {
+            const $summary = $("#orderSummary");
+            const $button = $(this);
+
+            $summary.slideToggle(200, function () {
+                const isVisible = $summary.is(":visible");
+                $button.text(isVisible ? "Hide Order Summary" : "Show Order Summary");
+            });
+        });
+    });
+</script>
+

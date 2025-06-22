@@ -1,0 +1,109 @@
+﻿@model Capstone2.Models.Menu
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Menu</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+            </div>
+            <div class="form-group">
+                <div class="dishType">
+                    <select asp-for="DishType" id="DishType">
+                        <option selected value="MAINDISH">Main</option>
+                        <option value="SIDEDISH">Side</option>
+                        <option value="DESSERTS">Dessert</option>
+                        <option value="SOFTDRINKS">Soft Drinks</option>
+                        <option value="RICE">Rice</option>
+                    </select>
+                </div>
+                <label asp-for="Category" class="control-label"></label>
+                <select asp-for="Category" class="form-control" id="CategoryType">
+                    <option value="Pork">Pork</option>
+                    <option value="Beef">Beef</option>
+                    <option value="Chicken">Chicken</option>
+                    <option value="Seafood">Seafood</option>
+                    <option value="Vegetables">Vegetables</option>
+                    <option value="Noodles & Pasta">Noodles & Pasta</option>
+                    <option value="Salad">Salad</option>
+                    <option value="Dessert">Dessert</option>
+                    <option value="SoftDrinks">Soft Drinks</option>
+                    <option value="Rice">Rice</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Upload Image</label>
+                <input type="file" name="ImageFile" class="form-control" />
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    $(function () {
+        $(function () {
+            var $dishType = $('#DishType'),
+                $category = $('#CategoryType');
+
+            // Cache all original options
+            var allOptions = $category.find('option').map(function () {
+                return {
+                    value: this.value,
+                    text: this.text
+                };
+            }).get();
+
+            // Mapping from DishType value → allowed Category values
+            var map = {
+                MAINDISH: ['Pork', 'Beef', 'Chicken', 'Seafood'],
+                SIDEDISH: ['Vegetables', 'Noodles & Pasta', 'Salad'],
+                DESSERTS: ['Dessert'],
+                SOFTDRINKS: ['SoftDrinks'],
+                RICE: ['Rice']
+            };
+
+            function filterCategories() {
+                var sel = $dishType.val(),
+                    allowed = map[sel] || [];
+
+                $category.empty();               // remove current options
+                $.each(allOptions, function (_, opt) {
+                    if ($.inArray(opt.value, allowed) !== -1) {
+                        // rebuild only allowed ones
+                        $('<option>')
+                            .val(opt.value)
+                            .text(opt.text)
+                            .appendTo($category);
+                    }
+                });
+            }
+
+            // initial filter + re-filter on change
+            filterCategories();
+            $dishType.on('change', filterCategories);
+        });
+    });
+</script>

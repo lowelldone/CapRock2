@@ -1,0 +1,381 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\Capstone2.bundle.scp.css",
+      "PackagePath": "staticwebassets\\Capstone2.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\099c69a4-11ec-4780-aea3-711d0578fd10_beef with onion.jpg",
+      "PackagePath": "staticwebassets\\images\\099c69a4-11ec-4780-aea3-711d0578fd10_beef with onion.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\21c33a25-c72f-45fb-ab63-e6d4862bc452_garlic rice.jpg",
+      "PackagePath": "staticwebassets\\images\\21c33a25-c72f-45fb-ab63-e6d4862bc452_garlic rice.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\258cf5d0-dac8-4fd7-83ad-4b77dea26b5d_chicken curry.jpg",
+      "PackagePath": "staticwebassets\\images\\258cf5d0-dac8-4fd7-83ad-4b77dea26b5d_chicken curry.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\2d49ffb7-4d61-4755-b894-b15d098d2fbb_fried-rice.jpg",
+      "PackagePath": "staticwebassets\\images\\2d49ffb7-4d61-4755-b894-b15d098d2fbb_fried-rice.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\333f827b-f1eb-4a3b-a303-097838461816_pork bbq.jpg",
+      "PackagePath": "staticwebassets\\images\\333f827b-f1eb-4a3b-a303-097838461816_pork bbq.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\38cc6426-11b8-411f-8aaf-81599306e99a_zen salad.jpg",
+      "PackagePath": "staticwebassets\\images\\38cc6426-11b8-411f-8aaf-81599306e99a_zen salad.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\3a35869a-d1a0-4c73-9696-db6389a5e723_beef with broccoli.jpg",
+      "PackagePath": "staticwebassets\\images\\3a35869a-d1a0-4c73-9696-db6389a5e723_beef with broccoli.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\3b7eb6f0-c932-4d2c-8001-5df73b97a99e_pork embutido.jpg",
+      "PackagePath": "staticwebassets\\images\\3b7eb6f0-c932-4d2c-8001-5df73b97a99e_pork embutido.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\58201a09-111b-4a52-af12-cc762a8b4af8_pork humba.jpg",
+      "PackagePath": "staticwebassets\\images\\58201a09-111b-4a52-af12-cc762a8b4af8_pork humba.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\598ea083-e71e-44f3-8f2f-4049d0165041_pork embutido.jpg",
+      "PackagePath": "staticwebassets\\images\\598ea083-e71e-44f3-8f2f-4049d0165041_pork embutido.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\6ccd4b86-d096-4bf1-b631-a89d189a8e88_beef with broccoli.jpg",
+      "PackagePath": "staticwebassets\\images\\6ccd4b86-d096-4bf1-b631-a89d189a8e88_beef with broccoli.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\6fca6d91-16be-4e04-8a81-e79e4730cf80_beef with broccoli.jpg",
+      "PackagePath": "staticwebassets\\images\\6fca6d91-16be-4e04-8a81-e79e4730cf80_beef with broccoli.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\859362cf-e5b4-4f04-8270-0769ac0720eb_chao.jpg",
+      "PackagePath": "staticwebassets\\images\\859362cf-e5b4-4f04-8270-0769ac0720eb_chao.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\94881bf0-3a01-4054-af72-ec32657e03f8_pork asado.jpg",
+      "PackagePath": "staticwebassets\\images\\94881bf0-3a01-4054-af72-ec32657e03f8_pork asado.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\97028610-411c-4c16-9697-1ef6bc598046_pork hamonado.JPG",
+      "PackagePath": "staticwebassets\\images\\97028610-411c-4c16-9697-1ef6bc598046_pork hamonado.JPG"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\989cce6c-8f32-479d-b658-a5cc929a7f6e_bam-e.JPG",
+      "PackagePath": "staticwebassets\\images\\989cce6c-8f32-479d-b658-a5cc929a7f6e_bam-e.JPG"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\9b9fb77b-9760-4abb-9b3d-ff76b556925b_pork bbq.jpg",
+      "PackagePath": "staticwebassets\\images\\9b9fb77b-9760-4abb-9b3d-ff76b556925b_pork bbq.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\GRUSH.jpg",
+      "PackagePath": "staticwebassets\\images\\GRUSH.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\a3108b37-21a7-464e-b047-55d11a076ce7_pork bbq.jpg",
+      "PackagePath": "staticwebassets\\images\\a3108b37-21a7-464e-b047-55d11a076ce7_pork bbq.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\ad8ab259-6ca4-4dfc-9c05-5dacc959a299_buko pandan.jpg",
+      "PackagePath": "staticwebassets\\images\\ad8ab259-6ca4-4dfc-9c05-5dacc959a299_buko pandan.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\b6bce081-ede7-4e7f-bf26-2102e505acda_pork bbq.jpg",
+      "PackagePath": "staticwebassets\\images\\b6bce081-ede7-4e7f-bf26-2102e505acda_pork bbq.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\c8503f9c-e497-4fb2-b57f-0d4eeda670e2_pork embutido.jpg",
+      "PackagePath": "staticwebassets\\images\\c8503f9c-e497-4fb2-b57f-0d4eeda670e2_pork embutido.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\d1e2e8ca-c89f-42c0-a6d2-e99c903473f1_sweet.jpg",
+      "PackagePath": "staticwebassets\\images\\d1e2e8ca-c89f-42c0-a6d2-e99c903473f1_sweet.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\d54815f9-8918-440c-b266-1a04331f5ae2_pork tocino.jpg",
+      "PackagePath": "staticwebassets\\images\\d54815f9-8918-440c-b266-1a04331f5ae2_pork tocino.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\e33cbdef-93b2-4128-88d8-1e774c7a9c0f_beef with broccoli.jpg",
+      "PackagePath": "staticwebassets\\images\\e33cbdef-93b2-4128-88d8-1e774c7a9c0f_beef with broccoli.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\efaccd63-4a0e-47ad-8b32-d7960c8f54b1_pork hamonado.JPG",
+      "PackagePath": "staticwebassets\\images\\efaccd63-4a0e-47ad-8b32-d7960c8f54b1_pork hamonado.JPG"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\f5e7a39f-b181-4638-8a59-663a4e2b1427_coke.jpg",
+      "PackagePath": "staticwebassets\\images\\f5e7a39f-b181-4638-8a59-663a4e2b1427_coke.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\f9f4dad8-7930-4f54-90fe-37c64609ae29_maja.jpg",
+      "PackagePath": "staticwebassets\\images\\f9f4dad8-7930-4f54-90fe-37c64609ae29_maja.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\images\\fc7f852f-fec4-44fa-a351-f0bcea49ae7d_pork tocino.jpg",
+      "PackagePath": "staticwebassets\\images\\fc7f852f-fec4-44fa-a351-f0bcea49ae7d_pork tocino.jpg"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+    },
+    {
+      "Id": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Capstone2.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.Capstone2.props",
+      "PackagePath": "build\\Capstone2.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.Capstone2.props",
+      "PackagePath": "buildMultiTargeting\\Capstone2.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.Capstone2.props",
+      "PackagePath": "buildTransitive\\Capstone2.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
