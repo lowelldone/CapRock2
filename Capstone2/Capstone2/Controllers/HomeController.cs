@@ -26,6 +26,7 @@ namespace Capstone2.Controllers
 
         public IActionResult Login()
         {
+            // Sample test
             return View();
         }
 
