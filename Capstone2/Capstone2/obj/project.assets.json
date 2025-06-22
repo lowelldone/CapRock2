@@ -7756,11 +7756,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Capstone2.csproj",
+      "projectUniqueName": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Capstone2.csproj",
       "projectName": "Capstone2",
-      "projectPath": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Capstone2.csproj",
+      "projectPath": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Capstone2.csproj",
       "packagesPath": "C:\\Users\\arche\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\obj\\",
+      "outputPath": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\arche\\AppData\\Roaming\\NuGet\\NuGet.Config",

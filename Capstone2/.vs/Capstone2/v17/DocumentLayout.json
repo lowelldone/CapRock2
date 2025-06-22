@@ -1,238 +1,238 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\",
+  "WorkspaceRootPath": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\controllers\\admincontrollers\\clientmenuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\controllers\\admincontrollers\\clientmenuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\controllers\\admincontrollers\\clientmenuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\models\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\models\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\models\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\models\\menu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\models\\menupackages.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\models\\menupackages.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\models\\menupackages.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\models\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\models\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\models\\orderdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Migrations\\20250622143506_CustomerOrder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Capstone2\\Migrations\\20250622143506_CustomerOrder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\controllers\\admincontrollers\\menuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\controllers\\admincontrollers\\menuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\controllers\\admincontrollers\\menuscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\menus\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\menus\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\menus\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\clientmenus\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\clientmenus\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\clientmenus\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\menus\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\menus\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\menus\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\clientmenus\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\clientmenus\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\clientmenus\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\menus\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\menus\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\menus\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\controllers\\admincontrollers\\supplierscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\controllers\\admincontrollers\\supplierscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\controllers\\admincontrollers\\supplierscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\menus\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\menus\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\menus\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\menus\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\menus\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\menus\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\clientmenus\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\clientmenus\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\clientmenus\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\suppliers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\suppliers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\suppliers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\materials\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\materials\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\materials\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\customers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\customers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\customers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\menupackages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\menupackages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\menupackages\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\models\\material.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\models\\material.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\models\\material.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\models\\supplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\models\\supplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\models\\supplier.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\menupackages\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\menupackages\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\menupackages\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\menupackages\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\menupackages\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\menupackages\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\controllers\\admincontrollers\\menupackagescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\controllers\\admincontrollers\\menupackagescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\controllers\\admincontrollers\\menupackagescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\home\\homepage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\home\\homepage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\home\\homepage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\home\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\home\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\home\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\home\\adminview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\home\\adminview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\home\\adminview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\controllers\\admincontrollers\\materialscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\controllers\\admincontrollers\\materialscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\controllers\\admincontrollers\\materialscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\controllers\\admincontrollers\\customerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\controllers\\admincontrollers\\customerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\controllers\\admincontrollers\\customerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\migrations\\20250617063836_addimagetomenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\migrations\\20250617063836_addimagetomenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\migrations\\20250617063836_addimagetomenu.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\migrations\\applicationdbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\migrations\\20250610065636_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\migrations\\20250610065636_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\migrations\\20250610065636_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\capstone2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\capstone2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\capstone2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\suppliers\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\suppliers\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\suppliers\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\materials\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\materials\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\materials\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\customers\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\customers\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\customers\\edit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\suppliers\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\suppliers\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\suppliers\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\materials\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\materials\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\materials\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\customers\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\customers\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\customers\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\customers\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\customers\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\customers\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\customers\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\customers\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\customers\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\suppliers\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\suppliers\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\suppliers\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\suppliers\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\suppliers\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\suppliers\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\materials\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\materials\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\materials\\delete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\materials\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\materials\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\materials\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\onedrive\\desktop\\capstone2\\capstone2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|c:\\users\\arche\\documents\\caprock2\\capstone2\\capstone2\\migrations\\20250622143506_customerorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC941E6C-3CAC-4513-86E1-149F5BBDB498}|Capstone2\\Capstone2.csproj|solutionrelative:capstone2\\migrations\\20250622143506_customerorder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -248,217 +248,202 @@
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "OrderDetail.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\OrderDetail.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\OrderDetail.cs",
               "RelativeDocumentMoniker": "Capstone2\\Models\\OrderDetail.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\OrderDetail.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\OrderDetail.cs",
               "RelativeToolTip": "Capstone2\\Models\\OrderDetail.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAAABUAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-22T14:13:32.906Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-22T14:13:32.906Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Order.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Order.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Order.cs",
               "RelativeDocumentMoniker": "Capstone2\\Models\\Order.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Order.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Order.cs",
               "RelativeToolTip": "Capstone2\\Models\\Order.cs",
               "ViewState": "AgIAAAcAAAAAAAAAAAA6wA8AAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-22T12:38:48.983Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-22T12:38:48.983Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Menu.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Menu.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Menu.cs",
               "RelativeDocumentMoniker": "Capstone2\\Models\\Menu.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Menu.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Menu.cs",
               "RelativeToolTip": "Capstone2\\Models\\Menu.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAAsAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-16T09:03:33.491Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-16T09:03:33.491Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "MenuPackages.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\MenuPackages.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\MenuPackages.cs",
               "RelativeDocumentMoniker": "Capstone2\\Models\\MenuPackages.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\MenuPackages.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\MenuPackages.cs",
               "RelativeToolTip": "Capstone2\\Models\\MenuPackages.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABUAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T11:59:50.578Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-17T11:59:50.578Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "ClientMenusController.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\ClientMenusController.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\ClientMenusController.cs",
               "RelativeDocumentMoniker": "Capstone2\\Controllers\\AdminControllers\\ClientMenusController.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\ClientMenusController.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\ClientMenusController.cs",
               "RelativeToolTip": "Capstone2\\Controllers\\AdminControllers\\ClientMenusController.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAYwCAAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAYwCIAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-17T14:04:14.285Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 57,
               "Title": "20250622143506_CustomerOrder.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Migrations\\20250622143506_CustomerOrder.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Migrations\\20250622143506_CustomerOrder.cs",
               "RelativeDocumentMoniker": "Capstone2\\Migrations\\20250622143506_CustomerOrder.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Migrations\\20250622143506_CustomerOrder.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Migrations\\20250622143506_CustomerOrder.cs",
               "RelativeToolTip": "Capstone2\\Migrations\\20250622143506_CustomerOrder.cs",
               "ViewState": "AgIAAAsAAAAAAAAAAAAQwA0AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-22T14:35:06.981Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-22T14:35:06.981Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Data\\ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Data\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "Capstone2\\Data\\ApplicationDbContext.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Data\\ApplicationDbContext.cs",
               "RelativeToolTip": "Capstone2\\Data\\ApplicationDbContext.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABAAAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-10T06:53:29.948Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Edit.cshtml",
-              "RelativeDocumentMoniker": "Capstone2\\Views\\Menus\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Edit.cshtml",
-              "RelativeToolTip": "Capstone2\\Views\\Menus\\Edit.cshtml",
-              "ViewState": "AgIAACoAAAAAAAAAAAAAADQAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-20T13:03:26.006Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "MenusController.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MenusController.cs",
-              "RelativeDocumentMoniker": "Capstone2\\Controllers\\AdminControllers\\MenusController.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MenusController.cs",
-              "RelativeToolTip": "Capstone2\\Controllers\\AdminControllers\\MenusController.cs",
-              "ViewState": "AgIAAFsAAAAAAAAAAADgv1QAAAAcAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-16T09:12:52.704Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-10T06:53:29.948Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "Customer.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Customer.cs",
-              "RelativeDocumentMoniker": "Capstone2\\Models\\Customer.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Customer.cs",
-              "RelativeToolTip": "Capstone2\\Models\\Customer.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAAAwAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-10T06:46:57.592Z",
-              "EditorCaption": ""
+              "Title": "Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Edit.cshtml",
+              "RelativeDocumentMoniker": "Capstone2\\Views\\Menus\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Edit.cshtml",
+              "RelativeToolTip": "Capstone2\\Views\\Menus\\Edit.cshtml",
+              "ViewState": "AgIAACoAAAAAAAAAAAAAADQAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-20T13:03:26.006Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 6,
+              "Title": "MenusController.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MenusController.cs",
+              "RelativeDocumentMoniker": "Capstone2\\Controllers\\AdminControllers\\MenusController.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MenusController.cs",
+              "RelativeToolTip": "Capstone2\\Controllers\\AdminControllers\\MenusController.cs",
+              "ViewState": "AgIAAFsAAAAAAAAAAADgv1QAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-16T09:12:52.704Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Customer.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Customer.cs",
+              "RelativeDocumentMoniker": "Capstone2\\Models\\Customer.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Customer.cs",
+              "RelativeToolTip": "Capstone2\\Models\\Customer.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAAwAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T06:46:57.592Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Program.cs",
               "RelativeDocumentMoniker": "Capstone2\\Program.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Program.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Program.cs",
               "RelativeToolTip": "Capstone2\\Program.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAASwAwAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-20T05:19:51.585Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-20T05:19:51.585Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Create.cshtml",
+              "RelativeDocumentMoniker": "Capstone2\\Views\\Menus\\Create.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Create.cshtml",
+              "RelativeToolTip": "Capstone2\\Views\\Menus\\Create.cshtml",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA0AAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-19T14:36:50.05Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 12,
               "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Create.cshtml",
-              "RelativeDocumentMoniker": "Capstone2\\Views\\Menus\\Create.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Create.cshtml",
-              "RelativeToolTip": "Capstone2\\Views\\Menus\\Create.cshtml",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA0AAAAMAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\ClientMenus\\Create.cshtml",
+              "RelativeDocumentMoniker": "Capstone2\\Views\\ClientMenus\\Create.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\ClientMenus\\Create.cshtml",
+              "RelativeToolTip": "Capstone2\\Views\\ClientMenus\\Create.cshtml",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-19T14:36:50.05Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-19T14:42:41.897Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\ClientMenus\\Index.cshtml",
+              "RelativeDocumentMoniker": "Capstone2\\Views\\ClientMenus\\Index.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\ClientMenus\\Index.cshtml",
+              "RelativeToolTip": "Capstone2\\Views\\ClientMenus\\Index.cshtml",
+              "ViewState": "AgIAADsAAAAAAAAAAAAAAD4AAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-17T14:05:12.32Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\ClientMenus\\Create.cshtml",
-              "RelativeDocumentMoniker": "Capstone2\\Views\\ClientMenus\\Create.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\ClientMenus\\Create.cshtml",
-              "RelativeToolTip": "Capstone2\\Views\\ClientMenus\\Create.cshtml",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-19T14:42:41.897Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\ClientMenus\\Index.cshtml",
-              "RelativeDocumentMoniker": "Capstone2\\Views\\ClientMenus\\Index.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\ClientMenus\\Index.cshtml",
-              "RelativeToolTip": "Capstone2\\Views\\ClientMenus\\Index.cshtml",
-              "ViewState": "AgIAADsAAAAAAAAAAAAAAD4AAAAkAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Index.cshtml",
+              "RelativeDocumentMoniker": "Capstone2\\Views\\Menus\\Index.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Index.cshtml",
+              "RelativeToolTip": "Capstone2\\Views\\Menus\\Index.cshtml",
+              "ViewState": "AgIAAJwAAAAAAAAAAAAAAJwAAABbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-17T14:05:12.32Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-17T06:36:29.691Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 14,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Index.cshtml",
-              "RelativeDocumentMoniker": "Capstone2\\Views\\Menus\\Index.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Index.cshtml",
-              "RelativeToolTip": "Capstone2\\Views\\Menus\\Index.cshtml",
-              "ViewState": "AgIAAJwAAAAAAAAAAAAAAJwAAABbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-06-17T06:36:29.691Z",
-              "EditorCaption": ""
+              "Title": "SuppliersController.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\SuppliersController.cs",
+              "RelativeDocumentMoniker": "Capstone2\\Controllers\\AdminControllers\\SuppliersController.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\SuppliersController.cs",
+              "RelativeToolTip": "Capstone2\\Controllers\\AdminControllers\\SuppliersController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAABoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T07:00:45.411Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 15,
-              "Title": "SuppliersController.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\SuppliersController.cs",
-              "RelativeDocumentMoniker": "Capstone2\\Controllers\\AdminControllers\\SuppliersController.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\SuppliersController.cs",
-              "RelativeToolTip": "Capstone2\\Controllers\\AdminControllers\\SuppliersController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAABoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-10T07:00:45.411Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
               "Title": "Details.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Details.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Menus\\Details.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Details.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Details.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Menus\\Details.cshtml",
               "ViewState": "AgIAABUAAAAAAAAAAAAAAC8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -466,11 +451,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 16,
               "Title": "Delete.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Delete.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Menus\\Delete.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Menus\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Menus\\Delete.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Menus\\Delete.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -478,11 +463,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 21,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Index.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Materials\\Index.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Index.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Index.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Materials\\Index.cshtml",
               "ViewState": "AgIAACcAAAAAAAAAAAAAAC0AAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -490,11 +475,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 17,
               "Title": "bootstrap.bundle.js",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
               "RelativeDocumentMoniker": "Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
               "RelativeToolTip": "Capstone2\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
               "ViewState": "AgIAAOkDAAAAAAAAAAAjwNEDAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
@@ -502,11 +487,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 23,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\MenuPackages\\Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\MenuPackages\\Index.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\MenuPackages\\Index.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\MenuPackages\\Index.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\MenuPackages\\Index.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\MenuPackages\\Index.cshtml",
               "ViewState": "AgIAACUAAAAAAAAAAAAQwD0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -514,11 +499,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 22,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Index.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Customers\\Index.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Index.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Index.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Customers\\Index.cshtml",
               "ViewState": "AgIAACEAAAAAAAAAAAAgwC0AAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -526,11 +511,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 18,
               "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Shared\\_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Shared\\_Layout.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -538,11 +523,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 19,
               "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\ClientMenus\\Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\ClientMenus\\Edit.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\ClientMenus\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\ClientMenus\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\ClientMenus\\Edit.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\ClientMenus\\Edit.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -550,11 +535,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 20,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Index.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Suppliers\\Index.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Index.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Index.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Suppliers\\Index.cshtml",
               "ViewState": "AgIAAB4AAAAAAAAAAAAQwDYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -562,11 +547,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 24,
               "Title": "Material.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Material.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Material.cs",
               "RelativeDocumentMoniker": "Capstone2\\Models\\Material.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Material.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Material.cs",
               "RelativeToolTip": "Capstone2\\Models\\Material.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -574,11 +559,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 25,
               "Title": "ErrorViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\ErrorViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\ErrorViewModel.cs",
               "RelativeDocumentMoniker": "Capstone2\\Models\\ErrorViewModel.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\ErrorViewModel.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\ErrorViewModel.cs",
               "RelativeToolTip": "Capstone2\\Models\\ErrorViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -586,11 +571,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 26,
               "Title": "Supplier.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Supplier.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Supplier.cs",
               "RelativeDocumentMoniker": "Capstone2\\Models\\Supplier.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Models\\Supplier.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Models\\Supplier.cs",
               "RelativeToolTip": "Capstone2\\Models\\Supplier.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -598,11 +583,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 27,
               "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\MenuPackages\\Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\MenuPackages\\Create.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\MenuPackages\\Create.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\MenuPackages\\Create.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\MenuPackages\\Create.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\MenuPackages\\Create.cshtml",
               "ViewState": "AgIAAEwAAAAAAAAAAAAAAFQAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -610,11 +595,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 28,
               "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\MenuPackages\\Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\MenuPackages\\Edit.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\MenuPackages\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\MenuPackages\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\MenuPackages\\Edit.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\MenuPackages\\Edit.cshtml",
               "ViewState": "AgIAAEMAAAAAAAAAAAAswFsAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -622,11 +607,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 29,
               "Title": "MenuPackagesController.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MenuPackagesController.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MenuPackagesController.cs",
               "RelativeDocumentMoniker": "Capstone2\\Controllers\\AdminControllers\\MenuPackagesController.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MenuPackagesController.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MenuPackagesController.cs",
               "RelativeToolTip": "Capstone2\\Controllers\\AdminControllers\\MenuPackagesController.cs",
               "ViewState": "AgIAADIAAAAAAAAAAAAIwJYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -634,11 +619,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 30,
               "Title": "Homepage.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Home\\Homepage.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Home\\Homepage.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Home\\Homepage.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Home\\Homepage.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Home\\Homepage.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Home\\Homepage.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -646,11 +631,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 31,
               "Title": "_ViewStart.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\_ViewStart.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\_ViewStart.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\_ViewStart.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\_ViewStart.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\_ViewStart.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\_ViewStart.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -658,11 +643,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 34,
               "Title": "AdminView.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Home\\AdminView.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Home\\AdminView.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Home\\AdminView.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Home\\AdminView.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Home\\AdminView.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Home\\AdminView.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -670,11 +655,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 32,
               "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "Capstone2\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\HomeController.cs",
               "RelativeToolTip": "Capstone2\\Controllers\\HomeController.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAA5wBkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -682,11 +667,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 33,
               "Title": "Login.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Home\\Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Home\\Login.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Home\\Login.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Home\\Login.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Home\\Login.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Home\\Login.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -694,11 +679,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 35,
               "Title": "_ViewImports.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\_ViewImports.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\_ViewImports.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\_ViewImports.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\_ViewImports.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\_ViewImports.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\_ViewImports.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -706,11 +691,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 36,
               "Title": "MaterialsController.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MaterialsController.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MaterialsController.cs",
               "RelativeDocumentMoniker": "Capstone2\\Controllers\\AdminControllers\\MaterialsController.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MaterialsController.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\MaterialsController.cs",
               "RelativeToolTip": "Capstone2\\Controllers\\AdminControllers\\MaterialsController.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAUwA4AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -718,11 +703,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 37,
               "Title": "CustomersController.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\CustomersController.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\CustomersController.cs",
               "RelativeDocumentMoniker": "Capstone2\\Controllers\\AdminControllers\\CustomersController.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\CustomersController.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Controllers\\AdminControllers\\CustomersController.cs",
               "RelativeToolTip": "Capstone2\\Controllers\\AdminControllers\\CustomersController.cs",
               "ViewState": "AgIAAAwAAAAAAAAAAAA6wBoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -730,11 +715,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 38,
               "Title": "20250617063836_AddImageToMenu.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Migrations\\20250617063836_AddImageToMenu.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Migrations\\20250617063836_AddImageToMenu.cs",
               "RelativeDocumentMoniker": "Capstone2\\Migrations\\20250617063836_AddImageToMenu.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Migrations\\20250617063836_AddImageToMenu.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Migrations\\20250617063836_AddImageToMenu.cs",
               "RelativeToolTip": "Capstone2\\Migrations\\20250617063836_AddImageToMenu.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAQwBkAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -742,11 +727,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 39,
               "Title": "ApplicationDbContextModelSnapshot.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Migrations\\ApplicationDbContextModelSnapshot.cs",
               "RelativeDocumentMoniker": "Capstone2\\Migrations\\ApplicationDbContextModelSnapshot.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Migrations\\ApplicationDbContextModelSnapshot.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Migrations\\ApplicationDbContextModelSnapshot.cs",
               "RelativeToolTip": "Capstone2\\Migrations\\ApplicationDbContextModelSnapshot.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -754,11 +739,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 40,
               "Title": "20250610065636_InitialCreate.cs",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Migrations\\20250610065636_InitialCreate.cs",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Migrations\\20250610065636_InitialCreate.cs",
               "RelativeDocumentMoniker": "Capstone2\\Migrations\\20250610065636_InitialCreate.cs",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Migrations\\20250610065636_InitialCreate.cs",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Migrations\\20250610065636_InitialCreate.cs",
               "RelativeToolTip": "Capstone2\\Migrations\\20250610065636_InitialCreate.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -766,11 +751,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 41,
               "Title": "Capstone2.csproj",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\Capstone2.csproj",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Capstone2.csproj",
               "RelativeDocumentMoniker": "Capstone2\\Capstone2.csproj",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\CAPSTONE2\\Capstone2\\Capstone2.csproj",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Capstone2.csproj",
               "RelativeToolTip": "Capstone2\\Capstone2.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
@@ -778,11 +763,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 44,
               "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Edit.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Customers\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Edit.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Customers\\Edit.cshtml",
               "ViewState": "AgIAABIAAAAAAAAAAAAAAB4AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -790,11 +775,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 47,
               "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Create.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Customers\\Create.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Create.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Create.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Customers\\Create.cshtml",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABwAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -802,11 +787,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 46,
               "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Create.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Materials\\Create.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Create.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Create.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Materials\\Create.cshtml",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAABwAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -814,11 +799,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 42,
               "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Edit.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Suppliers\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Edit.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Suppliers\\Edit.cshtml",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAAB4AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -826,11 +811,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 43,
               "Title": "Edit.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Edit.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Edit.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Materials\\Edit.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Edit.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Edit.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Materials\\Edit.cshtml",
               "ViewState": "AgIAABUAAAAAAAAAAAAAAB4AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -838,11 +823,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 45,
               "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Create.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Suppliers\\Create.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Create.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Create.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Suppliers\\Create.cshtml",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABwAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -850,11 +835,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 48,
               "Title": "Delete.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Delete.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Customers\\Delete.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Delete.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Customers\\Delete.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -862,11 +847,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 49,
               "Title": "Details.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Details.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Customers\\Details.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Customers\\Details.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Customers\\Details.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Customers\\Details.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -874,11 +859,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 50,
               "Title": "Details.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Details.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Suppliers\\Details.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Details.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Details.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Suppliers\\Details.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -886,11 +871,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 51,
               "Title": "Delete.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Delete.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Suppliers\\Delete.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Suppliers\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Suppliers\\Delete.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Suppliers\\Delete.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -898,11 +883,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 52,
               "Title": "Delete.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Delete.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Delete.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Materials\\Delete.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Delete.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Delete.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Materials\\Delete.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -910,11 +895,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 53,
               "Title": "Details.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Details.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Details.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Materials\\Details.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Materials\\Details.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Materials\\Details.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Materials\\Details.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -922,11 +907,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 54,
               "Title": "Privacy.cshtml",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Home\\Privacy.cshtml",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Home\\Privacy.cshtml",
               "RelativeDocumentMoniker": "Capstone2\\Views\\Home\\Privacy.cshtml",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\Views\\Home\\Privacy.cshtml",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\Views\\Home\\Privacy.cshtml",
               "RelativeToolTip": "Capstone2\\Views\\Home\\Privacy.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
@@ -934,11 +919,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 55,
               "Title": "site.css",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\wwwroot\\css\\site.css",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\wwwroot\\css\\site.css",
               "RelativeDocumentMoniker": "Capstone2\\wwwroot\\css\\site.css",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\wwwroot\\css\\site.css",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\wwwroot\\css\\site.css",
               "RelativeToolTip": "Capstone2\\wwwroot\\css\\site.css",
               "ViewState": "AgIAACQAAAAAAAAAAAAcwD8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
@@ -946,11 +931,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 56,
               "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\appsettings.json",
+              "DocumentMoniker": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\appsettings.json",
               "RelativeDocumentMoniker": "Capstone2\\appsettings.json",
-              "ToolTip": "C:\\Users\\arche\\OneDrive\\Desktop\\Capstone2\\Capstone2\\appsettings.json",
+              "ToolTip": "C:\\Users\\arche\\Documents\\CapRock2\\Capstone2\\Capstone2\\appsettings.json",
               "RelativeToolTip": "Capstone2\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAACcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
