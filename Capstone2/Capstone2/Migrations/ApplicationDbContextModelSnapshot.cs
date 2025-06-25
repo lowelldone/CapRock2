@@ -186,6 +186,10 @@ namespace Capstone2.Migrations
                     b.Property<int>("MenuId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 

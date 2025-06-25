@@ -1,0 +1,67 @@
+﻿@model Capstone2.Models.Order
+@using Capstone2.Models
+
+@{
+    ViewData["Title"] = "Confirm Order";
+    var menus = ViewBag.Menus as List<Menu>;
+    var items = ViewBag.SelectedItems as List<Capstone2.Models.OrderDetail>;
+}
+
+<h2>Confirm Order for @Model.Customer.Name</h2>
+
+<p><strong>Venue:</strong> @Model.Venue</p>
+<p><strong>Occasion:</strong> @Model.Occasion</p>
+<p><strong>Date:</strong> @Model.OrderDate.ToShortDateString()</p>
+<p><strong>Time:</strong> @Model.timeOfFoodServing.ToShortTimeString()</p>
+
+@if (items != null && items.Any())
+{
+    <h4>Selected Menu Items</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Menu</th>
+                <th>Quantity</th>
+                <th>Payment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@($"P{item.subTotal:0.00}")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<form asp-action="SubmitOrderDetails" asp-controller="OrderDetails" method="post">
+    <input type="hidden" name="OrderId" value="@Model.OrderId" />
+
+    @* <table class="table">
+        <thead>
+            <tr>
+                <th>Menu</th>
+                <th>Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in menus)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>
+                        <input type="number" name="Quantities[@item.MenuId]" min="0" value="0" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table> *@
+
+    <button type="submit" class="btn btn-success">Submit Order Details</button>
+</form>
