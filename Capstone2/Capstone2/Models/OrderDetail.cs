@@ -12,6 +12,8 @@ namespace Capstone2.Models
         public Menu Menu { get; set; }
         public int MenuId { get; set; }
 
+        public string Name { get; set; }
+
         public Order Order { get; set; }
         public int OrderId { get; set; }
 

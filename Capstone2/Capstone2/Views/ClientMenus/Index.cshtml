@@ -105,7 +105,11 @@
                 <li>No items ordered yet.</li>
             </ul>
             <div id="orderTotal" class="fw-bold mt-2"></div>
-            <button class="btn btn-success mt-3 w-100">Submit Order</button>
+            <form id="submitOrderForm" method="post" action="/Orders/Form">
+                <input type="hidden" name="OrderItemsJson" id="OrderItemsJson" />
+                <button type="submit" class="btn btn-success mt-3 w-100">Submit Order</button>
+            </form>
+
         </div>
 
         <!-- Button always fixed at bottom -->
@@ -196,5 +200,20 @@
             });
         });
     });
+    $("#submitOrderForm").on("submit", function (e) {
+        const items = [];
+
+        Object.keys(order).forEach(id => {
+            items.push({
+                MenuId: parseInt(id),
+                Name: order[id].name,
+                Price: order[id].price,
+                Quantity: order[id].quantity
+            });
+        });
+
+        $("#OrderItemsJson").val(JSON.stringify(items));
+    });
+
 </script>
 
