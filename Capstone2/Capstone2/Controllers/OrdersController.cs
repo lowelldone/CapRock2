@@ -17,24 +17,26 @@ namespace Capstone2.Controllers
         [HttpPost]
         public IActionResult Form(string OrderItemsJson, Order? order)
         {
+            List<OrderDetail> selectedItems = JsonSerializer.Deserialize<List<OrderDetail>>(OrderItemsJson);
+
             // Step 1: From ClientMenus
-            if (!string.IsNullOrEmpty(OrderItemsJson))
+            if (!string.IsNullOrEmpty(OrderItemsJson) && order?.Customer == null)
             {
                 TempData["OrderItemsJson"] = OrderItemsJson;
 
-                var selectedItems = JsonSerializer.Deserialize<List<OrderDetail>>(OrderItemsJson);
                 ViewBag.SelectedItems = selectedItems;
 
                 return View(new Order
                 {
                     OrderDate = DateTime.Now.Date,
+                    Customer = new Customer()
                 });
             }
 
             // Step 2: Final submission
             if (ModelState.IsValid && order != null)
             {
-
+                order.OrderDetails = selectedItems;
                 var customer = new Customer
                 {
                     Name = order.Customer.Name,
