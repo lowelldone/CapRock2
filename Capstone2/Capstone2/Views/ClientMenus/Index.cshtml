@@ -144,7 +144,7 @@
         });
 
         function updateOrder($input) {
-            const id = $input.attr("id").replace("food", ""); // Get MenuId
+            const MenuId = $input.attr("id").replace("food", ""); // Get MenuId
             const $card = $input.closest(".quantity-selector").parent(); // go to outer card
 
             const name = $card.find("b").text().trim();
@@ -154,13 +154,13 @@
 
             const price = parseFloat(priceText);
             const quantity = parseInt($input.val());
-
+            
             console.log(name);
 
             if (!isNaN(price) && quantity > 0) {
-                order[id] = { name, price, quantity };
+                order[MenuId] = { MenuId,  name, price, quantity };
             } else {
-                delete order[id];
+                delete order[MenuId];
             }
 
             refreshOrderList();
@@ -201,7 +201,14 @@
         });
     });
     $("#submitOrderForm").on("submit", function (e) {
+        console.log(order);
         const items = [];
+
+        if (Object.keys(order).length === 0) {
+            e.preventDefault();
+            alert('Please order first.');
+            return;
+        }
 
         Object.keys(order).forEach(id => {
             items.push({
