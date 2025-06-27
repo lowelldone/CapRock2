@@ -17,27 +17,29 @@ namespace Capstone2.Controllers
         [HttpPost]
         public IActionResult Form(string OrderItemsJson, Order? order)
         {
-            // If this is the initial post from the client menu (OrderItemsJson provided)
+            // Step 1: From ClientMenus
             if (!string.IsNullOrEmpty(OrderItemsJson))
             {
-                var orderModel = new Order
-                {
-                    OrderDate = DateTime.Now.Date,
-                    timeOfFoodServing = DateTime.Now
-                };
+                TempData["OrderItemsJson"] = OrderItemsJson;
 
                 var selectedItems = JsonSerializer.Deserialize<List<OrderDetail>>(OrderItemsJson);
                 ViewBag.SelectedItems = selectedItems;
 
-                return View(orderModel);
+                return View(new Order
+                {
+                    OrderDate = DateTime.Now.Date,
+                });
             }
 
-            // Else this is the final form submission with full Order data
+            // Step 2: Final submission
             if (ModelState.IsValid && order != null)
             {
+
                 var customer = new Customer
                 {
-                    Name = order.Customer.Name
+                    Name = order.Customer.Name,
+                    ContactNo = order.Customer.ContactNo,
+                    Address = order.Customer.Address
                 };
                 _context.Customers.Add(customer);
                 _context.SaveChanges();
@@ -47,6 +49,8 @@ namespace Capstone2.Controllers
 
                 _context.Orders.Add(order);
                 _context.SaveChanges();
+
+                
 
                 return RedirectToAction("ConfirmOrder", "OrderDetails", new { orderId = order.OrderId });
             }

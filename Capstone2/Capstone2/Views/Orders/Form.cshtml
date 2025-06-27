@@ -2,25 +2,50 @@
 
 @{
     ViewData["Title"] = "Place Order";
+    var items = ViewBag.SelectedItems as List<Capstone2.Models.OrderDetail>;
 }
 
 <h2>Place an Order</h2>
 
+@if (items != null && items.Any())
+{
+    <h4>Selected Items:</h4>
+    <ul>
+        @foreach (var item in items)
+        {
+            <li>@item.Name - Quantity: @item.Quantity</li>
+        }
+    </ul>
+}
 
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-<form asp-action="Form" method="post" class="mt-4">
+<form asp-action="Form" asp-controller="Orders" method="post">
+
+    <input type="hidden" name="OrderItemsJson" value="@TempData["OrderItemsJson"]" />
+
     <div class="form-group">
-        <label asp-for="Customer.Name"> Customer Name</label>
+        <label asp-for="Customer.Name">Customer Name</label>
         <input asp-for="Customer.Name" class="form-control" required />
     </div>
 
     <div class="form-group">
-        <label asp-for="OrderDate"> Order Date</label>
+        <label asp-for="Customer.ContactNo">Contact No.</label>
+        <input asp-for="Customer.ContactNo" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Customer.Address">Address</label>
+        <input asp-for="Customer.Address" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="OrderDate">Order Date</label>
         <input asp-for="OrderDate" type="date" class="form-control" required />
     </div>
 
     <div class="form-group">
-        <label asp-for="Venue"> Venue </label>
+        <label asp-for="Venue">Venue</label>
         <input asp-for="Venue" class="form-control" required />
     </div>
 
@@ -45,10 +70,9 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="TotalPayment"> Total Payment</label>
+        <label asp-for="TotalPayment">Total Payment</label>
         <input asp-for="TotalPayment" type="number" step="0.01" class="form-control" required />
     </div>
 
     <input type="submit" class="btn btn-primary" value="Submit Order" />
-
 </form>
