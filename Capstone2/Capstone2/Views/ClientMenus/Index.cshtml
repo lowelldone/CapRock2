@@ -107,6 +107,7 @@
             <div id="orderTotal" class="fw-bold mt-2"></div>
             <form id="submitOrderForm" method="post" action="/Orders/Form">
                 <input type="hidden" name="OrderItemsJson" id="OrderItemsJson" />
+                <input type="hidden" name="Order.TotalPayment" id="TotalPayment" />
                 <button type="submit" class="btn btn-success mt-3 w-100">Submit Order</button>
             </form>
 
@@ -188,6 +189,7 @@
             });
 
             $orderTotal.text(`Total Price: P${grandTotal.toFixed(2)}`);
+            $("#TotalPayment").val(grandTotal.toFixed(2));
         }
 
         $("#toggleOrder").click(function () {
