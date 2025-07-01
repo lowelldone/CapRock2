@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Capstone2.Data;
 using Capstone2.Models;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace Capstone2.Controllers.AdminControllers
 {
@@ -110,6 +111,7 @@ namespace Capstone2.Controllers.AdminControllers
                 return NotFound();
             }
 
+            ModelState.Remove("ImageFile");
             if (ModelState.IsValid)
             {
                 try

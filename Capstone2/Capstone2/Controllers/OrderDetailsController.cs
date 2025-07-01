@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Capstone2.Data;
 using Capstone2.Models;
+using System.Text.Json;
 
 namespace Capstone2.Controllers
 {
@@ -15,15 +16,21 @@ namespace Capstone2.Controllers
         }
 
         [HttpGet]
-        public IActionResult ConfirmOrder(int orderId)
+        public IActionResult Index()
         {
-            var order = _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Menu)
-                .FirstOrDefault(o => o.OrderId == orderId);
-
+            Order order = JsonSerializer.Deserialize<Order>(TempData["Order"] as string);
             return View(order);
+        }
+
+        public IActionResult OrderConfirmed(string orderJson)
+        {
+            Order order = JsonSerializer.Deserialize<Order>(orderJson);
+            order.OrderDetails.ForEach(x => x.Menu = null);
+
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+
+            return Json(new { success = true });
         }
     }
 }

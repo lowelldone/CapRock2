@@ -4,6 +4,8 @@
     ViewData["Title"] = "Order Confirmation";
 }
 
+<input type="hidden" id="orders" value="@TempData["Order"]" />
+
 <h2>Confirm Order for @Model.Customer.Name</h2>
 
 <p><strong>Contact:</strong> @Model.Customer.ContactNo</p>
@@ -30,12 +32,51 @@
             @foreach (var item in Model.OrderDetails)
             {
                 <tr>
-                    <td>@item.Menu.Name</td>
+                    <td>@item.Name</td>
                     <td>@item.Quantity</td>
-                    <td>P@item.Menu.Price.ToString("0.00")</td>
-                    <td>P@(item.Menu.Price * item.Quantity).ToString("0.00")</td>
+                    <td>P@(item.Menu.Price.ToString("0.00"))</td>
+                    <td>P@((item.Menu.Price * item.Quantity).ToString("0.00"))</td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <div class="form-group">
+        <label asp-for="TotalPayment" class="form-label">
+            Total Payment: @Model.TotalPayment.ToString("0.00")
+        </label>
+    </div>
+    
+    <br />
+    <button type="submit" id="confirmOrder">Confirm Order</button>
 }
+
+
+<script>
+    $(function () {
+        $("#confirmOrder").click(function () {
+            $.ajax({
+                url: '/OrderDetails/OrderConfirmed',
+                type: 'POST',
+                data: { orderJson: $("#orders").val() },
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "Order Confirmed!",
+                            icon: "success"
+                        }).then(() => {
+                            window.location.href = "/Home/Homepage";
+                        });;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        title: "Error confirming error",
+                        text: "",
+                        icon: "error"
+                    });
+                }
+            });
+        });
+    });
+</script>
