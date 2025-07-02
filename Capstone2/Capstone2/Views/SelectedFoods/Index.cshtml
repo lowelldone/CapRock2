@@ -1,0 +1,59 @@
+﻿@using Capstone2.Controllers
+@model Capstone2.Models.Order
+@{
+    ViewData["Title"] = "Review Selected Foods";
+
+    // Safely cast the ViewBag value to double
+    double total = 0.0;
+    if (ViewBag.TotalPayment != null)
+    {
+        // ViewBag.TotalPayment might be a boxed double or something else
+        total = Convert.ToDouble(ViewBag.TotalPayment);
+    }
+
+    var items = ViewBag.SelectedItems as List<SelectedItemDto> ?? new List<SelectedItemDto>();
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (items.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Dish</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var it in items)
+            {
+                <tr>
+                    <td>@it.Name</td>
+                    <td>@it.Quantity</td>
+                    <td>@it.Price.ToString("0.00")</td>
+                    <td>@((it.Price * it.Quantity).ToString("0.00"))</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="3" class="text-right">Total Payment:</th>
+                <th>@total.ToString("0.00")</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <form asp-controller="Orders" asp-action="Form" method="post">
+        @* Bind it back to your Order model *@
+        <input type="hidden" asp-for="TotalPayment" value="@total.ToString("0.00")" />
+
+        <button type="submit" class="btn btn-primary w-100">Next</button>
+    </form>
+}
+else
+{
+    <div class="alert alert-info">No items to review.</div>
+}
