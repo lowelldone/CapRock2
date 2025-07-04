@@ -14,27 +14,26 @@ namespace Capstone2.Controllers
             _context = context;
         }
 
-        [HttpPost]
         public IActionResult Form(string OrderItemsJson, Order? order)
         {
-            List<OrderDetail> selectedItems = JsonSerializer.Deserialize<List<OrderDetail>>(OrderItemsJson);
-            
+            Order? currentOrder = TempData?["Order"] != null ? JsonSerializer.Deserialize<Order>(TempData?["Order"] as string) : null;
 
             // Step 1: From ClientMenus
-            if (!string.IsNullOrEmpty(OrderItemsJson) && order?.Customer == null)
+            if (currentOrder != null)
             {
-                TempData["OrderItemsJson"] = OrderItemsJson;
-                ViewBag.SelectedItems = selectedItems;
+                TempData["OrderItemsJson"] = JsonSerializer.Serialize(currentOrder.OrderDetails);
+                ViewBag.SelectedItems = currentOrder.OrderDetails;
 
-                order.OrderDate = DateTime.Now.Date;
-                order.Customer = new Customer();
+                currentOrder.OrderDate = DateTime.Now.Date;
+                currentOrder.Customer = new Customer();
 
-                return View(order);
+                return View(currentOrder);
             }
 
             // Step 2: Final submission
-            if (ModelState.IsValid && order != null)
+            if (ModelState.IsValid)
             {
+                List<OrderDetail> selectedItems = JsonSerializer.Deserialize<List<OrderDetail>>(OrderItemsJson);
                 selectedItems.ForEach(x =>
                 {
                     _context.Entry(x).Reference(x => x.Menu).Load();
@@ -42,12 +41,10 @@ namespace Capstone2.Controllers
 
                 order.OrderDetails = selectedItems;
                 TempData["Order"] = JsonSerializer.Serialize(order);
-               
-
                 return RedirectToAction("Index", "OrderDetails");
             }
 
-            return View(order ?? new Order());
+            return View(order);
         }
     }
 }
