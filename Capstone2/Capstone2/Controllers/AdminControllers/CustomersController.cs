@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Capstone2.Data;
 using Capstone2.Models;
+using Newtonsoft.Json;
 
 namespace Capstone2.Controllers.AdminControllers
 {
@@ -160,6 +161,23 @@ namespace Capstone2.Controllers.AdminControllers
         private bool CustomerExists(int id)
         {
             return _context.Customers.Any(e => e.CustomerID == id);
+        }
+
+        public async Task<IActionResult> ViewOrder(int? id)
+        {
+            if (id == null)
+                return BadRequest();
+
+            var order = await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Menu)
+                .FirstOrDefaultAsync(o => o.CustomerID == id.Value);
+
+            if (order == null)
+                return NotFound();
+
+            return View(order);
         }
     }
 }

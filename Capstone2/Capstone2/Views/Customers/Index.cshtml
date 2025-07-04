@@ -43,6 +43,7 @@
                             <td>@Html.DisplayFor(modelItem => item.Address)</td>
                             <td class="text-end">
                                 <a asp-action="Edit" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">View Order</a>
                                 <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-danger">Delete</a>
                             </td>
                         </tr>
