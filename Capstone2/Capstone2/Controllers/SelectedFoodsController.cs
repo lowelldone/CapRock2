@@ -36,7 +36,7 @@ namespace Capstone2.Controllers
             order.OrderDetails = selectedItems;
             order.OrderDetails.ForEach(x => order.TotalPayment += x.subTotal);
             TempData["Order"] = JsonSerializer.Serialize(order);
-            return RedirectToAction("Form", "Orders");
+            return Json(new { success = true });
         }
     }
 }

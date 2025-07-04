@@ -1,0 +1,52 @@
+﻿@model Capstone2.Models.Order
+
+@{
+    ViewData["Title"] = "VIew Order";
+}
+
+<h2>Confirm Order for @Model.Customer.Name</h2>
+
+<p><strong>Contact:</strong> @Model.Customer.ContactNo</p>
+<p><strong>Address:</strong> @Model.Customer.Address</p>
+<p><strong>Venue:</strong> @Model.Venue</p>
+<p><strong>Date:</strong> @Model.OrderDate</p>
+<p><strong>Time:</strong> @Model.timeOfFoodServing</p>
+<p><strong>Occasion:</strong> @Model.Occasion</p>
+<p><strong>Motif:</strong> @Model.Motif</p>
+
+@if (Model.OrderDetails?.Any() == true)
+{
+    <h4>Ordered Items</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Menu</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Line Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>P@(item.Menu.Price.ToString("0.00"))</td>
+                    <td>P@((item.Menu.Price * item.Quantity).ToString("0.00"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mt-3">
+        <strong>Total Payment:</strong>
+        Total Payment: @Model.TotalPayment.ToString("0.00")
+    </div>
+}
+else
+{
+    <p><em>No items in this order.</em></p>
+}
+
+<a asp-action="Index" class="btn btn-secondary mt-4">Back to Customers</a>

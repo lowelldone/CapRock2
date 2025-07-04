@@ -1,52 +1,110 @@
-﻿@using Capstone2.Controllers
-@model Capstone2.Models.Order
+﻿@model Capstone2.Models.Order
 @{
-    ViewData["Title"] = "Review Selected Foods";
+    // serialize initial items into a JS array
     var items = ViewBag.SelectedItems as List<Capstone2.Models.OrderDetail>;
-    decimal totalPayment = 0;
+    var initJson = System.Text.Json.JsonSerializer.Serialize(
+        items.Select(x => new
+        {
+            MenuId = x.MenuId,
+            Name = x.Name,
+            Quantity = x.Quantity,
+            price = x.Menu.Price
+        })
+    );
 }
-
 <h2>Review Selected Foods</h2>
-@Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-<form asp-controller="SelectedFoods" asp-action="Index" method="post">
-    <input type="hidden" name="OrderItemsJson" value="@TempData["OrderItemsJson"]" />
+<table class="table" id="food-table">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-end"><strong>Total:</strong></td>
+            <td colspan="2" id="total">0.00</td>
+        </tr>
+    </tfoot>
+</table>
 
-    @if (items != null && items.Any())
-    {
-        <input name="isConfirmed" type="hidden" value="true" />
+<button id="confirmBtn" class="btn btn-primary w-100">Next</button>
 
-        <h4>Selected Items:</h4>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in items)
-                {
-                    decimal subtotal = decimal.Parse((item.Menu.Price * item.Quantity).ToString());
-                    totalPayment += subtotal;
-                    <tr>
-                        <td>@item.Name</td>
-                        <td>@item.Quantity</td>
-                        <td>@item.Menu.Price.ToString("0.00")</td>
-                        <td>@subtotal.ToString("0.00")</td>
-                    </tr>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // keep cart entirely in JS
+        let cartItems = @Html.Raw(initJson);
+
+        function renderTable() {
+            const $tbody = $('#food-table tbody').empty();
+            let total = 0;
+            cartItems.forEach(item => {
+                const subtotal = item.Quantity * item.price;
+                total += subtotal;
+                $tbody.append(`
+                            <tr data-id="${item.MenuId}">
+                                <td>${item.Name}</td>
+                                <td class="qty">${item.Quantity}</td>
+                                <td>${item.price.toFixed(2)}</td>
+                                <td class="subtotal">${subtotal.toFixed(2)}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-success update" data-action="add">+</button>
+                                    <button class="btn btn-sm btn-warning update" data-action="minus">−</button>
+                                    <button class="btn btn-sm btn-danger remove">Remove</button>
+                                </td>
+                            </tr>
+                        `);
+            });
+            $('#total').text(total.toFixed(2));
+        }
+
+        // on + or −
+        $(document).on('click', '.update', function () {
+            const $row = $(this).closest('tr');
+            const id = $row.data('id');
+            const act = $(this).data('action');
+
+            cartItems = cartItems.map(item => {
+                if (item.MenuId === id) {
+                    if (act === 'add') item.Quantity++;
+                    if (act === 'minus' && item.Quantity > 1) item.Quantity--;
                 }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3" class="text-end"><strong>Total Payment:</strong></td>
-                    <td><strong>@totalPayment.ToString("0.00")</strong></td>
-                </tr>
-            </tfoot>
-        </table>
-    }
+                return item;
+            });
+            renderTable();
+        });
 
-    <button type="submit" class="btn btn-primary w-100">Next</button>
-</form>
+        // on remove
+        $(document).on('click', '.remove', function () {
+            const id = $(this).closest('tr').data('id');
+            cartItems = cartItems.filter(item => item.MenuId !== id);
+            renderTable();
+        });
+
+        // initial render
+        renderTable();
+
+        // on confirm, POST JSON to server
+        $('#confirmBtn').on('click', function () {
+            $.ajax({
+                url: '/SelectedFoods/Index',
+                method: 'POST',
+                data: {
+                    OrderItemsJson: JSON.stringify(cartItems),
+                    isConfirmed: true
+                },
+                success: function (data) {
+                    if (data.success) {
+                        window.location.href = '/Orders/Form';
+                    }
+                }
+            });
+        });
+    </script>
+}

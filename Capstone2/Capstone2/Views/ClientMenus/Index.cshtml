@@ -70,7 +70,7 @@
                                 }
                             </div>
                             <div><strong>@($"P{item.Price:0.00}")</strong></div>
-                            <div class="input-group quantity-selector" style="max-width:140px;margin-top:10px;">
+                            <div class="input-group quantity-selector" style="max-width:140px;margin-top:10px; right: -20px;">
                                 <button class="btn btn-outline-secondary decrement-item"
                                         data-target="#food@(item.MenuId)"
                                         type="button">
@@ -95,7 +95,7 @@
     </div>
 
     <!-- Floating Order Button and Summary -->
-    <div style="position: fixed; bottom: 30px; right: 1px; width: 300px; z-index: 1050;">
+    <div style="position: fixed; bottom: 30px; right: 1px; width: 500px; z-index: 1050;">
 
         <!-- Order Summary Panel (initially hidden above the button) -->
         <div id="orderSummary" class="border rounded p-3 bg-light shadow mb-2"
@@ -185,12 +185,61 @@
                 const item = order[id];
                 const total = item.quantity * item.price;
                 grandTotal += total;
-                $orderList.append(`<li>${item.name} x ${item.quantity} = P${total.toFixed(2)}</li>`);
+
+                // Render list item with +, –, Remove buttons
+                $orderList.append(`
+                        <li class="d-flex align-items-center mb-2" data-id="${id}">
+                            <span class="flex-grow-1">${item.name} x ${item.quantity} = P${total.toFixed(2)}</span>
+                                <button class="btn btn-warning btn-sm me-2 summary-minus">–</button>
+                                    <button class="btn btn-success btn-sm me-1 summary-plus">+</button>
+                            <button class="btn btn-danger btn-sm summary-remove">Remove</button>
+                        </li>
+                    `);
             });
 
             $orderTotal.text(`Total Price: P${grandTotal.toFixed(2)}`);
             $("#TotalPayment").val(grandTotal.toFixed(2));
         }
+        // Delegate clicks in the order summary
+        // Delegate clicks in the order summary
+        $("#orderList")
+            .on("click", ".summary-plus", function () {
+                const id = $(this).closest("li").data("id");
+
+                // update the order array
+                order[id].quantity++;
+
+                // push that change into the card’s input
+                $(`#food${id}`).val(order[id].quantity);
+
+                // redraw the summary
+                refreshOrderList();
+            })
+            .on("click", ".summary-minus", function () {
+                const id = $(this).closest("li").data("id");
+
+                // decrement in our data, but never below 1
+                order[id].quantity = Math.max(1, order[id].quantity - 1);
+
+                // update the card
+                $(`#food${id}`).val(order[id].quantity);
+
+                // redraw the summary
+                refreshOrderList();
+            })
+            .on("click", ".summary-remove", function () {
+                const id = $(this).closest("li").data("id");
+
+                // reset the card’s input to 0
+                $(`#food${id}`).val(0);
+
+                // delete it from our data
+                delete order[id];
+
+                // redraw summary
+                refreshOrderList();
+            });
+
 
         $("#toggleOrder").click(function () {
             const $summary = $("#orderSummary");
