@@ -3,43 +3,40 @@ using Microsoft.AspNetCore.Mvc;
 using Capstone2.Models;
 using System.Collections.Generic;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using Capstone2.Data;
+using System.ComponentModel.Design;
 
 namespace Capstone2.Controllers
 {
     public class SelectedFoodsController : Controller
     {
-        // GET: /SelectedFoods
-        public IActionResult Index()
+        private readonly ApplicationDbContext _context;
+        public SelectedFoodsController(ApplicationDbContext context)
         {
-            // GET: just show the empty page or fetch from TempData if you like
-            ViewBag.SelectedItems = new List<OrderDetail>();
-            return View();
+            _context = context;
         }
-
         // POST: /SelectedFoods
         [HttpPost]
-        public IActionResult Index(string OrderItemsJson, double TotalPayment)
+        public IActionResult Index(string OrderItemsJson, Order? order, bool isConfirmed = false)
         {
-            // 1) Deserialize the incoming JSON
-            var items = JsonSerializer.Deserialize<List<SelectedItemDto>>(OrderItemsJson);
+            List<OrderDetail> selectedItems = JsonSerializer.Deserialize<List<OrderDetail>>(OrderItemsJson);
 
-            // 2) (Optional) You could map these into full OrderDetail entities,
-            //    save them to TempData, Session, or the database here.
-
-            // 3) Pass them into your view:
-            ViewBag.SelectedItems = items;
-            ViewBag.TotalPayment = TotalPayment;
-
-            return View();
+            selectedItems.ForEach(x =>
+            {
+                _context.Entry(x).Reference(x => x.Menu).Load();
+            });
+            // Step 1: From ClientMenus
+            if (!isConfirmed)
+            {
+                TempData["OrderItemsJson"] = OrderItemsJson;
+                ViewBag.SelectedItems = selectedItems;
+                return View(order);
+            }
+            order.OrderDetails = selectedItems;
+            order.OrderDetails.ForEach(x => order.TotalPayment += x.subTotal);
+            TempData["Order"] = JsonSerializer.Serialize(order);
+            return RedirectToAction("Form", "Orders");
         }
-    }
-
-    // A simple DTO to hold exactly what your JS posted
-    public class SelectedItemDto
-    {
-        public int MenuId { get; set; }
-        public string Name { get; set; }
-        public double Price { get; set; }
-        public int Quantity { get; set; }
     }
 }
