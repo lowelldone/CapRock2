@@ -31,6 +31,7 @@
                         <th>@Html.DisplayNameFor(model => model.First().Name)</th>
                         <th>@Html.DisplayNameFor(model => model.First().ContactNo)</th>
                         <th>@Html.DisplayNameFor(model => model.First().Address)</th>
+                        <th>Status</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -41,6 +42,18 @@
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                             <td>@Html.DisplayFor(modelItem => item.ContactNo)</td>
                             <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                            <td>
+                                <form asp-action="ToggleStatus"
+                                                asp-route-id="@item.CustomerID"
+                                                method="post"
+                                                class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="btn btn-sm @(item.IsPaid ? "btn-success" : "btn-outline-secondary")">
+                                            @(item.IsPaid ? "Paid" : "Not Paid")
+                                    </button>
+                                </form>
+                            </td>
                             <td class="text-end">
                                 <a asp-action="Edit" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">Edit</a>
                                 <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">View Order</a>

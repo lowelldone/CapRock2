@@ -179,5 +179,20 @@ namespace Capstone2.Controllers.AdminControllers
 
             return View(order);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null) return NotFound();
+
+            customer.IsPaid = !customer.IsPaid;
+            await _context.SaveChangesAsync();
+
+            // send back to the list (preserving any search/filter could be extra work)
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
