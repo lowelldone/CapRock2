@@ -14,5 +14,7 @@ namespace Capstone2.Models
         public string ContactNo { get; set; }
 
         public string Address { get; set; }
+
+        public bool IsPaid { get; set; } = false;
     }
 }
