@@ -13,7 +13,10 @@ namespace Capstone2.Data
         public DbSet<Material> Materials { get; set; }
 
         public DbSet<Order> Orders { get; set; }
-
+        public DbSet<Attendance> Attendances { get; set; }
+        public DbSet<HeadWaiter> HeadWaiter { get; set; }
+        public DbSet<Staff> Staffs { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         
         public DbSet<Capstone2.Models.Menu> Menu { get; set; } = default!;

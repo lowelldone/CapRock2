@@ -1,0 +1,48 @@
+﻿@model Capstone2.Models.HeadWaiter
+
+@{
+    ViewData["Title"] = "Head Waiter";
+}
+
+<div class="container mt-5">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <form asp-action="UpSert" method="post">
+        <input asp-for="HeadWaiterId" type="hidden"/>
+        <input asp-for="User.Role" type="hidden"/>
+        <input asp-for="isActive" type="hidden"/>
+
+        <div class="mb-3">
+            <label asp-for="User.Username" class="form-label">Username</label>
+            <input asp-for="User.Username" class="form-control" placeholder="Enter username" />
+            <span asp-validation-for="User.Username" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="User.Password" class="form-label">Password</label>
+            <input asp-for="User.Password" type="text" class="form-control" placeholder="Enter Password" />
+            <span asp-validation-for="User.Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="User.FirstName" class="form-label">@Html.DisplayNameFor(m => m.User.FirstName)</label>
+            <input asp-for="User.FirstName" class="form-control" placeholder="Enter first name" />
+            <span asp-validation-for="User.FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="User.LastName" class="form-label">@Html.DisplayNameFor(m => m.User.LastName)</label>
+            <input asp-for="User.LastName" class="form-control" placeholder="Enter last name" />
+            <span asp-validation-for="User.LastName" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Back to Users
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save-fill"></i> Submit
+            </button>
+        </div>
+    </form>
+</div>
