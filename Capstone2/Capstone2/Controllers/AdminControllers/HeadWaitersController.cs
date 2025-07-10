@@ -20,13 +20,13 @@ namespace Capstone2.Controllers.AdminControllers
         // GET: HeadWaiters
         public IActionResult Index()
         {
-            List<HeadWaiter> headWaiters = _context.HeadWaiter.Include(h => h.User).Where(h => h.isActive).ToList();
+            List<HeadWaiter> headWaiters = _context.HeadWaiters.Include(h => h.User).Where(h => h.isActive).ToList();
             return View(headWaiters);
         }
 
         public IActionResult UpSert(int? id)
         {
-            return View(id == null ? new HeadWaiter() { User = new User() } : _context.HeadWaiter.Include(h => h.User).First(h => h.HeadWaiterId == id));
+            return View(id == null ? new HeadWaiter() { User = new User() } : _context.HeadWaiters.Include(h => h.User).First(h => h.HeadWaiterId == id));
         }
 
         [HttpPost]
@@ -36,11 +36,11 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 headWaiter.User.Role = "HEADWAITER";
                 headWaiter.isActive = true;
-                _context.HeadWaiter.Add(headWaiter);
+                _context.HeadWaiters.Add(headWaiter);
             }
             else
             {
-                _context.HeadWaiter.Update(headWaiter);
+                _context.HeadWaiters.Update(headWaiter);
             }
             _context.SaveChanges();
 
@@ -49,10 +49,10 @@ namespace Capstone2.Controllers.AdminControllers
 
         public IActionResult Delete(int id)
         {
-            HeadWaiter headWaiter = _context.HeadWaiter.Find(id);
+            HeadWaiter headWaiter = _context.HeadWaiters.Find(id);
             headWaiter.isActive = false;
 
-            _context.HeadWaiter.Update(headWaiter);
+            _context.HeadWaiters.Update(headWaiter);
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Index));

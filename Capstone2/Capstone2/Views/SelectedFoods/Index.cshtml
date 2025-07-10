@@ -21,7 +21,6 @@
             <th>Qty</th>
             <th>Price</th>
             <th>Subtotal</th>
-            <th>Actions</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -33,13 +32,24 @@
     </tfoot>
 </table>
 
-<button id="confirmBtn" class="btn btn-primary w-100">Next</button>
+<div class="d-flex gap-2">
+
+    <!-- BACK button: will POST the cart back to ClientMenus/Index -->
+    <form id="backForm" method="post" action="/ClientMenus/Index">
+        @* carry the JSON payload back *@
+        <input type="hidden" name="OrderItemsJson" id="backItemsJson" />
+        <button type="submit" class="btn btn-secondary">← Order More </button>
+    </form>
+
+    <!-- NEXT button: confirm & go forward -->
+    <button id="confirmBtn" class="btn btn-primary ms-auto">Next →</button>
+</div>
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // keep cart entirely in JS
-        let cartItems = @Html.Raw(initJson);
+        let cartItems = @Html.Raw(initJson)
 
         function renderTable() {
             const $tbody = $('#food-table tbody').empty();
@@ -54,9 +64,6 @@
                                 <td>${item.price.toFixed(2)}</td>
                                 <td class="subtotal">${subtotal.toFixed(2)}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-success update" data-action="add">+</button>
-                                    <button class="btn btn-sm btn-warning update" data-action="minus">−</button>
-                                    <button class="btn btn-sm btn-danger remove">Remove</button>
                                 </td>
                             </tr>
                         `);

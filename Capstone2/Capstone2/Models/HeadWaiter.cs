@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Capstone2.Models
 {
+    [Table("HeadWaiters")]
     public class HeadWaiter
     {
         [Key]

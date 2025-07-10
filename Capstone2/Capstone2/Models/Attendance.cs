@@ -9,18 +9,18 @@ namespace Capstone2.Models
         public int AttendanceId { get; set; }
 
         [Required]
-        public DateTime TimeIn { get; set; } = DateTime.Now;
+        public DateTime? TimeIn { get; set; }
 
         [Required]
-        public DateTime TimeOut { get; set; } = DateTime.Now;
+        public DateTime? TimeOut { get; set; }
 
-        public Staff Staff { get; set; }
-        [ForeignKey("Staff")]
-        public int StaffId { get; set; }
+        public Waiter Waiter { get; set; }
+        [ForeignKey("Waiter")]
+        public int WaiterId { get; set; }
 
-        public Order Order { get; set; }
+        public Order? Order { get; set; }
 
         [ForeignKey("Order")]
-        public int OrderId { get; set; }
+        public int? OrderId { get; set; }
     }
 }
