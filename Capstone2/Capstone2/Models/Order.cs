@@ -26,6 +26,7 @@ namespace Capstone2.Models
         [Required]
         public int CustomerID { get; set; }
 
-
+        [Required]
+        public string Status { get; set; }
     }
 }

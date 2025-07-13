@@ -6,7 +6,7 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Customer List</h2>
+        <h2 class="fw-bold">Customer Orders</h2>
         <a asp-action="Create" class="btn btn-primary">+ Add New Customer</a>
     </div>
 
@@ -31,7 +31,8 @@
                         <th>@Html.DisplayNameFor(model => model.First().Name)</th>
                         <th>@Html.DisplayNameFor(model => model.First().ContactNo)</th>
                         <th>@Html.DisplayNameFor(model => model.First().Address)</th>
-                        <th>Status</th>
+                        <th>Order Status</th>
+                        <th>Catering Status</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -44,16 +45,39 @@
                             <td>@Html.DisplayFor(modelItem => item.Address)</td>
                             <td>
                                 <form asp-action="ToggleStatus"
-                                                asp-route-id="@item.CustomerID"
-                                                method="post"
-                                                class="d-inline">
-                                                @Html.AntiForgeryToken()
+                                      asp-route-id="@item.CustomerID"
+                                      method="post"
+                                      class="d-inline">
+                                    @Html.AntiForgeryToken()
                                     <button type="submit"
                                             class="btn btn-sm @(item.IsPaid ? "btn-success" : "btn-outline-secondary")">
-                                            @(item.IsPaid ? "Paid" : "Not Paid")
+                                        @(item.IsPaid ? "Paid" : "Not Paid")
                                     </button>
                                 </form>
                             </td>
+                            <td>
+                               <form method="post" class="update-status-form d-flex align-items-center" data-id="@item.CustomerID">
+
+                                    <select name="cateringStatus" class="form-select form-select-sm me-2 catering-status-dropdown">
+                                        @{
+                                            string[] status = ["Ongoing", "Upcoming", "Completed"];
+                                        }
+                                        
+                                        @for (int i = 0; i < status.Length; i++)
+                                        {
+                                            if (status[i] == item.Order.Status)
+                                            {
+                                                <option value="@status[i]" selected>@status[i]</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@status[i]">@status[i]</option>
+                                            }
+                                        }
+                                    </select>
+                                </form>
+                            </td>
+
                             <td class="text-end">
                                 <a asp-action="Edit" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">Edit</a>
                                 <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">View Order</a>
@@ -66,3 +90,31 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(function() {
+        $('.catering-status-dropdown').on('change', function () {
+            var form = $(this).closest('form');
+            var customerId = form.data('id');
+            var selectedStatus = $(this).val();
+
+            console.log(customerId);
+            console.log(selectedStatus);
+
+            $.ajax({
+                url: '/Customers/UpdateCateringStatus',
+                method: 'POST',
+                data: {
+                    id: customerId,
+                    cateringStatus: selectedStatus,
+                },
+                success: function () {
+                    console.log("Catering status updated for customer ID:", customerId);
+                },
+                error: function () {
+                    alert("Error saving catering status.");
+                }
+            });
+        });
+    });
+</script>

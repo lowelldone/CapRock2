@@ -1,0 +1,65 @@
+﻿@model Tuple<List<Capstone2.Models.Waiter>, List<Capstone2.Models.Attendance>>
+
+@{
+    ViewData["Title"] = "Attendance";
+    var waiters = Model.Item1;
+    var attendances = Model.Item2;
+}
+
+<h2>Today's Attendance</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Waiter</th>
+            <th>Time In</th>
+            <th>Time Out</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var w in waiters)
+        {
+            var att = attendances.FirstOrDefault(a => a.WaiterId == w.WaiterId);
+
+            <tr>
+                <td>@w.User.FirstName @w.User.LastName</td>
+
+                <td>
+                    @(att?.TimeIn != null
+                        ? att.TimeIn.Value.ToString("hh:mm tt")
+                        : "none")
+                </td>
+
+                <td>
+                    @(att?.TimeOut != null
+                        ? att.TimeOut.Value.ToString("hh:mm tt")
+                        : "none")
+                </td>
+
+                <td>
+                    @if (att == null || att.TimeIn == null)
+                    {
+                        <a asp-action="TimeIn"
+                           asp-route-waiterId="@w.WaiterId"
+                           class="btn btn-success btn-sm">
+                            Time In
+                        </a>
+                    }
+                    else if (att.TimeOut == null)
+                    {
+                        <a asp-action="TimeOut"
+                           asp-route-waiterId="@w.WaiterId"
+                           class="btn btn-warning btn-sm">
+                            Time Out
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Done</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

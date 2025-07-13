@@ -23,10 +23,11 @@ namespace Capstone2.Controllers.AdminControllers
         // GET: Customers
         public async Task<IActionResult> Index(string searchString)
         {
-            var customers = from c in _context.Customers
-                            select c;
+            var customers = _context.Customers
+                                    .Include(c => c.Order) // Include the related Order
+                                    .AsQueryable();
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 customers = customers.Where(s => s.Name.ToLower().Contains(searchString.ToLower()));
             }
@@ -194,5 +195,24 @@ namespace Capstone2.Controllers.AdminControllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateCateringStatus(int id, string cateringStatus)
+        {
+            var customer = await _context.Customers
+                .Include(c => c.Order) // ✅ Include Order to avoid NullReference
+                .FirstOrDefaultAsync(c => c.CustomerID == id);
+
+            if (customer == null || customer.Order == null)
+            {
+                return NotFound(); // Or return an error message
+            }
+
+            customer.Order.Status = cateringStatus;
+
+            _context.Orders.Update(customer.Order);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
