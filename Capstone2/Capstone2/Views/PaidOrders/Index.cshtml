@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Capstone2.Models.Customer>
+
+@{
+    ViewData["Title"] = "Manage Orders";
+    string selectedFilter = Context.Request.Query["statusFilter"];
+
+    string[] status = ["Ongoing", "Upcoming", "Completed"];
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <select name="statusFilter" class="form-select" onchange="this.form.submit()">
+                <option value="">-- Filter by Status --</option>
+                @for (int i = 0; i < status.Length; i++)
+                {
+                    if (status[i] == selectedFilter)
+                    {
+                        <option value="@status[i]" selected>@status[i]</option>
+                    }
+                    else
+                    {
+                        <option value="@status[i]">@status[i]</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Status</th>
+            <th class="text-end"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.ContactNo</td>
+                <td>@item.Address</td>
+                <td>@item.Order.Status</td>
+                <td class="text-end">
+                    @if (item.Order?.Status == "Ongoing")
+                    {
+                        <a asp-action="Attendances" asp-route-id="@item.CustomerID"
+                           class="btn btn-sm btn-secondary me-1">
+                            View Attendances
+                        </a>
+                    }
+                    else if (item.Order?.Status == "Upcoming")
+                    {
+                        <a asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
+                           class="btn btn-sm btn-warning me-1">
+                            Deploy Waiter
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Details" asp-route-id="@item.CustomerID"
+                           class="btn btn-sm btn-info">
+                            Details
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

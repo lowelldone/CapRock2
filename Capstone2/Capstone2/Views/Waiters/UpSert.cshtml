@@ -1,0 +1,82 @@
+﻿@model Capstone2.Models.Waiter
+
+@{
+    ViewData["Title"] = "Waiters";
+}
+
+<div class="container mt-5">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <form asp-action="UpSert" method="post">
+        <input asp-for="WaiterId" type="hidden" />
+        <input asp-for="User.Role" type="hidden" value="WAITER" />
+
+        <div class="mb-3">
+            <div class="form-check">
+                <input asp-for="isTemporary" class="form-check-input" type="checkbox" id="isTemporaryCheckbox" />
+                <label class="form-check-label" for="isTemporaryCheckbox">
+                    Check if this is a temporary waiter
+                </label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="User.Username" class="form-label">Username</label>
+            <input asp-for="User.Username" class="form-control" placeholder="Enter username" />
+            <span asp-validation-for="User.Username" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="User.Password" class="form-label">Password</label>
+            <div class="input-group">
+                <input asp-for="User.Password" type="text" class="form-control" placeholder="Enter password" id="passwordInput" />
+                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                    Show
+                </button>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="User.FirstName" class="form-label">First Name</label>
+            <input asp-for="User.FirstName" class="form-control" placeholder="Enter first name" />
+            <span asp-validation-for="User.FirstName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="User.LastName" class="form-label">Last Name</label>
+            <input asp-for="User.LastName" class="form-control" placeholder="Enter last name" />
+            <span asp-validation-for="User.LastName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="HeadWaiterId" class="form-label">Assign Head Waiter</label>
+            <select asp-for="HeadWaiterId" class="form-control"
+                    asp-items="@(new SelectList(ViewBag.HeadWaiterList, "HeadWaiterId", "User.Username"))">
+                <option value="">-- Select Head Waiter --</option>
+            </select>
+            <span asp-validation-for="HeadWaiterId" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Back to Waiters
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save-fill"></i> Submit
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        const toggleBtn = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("passwordInput");
+
+        toggleBtn.addEventListener("click", function () {
+            const isPassword = passwordInput.type === "password";
+            passwordInput.type = isPassword ? "text" : "password";
+            toggleBtn.textContent = isPassword ? "Hide" : "Show";
+        });
+    </script>
+}

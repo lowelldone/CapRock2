@@ -211,6 +211,10 @@ namespace Capstone2.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("TotalPayment")
                         .HasColumnType("float");
 
@@ -329,6 +333,9 @@ namespace Capstone2.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("isTemporary")
                         .HasColumnType("bit");
