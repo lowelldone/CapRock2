@@ -19,8 +19,5 @@ namespace Capstone2.Models
         [ForeignKey("HeadWaiter")]
         public int HeadWaiterId { get; set; }
         public ICollection<Attendance>? Attendance { get; set; }
-
-
-
     }
 }

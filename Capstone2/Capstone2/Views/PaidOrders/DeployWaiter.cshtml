@@ -1,0 +1,31 @@
+﻿@model Capstone2.Models.Order
+@{
+    ViewData["Title"] = "Assign Waiter";
+    var waiters = ViewBag.Waiters as List<Capstone2.Models.Waiter>;
+}
+
+<h2>Assign Waiter to Order</h2>
+
+<div class="mb-3">
+    <strong>Customer:</strong> @Model.Customer?.Name <br />
+    <strong>Venue:</strong> @Model.Venue <br />
+    <strong>Date:</strong> @Model.OrderDate.ToShortDateString() <br />
+    <strong>Status:</strong> @Model.Status
+</div>
+
+<form asp-action="DeployWaiter" asp-route-id="@Model.CustomerID" method="post">
+    <div class="mb-3">
+        <label for="waiterId" class="form-label">Select Waiter</label>
+        <select id="waiterId" name="waiterId" class="form-select" required>
+            <option value="">-- Select Waiter --</option>
+            @foreach (var w in waiters)
+            {
+                <option value="@w.WaiterId">
+                    @w.User.FirstName @w.User.LastName (@w.User.Username)
+                </option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Assign Waiter</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form> 
