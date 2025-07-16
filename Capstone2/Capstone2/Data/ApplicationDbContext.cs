@@ -9,17 +9,21 @@ namespace Capstone2.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Attendance>()
+            .Property(a => a.TimeOut)
+            .IsRequired(false);
+
             modelBuilder.Entity<HeadWaiter>()
                 .HasOne(h => h.User)
                 .WithMany()
                 .HasForeignKey(h => h.UserId)
-                .OnDelete(DeleteBehavior.Restrict); // 👈 prevent cascade here
+                .OnDelete(DeleteBehavior.Restrict); //  prevent cascade here
 
             modelBuilder.Entity<Waiter>()
                 .HasOne(w => w.User)
                 .WithMany()
                 .HasForeignKey(w => w.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // 👈 or restrict too if needed
+                .OnDelete(DeleteBehavior.Cascade); //  or restrict too if needed
         }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

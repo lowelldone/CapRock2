@@ -1,0 +1,61 @@
+﻿@model Capstone2.Models.AttendancesViewModel
+@{
+    ViewData["Title"] = "Waiters Attendance";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Time In</th>
+            <th>Time Out</th>
+            <th class="text-end">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var w in Model.Waiters)
+        {
+            // find this waiter’s attendance (if any) for this order:
+            var att = w.Attendance
+            .FirstOrDefault(a => a.OrderId == Model.OrderId);
+
+            <tr>
+                <td>@w.User.FirstName</td>
+                <td>@w.User.LastName</td>
+                <td>@(att?.TimeIn?.ToString("g") ?? "-")</td>
+                <td>@(att?.TimeOut?.ToString("g") ?? "-")</td>
+                <td class="text-end">
+                    @if (att == null || att.TimeIn == null)
+                    {
+                        <form asp-action="RecordTimeIn" method="post" class="d-inline">
+                            <input type="hidden" name="customerId" value="@Model.CustomerId" />
+                            <input type="hidden" name="orderId" value="@Model.OrderId" />
+                            <input type="hidden" name="waiterId" value="@w.WaiterId" />
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                Time In
+                            </button>
+                        </form>
+                    }
+                    else if (att.TimeOut == null)
+                    {
+                        <form asp-action="RecordTimeOut" method="post" class="d-inline">
+                            <input type="hidden" name="customerId" value="@Model.CustomerId" />
+                            <input type="hidden" name="orderId" value="@Model.OrderId" />
+                            <input type="hidden" name="waiterId" value="@w.WaiterId" />
+                            <button type="submit" class="btn btn-sm btn-warning">
+                                Time Out
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-success">✔️ Done</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

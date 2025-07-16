@@ -6,8 +6,9 @@ namespace Capstone2.Models
     {
         [Key]
         public int OrderId { get; set; }
+        public DateTime OrderDate { get; set; } = DateTime.Now;
         [Required]
-        public DateTime OrderDate { get; set; }
+        public DateTime CateringDate { get; set; }
         [Required]
         public string Venue { get; set; }
         [Required]
@@ -28,5 +29,9 @@ namespace Capstone2.Models
 
         [Required]
         public string Status { get; set; }
+
+        // Add waiter assignment
+        public int? WaiterId { get; set; }
+        public Waiter? Waiter { get; set; }
     }
 }

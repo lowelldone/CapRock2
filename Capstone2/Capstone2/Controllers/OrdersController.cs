@@ -24,7 +24,7 @@ namespace Capstone2.Controllers
                 TempData["OrderItemsJson"] = JsonSerializer.Serialize(currentOrder.OrderDetails);
                 ViewBag.SelectedItems = currentOrder.OrderDetails;
 
-                currentOrder.OrderDate = DateTime.Now.Date;
+                currentOrder.CateringDate = DateTime.Now.Date;
                 currentOrder.Customer = new Customer();
 
                 return View(currentOrder);

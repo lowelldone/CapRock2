@@ -58,7 +58,7 @@
                     }
                     else if (item.Order?.Status == "Upcoming")
                     {
-                        <a asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
+                        <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
                            class="btn btn-sm btn-warning me-1">
                             Deploy Waiter
                         </a>
