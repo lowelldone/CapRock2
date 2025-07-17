@@ -13,19 +13,43 @@
     <strong>Status:</strong> @Model.Status
 </div>
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@error.ErrorMessage</div>
+        }
+    </div>
+}
+
 <form asp-action="DeployWaiter" asp-route-id="@Model.CustomerID" method="post">
     <div class="mb-3">
-        <label for="waiterId" class="form-label">Select Waiter</label>
-        <select id="waiterId" name="waiterId" class="form-select" required>
-            <option value="">-- Select Waiter --</option>
+        <label for="waiterIds" class="form-label">Select Waiters</label>
+        <select id="waiterIds" name="waiterIds" class="form-select" multiple size="6" required>
             @foreach (var w in waiters)
             {
-                <option value="@w.WaiterId">
-                    @w.User.FirstName @w.User.LastName (@w.User.Username)
+                var isAssigned = ((List<int>)ViewBag.AssignedWaiterIds).Contains(w.WaiterId);
+                <option value="@w.WaiterId" selected="@(isAssigned ? "selected" : null)">
+                    @w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]
                 </option>
             }
         </select>
+        <small class="form-text text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple waiters.</small>
     </div>
-    <button type="submit" class="btn btn-primary">Assign Waiter</button>
+    <button type="submit" class="btn btn-primary">Assign Waiters</button>
     <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
-</form> 
+</form>
+
+@if (((List<int>)ViewBag.AssignedWaiterIds).Count > 0)
+{
+    <div class="mt-4">
+        <h5>Currently Assigned Waiters:</h5>
+        <ul>
+            @foreach (var w in waiters.Where(w => ((List<int>)ViewBag.AssignedWaiterIds).Contains(w.WaiterId)))
+            {
+                <li>@w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]</li>
+            }
+        </ul>
+    </div>
+} 

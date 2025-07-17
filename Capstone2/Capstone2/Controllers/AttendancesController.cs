@@ -25,46 +25,70 @@ namespace Capstone2.Controllers
             return View(attendances);
         }
 
-        // GET: Attendance/Create
-        public IActionResult Create()
+        // GET: Attendance/ForOrder/{orderId}
+        public IActionResult ForOrder(int orderId)
         {
-            ViewBag.Waiters = _context.Waiters
-                .Include(w => w.User)
-                .Where(w => !w.isDeleted)
+            // Get all waiter IDs assigned to this order
+            var assignedWaiterIds = _context.OrderWaiters
+                .Where(ow => ow.OrderId == orderId)
+                .Select(ow => ow.WaiterId)
                 .ToList();
 
-            return View();
+            // Get attendances for these waiters for this order
+            var attendances = _context.Attendances
+                .Include(a => a.Waiter)
+                    .ThenInclude(w => w.User)
+                .Where(a => a.OrderId == orderId && assignedWaiterIds.Contains(a.WaiterId))
+                .ToList();
+
+            // Get all assigned waiters (even if they have no attendance yet)
+            var waiters = _context.Waiters
+                .Include(w => w.User)
+                .Where(w => assignedWaiterIds.Contains(w.WaiterId))
+                .ToList();
+
+            // Pass both lists as a tuple
+            return View("OrderAttendance", (waiters, attendances));
         }
 
-        // POST: Attendance/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Attendance attendance)
+        public IActionResult TimeInForOrder(int orderId, int waiterId)
         {
-            if (ModelState.IsValid)
+            var attendance = _context.Attendances
+                .FirstOrDefault(a => a.OrderId == orderId && a.WaiterId == waiterId);
+
+            if (attendance == null)
             {
+                attendance = new Attendance
+                {
+                    OrderId = orderId,
+                    WaiterId = waiterId,
+                    TimeIn = DateTime.Now
+                };
                 _context.Attendances.Add(attendance);
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.Waiters = _context.Waiters
-                .Include(w => w.User)
-                .Where(w => !w.isDeleted)
-                .ToList();
-
-            return View(attendance);
+            else if (attendance.TimeIn == null)
+            {
+                attendance.TimeIn = DateTime.Now;
+                _context.Attendances.Update(attendance);
+            }
+            _context.SaveChanges();
+            return RedirectToAction("ForOrder", new { orderId });
         }
 
-        // GET: Attendance/Delete/5
-        public IActionResult Delete(int id)
+        [HttpPost]
+        public IActionResult TimeOutForOrder(int orderId, int waiterId)
         {
-            var attendance = _context.Attendances.Find(id);
-            if (attendance == null) return NotFound();
+            var attendance = _context.Attendances
+                .FirstOrDefault(a => a.OrderId == orderId && a.WaiterId == waiterId);
 
-            _context.Attendances.Remove(attendance);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            if (attendance != null && attendance.TimeOut == null)
+            {
+                attendance.TimeOut = DateTime.Now;
+                _context.Attendances.Update(attendance);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("ForOrder", new { orderId });
         }
     }
 }

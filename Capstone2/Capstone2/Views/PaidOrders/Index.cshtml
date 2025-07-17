@@ -51,9 +51,13 @@
                 <td class="text-end">
                     @if (item.Order?.Status == "Ongoing")
                     {
-                        <a asp-action="Attendances" asp-route-id="@item.CustomerID"
+                        <a asp-controller="Attendance" asp-action="ForOrder" asp-route-orderId="@item.Order.OrderId"
                            class="btn btn-sm btn-secondary me-1">
                             View Attendances
+                        </a>
+                        <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
+                           class="btn btn-sm btn-warning me-1">
+                            Deploy Waiter
                         </a>
                     }
                     else if (item.Order?.Status == "Upcoming")

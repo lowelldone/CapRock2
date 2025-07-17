@@ -46,15 +46,24 @@
                     <td>
                         @if (head.isTemporary)
                         {
-                            <span class="badge bg-warning text-dark">Temporary</span>
+                            <span class="badge bg-secondary">Temporary</span>
                         }
                         else
                         {
-                            <span class="badge bg-secondary">Regular</span>
+                            <span class="badge bg-warning text-dark">Regular</span>
                         }
                     </td>
 
-                    <td></td>
+                    <td>
+                        @if (head.Availability == "Busy")
+                        {
+                            <span class="badge bg-danger">Busy</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">Available</span>
+                        }
+                    </td>
 
                     <td class="text-center">
                         <a asp-action="UpSert" asp-route-id="@head.WaiterId" class="btn btn-outline-primary btn-sm">Edit</a>

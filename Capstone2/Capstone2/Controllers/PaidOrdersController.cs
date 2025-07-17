@@ -125,20 +125,73 @@ namespace Capstone2.Controllers
             if (customer == null || customer.Order == null)
                 return NotFound();
 
-            // Only show waiters that are not deleted
-            ViewBag.Waiters = _context.Waiters.Include(w => w.User).Where(w => !w.isDeleted).ToList();
-            return View(customer.Order);
+            var order = customer.Order;
+            // Get all waiters that are not deleted
+            var waiters = _context.Waiters.Include(w => w.User).Where(w => !w.isDeleted).ToList();
+            // Get IDs of waiters already assigned to this order
+            var assignedWaiterIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
+
+            ViewBag.Waiters = waiters;
+            ViewBag.AssignedWaiterIds = assignedWaiterIds;
+            return View(order);
         }
 
         // POST: PaidOrders/DeployWaiter/5
         [HttpPost]
-        public IActionResult DeployWaiter(int id, int waiterId)
+        [ValidateAntiForgeryToken]
+        public IActionResult DeployWaiter(int id, int[] waiterIds)
         {
             var order = _context.Orders.FirstOrDefault(o => o.CustomerID == id);
             if (order == null)
                 return NotFound();
 
-            _context.Orders.Update(order);
+            // Declare assignedWaiterIds at the top
+            List<int> assignedWaiterIds;
+
+            // Check for busy waiters
+            var busyWaiters = _context.Waiters
+                .Where(w => waiterIds.Contains(w.WaiterId) && w.Availability == "Busy")
+                .Include(w => w.User)
+                .ToList();
+
+            if (busyWaiters.Any())
+            {
+                var names = string.Join(", ", busyWaiters.Select(w => $"{w.User.FirstName} {w.User.LastName}"));
+                ModelState.AddModelError("", $"Selected waiter(s) already deployed to other orders: {names}. Please select again.");
+
+                // Repopulate view data
+                var waiters = _context.Waiters.Include(w => w.User).Where(w => !w.isDeleted).ToList();
+                assignedWaiterIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
+                ViewBag.Waiters = waiters;
+                ViewBag.AssignedWaiterIds = assignedWaiterIds;
+                return View(order);
+            }
+
+            // Get already assigned waiter IDs
+            assignedWaiterIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
+
+            foreach (var waiterId in waiterIds)
+            {
+                if (!assignedWaiterIds.Contains(waiterId))
+                {
+                    // Assign waiter to order
+                    var orderWaiter = new OrderWaiter { OrderId = order.OrderId, WaiterId = waiterId };
+                    _context.OrderWaiters.Add(orderWaiter);
+                }
+                // Set waiter status to Busy
+                var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == waiterId);
+                if (waiter != null && waiter.Availability != "Busy")
+                {
+                    waiter.Availability = "Busy";
+                    _context.Waiters.Update(waiter);
+                }
+            }
+            // If order was Upcoming, set to Ongoing
+            if (order.Status == "Upcoming")
+            {
+                order.Status = "Ongoing";
+                _context.Orders.Update(order);
+            }
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Index));

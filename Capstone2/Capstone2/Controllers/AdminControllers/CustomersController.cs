@@ -209,6 +209,26 @@ namespace Capstone2.Controllers.AdminControllers
 
             customer.Order.Status = cateringStatus;
 
+            if (cateringStatus == "Completed")
+            {
+                var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == customer.Order.OrderId).ToList();
+                foreach (var ow in orderWaiters)
+                {
+                    var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == ow.WaiterId);
+                    if (waiter != null)
+                    {
+                        waiter.Availability = "Available";
+                        _context.Waiters.Update(waiter);
+                    }
+                }
+                // Remove all waiter assignments for this order
+                _context.OrderWaiters.RemoveRange(orderWaiters);
+
+                // Remove all attendance records for this order
+                var attendances = _context.Attendances.Where(a => a.OrderId == customer.Order.OrderId).ToList();
+                _context.Attendances.RemoveRange(attendances);
+            }
+
             _context.Orders.Update(customer.Order);
             await _context.SaveChangesAsync();
 
