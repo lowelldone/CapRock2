@@ -9,7 +9,6 @@ namespace Capstone2.Models
         public int OrderWaiterId { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; }
-
         public int WaiterId { get; set; }
         public Waiter Waiter { get; set; }
     }
