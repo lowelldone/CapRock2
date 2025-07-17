@@ -1,75 +1,69 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Capstone2.Data;
 using Capstone2.Models;
 
 namespace Capstone2.Controllers
 {
-    public class AttendancesController : Controller
+    public class AttendanceController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public AttendancesController(ApplicationDbContext context)
+        public AttendanceController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Attendances
+        // GET: Attendance
         public IActionResult Index()
         {
-            var waiters = _context.Waiters
-                .Include(w => w.User)
+            var attendances = _context.Attendances
+                .Include(a => a.Waiter)
+                    .ThenInclude(w => w.User)
                 .ToList();
 
-            var today = DateTime.Today;
-            List<Attendance> attendances = _context.Attendances.ToList();
-
-            return View(Tuple.Create(waiters, attendances));
+            return View(attendances);
         }
 
-        // GET: Attendances/TimeIn?
-        public IActionResult TimeIn(int waiterId)
+        // GET: Attendance/Create
+        public IActionResult Create()
         {
-            var today = DateTime.Today;
-            var existing = _context.Attendances
-                .FirstOrDefault(a =>
-                    a.WaiterId == waiterId &&
-                    a.TimeIn.HasValue &&
-                    a.TimeIn.Value.Date == today);
+            ViewBag.Waiters = _context.Waiters
+                .Include(w => w.User)
+                .Where(w => !w.isDeleted)
+                .ToList();
 
-            if (existing == null)
+            return View();
+        }
+
+        // POST: Attendance/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Attendance attendance)
+        {
+            if (ModelState.IsValid)
             {
-                var attendance = new Attendance
-                {
-                    WaiterId = waiterId,
-                    TimeIn = DateTime.Now
-                };
                 _context.Attendances.Add(attendance);
                 _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Index));
+            ViewBag.Waiters = _context.Waiters
+                .Include(w => w.User)
+                .Where(w => !w.isDeleted)
+                .ToList();
+
+            return View(attendance);
         }
 
-        // GET: Attendances/TimeOut?waiterId=5
-        public IActionResult TimeOut(int waiterId)
+        // GET: Attendance/Delete/5
+        public IActionResult Delete(int id)
         {
-            var today = DateTime.Today;
-            var existing = _context.Attendances
-                .FirstOrDefault(a =>
-                    a.WaiterId == waiterId &&
-                    a.TimeIn.HasValue &&
-                    a.TimeIn.Value.Date == today);
+            var attendance = _context.Attendances.Find(id);
+            if (attendance == null) return NotFound();
 
-            if (existing != null && !existing.TimeOut.HasValue)
-            {
-                existing.TimeOut = DateTime.Now;
-                _context.Attendances.Update(existing);
-                _context.SaveChanges();
-            }
-
+            _context.Attendances.Remove(attendance);
+            _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
     }
