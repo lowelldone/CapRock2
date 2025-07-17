@@ -97,6 +97,11 @@
         // initial render
         renderTable();
 
+        // Set OrderItemsJson when going back to menu
+        $('#backForm').on('submit', function () {
+            $('#backItemsJson').val(JSON.stringify(cartItems));
+        });
+
         // on confirm, POST JSON to server
         $('#confirmBtn').on('click', function () {
             $.ajax({

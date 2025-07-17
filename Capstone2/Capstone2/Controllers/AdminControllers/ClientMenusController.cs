@@ -26,6 +26,15 @@ namespace Capstone2.Controllers.AdminControllers
             return View(await _context.Menu.ToListAsync());
         }
 
+        // POST: ClientMenus/Index (when returning with OrderItemsJson)
+        [HttpPost]
+        public async Task<IActionResult> Index(string OrderItemsJson)
+        {
+            ViewBag.isAdmin = false;
+            ViewBag.OrderItemsJson = OrderItemsJson;
+            return View(await _context.Menu.ToListAsync());
+        }
+
         //Client Order
         public IActionResult OrderDetailConfirmation()
         {

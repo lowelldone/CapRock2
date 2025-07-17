@@ -24,6 +24,8 @@
                                 .ToList()
          })
          .ToList();
+
+    var orderItemsJson = ViewBag.OrderItemsJson as string;
 }
 
 <h1>Food Menu</h1>
@@ -121,9 +123,42 @@
 </</div>
 
 <script>
-    let order = [];
+    let order = {};
 
     $(function () {
+    // Merge previous order if present
+    @if (!string.IsNullOrEmpty(orderItemsJson))
+    {
+        <text>
+                try {
+                    let prevOrder = JSON.parse('@Html.Raw(orderItemsJson)');
+                    prevOrder.forEach(item => {
+                    // Always use the latest price from the menu card
+                    let $input = $("#food" + item.MenuId);
+                let $card = $input.closest(".quantity-selector").parent();
+                let name = $card.find("b").text().trim();
+                let priceText = $card.find("strong").filter(function () {
+                            return $(this).text().startsWith('P');
+                        }).first().text().replace("P", "").trim();
+                let price = parseFloat(priceText);
+                if (!isNaN(price)) {
+                    order[item.MenuId] = {
+                        MenuId: item.MenuId,
+                        name: name || item.Name,
+                        price: price,
+                        quantity: item.Quantity
+                    };
+                            setTimeout(() => {
+                    let $input = $("#food" + item.MenuId);
+                if ($input.length) $input.val(item.Quantity);
+                            }, 0);
+                        }
+                    });
+                } catch (e) { }
+                    refreshOrderList();
+        </text>
+    }
+    
         $(".increment-item").click(function () {
             let inputSelector = $(this).data('target');
             let $input = $(inputSelector);
