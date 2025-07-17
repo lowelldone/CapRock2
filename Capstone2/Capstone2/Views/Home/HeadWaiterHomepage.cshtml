@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Head Waiter Homepage";
+}
+
+<div class="d-flex" style="min-height: 100vh;">
+    <!-- Sidebar -->
+    <nav class="p-3 border-end" style="width: 250px; min-height: 100vh; background: #fff; position: fixed; left: 0; top: 0;">
+        <h4 class="mb-4 text-dark">Head Waiter Panel</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-dark" href="/Waiters">
+                    <i class="bi bi-people-fill me-2"></i> Waiters
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-dark" href="/PaidOrders">
+                    <i class="bi bi-cash-coin me-2"></i> Paid Orders
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-5 bg-light" style="margin-left: 250px;">
+        <h2 class="mb-4">Welcome, Head Waiter!</h2>
+        <p class="lead">This is the Head Waiter Homepage. Use the navigation menu to manage waiters and paid orders.</p>
+    </div>
+</div>
+
+<!-- Bootstrap Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" /> 

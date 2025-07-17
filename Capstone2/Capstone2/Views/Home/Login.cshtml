@@ -1,2 +1,34 @@
-﻿
-<h3>Sample Login</h3>
+﻿@model Capstone2.Models.User
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-5" style="max-width: 400px;">
+    <h2 class="mb-4">Login</h2>
+    <form asp-action="Login" method="post">
+        <div class="mb-3">
+            <label for="Role" class="form-label">Role</label>
+            <select class="form-control" id="Role" name="Role" required>
+                <option value="Admin">Admin</option>
+                <option value="HeadWaiter">HeadWaiter</option>
+                <option value="Waiter">Waiter</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Username" class="form-label">Username</label>
+            <input asp-for="Username" class="form-control" placeholder="Enter username" required />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" required />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+</div>
