@@ -36,6 +36,7 @@ namespace Capstone2.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<HeadWaiter> HeadWaiters { get; set; }
+        public DbSet<OrderWaiter> OrderWaiters { get; set; }
         public DbSet<Waiter> Waiters { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }

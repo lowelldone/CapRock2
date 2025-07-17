@@ -19,5 +19,11 @@ namespace Capstone2.Models
         [ForeignKey("HeadWaiter")]
         public int HeadWaiterId { get; set; }
         public ICollection<Attendance>? Attendance { get; set; }
+
+        // Availability: 'Available' or 'Busy'
+        public string Availability { get; set; } = "Available";
+
+        // Many-to-many with Order
+        public ICollection<OrderWaiter>? OrderWaiters { get; set; }
     }
 }
