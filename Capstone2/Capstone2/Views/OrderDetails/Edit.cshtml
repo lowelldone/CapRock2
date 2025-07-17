@@ -1,0 +1,114 @@
+﻿@model Capstone2.Models.Order
+@{
+    ViewData["Title"] = "Edit Food Items";
+    var menus = ViewBag.Menus as List<Capstone2.Models.Menu>;
+}
+<h2>Edit Food Items for @Model.Customer.Name</h2>
+<form asp-action="Edit" asp-route-orderId="@Model.OrderId" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Menu</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="orderDetailsBody">
+            @for (int i = 0; i < Model.OrderDetails.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input type="hidden" name="orderDetails[@i].OrderDetailId" value="@Model.OrderDetails[i].OrderDetailId" />
+                        <input type="hidden" name="orderDetails[@i].MenuId" value="@Model.OrderDetails[i].MenuId" />
+                        <input type="hidden" name="orderDetails[@i].Name" value="@Model.OrderDetails[i].Name" />
+                        @Model.OrderDetails[i].Name
+                    </td>
+                    <td>
+                        <input type="number" name="orderDetails[@i].Quantity" value="@Model.OrderDetails[i].Quantity" min="1" class="form-control" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="form-group">
+        <label><strong>Total Payment:</strong> <span id="totalPayment">0.00</span></label>
+    </div>
+    <div class="form-group">
+        <label>Add Menu Item:</label>
+        <select id="menuSelect" class="form-control">
+            <option value="">-- Select Menu --</option>
+            @foreach (var menu in menus)
+            {
+                <option value="@menu.MenuId" data-name="@menu.Name">@menu.Name</option>
+            }
+        </select>
+        <input type="number" id="menuQuantity" class="form-control mt-2" placeholder="Quantity" min="1" value="1" />
+        <button type="button" class="btn btn-success mt-2" onclick="addMenuItem()">Add</button>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-controller="Customers" asp-action="ViewOrder" asp-route-id="@Model.Customer.CustomerID" class="btn btn-secondary">Cancel</a>
+</form>
+@section Scripts {
+    <script>
+        function removeRow(btn) {
+            $(btn).closest('tr').remove();
+            // Re-index all rows
+            $('#orderDetailsBody tr').each(function (i, row) {
+                $(row).find('input, select').each(function () {
+                    var name = $(this).attr('name');
+                    if (name) {
+                        var newName = name.replace(/orderDetails\[\d+\]/, 'orderDetails[' + i + ']');
+                        $(this).attr('name', newName);
+                    }
+                });
+            });
+            recalculateTotal(); // Call recalculateTotal after removing a row
+        }
+        function addMenuItem() {
+            var menuId = $('#menuSelect').val();
+            var menuName = $('#menuSelect option:selected').data('name');
+            var quantity = $('#menuQuantity').val();
+            if (!menuId || !quantity || quantity < 1) return;
+            var index = $('#orderDetailsBody tr').length;
+            var row = `<tr>
+                    <td><input type="hidden" name="orderDetails[${index}].MenuId" value="${menuId}" />
+                        <input type="hidden" name="orderDetails[${index}].Name" value="${menuName}" />
+                        ${menuName}</td>
+                    <td><input type="number" name="orderDetails[${index}].Quantity" value="${quantity}" min="1" class="form-control" /></td>
+                    <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+                </tr>`;
+            $('#orderDetailsBody').append(row);
+
+            // Optionally reset the dropdown and quantity for user convenience
+            $('#menuSelect').val('');
+            $('#menuQuantity').val(1);
+            recalculateTotal(); // Call recalculateTotal after adding a row
+        }
+
+        function recalculateTotal() {
+            var menus = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Menus));
+            var total = 0;
+            $('#orderDetailsBody tr').each(function () {
+                var menuId = $(this).find('input[name*=".MenuId"]').val();
+                var quantity = parseInt($(this).find('input[name*=".Quantity"]').val()) || 0;
+                var menu = menus.find(m => m.menuId == menuId);
+                if (menu) {
+                    total += menu.price * quantity;
+                }
+            });
+            $('#totalPayment').text(total.toFixed(2));
+        }
+
+        $(function () {
+            recalculateTotal();
+        });
+
+        $('#orderDetailsBody').on('input', 'input[name*=".Quantity"]', function () {
+            recalculateTotal();
+        });
+    </script>
+} 

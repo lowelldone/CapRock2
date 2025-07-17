@@ -1,0 +1,56 @@
+﻿@model Capstone2.Models.Order
+@{
+    ViewData["Title"] = "Edit Order Information";
+}
+<h2>Edit Order Information</h2>
+<form asp-action="Edit" asp-route-id="@Model.OrderId" method="post">
+    <input type="hidden" asp-for="OrderId" />
+    <div class="form-group">
+        <label asp-for="Customer.Name"></label>
+        <input asp-for="Customer.Name" class="form-control" />
+        <span asp-validation-for="Customer.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Customer.ContactNo"></label>
+        <input asp-for="Customer.ContactNo" class="form-control" />
+        <span asp-validation-for="Customer.ContactNo" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Customer.Address"></label>
+        <input asp-for="Customer.Address" class="form-control" />
+        <span asp-validation-for="Customer.Address" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Venue"></label>
+        <input asp-for="Venue" class="form-control" />
+        <span asp-validation-for="Venue" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="OrderDate"></label>
+        <input asp-for="OrderDate" type="date" class="form-control" />
+        <span asp-validation-for="OrderDate" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="timeOfFoodServing"></label>
+        <input asp-for="timeOfFoodServing" type="time" class="form-control" />
+        <span asp-validation-for="timeOfFoodServing" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Occasion"></label>
+        <input asp-for="Occasion" class="form-control" />
+        <span asp-validation-for="Occasion" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Motif"></label>
+        <input asp-for="Motif" class="form-control" />
+        <span asp-validation-for="Motif" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-controller="Customers" asp-action="ViewOrder" asp-route-id="@Model.CustomerID" class="btn btn-secondary">Cancel</a>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+} 

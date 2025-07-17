@@ -21,6 +21,6 @@ namespace Capstone2.Models
         public int Quantity { get; set; }
 
         [NotMapped]
-        public double subTotal => Menu.Price * Quantity;
+        public double subTotal => (Menu?.Price ?? 0) * Quantity;
     }
 }

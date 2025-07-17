@@ -14,6 +14,8 @@
 <p><strong>Occasion:</strong> @Model.Occasion</p>
 <p><strong>Motif:</strong> @Model.Motif</p>
 
+<a asp-controller="Orders" asp-action="Edit" asp-route-id="@Model.OrderId" class="btn btn-primary">Edit Information</a>
+
 @if (Model.OrderDetails?.Any() == true)
 {
     <h4>Ordered Items</h4>
@@ -48,5 +50,9 @@ else
 {
     <p><em>No items in this order.</em></p>
 }
+
+<div class="mt-4">
+    <a asp-controller="OrderDetails" asp-action="Edit" asp-route-orderId="@Model.OrderId" class="btn btn-warning">Edit Food Items</a>
+</div>
 
 <a asp-action="Index" class="btn btn-secondary mt-4">Back to Customers</a>
