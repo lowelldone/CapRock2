@@ -2,6 +2,7 @@
 using Capstone2.Models;
 using Capstone2.Data;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace Capstone2.Controllers
 {
@@ -45,6 +46,41 @@ namespace Capstone2.Controllers
             }
 
             return View(order);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Customer)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
+            if (order == null) return NotFound();
+            return View(order);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Order model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.OrderId == id);
+            if (order == null) return NotFound();
+
+            // Update order fields
+            order.Venue = model.Venue;
+            order.OrderDate = model.OrderDate;
+            order.timeOfFoodServing = model.timeOfFoodServing;
+            order.Occasion = model.Occasion;
+            order.Motif = model.Motif;
+
+            // Update customer fields
+            order.Customer.Name = model.Customer.Name;
+            order.Customer.ContactNo = model.Customer.ContactNo;
+            order.Customer.Address = model.Customer.Address;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("ViewOrder", "Customers", new { id = order.CustomerID });
         }
     }
 }
