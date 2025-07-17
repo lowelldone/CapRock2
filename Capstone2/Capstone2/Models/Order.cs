@@ -31,7 +31,6 @@ namespace Capstone2.Models
         public string Status { get; set; }
 
         // Add waiter assignment
-        public int? WaiterId { get; set; }
-        public Waiter? Waiter { get; set; }
+        public ICollection<OrderWaiter>? OrderWaiters { get; set; }
     }
 }

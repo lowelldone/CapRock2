@@ -225,9 +225,6 @@ namespace Capstone2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("WaiterId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("timeOfFoodServing")
                         .HasColumnType("datetime2");
 
@@ -235,8 +232,6 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("CustomerID")
                         .IsUnique();
-
-                    b.HasIndex("WaiterId");
 
                     b.ToTable("Orders");
                 });
@@ -269,6 +264,29 @@ namespace Capstone2.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.OrderWaiter", b =>
+                {
+                    b.Property<int>("OrderWaiterId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderWaiterId"));
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WaiterId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderWaiterId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("WaiterId");
+
+                    b.ToTable("OrderWaiters");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Supplier", b =>
@@ -337,6 +355,10 @@ namespace Capstone2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WaiterId"));
 
+                    b.Property<string>("Availability")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("HeadWaiterId")
                         .HasColumnType("int");
 
@@ -394,13 +416,7 @@ namespace Capstone2.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Capstone2.Models.Waiter", "Waiter")
-                        .WithMany()
-                        .HasForeignKey("WaiterId");
-
                     b.Navigation("Customer");
-
-                    b.Navigation("Waiter");
                 });
 
             modelBuilder.Entity("Capstone2.Models.OrderDetail", b =>
@@ -420,6 +436,25 @@ namespace Capstone2.Migrations
                     b.Navigation("Menu");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.OrderWaiter", b =>
+                {
+                    b.HasOne("Capstone2.Models.Order", "Order")
+                        .WithMany("OrderWaiters")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Capstone2.Models.Waiter", "Waiter")
+                        .WithMany("OrderWaiters")
+                        .HasForeignKey("WaiterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Waiter");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Waiter", b =>
@@ -450,11 +485,15 @@ namespace Capstone2.Migrations
             modelBuilder.Entity("Capstone2.Models.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("OrderWaiters");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Waiter", b =>
                 {
                     b.Navigation("Attendance");
+
+                    b.Navigation("OrderWaiters");
                 });
 #pragma warning restore 612, 618
         }

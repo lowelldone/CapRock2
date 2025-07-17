@@ -138,7 +138,6 @@ namespace Capstone2.Controllers
             if (order == null)
                 return NotFound();
 
-            order.WaiterId = waiterId;
             _context.Orders.Update(order);
             _context.SaveChanges();
 
