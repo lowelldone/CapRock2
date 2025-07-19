@@ -31,6 +31,10 @@ namespace Capstone2.Controllers
                 return View(currentOrder);
             }
 
+            ModelState.Remove("Customer.Order");
+            ModelState.Remove("Status");
+            order.Status = "PENDING";
+
             // Step 2: Final submission
             if (ModelState.IsValid)
             {
