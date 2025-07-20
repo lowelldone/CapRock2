@@ -25,7 +25,6 @@ namespace Capstone2.Controllers
                 TempData["OrderItemsJson"] = JsonSerializer.Serialize(currentOrder.OrderDetails);
                 ViewBag.SelectedItems = currentOrder.OrderDetails;
 
-                currentOrder.CateringDate = DateTime.Now.Date;
                 currentOrder.Customer = new Customer();
 
                 return View(currentOrder);
@@ -66,6 +65,7 @@ namespace Capstone2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Order model)
         {
+            ModelState.Remove("Customer.Order");
             if (!ModelState.IsValid) return View(model);
 
             var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.OrderId == id);
@@ -73,7 +73,7 @@ namespace Capstone2.Controllers
 
             // Update order fields
             order.Venue = model.Venue;
-            order.OrderDate = model.OrderDate;
+            order.CateringDate = model.CateringDate;
             order.timeOfFoodServing = model.timeOfFoodServing;
             order.Occasion = model.Occasion;
             order.Motif = model.Motif;
