@@ -194,6 +194,9 @@ namespace Capstone2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
+                    b.Property<double>("AmountPaid")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("CateringDate")
                         .HasColumnType("datetime2");
 

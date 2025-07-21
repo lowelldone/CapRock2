@@ -195,16 +195,57 @@ namespace Capstone2.Controllers.AdminControllers
             return RedirectToAction(nameof(Index));
         }
 
+        // POST: Customers/RecordPayment
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RecordPayment(int customerId, double paymentAmount)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == customerId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            if (paymentAmount <= 0)
+            {
+                TempData["PaymentError"] = "Payment amount must be greater than zero.";
+                return RedirectToAction(nameof(Index));
+            }
+            order.AmountPaid += paymentAmount;
+
+            // Automatically mark as paid if fully paid
+            if (order.AmountPaid >= order.TotalPayment)
+            {
+                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerID == customerId);
+                if (customer != null)
+                {
+                    customer.IsPaid = true;
+                    _context.Customers.Update(customer);
+                }
+            }
+
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+            TempData["PaymentSuccess"] = $"Payment of {paymentAmount:C} recorded.";
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpPost]
         public async Task<IActionResult> UpdateCateringStatus(int id, string cateringStatus)
         {
             var customer = await _context.Customers
-                .Include(c => c.Order) // ✅ Include Order to avoid NullReference
+                .Include(c => c.Order)
                 .FirstOrDefaultAsync(c => c.CustomerID == id);
 
             if (customer == null || customer.Order == null)
             {
-                return NotFound(); // Or return an error message
+                return NotFound();
+            }
+
+            // Validation: Require at least 50% down payment for Ongoing/Completed
+            if ((cateringStatus == "Ongoing" || cateringStatus == "Completed") && !customer.Order.DownPaymentMet)
+            {
+                TempData["CateringStatusError"] = "At least 50% down payment is required to proceed with the order.";
+                return RedirectToAction(nameof(Index));
             }
 
             customer.Order.Status = cateringStatus;
@@ -221,10 +262,7 @@ namespace Capstone2.Controllers.AdminControllers
                         _context.Waiters.Update(waiter);
                     }
                 }
-                // Remove all waiter assignments for this order
                 _context.OrderWaiters.RemoveRange(orderWaiters);
-
-                // Remove all attendance records for this order
                 var attendances = _context.Attendances.Where(a => a.OrderId == customer.Order.OrderId).ToList();
                 _context.Attendances.RemoveRange(attendances);
             }

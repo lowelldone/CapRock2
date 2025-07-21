@@ -22,7 +22,7 @@ namespace Capstone2.Controllers
         {
             var paidOrders = _context.Customers
                 .Include(c => c.Order)
-                .Where(c => c.IsPaid);
+                .Where(c => c.Order != null && c.Order.AmountPaid >= 0.5 * c.Order.TotalPayment);
 
             if (!string.IsNullOrEmpty(statusFilter))
             {
