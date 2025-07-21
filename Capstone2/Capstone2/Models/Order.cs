@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Capstone2.Models
 {
@@ -21,6 +22,11 @@ namespace Capstone2.Models
         public string Motif { get; set; }
         [Required]
         public double TotalPayment { get; set; }
+        public double AmountPaid { get; set; } = 0; // New: Amount paid by customer
+        [NotMapped]
+        public double Balance => TotalPayment - AmountPaid; // New: Remaining balance
+        [NotMapped]
+        public bool DownPaymentMet => AmountPaid >= 0.5 * TotalPayment; // New: 50% rule
         public List<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public Customer Customer { get; set; }
 

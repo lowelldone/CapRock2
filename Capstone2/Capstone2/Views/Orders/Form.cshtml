@@ -61,5 +61,8 @@
         <label asp-for="TotalPayment">Total Payment</label>
         <input asp-for="TotalPayment" value="@Model.TotalPayment.ToString("0.00")" step="0.01" class="form-control" readonly />
     </div>
+    <div class="alert alert-info mt-2">
+        <strong>Reminder:</strong> You need to pay at least a <strong>50% down payment</strong> for your catering order to proceed.
+    </div>
     <input type="submit" class="btn btn-primary" value="Place Order" />
 </form>
