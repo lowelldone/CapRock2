@@ -14,25 +14,25 @@
 
         <div class="mb-3">
             <label asp-for="User.Username" class="form-label">Username</label>
-            <input asp-for="User.Username" class="form-control" placeholder="Enter username" />
+            <input asp-for="User.Username" class="form-control" placeholder="Enter username" required/>
             <span asp-validation-for="User.Username" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label asp-for="User.Password" class="form-label">Password</label>
-            <input asp-for="User.Password" type="text" class="form-control" placeholder="Enter Password" />
+            <input asp-for="User.Password" type="text" class="form-control" placeholder="Enter Password" required />
             <span asp-validation-for="User.Password" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label asp-for="User.FirstName" class="form-label">@Html.DisplayNameFor(m => m.User.FirstName)</label>
-            <input asp-for="User.FirstName" class="form-control" placeholder="Enter first name" />
+            <input asp-for="User.FirstName" class="form-control" placeholder="Enter first name" required />
             <span asp-validation-for="User.FirstName" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label asp-for="User.LastName" class="form-label">@Html.DisplayNameFor(m => m.User.LastName)</label>
-            <input asp-for="User.LastName" class="form-control" placeholder="Enter last name" />
+            <input asp-for="User.LastName" class="form-control" placeholder="Enter last name" required />
             <span asp-validation-for="User.LastName" class="text-danger"></span>
         </div>
 

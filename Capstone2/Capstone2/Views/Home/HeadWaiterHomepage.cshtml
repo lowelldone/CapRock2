@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<Capstone2.Models.Order>
+@{
     ViewData["Title"] = "Head Waiter Homepage";
 }
 
@@ -8,12 +9,12 @@
         <h4 class="mb-4 text-dark">Head Waiter Panel</h4>
         <ul class="nav flex-column">
             <li class="nav-item mb-2">
-                <a class="nav-link text-dark" href="/Waiters">
+                <a class="nav-link text-dark" href="/Waiters/Index">
                     <i class="bi bi-people-fill me-2"></i> Waiters
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a class="nav-link text-dark" href="/PaidOrders">
+                <a class="nav-link text-dark" href="/PaidOrders/Index">
                     <i class="bi bi-cash-coin me-2"></i> Paid Orders
                 </a>
             </li>
@@ -22,7 +23,35 @@
     <!-- Main Content -->
     <div class="flex-grow-1 p-5 bg-light" style="margin-left: 250px;">
         <h2 class="mb-4">Welcome, Head Waiter!</h2>
-        <p class="lead">This is the Head Waiter Homepage. Use the navigation menu to manage waiters and paid orders.</p>
+        <p class="lead">Below are the orders assigned to you:</p>
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info">No orders assigned to you yet.</div>
+        }
+        else
+        {
+            <table class="table table-bordered bg-white">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Venue</th>
+                        <th>Catering Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>@order.Customer?.Name</td>
+                            <td>@order.Venue</td>
+                            <td>@order.CateringDate.ToShortDateString()</td>
+                            <td>@order.Status</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
     </div>
 </div>
 

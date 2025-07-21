@@ -1,0 +1,30 @@
+﻿@model Capstone2.Models.Customer
+@{
+    ViewData["Title"] = "Assign Head Waiter";
+    var headWaiters = ViewBag.HeadWaiters as List<Capstone2.Models.HeadWaiter>;
+    int? selectedHeadWaiterId = ViewBag.SelectedHeadWaiterId as int?;
+}
+
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4">Assign Head Waiter</h2>
+    <div class="mb-3">
+        <strong>Customer:</strong> @Model.Name <br />
+        <strong>Order Venue:</strong> @Model.Order?.Venue <br />
+        <strong>Order Date:</strong> @Model.Order?.OrderDate.ToShortDateString()
+    </div>
+    <form asp-action="AssignHeadWaiter" asp-route-id="@Model.CustomerID" method="post">
+        <div class="mb-3">
+            <label for="headWaiterId" class="form-label">Select Head Waiter</label>
+            <select id="headWaiterId" name="headWaiterId" class="form-select" required>
+                <option value="">-- Select Head Waiter --</option>
+                @foreach (var hw in headWaiters)
+                {
+                    var isSelected = selectedHeadWaiterId == hw.HeadWaiterId ? "selected=\"selected\"" : string.Empty;
+                    @:<option value="@hw.HeadWaiterId" @isSelected>@hw.User.FirstName @hw.User.LastName (@hw.User.Username)</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Assign</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div> 

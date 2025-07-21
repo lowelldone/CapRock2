@@ -4,7 +4,7 @@
     ViewData["Title"] = "Customers";
 }
 
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     @if (TempData["PaymentError"] != null)
     {
         <div class="alert alert-danger">@TempData["PaymentError"]</div>
@@ -16,6 +16,10 @@
     @if (TempData["CateringStatusError"] != null)
     {
         <div class="alert alert-warning">@TempData["CateringStatusError"]</div>
+    }
+    @if (TempData["HeadWaiterAssigned"] != null)
+    {
+        <div class="alert alert-success">@TempData["HeadWaiterAssigned"]</div>
     }
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Customer Orders</h2>
@@ -37,109 +41,130 @@
 
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>@Html.DisplayNameFor(model => model.First().Name)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().ContactNo)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Address)</th>
-                        <th>Total Amount</th>
-                        <th>Amount Paid</th>
-                        <th>Balance</th>
-                        <th>Payment Status</th>
-                        <th>Order Status</th>
-                        <th>Catering Status</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        var order = item.Order;
+            <div style="overflow-x: auto;">
+                <table class="table table-hover mb-0" style="min-width: 1600px;">
+                    <thead class="table-light">
                         <tr>
-                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                            <td>@Html.DisplayFor(modelItem => item.ContactNo)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Address)</td>
-                            <td>@(order?.TotalPayment.ToString("C") ?? "-")</td>
-                            <td>@(order?.AmountPaid.ToString("C") ?? "-")</td>
-                            <td>@(order != null ? (order.Balance > 0 ? order.Balance.ToString("C") : "0.00") : "-")</td>
-                            <td>
-                                @if (order != null)
-                                {
-                                    if (order.DownPaymentMet)
+                            <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+                            <th>@Html.DisplayNameFor(model => model.First().ContactNo)</th>
+                            <th>@Html.DisplayNameFor(model => model.First().Address)</th>
+                            <th>Total Amount</th>
+                            <th>Amount Paid</th>
+                            <th>Balance</th>
+                            <th>Payment Status</th>
+                            <th>Order Status</th>
+                            <th>Catering Status</th>
+                            <th>Head Waiter</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            var order = item.Order;
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ContactNo)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                                <td>@(order?.TotalPayment.ToString("C") ?? "-")</td>
+                                <td>@(order?.AmountPaid.ToString("C") ?? "-")</td>
+                                <td>@(order != null ? (order.Balance > 0 ? order.Balance.ToString("C") : "0.00") : "-")</td>
+                                <td>
+                                    @if (order != null)
                                     {
-                                        <span class="badge bg-success">Down Payment Completed</span>
+                                        if (order.DownPaymentMet)
+                                        {
+                                            <span class="badge bg-success">Down Payment Completed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Insufficient Down Payment</span>
+                                        }
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger">Insufficient Down Payment</span>
+                                        <span class="badge bg-secondary">No Order</span>
                                     }
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">No Order</span>
-                                }
-                            </td>
-                            <td>
-                                <form asp-action="ToggleStatus"
-                                      asp-route-id="@item.CustomerID"
-                                      method="post"
-                                      class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit"
-                                            class="btn btn-sm @(item.IsPaid ? "btn-success" : "btn-outline-secondary")"
-                                    @(item.Order != null && item.Order.AmountPaid < item.Order.TotalPayment ? "disabled" : "")>
-                                        @(item.IsPaid ? "Paid" : "Not Paid")
-                                    </button>
-                                </form>
-                            </td>
-                            <td>
-                                <form method="post" class="update-status-form d-flex align-items-center" data-id="@item.CustomerID">
-
-                                    <select name="cateringStatus" class="form-select form-select-sm me-2 catering-status-dropdown">
-                                        @{
-                                            string[] status = ["Upcoming", "Ongoing", "Completed"];
-                                        }
-
-                                        @for (int i = 0; i < status.Length; i++)
-                                        {
-                                            if (status[i] == item.Order.Status)
-                                            {
-                                                <option value="@status[i]" selected>@status[i]</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@status[i]">@status[i]</option>
-                                            }
-                                        }
-                                    </select>
-                                </form>
-                            </td>
-
-                            <td class="text-end">
-                                <a asp-action="Edit" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">Edit</a>
-                                <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">View Order</a>
-                                <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-danger">Delete</a>
-                                @if (order != null)
-                                {
-                                    <form asp-action="RecordPayment" method="post" class="d-inline">
+                                </td>
+                                <td>
+                                    <form asp-action="ToggleStatus"
+                                          asp-route-id="@item.CustomerID"
+                                          method="post"
+                                          class="d-inline">
                                         @Html.AntiForgeryToken()
-                                        <input type="hidden" name="customerId" value="@item.CustomerID" />
-                                        <input type="number" name="paymentAmount" min="1" step="0.01" class="form-control form-control-sm d-inline-block w-auto me-1" placeholder="Amount" required />
-                                        <button type="submit" class="btn btn-sm btn-success">Record Payment</button>
+                                        <button type="submit"
+                                                class="btn btn-sm @(item.IsPaid ? "btn-success" : "btn-outline-secondary")"
+                                        @(item.Order != null && item.Order.AmountPaid < item.Order.TotalPayment ? "disabled" : "")>
+                                            @(item.IsPaid ? "Paid" : "Not Paid")
+                                        </button>
                                     </form>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                                </td>
+                                <td>
+                                    <form method="post" class="update-status-form d-flex align-items-center" data-id="@item.CustomerID">
+
+                                        <select name="cateringStatus" class="form-select form-select-sm me-2 catering-status-dropdown">
+                                            @{
+                                                string[] status = ["Upcoming", "Ongoing", "Completed"];
+                                            }
+
+                                            @for (int i = 0; i < status.Length; i++)
+                                            {
+                                                if (status[i] == item.Order.Status)
+                                                {
+                                                    <option value="@status[i]" selected>@status[i]</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@status[i]">@status[i]</option>
+                                                }
+                                            }
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    @if (order?.HeadWaiter != null && order.HeadWaiter.User != null)
+                                    {
+                                        @($"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">None</span>
+                                    }
+                                </td>
+
+                                <td class="text-end">
+                                    <a asp-action="Edit" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                    <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">View Order</a>
+                                    <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    @if (order != null)
+                                    {
+                                        @if (order.DownPaymentMet)
+                                        {
+                                            <a href="@Url.Action("AssignHeadWaiter", new { id = item.CustomerID })" class="btn btn-sm btn-outline-primary">Assign Head Waiter</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="btn btn-sm btn-outline-primary disabled" title="At least 50% down payment required" style="pointer-events: none; opacity: 0.65;">Assign Head Waiter</span>
+                                        }
+                                        <form asp-action="RecordPayment" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="customerId" value="@item.CustomerID" />
+                                            <input type="number" name="paymentAmount" min="1" step="0.01" class="form-control form-control-sm d-inline-block w-auto me-1" placeholder="Amount" required />
+                                            <button type="submit" class="btn btn-sm btn-success">Record Payment</button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    $(function() {
+    $(function () {
         $('.catering-status-dropdown').on('change', function () {
             var form = $(this).closest('form');
             var customerId = form.data('id');

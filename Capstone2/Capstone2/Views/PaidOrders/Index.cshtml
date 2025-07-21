@@ -5,6 +5,11 @@
     string selectedFilter = Context.Request.Query["statusFilter"];
 
     string[] status = ["Ongoing", "Upcoming", "Completed"];
+    int? headWaiterId = null;
+    if (Context.Request.Query["headWaiterId"].Count > 0)
+    {
+        headWaiterId = Convert.ToInt32(Context.Request.Query["headWaiterId"]);
+    }
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -55,22 +60,52 @@
                            class="btn btn-sm btn-secondary me-1">
                             View Attendances
                         </a>
-                        <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
-                           class="btn btn-sm btn-warning me-1">
-                            Deploy Waiter
-                        </a>
+                        @if (headWaiterId != null)
+                        {
+                            <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
+                               class="btn btn-sm btn-warning me-1">
+                                Deploy Waiter
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
+                               class="btn btn-sm btn-warning me-1">
+                                Deploy Waiter
+                            </a>
+                        }
                     }
                     else if (item.Order?.Status == "Upcoming")
                     {
-                        <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
-                           class="btn btn-sm btn-warning me-1">
-                            Deploy Waiter
+                        @if (headWaiterId != null)
+                        {
+                            <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
+                               class="btn btn-sm btn-warning me-1">
+                                Deploy Waiter
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
+                               class="btn btn-sm btn-warning me-1">
+                                Deploy Waiter
+                            </a>
+                        }
+                    }
+                    @if (headWaiterId != null)
+                    {
+                        <a asp-action="Details" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
+                           class="btn btn-sm btn-info mx-auto" style="width: fit-content;">
+                            Details
                         </a>
                     }
-                    <a asp-action="Details" asp-route-id="@item.CustomerID"
-                       class="btn btn-sm btn-info mx-auto" style="width: fit-content;">
-                        Details
-                    </a>
+                    else
+                    {
+                        <a asp-action="Details" asp-route-id="@item.CustomerID"
+                           class="btn btn-sm btn-info mx-auto" style="width: fit-content;">
+                            Details
+                        </a>
+                    }
                 </td>
             </tr>
         }
