@@ -2,6 +2,11 @@
 @{
     ViewData["Title"] = "Assign Waiter";
     var waiters = ViewBag.Waiters as List<Capstone2.Models.Waiter>;
+    int? headWaiterId = null;
+    if (Context.Request.Query["headWaiterId"].Count > 0)
+    {
+        headWaiterId = Convert.ToInt32(Context.Request.Query["headWaiterId"]);
+    }
 }
 
 <h2>Assign Waiter to Order</h2>
@@ -24,6 +29,10 @@
 }
 
 <form asp-action="DeployWaiter" asp-route-id="@Model.CustomerID" method="post">
+    @if (headWaiterId != null)
+    {
+        <input type="hidden" name="headWaiterId" value="@headWaiterId" />
+    }
     <div class="mb-3">
         <label for="waiterIds" class="form-label">Select Waiters</label>
         <select id="waiterIds" name="waiterIds" class="form-select" multiple size="6" required>

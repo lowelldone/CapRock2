@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Capstone2.Data;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Capstone2.Controllers
 {
@@ -44,6 +45,7 @@ namespace Capstone2.Controllers
                 {
                     HttpContext.Session.SetString("Role", "Admin");
                     HttpContext.Session.SetString("Username", Username);
+                    // Store UserId for admin if needed
                     return RedirectToAction("AdminHomepage");
                 }
                 else
@@ -59,6 +61,7 @@ namespace Capstone2.Controllers
                 {
                     HttpContext.Session.SetString("Role", Role);
                     HttpContext.Session.SetString("Username", user.Username);
+                    HttpContext.Session.SetInt32("UserId", user.UserId);
                     if (Role == "HeadWaiter")
                         return RedirectToAction("HeadWaiterHomepage");
                     else
@@ -88,7 +91,13 @@ namespace Capstone2.Controllers
         {
             if (HttpContext.Session.GetString("Role") != "HeadWaiter")
                 return RedirectToAction("Login");
-            return View();
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToAction("Login");
+            // Get HeadWaiterId for this user
+            var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+            if (headWaiter == null) return RedirectToAction("Login");
+            // Redirect to PaidOrders/Index with a headwaiter filter
+            return RedirectToAction("Index", "PaidOrders", new { headWaiterId = headWaiter.HeadWaiterId });
         }
 
         public IActionResult WaiterHomepage()

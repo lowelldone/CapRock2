@@ -24,6 +24,12 @@ namespace Capstone2.Data
                 .WithMany()
                 .HasForeignKey(w => w.UserId)
                 .OnDelete(DeleteBehavior.Cascade); //  or restrict too if needed
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.HeadWaiter)
+                .WithMany()
+                .HasForeignKey(o => o.HeadWaiterId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

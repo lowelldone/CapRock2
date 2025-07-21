@@ -36,7 +36,12 @@ namespace Capstone2.Models
         [Required]
         public string Status { get; set; }
 
-        // Add waiter assignment
+        // Add Waiter Assignment
         public ICollection<OrderWaiter>? OrderWaiters { get; set; }
+        //Add HeadWaiter Assignment
+        [ForeignKey("HeadWaiter")]
+        public int? HeadWaiterId { get; set; }
+        public HeadWaiter? HeadWaiter { get; set; }
     }
 }
+

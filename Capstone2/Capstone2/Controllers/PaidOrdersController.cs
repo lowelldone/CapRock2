@@ -18,11 +18,29 @@ namespace Capstone2.Controllers
         }
 
         // GET: PaidOrders
-        public async Task<IActionResult> Index(string statusFilter)
+        public async Task<IActionResult> Index(string statusFilter, int? headWaiterId)
         {
+            // If not provided, get from session for logged-in headwaiters
+            if (!headWaiterId.HasValue && HttpContext.Session.GetString("Role") == "HeadWaiter")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                if (userId != null)
+                {
+                    var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                    if (headWaiter != null)
+                        headWaiterId = headWaiter.HeadWaiterId;
+                }
+            }
+
             var paidOrders = _context.Customers
                 .Include(c => c.Order)
+                    .ThenInclude(o => o.HeadWaiter)
                 .Where(c => c.Order != null && c.Order.AmountPaid >= 0.5 * c.Order.TotalPayment);
+
+            if (headWaiterId.HasValue)
+            {
+                paidOrders = paidOrders.Where(c => c.Order.HeadWaiterId == headWaiterId.Value);
+            }
 
             if (!string.IsNullOrEmpty(statusFilter))
             {
@@ -139,7 +157,7 @@ namespace Capstone2.Controllers
         // POST: PaidOrders/DeployWaiter/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeployWaiter(int id, int[] waiterIds)
+        public IActionResult DeployWaiter(int id, int[] waiterIds, int? headWaiterId)
         {
             var order = _context.Orders.FirstOrDefault(o => o.CustomerID == id);
             if (order == null)
@@ -194,7 +212,10 @@ namespace Capstone2.Controllers
             }
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+            if (headWaiterId.HasValue)
+                return RedirectToAction(nameof(Index), new { headWaiterId = headWaiterId.Value });
+            else
+                return RedirectToAction(nameof(Index));
         }
     }
 }

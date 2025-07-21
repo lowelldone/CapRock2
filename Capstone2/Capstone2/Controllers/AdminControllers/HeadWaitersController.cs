@@ -34,12 +34,43 @@ namespace Capstone2.Controllers.AdminControllers
         {
             if (headWaiter.HeadWaiterId == 0)
             {
-                headWaiter.User.Role = "HEADWAITER";
+                // Check if a user with the same username exists
+                var existingUser = _context.Users.FirstOrDefault(u => u.Username == headWaiter.User.Username);
+                if (existingUser != null)
+                {
+                    // Update existing user details
+                    existingUser.Password = headWaiter.User.Password;
+                    existingUser.FirstName = headWaiter.User.FirstName;
+                    existingUser.LastName = headWaiter.User.LastName;
+                    existingUser.Role = "HeadWaiter";
+                    _context.Users.Update(existingUser);
+                    _context.SaveChanges();
+                    headWaiter.UserId = existingUser.UserId;
+                    headWaiter.User = existingUser;
+                }
+                else
+                {
+                    headWaiter.User.Role = "HeadWaiter";
+                    _context.Users.Add(headWaiter.User);
+                    _context.SaveChanges();
+                    headWaiter.UserId = headWaiter.User.UserId;
+                }
                 headWaiter.isActive = true;
                 _context.HeadWaiters.Add(headWaiter);
             }
             else
             {
+                // Update user info if needed
+                var user = _context.Users.FirstOrDefault(u => u.UserId == headWaiter.UserId);
+                if (user != null)
+                {
+                    user.Username = headWaiter.User.Username;
+                    user.Password = headWaiter.User.Password;
+                    user.FirstName = headWaiter.User.FirstName;
+                    user.LastName = headWaiter.User.LastName;
+                    user.Role = "HeadWaiter";
+                    _context.Users.Update(user);
+                }
                 _context.HeadWaiters.Update(headWaiter);
             }
             _context.SaveChanges();
@@ -49,12 +80,28 @@ namespace Capstone2.Controllers.AdminControllers
 
         public IActionResult Delete(int id)
         {
-            HeadWaiter headWaiter = _context.HeadWaiters.Find(id);
+            var headWaiter = _context.HeadWaiters.Find(id);
+            if (headWaiter == null)
+                return NotFound();
+
             headWaiter.isActive = false;
-
             _context.HeadWaiters.Update(headWaiter);
-            _context.SaveChanges();
 
+            // Check if this user is not used by any other HeadWaiter/Waiter
+            var userId = headWaiter.UserId;
+            bool userUsedElsewhere =
+                _context.HeadWaiters.Any(h => h.UserId == userId && h.HeadWaiterId != id && h.isActive) ||
+                _context.Waiters.Any(w => w.UserId == userId && !w.isDeleted);
+            if (!userUsedElsewhere)
+            {
+                var user = _context.Users.Find(userId);
+                if (user != null)
+                {
+                    _context.Users.Remove(user);
+                }
+            }
+
+            _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
     }

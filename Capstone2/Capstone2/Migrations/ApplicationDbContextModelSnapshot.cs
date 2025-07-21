@@ -203,6 +203,9 @@ namespace Capstone2.Migrations
                     b.Property<int>("CustomerID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("HeadWaiterId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Motif")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -235,6 +238,8 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("CustomerID")
                         .IsUnique();
+
+                    b.HasIndex("HeadWaiterId");
 
                     b.ToTable("Orders");
                 });
@@ -419,7 +424,14 @@ namespace Capstone2.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Capstone2.Models.HeadWaiter", "HeadWaiter")
+                        .WithMany()
+                        .HasForeignKey("HeadWaiterId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Customer");
+
+                    b.Navigation("HeadWaiter");
                 });
 
             modelBuilder.Entity("Capstone2.Models.OrderDetail", b =>

@@ -24,7 +24,9 @@ namespace Capstone2.Controllers.AdminControllers
         public async Task<IActionResult> Index(string searchString)
         {
             var customers = _context.Customers
-                                    .Include(c => c.Order) // Include the related Order
+                                    .Include(c => c.Order)
+                                        .ThenInclude(o => o.HeadWaiter)
+                                            .ThenInclude(hw => hw.User)
                                     .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -270,6 +272,39 @@ namespace Capstone2.Controllers.AdminControllers
             _context.Orders.Update(customer.Order);
             await _context.SaveChangesAsync();
 
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Customers/AssignHeadWaiter/5
+        public async Task<IActionResult> AssignHeadWaiter(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == id);
+            if (customer == null || customer.Order == null)
+                return NotFound();
+
+            // Get all active headwaiters
+            var headWaiters = await _context.HeadWaiters.Include(h => h.User).Where(h => h.isActive).ToListAsync();
+            ViewBag.HeadWaiters = headWaiters;
+            ViewBag.SelectedHeadWaiterId = customer.Order.HeadWaiterId;
+            return View(customer);
+        }
+
+        // POST: Customers/AssignHeadWaiter/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignHeadWaiter(int id, int headWaiterId)
+        {
+            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == id);
+            if (customer == null || customer.Order == null)
+                return NotFound();
+
+            customer.Order.HeadWaiterId = headWaiterId;
+            _context.Orders.Update(customer.Order);
+            await _context.SaveChangesAsync();
+            TempData["HeadWaiterAssigned"] = "Head Waiter assigned successfully.";
             return RedirectToAction(nameof(Index));
         }
     }
