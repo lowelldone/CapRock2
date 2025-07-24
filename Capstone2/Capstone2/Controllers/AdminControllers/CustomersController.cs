@@ -307,5 +307,22 @@ namespace Capstone2.Controllers.AdminControllers
             TempData["HeadWaiterAssigned"] = "Head Waiter assigned successfully.";
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Customers/AdminPartial
+        public async Task<IActionResult> AdminPartial(string searchString)
+        {
+            var customers = _context.Customers
+                                    .Include(c => c.Order)
+                                        .ThenInclude(o => o.HeadWaiter)
+                                            .ThenInclude(hw => hw.User)
+                                    .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                customers = customers.Where(s => s.Name.ToLower().Contains(searchString.ToLower()));
+            }
+
+            return PartialView("Index", await customers.ToListAsync());
+        }
     }
 }

@@ -91,13 +91,8 @@ namespace Capstone2.Controllers
         {
             if (HttpContext.Session.GetString("Role") != "HeadWaiter")
                 return RedirectToAction("Login");
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null) return RedirectToAction("Login");
-            // Get HeadWaiterId for this user
-            var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
-            if (headWaiter == null) return RedirectToAction("Login");
-            // Redirect to PaidOrders/Index with a headwaiter filter
-            return RedirectToAction("Index", "PaidOrders", new { headWaiterId = headWaiter.HeadWaiterId });
+            // Render the HeadWaiterHomepage view directly (do not redirect)
+            return View();
         }
 
         public IActionResult WaiterHomepage()

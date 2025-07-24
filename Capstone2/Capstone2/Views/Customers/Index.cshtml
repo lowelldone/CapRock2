@@ -17,10 +17,10 @@
     {
         <div class="alert alert-warning">@TempData["CateringStatusError"]</div>
     }
-    @if (TempData["HeadWaiterAssigned"] != null)
+@*     @if (TempData["HeadWaiterAssigned"] != null)
     {
         <div class="alert alert-success">@TempData["HeadWaiterAssigned"]</div>
-    }
+    } *@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Customer Orders</h2>
         <a asp-action="Create" class="btn btn-primary">+ Add New Customer</a>
@@ -54,7 +54,7 @@
                             <th>Payment Status</th>
                             <th>Order Status</th>
                             <th>Catering Status</th>
-                            <th>Head Waiter</th>
+@*                             <th>Head Waiter</th> *@
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
@@ -121,7 +121,7 @@
                                         </select>
                                     </form>
                                 </td>
-                                <td>
+@*                                 <td>
                                     @if (order?.HeadWaiter != null && order.HeadWaiter.User != null)
                                     {
                                         @($"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}")
@@ -130,7 +130,7 @@
                                     {
                                         <span class="text-muted">None</span>
                                     }
-                                </td>
+                                </td> *@
 
                                 <td class="text-end">
                                     <a asp-action="Edit" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-secondary">Edit</a>
@@ -138,14 +138,14 @@
                                     <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-sm btn-outline-danger">Delete</a>
                                     @if (order != null)
                                     {
-                                        @if (order.DownPaymentMet)
+@*                                         @if (order.DownPaymentMet)
                                         {
                                             <a href="@Url.Action("AssignHeadWaiter", new { id = item.CustomerID })" class="btn btn-sm btn-outline-primary">Assign Head Waiter</a>
                                         }
                                         else
                                         {
                                             <span class="btn btn-sm btn-outline-primary disabled" title="At least 50% down payment required" style="pointer-events: none; opacity: 0.65;">Assign Head Waiter</span>
-                                        }
+                                        } *@
                                         <form asp-action="RecordPayment" method="post" class="d-inline">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="customerId" value="@item.CustomerID" />

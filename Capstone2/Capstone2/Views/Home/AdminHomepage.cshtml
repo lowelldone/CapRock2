@@ -40,8 +40,13 @@
 
 @section Scripts {
     <script>
-        function loadContent(url) {
-            fetch(url)
+        function loadContent(url, method = 'GET', data = null) {
+            const options = { method: method };
+            if (method === 'POST' && data) {
+                options.headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+                options.body = data;
+            }
+            fetch(url, options)
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('main-content').innerHTML = html;
@@ -57,5 +62,31 @@
         window.onload = function () {
             loadContent('/Customers/AdminPartial');
         };
+
+        // Delegate events for links and forms inside #main-content
+        document.addEventListener('click', function (e) {
+            // Intercept anchor clicks inside #main-content
+            const anchor = e.target.closest('#main-content a');
+            if (anchor && anchor.getAttribute('href') && !anchor.hasAttribute('download') && anchor.getAttribute('target') !== '_blank' && anchor.getAttribute('href').charAt(0) === '/') {
+                e.preventDefault();
+                loadContent(anchor.getAttribute('href'));
+            }
+        });
+        document.addEventListener('submit', function (e) {
+            // Intercept form submissions inside #main-content
+            const form = e.target.closest('#main-content form');
+            if (form) {
+                e.preventDefault();
+                const formData = new URLSearchParams(new FormData(form)).toString();
+                let url = form.getAttribute('action') || window.location.pathname;
+                let method = (form.getAttribute('method') || 'GET').toUpperCase();
+                if (method === 'GET') {
+                    url += (url.indexOf('?') === -1 ? '?' : '&') + formData;
+                    loadContent(url, 'GET');
+                } else {
+                    loadContent(url, 'POST', formData);
+                }
+            }
+        });
     </script>
 } 

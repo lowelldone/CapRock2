@@ -217,5 +217,38 @@ namespace Capstone2.Controllers
             else
                 return RedirectToAction(nameof(Index));
         }
+
+        // GET: PaidOrders/PartialIndex
+        public async Task<IActionResult> PartialIndex(string statusFilter, int? headWaiterId)
+        {
+            // If not provided, get from session for logged-in headwaiters
+            if (!headWaiterId.HasValue && HttpContext.Session.GetString("Role") == "HeadWaiter")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                if (userId != null)
+                {
+                    var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                    if (headWaiter != null)
+                        headWaiterId = headWaiter.HeadWaiterId;
+                }
+            }
+
+            var paidOrders = _context.Customers
+                .Include(c => c.Order)
+                    .ThenInclude(o => o.HeadWaiter)
+                .Where(c => c.Order != null && c.Order.AmountPaid >= 0.5 * c.Order.TotalPayment);
+
+            if (headWaiterId.HasValue)
+            {
+                paidOrders = paidOrders.Where(c => c.Order.HeadWaiterId == headWaiterId.Value);
+            }
+
+            if (!string.IsNullOrEmpty(statusFilter))
+            {
+                paidOrders = paidOrders.Where(c => c.Order.Status == statusFilter);
+            }
+
+            return PartialView("Index", await paidOrders.ToListAsync());
+        }
     }
 }
