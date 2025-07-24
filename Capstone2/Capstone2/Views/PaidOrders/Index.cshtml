@@ -12,102 +12,110 @@
     }
 }
 
-<h1>@ViewData["Title"]</h1>
-
-<form asp-action="Index" method="get" class="mb-3">
-    <div class="row g-2">
-        <div class="col-md-4">
-            <select name="statusFilter" class="form-select" onchange="this.form.submit()">
-                <option value="">-- Filter by Status --</option>
-                @for (int i = 0; i < status.Length; i++)
-                {
-                    if (status[i] == selectedFilter)
-                    {
-                        <option value="@status[i]" selected>@status[i]</option>
-                    }
-                    else
-                    {
-                        <option value="@status[i]">@status[i]</option>
-                    }
-                }
-            </select>
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Manage Orders</h2>
+    </div>
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-4">
+                    <select name="statusFilter" class="form-select form-select-lg" onchange="this.form.submit()">
+                        <option value="">-- Filter by Status --</option>
+                        @for (int i = 0; i < status.Length; i++)
+                        {
+                            if (status[i] == selectedFilter)
+                            {
+                                <option value="@status[i]" selected>@status[i]</option>
+                            }
+                            else
+                            {
+                                <option value="@status[i]">@status[i]</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </form>
         </div>
     </div>
-</form>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Status</th>
-            <th class="text-end">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.ContactNo</td>
-                <td>@item.Address</td>
-                <td>@item.Order.Status</td>
-                <td class="text-end">
-                    @if (item.Order?.Status == "Ongoing")
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover table-bordered table-lg align-middle mb-0" style="font-size: 1.15rem;">
+                <thead class="table-light">
+                    <tr>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Name</th>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Phone</th>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Address</th>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
+                        <th class="text-end fw-bold" style="font-size: 1.2rem;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
                     {
-                        <a asp-controller="Attendance" asp-action="ForOrder" asp-route-orderId="@item.Order.OrderId"
-                           class="btn btn-sm btn-secondary me-1">
-                            View Attendances
-                        </a>
-                        @if (headWaiterId != null)
-                        {
-                            <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
-                               class="btn btn-sm btn-warning me-1">
-                                Deploy Waiter
-                            </a>
-                        }
-                        else
-                        {
-                            <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
-                               class="btn btn-sm btn-warning me-1">
-                                Deploy Waiter
-                            </a>
-                        }
+                        <tr>
+                            <td style="font-size: 1.1rem;">@item.Name</td>
+                            <td style="font-size: 1.1rem;">@item.ContactNo</td>
+                            <td style="font-size: 1.1rem;">@item.Address</td>
+                            <td style="font-size: 1.1rem;">@item.Order.Status</td>
+                            <td class="text-end">
+                                @if (item.Order?.Status == "Ongoing")
+                                {
+                                    <a asp-controller="Attendance" asp-action="ForOrder" asp-route-orderId="@item.Order.OrderId"
+                                       class="btn btn-lg btn-secondary me-1 mb-1">
+                                        View Attendances
+                                    </a>
+                                    @if (headWaiterId != null)
+                                    {
+                                        <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
+                                           class="btn btn-lg btn-warning me-1 mb-1">
+                                            Deploy Waiter
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
+                                           class="btn btn-lg btn-warning me-1 mb-1">
+                                            Deploy Waiter
+                                        </a>
+                                    }
+                                }
+                                else if (item.Order?.Status == "Upcoming")
+                                {
+                                    @if (headWaiterId != null)
+                                    {
+                                        <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
+                                           class="btn btn-lg btn-warning me-1 mb-1">
+                                            Deploy Waiter
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
+                                           class="btn btn-lg btn-warning me-1 mb-1">
+                                            Deploy Waiter
+                                        </a>
+                                    }
+                                }
+                                @if (headWaiterId != null)
+                                {
+                                    <a asp-action="Details" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
+                                       class="btn btn-lg btn-info mx-auto mb-1" style="width: fit-content;">
+                                        Details
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-action="Details" asp-route-id="@item.CustomerID"
+                                       class="btn btn-lg btn-info mx-auto mb-1" style="width: fit-content;">
+                                        Details
+                                    </a>
+                                }
+                            </td>
+                        </tr>
                     }
-                    else if (item.Order?.Status == "Upcoming")
-                    {
-                        @if (headWaiterId != null)
-                        {
-                            <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
-                               class="btn btn-sm btn-warning me-1">
-                                Deploy Waiter
-                            </a>
-                        }
-                        else
-                        {
-                            <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
-                               class="btn btn-sm btn-warning me-1">
-                                Deploy Waiter
-                            </a>
-                        }
-                    }
-                    @if (headWaiterId != null)
-                    {
-                        <a asp-action="Details" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
-                           class="btn btn-sm btn-info mx-auto" style="width: fit-content;">
-                            Details
-                        </a>
-                    }
-                    else
-                    {
-                        <a asp-action="Details" asp-route-id="@item.CustomerID"
-                           class="btn btn-sm btn-info mx-auto" style="width: fit-content;">
-                            Details
-                        </a>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

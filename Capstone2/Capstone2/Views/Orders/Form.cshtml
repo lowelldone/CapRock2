@@ -4,11 +4,16 @@
     ViewData["Title"] = "Place Order";
 }
 
+<div class="mb-3" style="position:absolute; left:10px; top:70px">
+    <button type="button" class="btn btn-secondary" onclick="window.history.back();">
+        <i class="bi bi-arrow-left"></i> Back
+    </button>
+</div>
 <h2>Place an Order</h2>
 
 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-<form asp-action="Form" asp-controller="Orders" method="post">
+<form asp-action="Form" asp-controller="Orders" method="post" id="orderForm">
 
     <input type="hidden" name="OrderItemsJson" value="@TempData["OrderItemsJson"]" />
 
@@ -66,3 +71,32 @@
     </div>
     <input type="submit" class="btn btn-primary" value="Place Order" />
 </form>
+
+<script>
+    // Save form data to sessionStorage on submit
+    document.getElementById('orderForm').addEventListener('submit', function () {
+        var formData = {};
+        var form = this;
+        Array.from(form.elements).forEach(function (el) {
+            if (el.name && (el.type !== 'submit' && el.type !== 'button')) {
+                formData[el.name] = el.value;
+            }
+        });
+        sessionStorage.setItem('orderFormData', JSON.stringify(formData));
+    });
+
+    // Restore form data from sessionStorage on page load
+    window.addEventListener('DOMContentLoaded', function () {
+        var saved = sessionStorage.getItem('orderFormData');
+        if (saved) {
+            var data = JSON.parse(saved);
+            Object.keys(data).forEach(function (key) {
+                var el = document.querySelector('[name="' + key + '"]');
+                if (el) el.value = data[key];
+            });
+        }
+    });
+
+    // Clear sessionStorage after successful submit (optional, if you redirect on success)
+    // You may want to clear it on the OrderDetails page after confirmation as well.
+</script>
