@@ -197,38 +197,65 @@ namespace Capstone2.Controllers.AdminControllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Customers/RecordPayment
+        // GET: Customers/PaymentDetails/5
+        public async Task<IActionResult> PaymentDetails(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var customer = await _context.Customers
+                .Include(c => c.Order)
+                .FirstOrDefaultAsync(c => c.CustomerID == id);
+            if (customer == null || customer.Order == null)
+                return NotFound();
+
+            var payments = await _context.Payments
+                .Where(p => p.OrderId == customer.Order.OrderId)
+                .OrderByDescending(p => p.Date)
+                .ToListAsync();
+
+            ViewBag.Payments = payments;
+            return View(customer);
+        }
+
+        // POST: Customers/AddPayment
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RecordPayment(int customerId, double paymentAmount)
+        public async Task<IActionResult> AddPayment(int customerId, double paymentAmount)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == customerId);
-            if (order == null)
-            {
+            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == customerId);
+            if (customer == null || customer.Order == null)
                 return NotFound();
-            }
+
             if (paymentAmount <= 0)
             {
                 TempData["PaymentError"] = "Payment amount must be greater than zero.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("PaymentDetails", new { id = customerId });
             }
-            order.AmountPaid += paymentAmount;
 
-            // Automatically mark as paid if fully paid
-            if (order.AmountPaid >= order.TotalPayment)
+            // Add payment record
+            var payment = new Payment
             {
-                var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerID == customerId);
-                if (customer != null)
-                {
-                    customer.IsPaid = true;
-                    _context.Customers.Update(customer);
-                }
+                OrderId = customer.Order.OrderId,
+                Amount = paymentAmount,
+                Date = DateTime.Now
+            };
+            _context.Payments.Add(payment);
+
+            // Update order's AmountPaid
+            customer.Order.AmountPaid += paymentAmount;
+            _context.Orders.Update(customer.Order);
+
+            // Mark as paid if fully paid
+            if (customer.Order.AmountPaid >= customer.Order.TotalPayment)
+            {
+                customer.IsPaid = true;
+                _context.Customers.Update(customer);
             }
 
-            _context.Orders.Update(order);
             await _context.SaveChangesAsync();
-            TempData["PaymentSuccess"] = $"Payment of {paymentAmount:C} recorded.";
-            return RedirectToAction(nameof(Index));
+            TempData["PaymentSuccess"] = $"Payment Recorded.";
+            return RedirectToAction("PaymentDetails", new { id = customerId });
         }
 
         [HttpPost]

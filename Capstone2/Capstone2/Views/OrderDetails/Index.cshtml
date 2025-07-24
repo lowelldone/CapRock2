@@ -6,6 +6,12 @@
 
 <input type="hidden" id="orders" value="@TempData["Order"]" />
 
+<div class="mb-3" style="position:absolute; left:10px; top:70px">
+    <button type="button" class="btn btn-secondary" style="margin-left: 0;" onclick="window.history.back();">
+        <i class="bi bi-arrow-left"></i> Back
+    </button>
+</div>
+
 <h2>Confirm Order for @Model.Customer.Name</h2>
 
 <p><strong>Contact:</strong> @Model.Customer.ContactNo</p>

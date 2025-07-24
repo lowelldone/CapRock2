@@ -1,0 +1,105 @@
+﻿@model Capstone2.Models.Customer
+@{
+    ViewData["Title"] = "Payment Details";
+    var order = Model.Order;
+    var payments = ViewBag.Payments as List<Capstone2.Models.Payment>;
+}
+<div class="container mt-4">
+    <h2 class="fw-bold mb-3">Payment Details for @Model.Name</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Order Total</dt>
+                <dd class="col-sm-9">@order?.TotalPayment.ToString("C")</dd>
+                <dt class="col-sm-3">Amount Paid</dt>
+                <dd class="col-sm-9">@order?.AmountPaid.ToString("C")</dd>
+                <dt class="col-sm-3">Balance</dt>
+                <dd class="col-sm-9">@(order != null ? (order.Balance > 0 ? order.Balance.ToString("C") : "0.00") : "-")</dd>
+                <dt class="col-sm-3">Payment Status</dt>
+                <dd class="col-sm-9">
+                    @if (order != null)
+                    {
+                        var paidPercent = order.TotalPayment > 0 ? (order.AmountPaid / order.TotalPayment) : 0;
+                        if (paidPercent < 0.5)
+                        {
+                            <span class="badge bg-danger">Incomplete Payment</span>
+                        }
+                        else if (paidPercent >= 0.5 && paidPercent < 1)
+                        {
+                            <span class="badge bg-warning text-dark">Ready to Cater</span>
+                        }
+                        else if (paidPercent >= 1)
+                        {
+                            <span class="badge bg-success">Fully Paid</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">No Order</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div class="mb-4">
+        <h4>Record New Payment</h4>
+        @if (TempData["PaymentError"] != null)
+        {
+            <div class="alert alert-danger">@TempData["PaymentError"]</div>
+        }
+        @if (TempData["PaymentSuccess"] != null)
+        {
+            <div id="payment-success-toast" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1055; min-width: 350px; max-width: 90vw;">
+                @TempData["PaymentSuccess"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <script>
+                setTimeout(function () {
+                    var toast = document.getElementById('payment-success-toast');
+                    if (toast) {
+                        var bsAlert = bootstrap.Alert.getOrCreateInstance(toast);
+                        bsAlert.close();
+                    }
+                }, 3500);
+            </script>
+        }
+        <form asp-action="AddPayment" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="customerId" value="@Model.CustomerID" />
+            <div class="col-md-4">
+                <input type="number" name="paymentAmount" min="1" step="0.01" class="form-control" placeholder="Amount" required />
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-success">Record Payment</button>
+            </div>
+        </form>
+    </div>
+    <div>
+        <h4>Payment History</h4>
+        @if (payments != null && payments.Count > 0)
+        {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var payment in payments)
+                    {
+                        <tr>
+                            <td>@payment.Date.ToString("MM/dd/yyyy")</td>
+                            <td>@payment.Amount.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">No payments recorded yet.</div>
+        }
+    </div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to Customers</a>
+</div> 

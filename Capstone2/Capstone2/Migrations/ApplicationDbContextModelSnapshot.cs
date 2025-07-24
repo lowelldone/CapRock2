@@ -297,6 +297,30 @@ namespace Capstone2.Migrations
                     b.ToTable("OrderWaiters");
                 });
 
+            modelBuilder.Entity("Capstone2.Models.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("Capstone2.Models.Supplier", b =>
                 {
                     b.Property<int>("SupplierId")
@@ -470,6 +494,17 @@ namespace Capstone2.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Waiter");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.Payment", b =>
+                {
+                    b.HasOne("Capstone2.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Waiter", b =>
