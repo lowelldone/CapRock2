@@ -157,6 +157,20 @@ namespace Capstone2.Controllers.AdminControllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Suppliers/AdminPartial
+        public async Task<IActionResult> AdminPartial(string searchString)
+        {
+            var suppliers = from c in _context.Suppliers
+                            select c;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                suppliers = suppliers.Where(s => s.CompanyName.ToLower().Contains(searchString.ToLower()));
+            }
+
+            return PartialView("Index", await suppliers.ToListAsync());
+        }
+
         private bool SupplierExists(int id)
         {
             return _context.Suppliers.Any(e => e.SupplierId == id);

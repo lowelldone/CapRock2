@@ -75,7 +75,7 @@ namespace Capstone2.Controllers
             else
             {
                 //if (_context.Waiters.FirstOrDefault(w => w.WaiterId == waiter.WaiterId) == null) return RedirectToAction("Index");
-                
+
                 // ✅ Fetch existing waiter from DB to retain existing password if needed
                 //var existingWaiter = _context.Waiters
                 //    .Include(w => w.User)
@@ -109,6 +109,42 @@ namespace Capstone2.Controllers
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Waiters/PartialIndex
+        public IActionResult PartialIndex()
+        {
+            // Only show waiters assigned to the logged-in Head Waiter
+            var role = HttpContext.Session.GetString("Role");
+            var waiters = new List<Waiter>();
+            if (role == "HeadWaiter")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                if (userId != null)
+                {
+                    var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                    if (headWaiter != null)
+                    {
+                        waiters = _context.Waiters
+                            .Include(w => w.User)
+                            .Include(w => w.HeadWaiter)
+                                .ThenInclude(h => h.User)
+                            .Where(w => !w.isDeleted && w.HeadWaiterId == headWaiter.HeadWaiterId)
+                            .ToList();
+                    }
+                }
+            }
+            else
+            {
+                // Fallback: show all waiters (for admin or other roles)
+                waiters = _context.Waiters
+                    .Include(w => w.User)
+                    .Include(w => w.HeadWaiter)
+                        .ThenInclude(h => h.User)
+                    .Where(w => !w.isDeleted)
+                    .ToList();
+            }
+            return PartialView("Index", waiters);
         }
     }
 }

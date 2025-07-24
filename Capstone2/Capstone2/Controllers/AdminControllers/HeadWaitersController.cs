@@ -24,6 +24,13 @@ namespace Capstone2.Controllers.AdminControllers
             return View(headWaiters);
         }
 
+        // GET: HeadWaiters/AdminPartial
+        public IActionResult AdminPartial()
+        {
+            List<HeadWaiter> headWaiters = _context.HeadWaiters.Include(h => h.User).Where(h => h.isActive).ToList();
+            return PartialView("Index", headWaiters);
+        }
+
         public IActionResult UpSert(int? id)
         {
             return View(id == null ? new HeadWaiter() { User = new User() } : _context.HeadWaiters.Include(h => h.User).First(h => h.HeadWaiterId == id));
@@ -87,20 +94,21 @@ namespace Capstone2.Controllers.AdminControllers
             headWaiter.isActive = false;
             _context.HeadWaiters.Update(headWaiter);
 
-            // Check if this user is not used by any other HeadWaiter/Waiter
-            var userId = headWaiter.UserId;
-            bool userUsedElsewhere =
-                _context.HeadWaiters.Any(h => h.UserId == userId && h.HeadWaiterId != id && h.isActive) ||
-                _context.Waiters.Any(w => w.UserId == userId && !w.isDeleted);
-            if (!userUsedElsewhere)
-            {
-                var user = _context.Users.Find(userId);
-                if (user != null)
-                {
-                    _context.Users.Remove(user);
-                }
-            }
+            //// Check if this user is not used by any other HeadWaiter/Waiter
+            //var userId = headWaiter.UserId;
+            //bool userUsedElsewhere =
+            //    _context.HeadWaiters.Any(h => h.UserId == userId && h.HeadWaiterId != id && h.isActive) ||
+            //    _context.Waiters.Any(w => w.UserId == userId && !w.isDeleted);
+            //if (!userUsedElsewhere)
+            //{
+            //    var user = _context.Users.Find(userId);
+            //    if (user != null)
+            //    {
+            //        _context.Users.Remove(user);
+            //    }
+            //}
 
+            // Only perform a soft delete; do not delete the User entity
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
