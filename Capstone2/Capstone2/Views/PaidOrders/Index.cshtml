@@ -53,6 +53,8 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
+                        var hasPullOut = item.Order != null && item.Order.OrderId != 0 &&
+                        (ViewBag.MaterialPullOuts != null && ((IEnumerable<dynamic>)ViewBag.MaterialPullOuts).Any(p => p.OrderId == item.Order.OrderId));
                         <tr>
                             <td style="font-size: 1.1rem;">@item.Name</td>
                             <td style="font-size: 1.1rem;">@item.ContactNo</td>
@@ -111,7 +113,14 @@
                                         Details
                                     </a>
                                 }
-                                <a asp-action="ReturnMaterials" asp-route-id="@item.CustomerID" class="btn btn-lg btn-outline-warning mb-1">Return Materials</a>
+                                @if (item.Order?.Status != "Completed")
+                                {
+                                    <a asp-action="PullOutMaterials" asp-route-id="@item.CustomerID" class="btn btn-lg btn-outline-primary mb-1">Pull Out Materials</a>
+                                    if (hasPullOut)
+                                    {
+                                        <a asp-action="ReturnMaterials" asp-route-id="@item.CustomerID" class="btn btn-lg btn-outline-warning mb-1">Return Materials</a>
+                                    }
+                                }
                             </td>
                         </tr>
                     }
