@@ -1,0 +1,54 @@
+﻿@model Capstone2.Models.ReturnMaterialsViewModel
+
+@{
+    ViewData["Title"] = "Return Materials";
+}
+
+<h2>Return Materials for Order</h2>
+
+<form asp-action="ReturnMaterials" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="OrderId" value="@Model.OrderId" />
+    <input type="hidden" name="CustomerId" value="@Model.CustomerId" />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Material</th>
+                <th>Pulled Out</th>
+                <th>Returned</th>
+                <th>Lost</th>
+                <th>Damaged</th>
+                <th>Charge/Item</th>
+                <th>Total Charge</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <tr>
+                    <td>@Model.Items[i].MaterialName</td>
+                    <td>@Model.Items[i].PulledOut</td>
+                    <td>
+                        <input type="number" name="Items[@i].Returned" value="@Model.Items[i].PulledOut" min="0" max="@Model.Items[i].PulledOut" class="form-control" />
+                    </td>
+                    <td>
+                        <input type="number" name="Items[@i].Lost" value="0" min="0" max="@Model.Items[i].PulledOut" class="form-control" />
+                    </td>
+                    <td>
+                        <input type="number" name="Items[@i].Damaged" value="0" min="0" max="@Model.Items[i].PulledOut" class="form-control" />
+                    </td>
+                    <td>@Model.Items[i].ChargePerItem.ToString("C")</td>
+                    <td>
+                        @((Model.Items[i].Lost + Model.Items[i].Damaged) * Model.Items[i].ChargePerItem).ToString("C")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <strong>Total Lost/Damaged Charges: </strong>
+        @Model.Items.Sum(x => (x.Lost + x.Damaged) * x.ChargePerItem).ToString("C")
+    </div>
+    <button type="submit" class="btn btn-primary">Confirm Return</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form> 

@@ -250,5 +250,67 @@ namespace Capstone2.Controllers
 
             return PartialView("Index", await paidOrders.ToListAsync());
         }
+
+        // GET: PaidOrders/ReturnMaterials/5
+        public async Task<IActionResult> ReturnMaterials(int id)
+        {
+            // id = CustomerId
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id);
+            if (order == null) return NotFound();
+
+            var pullOut = await _context.MaterialPullOuts
+                .Include(p => p.Items)
+                .FirstOrDefaultAsync(p => p.OrderId == order.OrderId);
+
+            var materials = await _context.Materials.ToListAsync();
+
+            var pulledOutItems = pullOut?.Items.Select(i => new ReturnMaterialItem
+            {
+                MaterialName = i.MaterialName,
+                PulledOut = i.Quantity,
+                Returned = i.Quantity,
+                Lost = 0,
+                Damaged = 0,
+                ChargePerItem = materials.FirstOrDefault(m => m.Name == i.MaterialName)?.GetType().GetProperty("ChargePerItem")?.GetValue(materials.FirstOrDefault(m => m.Name == i.MaterialName)) as decimal? ?? 0
+            }).ToList() ?? new List<ReturnMaterialItem>();
+
+            var viewModel = new ReturnMaterialsViewModel
+            {
+                OrderId = order.OrderId,
+                CustomerId = id,
+                Items = pulledOutItems
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReturnMaterials(ReturnMaterialsViewModel model)
+        {
+            decimal totalCharge = 0;
+            foreach (var item in model.Items)
+            {
+                // Update inventory for returned items
+                var material = await _context.Materials.FirstOrDefaultAsync(m => m.Name == item.MaterialName);
+                if (material != null)
+                {
+                    material.Quantity += item.Returned;
+                    _context.Materials.Update(material);
+                }
+                // Calculate charge for lost/damaged
+                totalCharge += (item.Lost + item.Damaged) * item.ChargePerItem;
+                // Optionally: log lost/damaged per order/material
+            }
+            // Charge customer for lost/damaged
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == model.OrderId);
+            if (order != null)
+            {
+                order.TotalPayment += (double)totalCharge;
+                _context.Orders.Update(order);
+            }
+            await _context.SaveChangesAsync();
+            TempData["ReturnSuccess"] = "Materials returned and charges applied successfully!";
+            return RedirectToAction("Index");
+        }
     }
 }

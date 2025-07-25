@@ -108,6 +108,9 @@ namespace Capstone2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaterialId"));
 
+                    b.Property<decimal>("ChargePerItem")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -122,6 +125,50 @@ namespace Capstone2.Migrations
                     b.HasKey("MaterialId");
 
                     b.ToTable("Materials");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.MaterialPullOut", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MaterialPullOuts");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.MaterialPullOutItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("MaterialName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MaterialPullOutId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MaterialPullOutId");
+
+                    b.ToTable("MaterialPullOutItems");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Menu", b =>
@@ -440,6 +487,15 @@ namespace Capstone2.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Capstone2.Models.MaterialPullOutItem", b =>
+                {
+                    b.HasOne("Capstone2.Models.MaterialPullOut", null)
+                        .WithMany("Items")
+                        .HasForeignKey("MaterialPullOutId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Capstone2.Models.Order", b =>
                 {
                     b.HasOne("Capstone2.Models.Customer", "Customer")
@@ -530,6 +586,11 @@ namespace Capstone2.Migrations
                 {
                     b.Navigation("Order")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Capstone2.Models.MaterialPullOut", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Order", b =>
