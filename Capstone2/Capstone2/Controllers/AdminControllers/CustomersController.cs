@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Capstone2.Data;
 using Capstone2.Models;
 using Newtonsoft.Json;
+using Capstone2.Helpers;
 
 namespace Capstone2.Controllers.AdminControllers
 {
@@ -350,6 +351,53 @@ namespace Capstone2.Controllers.AdminControllers
             }
 
             return PartialView("Index", await customers.ToListAsync());
+        }
+
+        // GET: Customers/PullOutMaterials/5
+        public async Task<IActionResult> PullOutMaterials(int id)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id);
+            if (order == null) return NotFound();
+            int pax = order.NoOfPax; // Ensure Order has Pax property
+            var materials = MaterialCalculator.CalculateMaterials(pax);
+            var viewModel = new PullOutMaterialsViewModel
+            {
+                CustomerId = id,
+                Pax = pax,
+                Materials = materials
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PullOutMaterials(PullOutMaterialsViewModel model)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == model.CustomerId);
+            var pullOut = new MaterialPullOut
+            {
+                OrderId = order.OrderId,
+                Date = DateTime.Now,
+                Items = model.Materials.Select(m => new MaterialPullOutItem
+                {
+                    MaterialName = m.Key,
+                    Quantity = m.Value
+                }).ToList()
+            };
+            _context.MaterialPullOuts.Add(pullOut);
+
+            foreach (var item in model.Materials)
+            {
+                var material = await _context.Materials.FirstOrDefaultAsync(m => m.Name == item.Key);
+                if (material != null)
+                {
+                    material.Quantity -= item.Value;
+                    _context.Materials.Update(material);
+                }
+            }
+            await _context.SaveChangesAsync();
+            TempData["PullOutSuccess"] = "Materials pulled out successfully!";
+            return RedirectToAction("Index");
         }
     }
 }

@@ -47,7 +47,9 @@ namespace Capstone2.Data
         public DbSet<User> Users { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Payment> Payments { get; set; }
-        
+        public DbSet<MaterialPullOut> MaterialPullOuts { get; set; }
+        public DbSet<MaterialPullOutItem> MaterialPullOutItems { get; set; }
+
         public DbSet<Capstone2.Models.Menu> Menu { get; set; } = default!;
         public DbSet<Capstone2.Models.MenuPackages> MenuPackages { get; set; } = default!;
     }
