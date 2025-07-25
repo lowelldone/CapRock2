@@ -152,12 +152,31 @@ namespace Capstone2.Controllers.AdminControllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == id);
             if (customer != null)
             {
+                // Remove related records if order exists
+                if (customer.Order != null)
+                {
+                    var orderId = customer.Order.OrderId;
+                    // Remove attendances
+                    var attendances = _context.Attendances.Where(a => a.OrderId == orderId);
+                    _context.Attendances.RemoveRange(attendances);
+                    // Remove order waiters
+                    var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == orderId);
+                    _context.OrderWaiters.RemoveRange(orderWaiters);
+                    // Remove material pull outs
+                    var pullOuts = _context.MaterialPullOuts.Where(p => p.OrderId == orderId);
+                    _context.MaterialPullOuts.RemoveRange(pullOuts);
+                    // Remove material returns
+                    var returns = _context.MaterialReturns.Where(r => r.OrderId == orderId);
+                    _context.MaterialReturns.RemoveRange(returns);
+                    // Remove the order
+                    _context.Orders.Remove(customer.Order);
+                }
+                // Remove the customer
                 _context.Customers.Remove(customer);
             }
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -214,6 +233,11 @@ namespace Capstone2.Controllers.AdminControllers
                 .Where(p => p.OrderId == customer.Order.OrderId)
                 .OrderByDescending(p => p.Date)
                 .ToListAsync();
+
+            // Calculate additional charges for lost/damaged materials
+            var materialReturns = await _context.Set<MaterialReturn>().Where(r => r.OrderId == customer.Order.OrderId).ToListAsync();
+            var additionalCharges = materialReturns.Sum(r => (r.Lost + r.Damaged) * 10);
+            ViewBag.AdditionalCharges = additionalCharges;
 
             ViewBag.Payments = payments;
             return View(customer);
@@ -353,51 +377,34 @@ namespace Capstone2.Controllers.AdminControllers
             return PartialView("Index", await customers.ToListAsync());
         }
 
-        // GET: Customers/PullOutMaterials/5
-        public async Task<IActionResult> PullOutMaterials(int id)
+        // GET: Customers/InventoryReport/5
+        public async Task<IActionResult> InventoryReport(int id)
         {
+            // id = CustomerId
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id);
-            if (order == null) return NotFound();
-            int pax = order.NoOfPax; // Ensure Order has Pax property
-            var materials = MaterialCalculator.CalculateMaterials(pax);
-            var viewModel = new PullOutMaterialsViewModel
-            {
-                CustomerId = id,
-                Pax = pax,
-                Materials = materials
-            };
-            return View(viewModel);
-        }
+            if (order == null || order.Status != "Completed")
+                return NotFound();
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PullOutMaterials(PullOutMaterialsViewModel model)
-        {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == model.CustomerId);
-            var pullOut = new MaterialPullOut
+            // Get all material returns for this order
+            var materialReturns = await _context.Set<MaterialReturn>().Where(r => r.OrderId == order.OrderId).ToListAsync();
+
+            var reportItems = materialReturns.Select(r => new InventoryReportItemViewModel
+            {
+                MaterialId = r.MaterialId,
+                MaterialName = r.MaterialName,
+                PulledOut = r.Returned + r.Lost + r.Damaged,
+                Returned = r.Returned,
+                Lost = r.Lost,
+                Damaged = r.Damaged
+            }).ToList();
+
+            var viewModel = new InventoryReportViewModel
             {
                 OrderId = order.OrderId,
-                Date = DateTime.Now,
-                Items = model.Materials.Select(m => new MaterialPullOutItem
-                {
-                    MaterialName = m.Key,
-                    Quantity = m.Value
-                }).ToList()
+                CustomerId = id,
+                Items = reportItems
             };
-            _context.MaterialPullOuts.Add(pullOut);
-
-            foreach (var item in model.Materials)
-            {
-                var material = await _context.Materials.FirstOrDefaultAsync(m => m.Name == item.Key);
-                if (material != null)
-                {
-                    material.Quantity -= item.Value;
-                    _context.Materials.Update(material);
-                }
-            }
-            await _context.SaveChangesAsync();
-            TempData["PullOutSuccess"] = "Materials pulled out successfully!";
-            return RedirectToAction("Index");
+            return View(viewModel);
         }
     }
 }

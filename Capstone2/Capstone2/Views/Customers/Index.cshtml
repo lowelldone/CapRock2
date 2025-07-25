@@ -110,8 +110,11 @@
                             <td class="text-end">
                                 <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-lg btn-outline-secondary me-1 mb-1">View Order</a>
                                 <a asp-action="PaymentDetails" asp-route-id="@item.CustomerID" class="btn btn-lg btn-outline-success mb-1">Payment Details</a>
-                                <a asp-action="PullOutMaterials" asp-route-id="@item.CustomerID" class="btn btn-lg btn-outline-info mb-1">Pull Out Materials</a>
                                 <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-lg btn-outline-danger me-1 mb-1">Delete</a>
+                                @if (order != null && order.Status == "Completed")
+                                {
+                                    <a asp-action="InventoryReport" asp-route-id="@item.CustomerID" class="btn btn-lg btn-outline-info mb-1">Inventory Report</a>
+                                }
                             </td>
                         </tr>
                     }

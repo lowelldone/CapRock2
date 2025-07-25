@@ -47,6 +47,8 @@ namespace Capstone2.Controllers
                 paidOrders = paidOrders.Where(c => c.Order.Status == statusFilter);
             }
 
+            ViewBag.MaterialPullOuts = await _context.MaterialPullOuts.ToListAsync();
+
             return View(await paidOrders.ToListAsync());
         }
 
@@ -251,6 +253,68 @@ namespace Capstone2.Controllers
             return PartialView("Index", await paidOrders.ToListAsync());
         }
 
+        // GET: PaidOrders/PullOutMaterials/5
+        public async Task<IActionResult> PullOutMaterials(int id)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id);
+            if (order == null) return NotFound();
+            int pax = order.NoOfPax;
+
+            var allMaterials = await _context.Materials.ToListAsync();
+            var materialsVm = allMaterials.Select(m => new PullOutMaterialItemViewModel
+            {
+                MaterialId = m.MaterialId,
+                Name = m.Name,
+                CurrentQuantity = m.Quantity,
+                PullOutQuantity = Capstone2.Helpers.MaterialCalculator.GetSuggestedQuantity(m.Name, pax)
+            }).ToList();
+
+            var viewModel = new PullOutMaterialsViewModel
+            {
+                CustomerId = id,
+                Pax = pax,
+                Materials = materialsVm
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PullOutMaterials(PullOutMaterialsViewModel model)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == model.CustomerId);
+            if (order == null) return NotFound();
+
+            var pullOut = new MaterialPullOut
+            {
+                OrderId = order.OrderId,
+                Date = DateTime.Now,
+                Items = model.Materials.Where(m => m.PullOutQuantity > 0).Select(m => new MaterialPullOutItem
+                {
+                    MaterialName = m.Name,
+                    Quantity = m.PullOutQuantity
+                }).ToList()
+            };
+            _context.MaterialPullOuts.Add(pullOut);
+
+            foreach (var item in model.Materials)
+            {
+                if (item.PullOutQuantity > 0)
+                {
+                    var material = await _context.Materials.FirstOrDefaultAsync(m => m.MaterialId == item.MaterialId);
+                    if (material != null)
+                    {
+                        material.Quantity -= item.PullOutQuantity;
+                        if (material.Quantity < 0) material.Quantity = 0;
+                        _context.Materials.Update(material);
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
+            TempData["PullOutSuccess"] = "Materials pulled out successfully!";
+            return RedirectToAction("Index");
+        }
+
         // GET: PaidOrders/ReturnMaterials/5
         public async Task<IActionResult> ReturnMaterials(int id)
         {
@@ -266,12 +330,13 @@ namespace Capstone2.Controllers
 
             var pulledOutItems = pullOut?.Items.Select(i => new ReturnMaterialItem
             {
+                MaterialId = materials.FirstOrDefault(m => m.Name == i.MaterialName)?.MaterialId ?? 0,
                 MaterialName = i.MaterialName,
                 PulledOut = i.Quantity,
                 Returned = i.Quantity,
                 Lost = 0,
                 Damaged = 0,
-                ChargePerItem = materials.FirstOrDefault(m => m.Name == i.MaterialName)?.GetType().GetProperty("ChargePerItem")?.GetValue(materials.FirstOrDefault(m => m.Name == i.MaterialName)) as decimal? ?? 0
+                ChargePerItem = materials.FirstOrDefault(m => m.Name == i.MaterialName)?.ChargePerItem ?? 0
             }).ToList() ?? new List<ReturnMaterialItem>();
 
             var viewModel = new ReturnMaterialsViewModel
@@ -290,26 +355,38 @@ namespace Capstone2.Controllers
             decimal totalCharge = 0;
             foreach (var item in model.Items)
             {
-                // Update inventory for returned items
-                var material = await _context.Materials.FirstOrDefaultAsync(m => m.Name == item.MaterialName);
+                // Use MaterialId for update
+                var material = await _context.Materials.FirstOrDefaultAsync(m => m.MaterialId == item.MaterialId);
                 if (material != null)
                 {
                     material.Quantity += item.Returned;
                     _context.Materials.Update(material);
+
+                    // Always use the name from the database
+                    var materialReturn = new MaterialReturn
+                    {
+                        OrderId = model.OrderId,
+                        MaterialId = item.MaterialId,
+                        MaterialName = material.Name, // use DB value
+                        Returned = item.Returned,
+                        Lost = item.Lost,
+                        Damaged = item.Damaged
+                    };
+                    _context.Add(materialReturn);
                 }
-                // Calculate charge for lost/damaged
-                totalCharge += (item.Lost + item.Damaged) * item.ChargePerItem;
-                // Optionally: log lost/damaged per order/material
+                // Add charge for lost and damaged (10 pesos each)
+                totalCharge += (item.Lost + item.Damaged) * 10;
             }
-            // Charge customer for lost/damaged
+            // Set order status to Completed
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == model.OrderId);
             if (order != null)
             {
+                order.Status = "Completed";
                 order.TotalPayment += (double)totalCharge;
                 _context.Orders.Update(order);
             }
             await _context.SaveChangesAsync();
-            TempData["ReturnSuccess"] = "Materials returned and charges applied successfully!";
+            TempData["ReturnSuccess"] = $"Materials returned successfully! Additional charge for lost/damaged: ₱{totalCharge}.";
             return RedirectToAction("Index");
         }
     }

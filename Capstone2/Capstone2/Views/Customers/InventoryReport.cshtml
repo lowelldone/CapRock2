@@ -1,0 +1,32 @@
+﻿@model Capstone2.Models.InventoryReportViewModel
+
+@{
+    ViewData["Title"] = "Inventory Report";
+}
+
+<h2>Inventory Report for Order #@Model.OrderId</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Material</th>
+            <th>Pulled Out</th>
+            <th>Returned</th>
+            <th>Lost</th>
+            <th>Damaged</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.MaterialName</td>
+                <td>@item.PulledOut</td>
+                <td>@item.Returned</td>
+                <td>@item.Lost</td>
+                <td>@item.Damaged</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Index" class="btn btn-secondary">Back to Customers</a> 

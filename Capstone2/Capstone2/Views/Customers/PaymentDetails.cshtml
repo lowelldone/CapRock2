@@ -11,24 +11,39 @@
             <dl class="row">
                 <dt class="col-sm-3">Order Total</dt>
                 <dd class="col-sm-9">@order?.TotalPayment.ToString("C")</dd>
+                <dt class="col-sm-3">Additional Charges (Lost/Damaged)</dt>
+                <dd class="col-sm-9">₱@ViewBag.AdditionalCharges</dd>
                 <dt class="col-sm-3">Amount Paid</dt>
                 <dd class="col-sm-9">@order?.AmountPaid.ToString("C")</dd>
                 <dt class="col-sm-3">Balance</dt>
-                <dd class="col-sm-9">@(order != null ? (order.Balance > 0 ? order.Balance.ToString("C") : "0.00") : "-")</dd>
+                <dd class="col-sm-9">
+                    @if (order != null)
+                    {
+                        var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
+                        var balance = (decimal)order.TotalPayment + additionalCharges - (decimal)order.AmountPaid;
+                        @((balance > 0 ? balance.ToString("C") : "0.00"))
+                    }
+                    else
+                    {
+                        <span>None</span>
+                            }
+                </dd>
                 <dt class="col-sm-3">Payment Status</dt>
                 <dd class="col-sm-9">
                     @if (order != null)
                     {
-                        var paidPercent = order.TotalPayment > 0 ? (order.AmountPaid / order.TotalPayment) : 0;
-                        if (paidPercent < 0.5)
+                        var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
+                        var totalDue = (decimal)order.TotalPayment + additionalCharges;
+                        var paidPercent = totalDue > 0 ? ((decimal)order.AmountPaid / totalDue) : 0;
+                        if (paidPercent < 0.5m)
                         {
                             <span class="badge bg-danger">Incomplete Payment</span>
                         }
-                        else if (paidPercent >= 0.5 && paidPercent < 1)
+                        else if (paidPercent >= 0.5m && paidPercent < 1m)
                         {
                             <span class="badge bg-warning text-dark">Ready to Cater</span>
                         }
-                        else if (paidPercent >= 1)
+                        else if (paidPercent >= 1m)
                         {
                             <span class="badge bg-success">Fully Paid</span>
                         }

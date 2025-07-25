@@ -18,4 +18,15 @@ namespace Capstone2.Models
         public string MaterialName { get; set; }
         public int Quantity { get; set; }
     }
+
+    public class MaterialReturn
+    {
+        public int Id { get; set; }
+        public int OrderId { get; set; }
+        public int MaterialId { get; set; }
+        public string MaterialName { get; set; }
+        public int Returned { get; set; }
+        public int Lost { get; set; }
+        public int Damaged { get; set; }
+    }
 }
