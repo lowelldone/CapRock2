@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Capstone2.Models
 {
@@ -24,6 +25,7 @@ namespace Capstone2.Models
     {
         public int OrderId { get; set; }
         public int CustomerId { get; set; }
+        public string CustomerName { get; set; }
         public List<InventoryReportItemViewModel> Items { get; set; }
     }
 

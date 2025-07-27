@@ -149,12 +149,6 @@ namespace Capstone2.Controllers.AdminControllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: MenuPackages/AdminPartial
-        public async Task<IActionResult> AdminPartial()
-        {
-            return PartialView("Index", await _context.MenuPackages.ToListAsync());
-        }
-
         private bool MenuPackagesExists(int id)
         {
             return _context.MenuPackages.Any(e => e.MenuPackageId == id);

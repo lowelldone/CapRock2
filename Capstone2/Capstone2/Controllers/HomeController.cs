@@ -5,6 +5,7 @@ using Capstone2.Data;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace Capstone2.Controllers
 {
@@ -39,67 +40,95 @@ namespace Capstone2.Controllers
         [HttpPost]
         public IActionResult Login(string Role, string Username, string Password)
         {
-            if (Role == "Admin")
+            Models.User user = _context.Users.FirstOrDefault(u => u.Username == Username && u.Password == Password);
+
+            if (user == null)
             {
-                if (Username == "admin" && Password == "admin")
-                {
-                    HttpContext.Session.SetString("Role", "Admin");
-                    HttpContext.Session.SetString("Username", Username);
-                    // Store UserId for admin if needed
-                    return RedirectToAction("AdminHomepage");
-                }
-                else
-                {
-                    ViewBag.Error = "Invalid Admin credentials.";
-                    return View();
-                }
-            }
-            else if (Role == "HeadWaiter" || Role == "Waiter")
-            {
-                var user = _context.Users.FirstOrDefault(u => u.Username == Username && u.Password == Password && u.Role.ToUpper() == Role.ToUpper());
-                if (user != null)
-                {
-                    HttpContext.Session.SetString("Role", Role);
-                    HttpContext.Session.SetString("Username", user.Username);
-                    HttpContext.Session.SetInt32("UserId", user.UserId);
-                    if (Role == "HeadWaiter")
-                        return RedirectToAction("HeadWaiterHomepage");
-                    else
-                        return RedirectToAction("WaiterHomepage");
-                }
-                else
-                {
-                    ViewBag.Error = $"Invalid {Role} credentials.";
-                    return View();
-                }
-            }
-            else
-            {
-                ViewBag.Error = "Invalid role selected.";
+                ViewBag.Error = "Invalid Admin credentials.";
                 return View();
             }
+
+            user.Role = user.Role.ToUpper();
+            HttpContext.Session.SetString("Role", user.Role);
+            HttpContext.Session.SetString("Username", user.Username);
+            HttpContext.Session.SetInt32("UserId", user.UserId);
+
+            string designatedPage = user.Role switch
+            {
+                "ADMIN" => "Customers", // change to dashboard
+                "HEADWAITER" => "PaidOrders",
+                _ => "Schedules"
+            };
+
+            return RedirectToAction("Index", designatedPage);
+
+            //if (Role == "Admin")
+            //{
+            //    if (Username == "admin" && Password == "admin")
+            //    {
+            //        HttpContext.Session.SetString("Role", "Admin");
+            //        HttpContext.Session.SetString("Username", Username);
+            //        // Store UserId for admin if needed
+            //        return RedirectToAction("AdminHomepage");
+            //    }
+            //    else
+            //    {
+            //        ViewBag.Error = "Invalid Admin credentials.";
+            //        return View();
+            //    }
+            //}
+            //else if (Role == "HeadWaiter" || Role == "Waiter")
+            //{
+            //    var user = _context.Users.FirstOrDefault(u => u.Username == Username && u.Password == Password && u.Role.ToUpper() == Role.ToUpper());
+            //    if (user != null)
+            //    {
+            //        HttpContext.Session.SetString("Role", Role);
+            //        HttpContext.Session.SetString("Username", user.Username);
+            //        HttpContext.Session.SetInt32("UserId", user.UserId);
+            //        if (Role == "HeadWaiter")
+            //            return RedirectToAction("HeadWaiterHomepage");
+            //        else
+            //            return RedirectToAction("WaiterHomepage");
+            //    }
+            //    else
+            //    {
+            //        ViewBag.Error = $"Invalid {Role} credentials.";
+            //        return View();
+            //    }
+            //}
+            //else
+            //{
+            //    ViewBag.Error = "Invalid role selected.";
+            //    return View();
+            //}
         }
 
-        public IActionResult AdminHomepage()
-        {
-            if (HttpContext.Session.GetString("Role") != "Admin")
-                return RedirectToAction("Login");
-            return View();
-        }
+        //public IActionResult AdminHomepage()
+        //{
+        //    if (HttpContext.Session.GetString("Role") != "ADMIN")
+        //        return RedirectToAction("Login");
+        //    return View();
+        //}
 
-        public IActionResult HeadWaiterHomepage()
-        {
-            if (HttpContext.Session.GetString("Role") != "HeadWaiter")
-                return RedirectToAction("Login");
-            // Render the HeadWaiterHomepage view directly (do not redirect)
-            return View();
-        }
+        //public IActionResult HeadWaiterHomepage()
+        //{
+        //    if (HttpContext.Session.GetString("Role") != "HEADWAITER")
+        //        return RedirectToAction("Login");
+        //    // Render the HeadWaiterHomepage view directly (do not redirect)
+        //    return View();
+        //}
 
-        public IActionResult WaiterHomepage()
+        //public IActionResult WaiterHomepage()
+        //{
+        //    if (HttpContext.Session.GetString("Role") != "WAITER")
+        //        return RedirectToAction("Login");
+        //    return View();
+        //}
+
+        public IActionResult Logout()
         {
-            if (HttpContext.Session.GetString("Role") != "Waiter")
-                return RedirectToAction("Login");
-            return View();
+            HttpContext.Session.Clear(); // Clear the session
+            return RedirectToAction("Homepage", "Home"); // Redirect to the login page
         }
 
         public IActionResult Privacy()
