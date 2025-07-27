@@ -360,28 +360,11 @@ namespace Capstone2.Controllers.AdminControllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Customers/AdminPartial
-        public async Task<IActionResult> AdminPartial(string searchString)
-        {
-            var customers = _context.Customers
-                                    .Include(c => c.Order)
-                                        .ThenInclude(o => o.HeadWaiter)
-                                            .ThenInclude(hw => hw.User)
-                                    .AsQueryable();
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                customers = customers.Where(s => s.Name.ToLower().Contains(searchString.ToLower()));
-            }
-
-            return PartialView("Index", await customers.ToListAsync());
-        }
-
         // GET: Customers/InventoryReport/5
         public async Task<IActionResult> InventoryReport(int id)
         {
             // id = CustomerId
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id);
+            Order order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id);
             if (order == null || order.Status != "Completed")
                 return NotFound();
 
@@ -401,6 +384,7 @@ namespace Capstone2.Controllers.AdminControllers
             var viewModel = new InventoryReportViewModel
             {
                 OrderId = order.OrderId,
+                CustomerName = order.Customer.Name,
                 CustomerId = id,
                 Items = reportItems
             };

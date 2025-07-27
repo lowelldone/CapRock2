@@ -183,12 +183,6 @@ namespace Capstone2.Controllers.AdminControllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Menus/AdminPartial
-        public async Task<IActionResult> AdminPartial()
-        {
-            return PartialView("Index", await _context.Menu.ToListAsync());
-        }
-
         private bool MenuExists(int id)
         {
             return _context.Menu.Any(e => e.MenuId == id);

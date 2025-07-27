@@ -24,13 +24,6 @@ namespace Capstone2.Controllers.AdminControllers
             return View(headWaiters);
         }
 
-        // GET: HeadWaiters/AdminPartial
-        public IActionResult AdminPartial()
-        {
-            List<HeadWaiter> headWaiters = _context.HeadWaiters.Include(h => h.User).Where(h => h.isActive).ToList();
-            return PartialView("Index", headWaiters);
-        }
-
         public IActionResult UpSert(int? id)
         {
             return View(id == null ? new HeadWaiter() { User = new User() } : _context.HeadWaiters.Include(h => h.User).First(h => h.HeadWaiterId == id));

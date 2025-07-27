@@ -8,6 +8,7 @@ builder.Services.AddControllersWithViews()
     .AddSessionStateTempDataProvider();
 
 builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor(); // Add this to DI
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

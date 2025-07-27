@@ -63,10 +63,10 @@
                             <td class="text-end">
                                 @if (item.Order?.Status == "Ongoing")
                                 {
-                                    <a asp-controller="Attendance" asp-action="ForOrder" asp-route-orderId="@item.Order.OrderId"
+                                    @* <a asp-controller="Attendance" asp-action="ForOrder" asp-route-orderId="@item.Order.OrderId"
                                        class="btn btn-lg btn-secondary me-1 mb-1">
                                         View Attendances
-                                    </a>
+                                    </a> *@
                                     @if (headWaiterId != null)
                                     {
                                         <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"

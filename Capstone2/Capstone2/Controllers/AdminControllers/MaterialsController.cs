@@ -157,20 +157,6 @@ namespace Capstone2.Controllers.AdminControllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Materials/AdminPartial
-        public async Task<IActionResult> AdminPartial(string searchString)
-        {
-            var materials = from c in _context.Materials
-                            select c;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                materials = materials.Where(s => s.Name.ToLower().Contains(searchString.ToLower()));
-            }
-
-            return PartialView("Index", await materials.ToListAsync());
-        }
-
         private bool MaterialExists(int id)
         {
             return _context.Materials.Any(e => e.MaterialId == id);
