@@ -4,38 +4,138 @@
     ViewData["Title"] = "Pull Out Materials";
 }
 
-<h2>Pull Out Materials for Order (Pax: @Model.Pax)</h2>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .pullout-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+    .pullout-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .pullout-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+    .pullout-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+    .pullout-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .table thead th {
+        background: #f8fafc;
+        border: none;
+        font-weight: 600;
+        color: #344767;
+        padding: 1rem;
+    }
+    .table tbody td {
+        padding: 1rem;
+        border: none;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .table tbody tr:nth-child(even) {
+        background: #f8fafc;
+    }
+    .table tbody tr:hover {
+        background: #e0f2fe;
+    }
+    .form-control {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    .form-control:focus {
+        border-color: #6476f8;
+        box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+    }
+    .btn-confirm {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+    .btn-cancel {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+</style>
 
-<form asp-action="PullOutMaterials" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="CustomerId" value="@Model.CustomerId" />
-    <input type="hidden" name="Pax" value="@Model.Pax" />
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Material</th>
-                <th>Current Inventory</th>
-                <th>Pull-Out Quantity</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Model.Materials.Count; i++)
-            {
-                <tr>
-                    <td>
-                        @Model.Materials[i].Name
-                        <input type="hidden" name="Materials[@i].MaterialId" value="@Model.Materials[i].MaterialId" />
-                        <input type="hidden" name="Materials[@i].Name" value="@Model.Materials[i].Name" />
-                        <input type="hidden" name="Materials[@i].CurrentQuantity" value="@Model.Materials[i].CurrentQuantity" />
-                    </td>
-                    <td>@Model.Materials[i].CurrentQuantity</td>
-                    <td>
-                        <input type="number" name="Materials[@i].PullOutQuantity" value="@Model.Materials[i].PullOutQuantity" min="0" max="@Model.Materials[i].CurrentQuantity" class="form-control" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <button type="submit" class="btn btn-primary">Confirm Pull Out</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form> 
+<div class="container-fluid mt-4 px-4 pullout-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="pullout-header mb-1">
+                <span class="pullout-header-icon"><i class="bi bi-box-arrow-up"></i></span>
+                <h2 class="fw-bold mb-0">Pull Out Materials</h2>
+            </div>
+            <div class="pullout-subtitle">Manage material inventory for order (Pax: @Model.Pax)</div>
+        </div>
+    </div>
+
+    <div class="pullout-card">
+        <form asp-action="PullOutMaterials" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="CustomerId" value="@Model.CustomerId" />
+            <input type="hidden" name="Pax" value="@Model.Pax" />
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Current Inventory</th>
+                        <th>Pull-Out Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Materials.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Model.Materials[i].Name
+                                <input type="hidden" name="Materials[@i].MaterialId" value="@Model.Materials[i].MaterialId" />
+                                <input type="hidden" name="Materials[@i].Name" value="@Model.Materials[i].Name" />
+                                <input type="hidden" name="Materials[@i].CurrentQuantity" value="@Model.Materials[i].CurrentQuantity" />
+                            </td>
+                            <td>@Model.Materials[i].CurrentQuantity</td>
+                            <td>
+                                <input type="number" name="Materials[@i].PullOutQuantity" value="@Model.Materials[i].PullOutQuantity" min="0" max="@Model.Materials[i].CurrentQuantity" class="form-control" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="d-flex gap-3 mt-4">
+                <button type="submit" class="btn btn-primary btn-confirm">
+                    <i class="bi bi-check-lg me-2"></i>Confirm Pull Out
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-cancel">
+                    <i class="bi bi-x-lg me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div> 

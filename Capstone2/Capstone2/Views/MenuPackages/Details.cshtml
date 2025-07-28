@@ -4,51 +4,149 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .details-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+    .details-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .details-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+    .details-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+    .details-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+    .details-row {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .details-row:last-child {
+        border-bottom: none;
+    }
+    .details-label {
+        font-weight: 600;
+        color: #344767;
+        font-size: 1.1rem;
+    }
+    .details-value {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+    .btn-action {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+</style>
 
-<div>
-    <h4>MenuPackages</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MenuPackageName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MenuPackageName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfMainDish)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfMainDish)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfSideDish)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfSideDish)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfDessert)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfDessert)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfRice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfRice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfSoftDrinks)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfSoftDrinks)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.MenuPackageId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="container-fluid mt-4 px-4 details-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="details-header mb-1">
+                <span class="details-header-icon"><i class="bi bi-bag-check"></i></span>
+                <h2 class="fw-bold mb-0">Menu Package Details</h2>
+            </div>
+            <div class="details-subtitle">View package information and configuration.</div>
+        </div>
+    </div>
+
+    <div class="details-card">
+        <div class="details-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="details-label">Package Name</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="details-value">@Model.MenuPackageName</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="details-label">Main Dishes</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="details-value">@Model.NoOfMainDish</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="details-label">Side Dishes</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="details-value">@Model.NoOfSideDish</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="details-label">Desserts</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="details-value">@Model.NoOfDessert</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="details-label">Rice Dishes</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="details-value">@Model.NoOfRice</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="details-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="details-label">Soft Drinks</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="details-value">@Model.NoOfSoftDrinks</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-3 mt-4">
+        <a asp-action="Edit" asp-route-id="@Model?.MenuPackageId" class="btn btn-primary btn-action">
+            <i class="bi bi-pencil-square me-2"></i>Edit
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-action">
+            <i class="bi bi-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
 </div>

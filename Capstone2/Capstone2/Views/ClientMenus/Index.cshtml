@@ -28,137 +28,324 @@
     var orderItemsJson = ViewBag.OrderItemsJson as string;
 }
 
-<h1>Food Menu</h1>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .menu-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+    .menu-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .menu-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+    .menu-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+    .menu-section {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    .section-header {
+        text-transform: uppercase;
+        text-align: center;
+        color: #344767;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e0f2fe;
+    }
+    .category-header {
+        color: #64748b;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin: 1.5rem 0 1rem 0;
+        padding-left: 0.5rem;
+        border-left: 4px solid #0d6efd;
+    }
+    .menu-card {
+        border: 1px solid #e0e7ef;
+        border-radius: 16px;
+        padding: 1.5rem;
+        width: 280px;
+        text-align: center;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+    .menu-card:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    .menu-item-name {
+        font-weight: 600;
+        color: #344767;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+    .menu-item-image {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin: 0.5rem 0;
+    }
+    .menu-item-price {
+        font-weight: 700;
+        color: #0d6efd;
+        font-size: 1.2rem;
+        margin: 1rem 0;
+    }
+    .quantity-selector {
+        max-width: 160px;
+        margin: 1rem auto 0 auto;
+    }
+    .quantity-selector .btn {
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    .quantity-selector .form-control {
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+        border: 1px solid #e0e7ef;
+    }
+    .order-summary {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 400px;
+        z-index: 1050;
+    }
+    .summary-panel {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #e0e7ef;
+    }
+    .summary-header {
+        font-weight: 600;
+        color: #344767;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f1f5f9;
+    }
+    .summary-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .summary-item:last-child {
+        border-bottom: none;
+    }
+    .summary-item-name {
+        flex-grow: 1;
+        font-weight: 500;
+        color: #64748b;
+    }
+    .summary-total {
+        font-weight: 700;
+        color: #0d6efd;
+        font-size: 1.1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 2px solid #f1f5f9;
+    }
+    .btn-toggle-order {
+        width: 100%;
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .btn-next {
+        width: 100%;
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+    .btn-summary {
+        border-radius: 6px;
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+        margin-left: 0.5rem;
+    }
+    .no-image {
+        color: #94a3b8;
+        font-style: italic;
+        font-size: 0.9rem;
+    }
+</style>
 
-<div style="gap: 30px;">
-    <!-- Left Column: Food Menu -->
-    <div style="flex: 2;">
-        @foreach (var dish in groupedByDishType)
-        {
-            <hr />
-            <h2 style="text-transform: uppercase; text-align: center;">
-                 @(
-                  // Nicely format the header text:
-                  dish.DishType switch
-                  {
-                      "MAINDISH" => "Main Dish",
-                      "SIDEDISH" => "Side Dish",
-                      "DESSERTS" => "Desserts",
-                      "SOFTDRINKS" => "Soft Drinks",
-                      "RICE" => "Rice",
-                      _ => dish.DishType
-                  }
-                  )
-            </h2>
+<div class="container-fluid mt-4 px-4 menu-bg">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <div class="menu-header mb-1">
+                <span class="menu-header-icon"><i class="bi bi-list-ul"></i></span>
+                <h1 class="fw-bold mb-0">Food Menu</h1>
+            </div>
+            <div class="menu-subtitle">Select your preferred dishes for your catering event</div>
+        </div>
+    </div>
 
-            @foreach (var cat in dish.CategoryGroups)
+    <div style="gap: 30px;">
+        <!-- Left Column: Food Menu -->
+        <div style="flex: 2;">
+            @foreach (var dish in groupedByDishType)
             {
-                <h3>@cat.Key</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                    @foreach (var item in cat)
+                <div class="menu-section">
+                    <h2 class="section-header">
+                        @(
+                        // Nicely format the header text:
+                        dish.DishType switch
+                        {
+                            "MAINDISH" => "Main Dish",
+                            "SIDEDISH" => "Side Dish",
+                            "DESSERTS" => "Desserts",
+                            "SOFTDRINKS" => "Soft Drinks",
+                            "RICE" => "Rice",
+                            _ => dish.DishType
+                        }
+                        )
+                    </h2>
+
+                    @foreach (var cat in dish.CategoryGroups)
                     {
-                        <div style="border:1px solid #ccc;border-radius:8px;padding:10px;width:200px;text-align:center;">
-                            <b>@item.Name</b>
-                            <div style="margin:10px 0;">
-                                @if (!string.IsNullOrEmpty(item.ImagePath))
-                                {
-                                    <img src="@item.ImagePath"
-                                         alt="@item.Name"
-                                         style="width:150px;height:150px;object-fit:cover;border-radius:6px" />
-                                }
-                                else
-                                {
-                                    <span>No image</span>
-                                }
-                            </div>
-                            <div><strong>@($"P{item.Price:0.00}")</strong></div>
-                            <div class="input-group quantity-selector" style="max-width:140px;margin-top:10px; right: -20px;">
-                                <button class="btn btn-outline-secondary decrement-item"
-                                        data-target="#food@(item.MenuId)"
-                                        type="button">
-                                    −
-                                </button>
-                                <input type="number"
-                                       class="form-control text-center food-no"
-                                       id="food@(item.MenuId)"
-                                       value="0"
-                                       min="1" />
-                                <button class="btn btn-outline-secondary increment-item"
-                                        data-target="#food@(item.MenuId)"
-                                        type="button">
-                                    +
-                                </button>
-                            </div>
+                        <h3 class="category-header">@cat.Key</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            @foreach (var item in cat)
+                            {
+                                <div class="menu-card">
+                                    <div class="menu-item-name">@item.Name</div>
+                                    <div>
+                                        @if (!string.IsNullOrEmpty(item.ImagePath))
+                                        {
+                                            <img src="@item.ImagePath"
+                                                 alt="@item.Name"
+                                                 class="menu-item-image" />
+                                        }
+                                        else
+                                        {
+                                            <div class="no-image">No image available</div>
+                                        }
+                                    </div>
+                                    <div class="menu-item-price">₱@($"{item.Price:0.00}")</div>
+                                    <div class="input-group quantity-selector">
+                                        <button class="btn btn-outline-secondary decrement-item"
+                                                data-target="#food@(item.MenuId)"
+                                                type="button">
+                                            <i class="bi bi-dash"></i>
+                                        </button>
+                                        <input type="number"
+                                               class="form-control text-center food-no"
+                                               id="food@(item.MenuId)"
+                                               value="0"
+                                               min="1" />
+                                        <button class="btn btn-outline-secondary increment-item"
+                                                data-target="#food@(item.MenuId)"
+                                                type="button">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     }
                 </div>
             }
-        }
-    </div>
-
-    <!-- Floating Order Button and Summary -->
-    <div style="position: fixed; bottom: 30px; right: 1px; width: 500px; z-index: 1050;">
-
-        <!-- Order Summary Panel (initially hidden above the button) -->
-        <div id="orderSummary" class="border rounded p-3 bg-light shadow mb-2"
-             style="display: none; position: absolute; bottom: 50px; right: 0; width: 100%;">
-            <h4>Your Order</h4>
-            <ul id="orderList" class="list-unstyled">
-                <li>No items ordered yet.</li>
-            </ul>
-            <div id="orderTotal" class="fw-bold mt-2"></div>
-            <form id="submitOrderForm" method="post" action="/SelectedFoods/Index">
-                <input type="hidden" name="OrderItemsJson" id="OrderItemsJson" />
-                <input type="hidden" name="Order.TotalPayment" id="TotalPayment" />
-                <button type="submit" class="btn btn-success mt-3 w-100">Next</button>
-            </form>
-
         </div>
 
-        <!-- Button always fixed at bottom -->
-        <div class="text-end">
-            <button id="toggleOrder" class="btn btn-outline-primary w-100">Show Order Summary</button>
+        <!-- Floating Order Button and Summary -->
+        <div class="order-summary">
+            <!-- Order Summary Panel (initially hidden above the button) -->
+            <div id="orderSummary" class="summary-panel" style="display: none;">
+                <div class="summary-header">
+                    <i class="bi bi-cart-check me-2"></i>Your Order
+                </div>
+                <ul id="orderList" class="list-unstyled mb-0">
+                    <li class="text-muted">No items ordered yet.</li>
+                </ul>
+                <div id="orderTotal" class="summary-total"></div>
+                <form id="submitOrderForm" method="post" action="/SelectedFoods/Index">
+                    <input type="hidden" name="OrderItemsJson" id="OrderItemsJson" />
+                    <input type="hidden" name="Order.TotalPayment" id="TotalPayment" />
+                    <button type="submit" class="btn btn-primary btn-next">
+                        <i class="bi bi-arrow-right me-2"></i>Next
+                    </button>
+                </form>
+            </div>
+
+            <!-- Button always fixed at bottom -->
+            <div class="text-end">
+                <button id="toggleOrder" class="btn btn-outline-primary btn-toggle-order">
+                    <i class="bi bi-cart me-2"></i>Show Order Summary
+                </button>
+            </div>
         </div>
     </div>
-</</div>
+</div>
 
 <script>
     let order = {};
 
     $(function () {
-    // Merge previous order if present
-    @if (!string.IsNullOrEmpty(orderItemsJson))
-    {
-        <text>
-                try {
-                    let prevOrder = JSON.parse('@Html.Raw(orderItemsJson)');
-                    prevOrder.forEach(item => {
+        // Merge previous order if present
+        @if (!string.IsNullOrEmpty(orderItemsJson))
+        {
+            <text>
+            try {
+                let prevOrder = JSON.parse('@Html.Raw(orderItemsJson)');
+                prevOrder.forEach(item => {
                     // Always use the latest price from the menu card
                     let $input = $("#food" + item.MenuId);
-                let $card = $input.closest(".quantity-selector").parent();
-                let name = $card.find("b").text().trim();
-                let priceText = $card.find("strong").filter(function () {
-                            return $(this).text().startsWith('P');
-                        }).first().text().replace("P", "").trim();
-                let price = parseFloat(priceText);
-                if (!isNaN(price)) {
-                    order[item.MenuId] = {
-                        MenuId: item.MenuId,
-                        name: name || item.Name,
-                        price: price,
-                        quantity: item.Quantity
-                    };
-                            setTimeout(() => {
-                    let $input = $("#food" + item.MenuId);
-                if ($input.length) $input.val(item.Quantity);
-                            }, 0);
-                        }
-                    });
-                } catch (e) { }
-                    refreshOrderList();
-        </text>
-    }
-    
+                    let $card = $input.closest(".quantity-selector").parent();
+                    let name = $card.find(".menu-item-name").text().trim();
+                    let priceText = $card.find(".menu-item-price").text().replace("₱", "").trim();
+                    let price = parseFloat(priceText);
+                    if (!isNaN(price)) {
+                        order[item.MenuId] = {
+                            MenuId: item.MenuId,
+                            name: name || item.Name,
+                            price: price,
+                            quantity: item.Quantity
+                        };
+                        setTimeout(() => {
+                            let $input = $("#food" + item.MenuId);
+                            if ($input.length) $input.val(item.Quantity);
+                        }, 0);
+                    }
+                });
+            } catch (e) { }
+            refreshOrderList();
+            </text>
+        }
+        
         $(".increment-item").click(function () {
             let inputSelector = $(this).data('target');
             let $input = $(inputSelector);
@@ -183,10 +370,8 @@
             const MenuId = $input.attr("id").replace("food", ""); // Get MenuId
             const $card = $input.closest(".quantity-selector").parent(); // go to outer card
 
-            const name = $card.find("b").text().trim();
-            const priceText = $card.find("strong").filter(function () {
-                return $(this).text().startsWith('P');
-            }).first().text().replace("P", "").trim();
+            const name = $card.find(".menu-item-name").text().trim();
+            const priceText = $card.find(".menu-item-price").text().replace("₱", "").trim();
 
             const price = parseFloat(priceText);
             const quantity = parseInt($input.val());
@@ -194,7 +379,7 @@
             console.log(name);
 
             if (!isNaN(price) && quantity > 0) {
-                order[MenuId] = { MenuId,  name, price, quantity };
+                order[MenuId] = { MenuId, name, price, quantity };
             } else {
                 delete order[MenuId];
             }
@@ -209,7 +394,7 @@
 
             const keys = Object.keys(order);
             if (keys.length === 0) {
-                $orderList.append("<li>No items ordered yet.</li>");
+                $orderList.append("<li class='text-muted'>No items ordered yet.</li>");
                 $orderTotal.text("");
                 return;
             }
@@ -223,14 +408,22 @@
 
                 // Render list item with +, –, Remove buttons
                 $orderList.append(`
-                        <li class="d-flex align-items-center mb-2" data-id="${id}">
-                            <span class="flex-grow-1">${item.name} x ${item.quantity}</span>
-                                <button class="btn btn-warning btn-sm me-2 summary-minus">–</button>
-                                    <button class="btn btn-success btn-sm me-1 summary-plus">+</button>
-                            <button class="btn btn-danger btn-sm summary-remove">Remove</button>
-                        </li>
-                    `);
+                    <li class="summary-item" data-id="${id}">
+                        <span class="summary-item-name">${item.name} x ${item.quantity}</span>
+                        <button class="btn btn-warning btn-sm btn-summary summary-minus">
+                            <i class="bi bi-dash"></i>
+                        </button>
+                        <button class="btn btn-success btn-sm btn-summary summary-plus">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm btn-summary summary-remove">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </li>
+                `);
             });
+
+            $orderTotal.text(`Total: ₱${grandTotal.toFixed(2)}`);
         }
 
         // Delegate clicks in the order summary
@@ -241,7 +434,7 @@
                 // update the order array
                 order[id].quantity++;
 
-                // push that change into the card’s input
+                // push that change into the card's input
                 $(`#food${id}`).val(order[id].quantity);
 
                 // redraw the summary
@@ -262,7 +455,7 @@
             .on("click", ".summary-remove", function () {
                 const id = $(this).closest("li").data("id");
 
-                // reset the card’s input to 0
+                // reset the card's input to 0
                 $(`#food${id}`).val(0);
 
                 // delete it from our data
@@ -272,17 +465,20 @@
                 refreshOrderList();
             });
 
-
         $("#toggleOrder").click(function () {
             const $summary = $("#orderSummary");
             const $button = $(this);
 
             $summary.slideToggle(200, function () {
                 const isVisible = $summary.is(":visible");
-                $button.text(isVisible ? "Hide Order Summary" : "Show Order Summary");
+                $button.html(isVisible ? 
+                    '<i class="bi bi-eye-slash me-2"></i>Hide Order Summary' : 
+                    '<i class="bi bi-cart me-2"></i>Show Order Summary'
+                );
             });
         });
     });
+
     $("#submitOrderForm").on("submit", function (e) {
         console.log(order);
         const items = [];
@@ -304,6 +500,5 @@
 
         $("#OrderItemsJson").val(JSON.stringify(items));
     });
-
 </script>
 

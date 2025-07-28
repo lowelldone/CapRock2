@@ -4,54 +4,168 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .delete-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+    .delete-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .delete-header-icon {
+        font-size: 2.5rem;
+        color: #dc3545;
+        background: #fef2f2;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(220,53,69,0.08);
+    }
+    .delete-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+    .delete-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+    .delete-row {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .delete-row:last-child {
+        border-bottom: none;
+    }
+    .delete-label {
+        font-weight: 600;
+        color: #344767;
+        font-size: 1.1rem;
+    }
+    .delete-value {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+    .btn-delete {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(220,53,69,0.10);
+    }
+    .btn-back {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+    .warning-text {
+        color: #dc3545;
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+</style>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>MenuPackages</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MenuPackageName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MenuPackageName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfMainDish)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfMainDish)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfSideDish)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfSideDish)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfDessert)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfDessert)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfRice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfRice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoOfSoftDrinks)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoOfSoftDrinks)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="MenuPackageId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+<div class="container-fluid mt-4 px-4 delete-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="delete-header mb-1">
+                <span class="delete-header-icon"><i class="bi bi-exclamation-triangle"></i></span>
+                <h2 class="fw-bold mb-0">Delete Menu Package</h2>
+            </div>
+            <div class="delete-subtitle">Remove menu package from the system.</div>
+        </div>
+    </div>
+
+    <div class="delete-card">
+        <div class="text-center mb-4">
+            <p class="warning-text">Are you sure you want to delete this menu package?</p>
+        </div>
+
+        <div class="delete-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="delete-label">Package Name</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="delete-value">@Model.MenuPackageName</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="delete-label">Main Dishes</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="delete-value">@Model.NoOfMainDish</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="delete-label">Side Dishes</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="delete-value">@Model.NoOfSideDish</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="delete-label">Desserts</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="delete-value">@Model.NoOfDessert</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="delete-label">Rice Dishes</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="delete-value">@Model.NoOfRice</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="delete-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="delete-label">Soft Drinks</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="delete-value">@Model.NoOfSoftDrinks</span>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Delete" class="mt-4">
+            <input type="hidden" asp-for="MenuPackageId" />
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-danger btn-delete">
+                    <i class="bi bi-trash me-2"></i>Delete Package
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-back">
+                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                </a>
+            </div>
+        </form>
+    </div>
 </div>

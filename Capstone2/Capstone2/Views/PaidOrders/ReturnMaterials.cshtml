@@ -4,47 +4,161 @@
     ViewData["Title"] = "Return Materials";
 }
 
-<h2>Return Materials for Order</h2>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-<form asp-action="ReturnMaterials" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="OrderId" value="@Model.OrderId" />
-    <input type="hidden" name="CustomerId" value="@Model.CustomerId" />
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Material</th>
-                <th>Pulled Out</th>
-                <th>Returned</th>
-                <th>Lost</th>
-                <th>Damaged</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < Model.Items.Count; i++)
-            {
-                <tr>
-                    <td>
-                        @Model.Items[i].MaterialName
-                        <input type="hidden" name="Items[@i].MaterialId" value="@Model.Items[i].MaterialId" />
-                    </td>
-                    <td id="pulledOut_@i">@Model.Items[i].PulledOut</td>
-                    <td>
-                        <input type="number" name="Items[@i].Returned" id="returned_@i" value="@Model.Items[i].PulledOut" min="0" max="@Model.Items[i].PulledOut" class="form-control" readonly />
-                    </td>
-                    <td>
-                        <input type="number" name="Items[@i].Lost" id="lost_@i" value="0" min="0" max="@Model.Items[i].PulledOut" class="form-control" oninput="updateReturned(@i)" />
-                    </td>
-                    <td>
-                        <input type="number" name="Items[@i].Damaged" id="damaged_@i" value="0" min="0" max="@Model.Items[i].PulledOut" class="form-control" oninput="updateReturned(@i)" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <button type="submit" class="btn btn-primary">Confirm Return</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+    .return-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .return-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .return-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .return-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .return-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .table thead th {
+            background: #f8fafc;
+            border: none;
+            font-weight: 600;
+            color: #344767;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:hover {
+            background: #e0f2fe;
+        }
+
+    .form-control {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+        .form-control:focus {
+            border-color: #6476f8;
+            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+        }
+
+    .btn-confirm {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .btn-cancel {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 return-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="return-header mb-1">
+                <span class="return-header-icon"><i class="bi bi-arrow-counterclockwise"></i></span>
+                <h2 class="fw-bold mb-0">Return Materials</h2>
+            </div>
+            <div class="return-subtitle">Process material returns for the order</div>
+        </div>
+    </div>
+
+    <div class="return-card">
+        <form asp-action="ReturnMaterials" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="OrderId" value="@Model.OrderId" />
+            <input type="hidden" name="CustomerId" value="@Model.CustomerId" />
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Pulled Out</th>
+                        <th>Returned</th>
+                        <th>Lost</th>
+                        <th>Damaged</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Items.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Model.Items[i].MaterialName
+                                <input type="hidden" name="Items[@i].MaterialId" value="@Model.Items[i].MaterialId" />
+                            </td>
+                            <td id="pulledOut_@i">@Model.Items[i].PulledOut</td>
+                            <td>
+                                <input type="number" name="Items[@i].Returned" id="returned_@i" value="@Model.Items[i].PulledOut" min="0" max="@Model.Items[i].PulledOut" class="form-control" readonly />
+                            </td>
+                            <td>
+                                <input type="number" name="Items[@i].Lost" id="lost_@i" value="0" min="0" max="@Model.Items[i].PulledOut" class="form-control" oninput="updateReturned(@i)" />
+                            </td>
+                            <td>
+                                <input type="number" name="Items[@i].Damaged" id="damaged_@i" value="0" min="0" max="@Model.Items[i].PulledOut" class="form-control" oninput="updateReturned(@i)" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="d-flex gap-3 mt-4">
+                <button type="submit" class="btn btn-primary btn-confirm">
+                    <i class="bi bi-check-lg me-2"></i>Confirm Return
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-cancel">
+                    <i class="bi bi-x-lg me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
     function updateReturned(i) {

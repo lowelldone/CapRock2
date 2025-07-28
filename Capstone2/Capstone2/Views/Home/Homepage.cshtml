@@ -2,46 +2,119 @@
     ViewData["Title"] = "Welcome to Grush Catering";
 }
 
-<!-- Bootstrap Hero Section -->
-<div class="container py-5">
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .hero-section {
+        background: rgba(255,255,255,0.85);
+        border-radius: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+        padding: 3rem 2rem 2rem 2rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .hero-img-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .hero-img-wrapper img {
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.12);
+            max-width: 90%;
+            filter: brightness(0.97) saturate(1.1);
+        }
+
+    .section-divider {
+        height: 4px;
+        background: linear-gradient(90deg, #6476f8 0%, #a855f7 100%);
+        border-radius: 2px;
+        margin: 3rem 0 2rem 0;
+        opacity: 0.12;
+    }
+
+    .feature-card {
+        background: #fff;
+        border-radius: 1.5rem;
+        box-shadow: 0 2px 12px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        margin-bottom: 2rem;
+        min-height: 260px;
+    }
+
+    .btn-order {
+        font-size: 1.25rem;
+        font-weight: 600;
+        padding: 0.75rem 2.5rem;
+        border-radius: 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .cta-section {
+        background: rgba(255,255,255,0.92);
+        border-radius: 1.5rem;
+        box-shadow: 0 2px 12px 0 rgba(34, 41, 47, 0.08);
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        padding: 2.5rem 1rem;
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="container hero-section">
     <div class="row align-items-center">
-        <div class="col-md-6 text-center text-md-start">
-            <h1 class="display-4 fw-bold">Delicious Catering for All Occasions</h1>
-            <p class="lead mt-3">
+        <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
+            <h1 class="display-4 fw-bold mb-3">Delicious Catering for All Occasions</h1>
+            <p class="lead mb-4">
                 Grush Catering Services offers affordable, customizable catering packages for birthdays, weddings, and corporate events. Taste, quality, and service—guaranteed.
             </p>
-            <a class="btn btn-primary btn-lg mt-3" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
+            <a class="btn btn-primary btn-order mt-2" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
         </div>
-        <div class="col-md-6 text-center">
-            <img src="~/images/GRUSH.jpg" class="img-fluid rounded shadow" alt="Catering food sample" />
+        <div class="col-md-6 hero-img-wrapper">
+            <img src="~/images/GRUSH.jpg" class="img-fluid" alt="Catering food sample" />
         </div>
     </div>
 </div>
+
+<div class="section-divider"></div>
 
 <!-- Features Section -->
-<div class="container py-5">
-    <h2 class="text-center mb-4">Why Choose Us?</h2>
-    <div class="row text-center">
-        <div class="col-md-4">
-            <i class="bi bi-star-fill text-warning" style="font-size: 2rem;"></i>
-            <h4 class="mt-3">Premium Quality</h4>
-            <p>Only the best ingredients go into our dishes. You’ll taste the difference!</p>
+<div class="container">
+    <h2 class="text-center mb-5 fw-bold">Why Choose Us?</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-4">
+            <div class="feature-card text-center h-100">
+                <i class="bi bi-star-fill text-warning" style="font-size: 2.5rem;"></i>
+                <h4 class="mt-3 fw-semibold">Premium Quality</h4>
+                <p>Only the best ingredients go into our dishes. You’ll taste the difference!</p>
+            </div>
         </div>
-        <div class="col-md-4">
-            <i class="bi bi-wallet2 text-success" style="font-size: 2rem;"></i>
-            <h4 class="mt-3">Affordable Packages</h4>
-            <p>Customize your menu according to your budget without sacrificing quality.</p>
+        <div class="col-md-4 mb-4">
+            <div class="feature-card text-center h-100">
+                <i class="bi bi-wallet2 text-success" style="font-size: 2.5rem;"></i>
+                <h4 class="mt-3 fw-semibold">Affordable Packages</h4>
+                <p>Customize your menu according to your budget without sacrificing quality.</p>
+            </div>
         </div>
-        <div class="col-md-4">
-            <i class="bi bi-truck text-info" style="font-size: 2rem;"></i>
-            <h4 class="mt-3">Reliable Delivery</h4>
-            <p>We deliver on time, every time—hot, fresh, and ready to serve.</p>
+        <div class="col-md-4 mb-4">
+            <div class="feature-card text-center h-100">
+                <i class="bi bi-truck text-info" style="font-size: 2.5rem;"></i>
+                <h4 class="mt-3 fw-semibold">Reliable Delivery</h4>
+                <p>We deliver on time, every time—hot, fresh, and ready to serve.</p>
+            </div>
         </div>
     </div>
 </div>
 
+<div class="section-divider"></div>
+
 <!-- Call to Action Section -->
-<div class="bg-light py-5 text-center">
-    <h3 class="mb-3">Ready to make your event unforgettable?</h3>
-    <a class="btn btn-outline-primary btn-lg" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
+<div class="container cta-section text-center">
+    <h3 class="mb-3 fw-bold">Ready to make your event unforgettable?</h3>
+    <a class="btn btn-outline-primary btn-lg btn-order" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
 </div>

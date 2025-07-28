@@ -4,32 +4,241 @@
     var order = Model.Order;
     var payments = ViewBag.Payments as List<Capstone2.Models.Payment>;
 }
-<div class="container mt-4">
-    <h2 class="fw-bold mb-3">Payment Details for @Model.Name</h2>
-    <div class="card mb-4">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Order Total</dt>
-                <dd class="col-sm-9">@order?.TotalPayment.ToString("C")</dd>
-                <dt class="col-sm-3">Additional Charges (Lost/Damaged)</dt>
-                <dd class="col-sm-9">₱@ViewBag.AdditionalCharges</dd>
-                <dt class="col-sm-3">Amount Paid</dt>
-                <dd class="col-sm-9">@order?.AmountPaid.ToString("C")</dd>
-                <dt class="col-sm-3">Balance</dt>
-                <dd class="col-sm-9">
+
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .payment-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .payment-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .payment-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .payment-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .payment-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .payment-row {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .payment-row:last-child {
+            border-bottom: none;
+        }
+
+    .payment-label {
+        font-weight: 600;
+        color: #344767;
+        font-size: 1.1rem;
+    }
+
+    .payment-value {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .table thead th {
+            background: #f8fafc;
+            border: none;
+            font-weight: 600;
+            color: #344767;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:hover {
+            background: #e0f2fe;
+        }
+
+    .btn-action {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+
+    .btn-record {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .form-control {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+        .form-control:focus {
+            border-color: #6476f8;
+            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+        }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+    }
+
+    .alert-success {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .alert-danger {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .alert-info {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 payment-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="payment-header mb-1">
+                <span class="payment-header-icon"><i class="bi bi-credit-card"></i></span>
+                <h2 class="fw-bold mb-0">Payment Details</h2>
+            </div>
+            <div class="payment-subtitle">Payment information for @Model.Name</div>
+        </div>
+    </div>
+
+    <div class="payment-card">
+        <div class="payment-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="payment-label">Order Total</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="payment-value">@order?.TotalPayment.ToString("C")</span>
+                </div>
+            </div>
+        </div>
+        <div class="payment-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="payment-label">Down Payment (50%)</span>
+                </div>
+                <div class="col-md-9">
+                    @if (order != null)
+                    {
+                        var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
+                        var totalDue = (decimal)order.TotalPayment + additionalCharges;
+                        var downPayment = (decimal)order.TotalPayment * 0.5m;
+                        var paidPercent = totalDue > 0 ? ((decimal)order.AmountPaid / totalDue) : 0;
+                        if (paidPercent >= 0.5m)
+                        {
+                            <span class="badge bg-success">DONE</span>
+                        }
+                        else
+                        {
+                            var remaining = downPayment - (decimal)order.AmountPaid;
+                            if (remaining < 0) { remaining = 0; }
+                            <span class="payment-value">@(remaining.ToString("C"))</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="payment-value">None</span>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="payment-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="payment-label">Additional Charges (Lost/Damaged)</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="payment-value">₱@ViewBag.AdditionalCharges</span>
+                </div>
+            </div>
+        </div>
+        <div class="payment-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="payment-label">Amount Paid</span>
+                </div>
+                <div class="col-md-9">
+                    <span class="payment-value">@order?.AmountPaid.ToString("C")</span>
+                </div>
+            </div>
+        </div>
+        <div class="payment-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="payment-label">Balance</span>
+                </div>
+                <div class="col-md-9">
                     @if (order != null)
                     {
                         var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
                         var balance = (decimal)order.TotalPayment + additionalCharges - (decimal)order.AmountPaid;
-                        @((balance > 0 ? balance.ToString("C") : "0.00"))
+                        <span class="payment-value">@((balance > 0 ? balance.ToString("C") : "0.00"))</span>
                     }
                     else
                     {
-                        <span>None</span>
-                            }
-                </dd>
-                <dt class="col-sm-3">Payment Status</dt>
-                <dd class="col-sm-9">
+                        <span class="payment-value">None</span>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="payment-row">
+            <div class="row">
+                <div class="col-md-3">
+                    <span class="payment-label">Payment Status</span>
+                </div>
+                <div class="col-md-9">
                     @if (order != null)
                     {
                         var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
@@ -39,25 +248,22 @@
                         {
                             <span class="badge bg-danger">Incomplete Payment</span>
                         }
-                        else if (paidPercent >= 0.5m && paidPercent < 1m)
+                        else if (paidPercent >= 0.5m)
                         {
-                            <span class="badge bg-warning text-dark">Ready to Cater</span>
-                        }
-                        else if (paidPercent >= 1m)
-                        {
-                            <span class="badge bg-success">Fully Paid</span>
+                            <span class="badge bg-success">DONE</span>
                         }
                     }
                     else
                     {
                         <span class="badge bg-secondary">No Order</span>
                     }
-                </dd>
-            </dl>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="mb-4">
-        <h4>Record New Payment</h4>
+
+    <div class="payment-card">
+        <h4 class="fw-bold mb-3">Record New Payment</h4>
         @if (TempData["PaymentError"] != null)
         {
             <div class="alert alert-danger">@TempData["PaymentError"]</div>
@@ -85,15 +291,18 @@
                 <input type="number" name="paymentAmount" min="1" step="0.01" class="form-control" placeholder="Amount" required />
             </div>
             <div class="col-md-4">
-                <button type="submit" class="btn btn-success">Record Payment</button>
+                <button type="submit" class="btn btn-success btn-record">
+                    <i class="bi bi-check-lg me-2"></i>Record Payment
+                </button>
             </div>
         </form>
     </div>
-    <div>
-        <h4>Payment History</h4>
+
+    <div class="payment-card">
+        <h4 class="fw-bold mb-3">Payment History</h4>
         @if (payments != null && payments.Count > 0)
         {
-            <table class="table table-bordered table-striped">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -116,5 +325,10 @@
             <div class="alert alert-info">No payments recorded yet.</div>
         }
     </div>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Back to Customers</a>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-action">
+            <i class="bi bi-arrow-left me-2"></i>Back to Customers
+        </a>
+    </div>
 </div> 

@@ -9,56 +9,262 @@
     }
 }
 
-<h2>Assign Waiter to Order</h2>
-
-<div class="mb-3">
-    <strong>Customer:</strong> @Model.Customer?.Name <br />
-    <strong>Venue:</strong> @Model.Venue <br />
-    <strong>Date:</strong> @Model.OrderDate.ToShortDateString() <br />
-    <strong>Status:</strong> @Model.Status
-</div>
-
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <div>@error.ErrorMessage</div>
-        }
-    </div>
-}
-
-<form asp-action="DeployWaiter" asp-route-id="@Model.CustomerID" method="post">
-    @if (headWaiterId != null)
-    {
-        <input type="hidden" name="headWaiterId" value="@headWaiterId" />
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
     }
-    <div class="mb-3">
-        <label for="waiterIds" class="form-label">Select Waiters</label>
-        <select id="waiterIds" name="waiterIds" class="form-select" multiple size="6" required>
-            @foreach (var w in waiters)
-            {
-                var isAssigned = ((List<int>)ViewBag.AssignedWaiterIds).Contains(w.WaiterId);
-                <option value="@w.WaiterId" selected="@(isAssigned ? "selected" : null)">
-                    @w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]
-                </option>
-            }
-        </select>
-        <small class="form-text text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple waiters.</small>
-    </div>
-    <button type="submit" class="btn btn-primary">Assign Waiters</button>
-    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
-</form>
 
-@if (((List<int>)ViewBag.AssignedWaiterIds).Count > 0)
-{
-    <div class="mt-4">
-        <h5>Currently Assigned Waiters:</h5>
-        <ul>
-            @foreach (var w in waiters.Where(w => ((List<int>)ViewBag.AssignedWaiterIds).Contains(w.WaiterId)))
-            {
-                <li>@w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]</li>
+    .deploy-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .deploy-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .deploy-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .deploy-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .deploy-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .order-info {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #344767;
+        min-width: 100px;
+        margin-right: 1rem;
+    }
+
+    .info-value {
+        color: #64748b;
+    }
+
+    .waiter-select-container {
+        position: relative;
+    }
+
+    .waiter-select {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+        .waiter-select:focus {
+            border-color: #6476f8;
+            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+            outline: none;
+        }
+
+        .waiter-select option {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.2s ease;
+        }
+
+            .waiter-select option:hover {
+                background-color: #e0f2fe;
             }
-        </ul>
+
+            .waiter-select option:checked {
+                background: linear-gradient(135deg, #6476f8, #4f46e5);
+                color: white;
+                font-weight: 600;
+            }
+
+            .waiter-select option:selected {
+                background: linear-gradient(135deg, #6476f8, #4f46e5);
+                color: white;
+                font-weight: 600;
+            }
+
+    .btn-assign {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .btn-cancel {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+    }
+
+    .alert-danger {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .assigned-list {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+        .assigned-list ul {
+            margin-bottom: 0;
+            padding-left: 1.5rem;
+        }
+
+        .assigned-list li {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+    .form-text {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border-left: 3px solid #0d6efd;
+    }
+
+    .waiter-option {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 0.95rem;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 deploy-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="deploy-header mb-1">
+                <span class="deploy-header-icon"><i class="bi bi-people"></i></span>
+                <h2 class="fw-bold mb-0">Assign Waiter to Order</h2>
+            </div>
+            <div class="deploy-subtitle">Select waiters to manage this order.</div>
+        </div>
     </div>
-} 
+
+    <div class="deploy-card">
+        <div class="order-info">
+            <div class="info-row">
+                <span class="info-label">Customer:</span>
+                <span class="info-value">@Model.Customer?.Name</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Venue:</span>
+                <span class="info-value">@Model.Venue</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Date:</span>
+                <span class="info-value">@Model.OrderDate.ToShortDateString()</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Status:</span>
+                <span class="info-value">@Model.Status</span>
+            </div>
+        </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@error.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        <form asp-action="DeployWaiter" asp-route-id="@Model.CustomerID" method="post">
+            @if (headWaiterId != null)
+            {
+                <input type="hidden" name="headWaiterId" value="@headWaiterId" />
+            }
+            <div class="mb-4">
+                <label for="waiterIds" class="form-label fw-semibold">Select Waiters</label>
+                <div class="waiter-select-container">
+                    <select id="waiterIds" name="waiterIds" class="form-select waiter-select" multiple size="6" required>
+                        @foreach (var w in waiters)
+                        {
+                            var isAssigned = ((List<int>)ViewBag.AssignedWaiterIds).Contains(w.WaiterId);
+                            <option value="@w.WaiterId" selected="@(isAssigned ? "selected" : null)" class="waiter-option">
+                                @w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]
+                            </option>
+                        }
+                    </select>
+                    <div class="form-text">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Hold Ctrl (Windows) or Command (Mac) to select multiple waiters.
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-assign">
+                    <i class="bi bi-check-lg me-2"></i>Assign Waiters
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-cancel">
+                    <i class="bi bi-x-lg me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+    @if (((List<int>)ViewBag.AssignedWaiterIds).Count > 0)
+    {
+        <div class="deploy-card">
+            <h5 class="fw-bold mb-3">Currently Assigned Waiters</h5>
+            <div class="assigned-list">
+                <ul>
+                    @foreach (var w in waiters.Where(w => ((List<int>)ViewBag.AssignedWaiterIds).Contains(w.WaiterId)))
+                    {
+                        <li>@w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+</div> 

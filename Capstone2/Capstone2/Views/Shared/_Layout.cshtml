@@ -13,60 +13,148 @@
     @RenderSection("Styles", required: false)
     <style>
         body {
-            background: #f8f9fa;
+            background: #6476f8;
             font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
         }
-
-        header {
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            background-color: #ffffff;
+        .soft-sidebar {
+            width: 80px;
+            min-height: 100vh;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+            padding: 32px 0 16px 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            overflow: hidden;
         }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
+        .soft-sidebar:hover {
+            width: 260px;
         }
-
-        .navbar-nav .nav-link {
-            margin-right: 1rem;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #0d6efd;
-        }
-
-        .hero-section {
-            background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
-            padding: 60px 20px;
-            text-align: center;
-            border-radius: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .hero-section h1 {
-            font-size: 2.5rem;
+        .soft-sidebar .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
             font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .hero-section p {
             font-size: 1.2rem;
-            color: #555;
+            color: #344767;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+            padding: 0 16px;
         }
-
-        main {
-            padding-bottom: 3rem;
-        }
-
-        footer {
-            background-color: #ffffff;
-            border-top: 1px solid #eaeaea;
+        .soft-sidebar .sidebar-logo i {
+            font-size: 2rem;
+            margin-right: 10px;
+            min-width: 32px;
             text-align: center;
-            padding: 1rem;
-            font-size: 0.9rem;
-            color: #777;
+        }
+        .soft-sidebar .sidebar-logo-text {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+            width: 0;
+            overflow: hidden;
+        }
+        .soft-sidebar:hover .sidebar-logo-text {
+            opacity: 1;
+            width: auto;
+        }
+        .soft-sidebar .nav {
+            width: 100%;
+        }
+        .soft-sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            margin: 8px 16px;
+            border-radius: 12px;
+            color: #344767;
+            font-weight: 500;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+            overflow: hidden;
+            width: calc(100% - 32px);
+            min-height: 48px;
+        }
+        .soft-sidebar:hover .nav-link {
+            justify-content: flex-start;
+            padding: 12px 24px;
+        }
+        .soft-sidebar .nav-link i {
+            font-size: 1.3rem;
+            margin-right: 0;
+            min-width: 24px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .soft-sidebar:hover .nav-link i {
+            margin-right: 16px;
+        }
+        .soft-sidebar .nav-link span {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+            width: 0;
+            overflow: hidden;
+        }
+        .soft-sidebar:hover .nav-link span {
+            opacity: 1;
+            width: auto;
+        }
+        .soft-sidebar .nav-link.active, 
+        .soft-sidebar .nav-link:focus, 
+        .soft-sidebar .nav-link:hover {
+            background: linear-gradient(90deg, #ec4899 0%, #a855f7 100%);
+            color: #fff !important;
+            box-shadow: 0 4px 12px 0 rgba(236, 72, 153, 0.15);
+        }
+        .main-content {
+            margin-left: 100px;
+            transition: margin-left 0.3s ease;
+        }
+        .soft-sidebar:hover ~ .main-content {
+            margin-left: 280px;
+        }
+        @@media (max-width: 991.98px) {
+            .soft-sidebar {
+                position: static;
+                width: 100%;
+                min-height: unset;
+                border-radius: 0;
+                box-shadow: none;
+                flex-direction: row;
+                padding: 0;
+                overflow: visible;
+            }
+            .soft-sidebar:hover {
+                width: 100%;
+            }
+            .soft-sidebar .sidebar-logo-text,
+            .soft-sidebar .nav-link span {
+                opacity: 1;
+                width: auto;
+            }
+            .soft-sidebar .nav-link {
+                justify-content: flex-start;
+                padding: 12px 24px;
+            }
+            .soft-sidebar .nav-link i {
+                margin-right: 16px;
+            }
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
@@ -75,91 +163,112 @@
         string role = HttpContextAccessor.HttpContext?.Session.GetString("Role");
     }
 
-    <header>
-        @if (role != null)
-        {
-            <nav class="p-3 border-end" style="width: 250px; min-height: 100vh; background: #fff; position: fixed; left: 0; top: 0;">
-                <h4 class="mb-4 text-dark">Admin Panel</h4>
-                <ul class="nav flex-column">
-                    @switch (role)
-                    {
-                        case "ADMIN":
-                        {
-                                <li class="nav-item mb-2">
-                                    <a class="nav-link text-dark sidebar-link" asp-controller="Customers" asp-action="Index">
-                                        <i class="bi bi-card-list me-2"></i> Customer Orders
-                                    </a>
-                                </li>
-                                <li class="nav-item mb-2">
-                                    <a class="nav-link text-dark sidebar-link" asp-controller="HeadWaiters" asp-action="Index">
-                                        <i class="bi bi-person-badge me-2"></i> HeadWaiters
-                                    </a>
-                                </li>
-                                <li class="nav-item mb-2">
-                                    <a class="nav-link text-dark sidebar-link" asp-controller="Materials" asp-action="Index">
-                                        <i class="bi bi-box-seam me-2"></i> Materials
-                                    </a>
-                                </li>
-                                <li class="nav-item mb-2">
-                                    <a class="nav-link text-dark sidebar-link" asp-controller="Menus" asp-action="Index">
-                                        <i class="bi bi-list-ul me-2"></i> Menus
-                                    </a>
-                                </li>
-                                <li class="nav-item mb-2">
-                                    <a class="nav-link text-dark sidebar-link" asp-controller="MenuPackages" asp-action="Index">
-                                        <i class="bi bi-bag-check me-2"></i> Menu Packages
-                                    </a>
-                                </li>
-                                <li class="nav-item mb-2">
-                                    <a class="nav-link text-dark sidebar-link" asp-controller="Suppliers" asp-action="Index">
-                                        <i class="bi bi-truck me-2"></i> Suppliers
-                                    </a>
-                                </li>
-                        }
-                        break;
-                        case "HEADWAITER":
-                            <li class="nav-item mb-2">
-                                <a class="nav-link text-dark sidebar-link" asp-controller="PaidOrders" asp-action="Index">
-                                    <i class="bi bi-truck me-2"></i> Customer Orders
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a class="nav-link text-dark sidebar-link" asp-controller="Waiters" asp-action="Index">
-                                    <i class="bi bi-truck me-2"></i> Waiters
-                                </a>
-                            </li>
-                        break;
-                        default:
-                            <li class="nav-item mb-2">
-                                <a class="nav-link text-dark sidebar-link" asp-controller="Schedules" asp-action="Index">
-                                    <i class="bi bi-truck me-2"></i> Schedules
-                                </a>
-                            </li>
-                        break;
+    @if (role != null)
+    {
+        <nav class="soft-sidebar">
+            <div class="sidebar-logo mb-4">
+                <i class="bi bi-diagram-3"></i>
+                <span class="sidebar-logo-text">
+                    @if (role == "ADMIN") {
+                        @:Admin
+                    } else if (role == "HEADWAITER") {
+                        @:HeadWaiter
+                    } else {
+                        @:Waiter
                     }
-                    <li class="nav-item mb-2">
-                        <a class="nav-link text-dark sidebar-link" asp-controller="Home" asp-action="Logout">
-                            <i class="bi bi-box-arrow-right me-2"></i> Logout
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        }
-        else
-        {
+                </span>
+            </div>
+            <ul class="nav flex-column w-100">
+                @switch (role)
+                {
+                    case "ADMIN":
+                    {
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
+                                <i class="bi bi-card-list"></i>
+                                <span>Customer Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
+                                <i class="bi bi-person-badge"></i>
+                                <span>HeadWaiters</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Materials" ? "active" : "")" asp-controller="Materials" asp-action="Index">
+                                <i class="bi bi-box-seam"></i>
+                                <span>Materials</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Menus" ? "active" : "")" asp-controller="Menus" asp-action="Index">
+                                <i class="bi bi-list-ul"></i>
+                                <span>Menus</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MenuPackages" ? "active" : "")" asp-controller="MenuPackages" asp-action="Index">
+                                <i class="bi bi-bag-check"></i>
+                                <span>Menu Packages</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-controller="Suppliers" asp-action="Index">
+                                <i class="bi bi-truck"></i>
+                                <span>Suppliers</span>
+                            </a>
+                        </li>
+                    }
+                    break;
+                    case "HEADWAITER":
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PaidOrders" ? "active" : "")" asp-controller="PaidOrders" asp-action="Index">
+                                <i class="bi bi-receipt"></i>
+                                <span>Customer Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Waiters" ? "active" : "")" asp-controller="Waiters" asp-action="Index">
+                                <i class="bi bi-people"></i>
+                                <span>Waiters</span>
+                            </a>
+                        </li>
+                    break;
+                    default:
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedules" ? "active" : "")" asp-controller="Schedules" asp-action="Index">
+                                <i class="bi bi-calendar-event"></i>
+                                <span>Schedules</span>
+                            </a>
+                        </li>
+                    break;
+                }
+                <li class="nav-item mb-2">
+                    <a class="nav-link" asp-controller="Home" asp-action="Logout" id="logout-link">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <header>
             <nav class="navbar navbar-expand-lg navbar-light sticky-top">
                 <div class="container">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Homepage">GRUSH Catering System</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <a asp-action="Login">LOG IN</a>
+                    <a asp-action="Login" class="btn btn-outline-primary rounded-pill px-4 py-2 ms-3" style="color:white; border-color: white;">LOG IN</a>
                 </div>
             </nav>
-        }
-    </header>
+        </header>
+    }
 
-    <div class="container">
+    <div class="main-content">
         @if (ViewData["Title"]?.ToString() == "Home")
         {
          
@@ -181,6 +290,18 @@
     </footer>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function(e) {
+                    if (!confirm('Are you sure you want to log out?')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

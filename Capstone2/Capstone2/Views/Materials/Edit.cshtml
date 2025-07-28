@@ -4,42 +4,111 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .edit-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+    .edit-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .edit-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+    .edit-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+    .form-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+    .form-control {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    .form-control:focus {
+        border-color: #6476f8;
+        box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+    }
+    .btn-save {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+    .btn-back {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+</style>
 
-<h4>Material</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="container-fluid mt-4 px-4 edit-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="edit-header mb-1">
+                <span class="edit-header-icon"><i class="bi bi-box-seam"></i></span>
+                <h2 class="fw-bold mb-0">Edit Material</h2>
+            </div>
+            <div class="edit-subtitle">Update material information.</div>
+        </div>
+    </div>
+
+    <div class="form-card">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MaterialId" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Name" class="form-label fw-semibold">Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter material name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Quantity" class="form-label fw-semibold">Quantity</label>
+                    <input asp-for="Quantity" class="form-control" placeholder="Enter quantity" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+            <div class="mb-4">
+                <label asp-for="Description" class="form-label fw-semibold">Description</label>
+                <input asp-for="Description" class="form-control" placeholder="Enter material description" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <br />
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-save">
+                    <i class="bi bi-check-lg me-2"></i>Save Changes
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-back">
+                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                </a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

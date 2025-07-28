@@ -5,26 +5,135 @@
     int? selectedHeadWaiterId = ViewBag.SelectedHeadWaiterId as int?;
 }
 
-<div class="container mt-4">
-    <h2 class="fw-bold mb-4">Assign Head Waiter</h2>
-    <div class="mb-3">
-        <strong>Customer:</strong> @Model.Name <br />
-        <strong>Order Venue:</strong> @Model.Order?.Venue <br />
-        <strong>Order Date:</strong> @Model.Order?.OrderDate.ToShortDateString()
-    </div>
-    <form asp-action="AssignHeadWaiter" asp-route-id="@Model.CustomerID" method="post">
-        <div class="mb-3">
-            <label for="headWaiterId" class="form-label">Select Head Waiter</label>
-            <select id="headWaiterId" name="headWaiterId" class="form-select" required>
-                <option value="">-- Select Head Waiter --</option>
-                @foreach (var hw in headWaiters)
-                {
-                    var isSelected = selectedHeadWaiterId == hw.HeadWaiterId ? "selected=\"selected\"" : string.Empty;
-                    @:<option value="@hw.HeadWaiterId" @isSelected>@hw.User.FirstName @hw.User.LastName (@hw.User.Username)</option>
-                }
-            </select>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .assign-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+    .assign-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .assign-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+    .assign-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+    .assign-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+    .customer-info {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .info-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+    .info-row:last-child {
+        margin-bottom: 0;
+    }
+    .info-label {
+        font-weight: 600;
+        color: #344767;
+        min-width: 120px;
+        margin-right: 1rem;
+    }
+    .info-value {
+        color: #64748b;
+    }
+    .form-select {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+    .form-select:focus {
+        border-color: #6476f8;
+        box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+    }
+    .btn-assign {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+    .btn-cancel {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 assign-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="assign-header mb-1">
+                <span class="assign-header-icon"><i class="bi bi-person-badge"></i></span>
+                <h2 class="fw-bold mb-0">Assign Head Waiter</h2>
+            </div>
+            <div class="assign-subtitle">Assign a head waiter to manage this customer's order.</div>
         </div>
-        <button type="submit" class="btn btn-primary">Assign</button>
-        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
-    </form>
+    </div>
+
+    <div class="assign-card">
+        <div class="customer-info">
+            <div class="info-row">
+                <span class="info-label">Customer:</span>
+                <span class="info-value">@Model.Name</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Order Venue:</span>
+                <span class="info-value">@Model.Order?.Venue</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Order Date:</span>
+                <span class="info-value">@Model.Order?.OrderDate.ToShortDateString()</span>
+            </div>
+        </div>
+
+        <form asp-action="AssignHeadWaiter" asp-route-id="@Model.CustomerID" method="post">
+            <div class="mb-4">
+                <label for="headWaiterId" class="form-label fw-semibold">Select Head Waiter</label>
+                <select id="headWaiterId" name="headWaiterId" class="form-select" required>
+                    <option value="">-- Select Head Waiter --</option>
+                    @foreach (var hw in headWaiters)
+                    {
+                        var isSelected = selectedHeadWaiterId == hw.HeadWaiterId ? "selected=\"selected\"" : string.Empty;
+                        @:<option value="@hw.HeadWaiterId" @isSelected>@hw.User.FirstName @hw.User.LastName (@hw.User.Username)</option>
+                    }
+                </select>
+            </div>
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-assign">
+                    <i class="bi bi-check-lg me-2"></i>Assign Head Waiter
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-cancel">
+                    <i class="bi bi-x-lg me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </div> 

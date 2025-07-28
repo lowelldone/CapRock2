@@ -4,73 +4,176 @@
     ViewData["Title"] = "Place Order";
 }
 
-<div class="mb-3" style="position:absolute; left:10px; top:70px">
-    <button type="button" class="btn btn-secondary" onclick="window.history.back();">
-        <i class="bi bi-arrow-left"></i> Back
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .form-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .form-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .form-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .form-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+        .form-control:focus {
+            border-color: #6476f8;
+            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+        }
+
+    .btn-back {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        position: absolute;
+        left: 2rem;
+        top: 2rem;
+        z-index: 1000;
+    }
+
+    .btn-submit {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+    }
+
+    .alert-info {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 form-bg">
+    <button type="button" class="btn btn-outline-secondary btn-back" onclick="window.history.back();">
+        <i class="bi bi-arrow-left me-2"></i>Back
     </button>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="form-header mb-1">
+                <span class="form-header-icon"><i class="bi bi-cart-plus"></i></span>
+                <h2 class="fw-bold mb-0">Place an Order</h2>
+            </div>
+            <div class="form-subtitle">Complete your catering order details.</div>
+        </div>
+    </div>
+
+    <div class="form-card">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <form asp-action="Form" asp-controller="Orders" method="post" id="orderForm">
+            <input type="hidden" name="OrderItemsJson" value="@TempData["OrderItemsJson"]" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.Name" class="form-label fw-semibold">Customer Name</label>
+                    <input asp-for="Customer.Name" class="form-control" placeholder="Enter customer name" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.ContactNo" class="form-label fw-semibold">Contact No.</label>
+                    <input asp-for="Customer.ContactNo" class="form-control" placeholder="Enter contact number" required />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Customer.Address" class="form-label fw-semibold">Address</label>
+                <input asp-for="Customer.Address" class="form-control" placeholder="Enter address" required />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="CateringDate" class="form-label fw-semibold">Catering Date</label>
+                    <input asp-for="CateringDate" type="date" class="form-control" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Venue" class="form-label fw-semibold">Venue</label>
+                    <input asp-for="Venue" class="form-control" placeholder="Enter venue" required />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="NoOfPax" class="form-label fw-semibold">Number of PAX</label>
+                    <input asp-for="NoOfPax" type="number" class="form-control" placeholder="Enter number of people" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="timeOfFoodServing" class="form-label fw-semibold">Time of Food Serving</label>
+                    <input asp-for="timeOfFoodServing" type="time" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Occasion" class="form-label fw-semibold">Occasion</label>
+                    <input asp-for="Occasion" class="form-control" placeholder="Enter occasion" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Motif" class="form-label fw-semibold">Motif</label>
+                    <input asp-for="Motif" class="form-control" placeholder="Enter motif" required />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="TotalPayment" class="form-label fw-semibold">Total Payment</label>
+                <input asp-for="TotalPayment" value="@Model.TotalPayment.ToString("0.00")" step="0.01" class="form-control" readonly />
+            </div>
+
+            <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Reminder:</strong> You need to pay at least a <strong>50% down payment</strong> for your catering order to proceed.
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary btn-submit">
+                    <i class="bi bi-check-lg me-2"></i>Place Order
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
-<h2>Place an Order</h2>
-
-@Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-<form asp-action="Form" asp-controller="Orders" method="post" id="orderForm">
-
-    <input type="hidden" name="OrderItemsJson" value="@TempData["OrderItemsJson"]" />
-
-    <div class="form-group">
-        <label asp-for="Customer.Name">Customer Name</label>
-        <input asp-for="Customer.Name" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Customer.ContactNo">Contact No.</label>
-        <input asp-for="Customer.ContactNo" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Customer.Address">Address</label>
-        <input asp-for="Customer.Address" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CateringDate">Catering Date</label>
-        <input asp-for="CateringDate" type="date" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Venue">Venue</label>
-        <input asp-for="Venue" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="NoOfPax">Number of PAX</label>
-        <input asp-for="NoOfPax" type="number" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="timeOfFoodServing">Time of Food Serving</label>
-        <input asp-for="timeOfFoodServing" type="time" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Occasion">Occasion</label>
-        <input asp-for="Occasion" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Motif">Motif</label>
-        <input asp-for="Motif" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TotalPayment">Total Payment</label>
-        <input asp-for="TotalPayment" value="@Model.TotalPayment.ToString("0.00")" step="0.01" class="form-control" readonly />
-    </div>
-    <div class="alert alert-info mt-2">
-        <strong>Reminder:</strong> You need to pay at least a <strong>50% down payment</strong> for your catering order to proceed.
-    </div>
-    <input type="submit" class="btn btn-primary" value="Place Order" />
-</form>
 
 <script>
     // Save form data to sessionStorage on submit
