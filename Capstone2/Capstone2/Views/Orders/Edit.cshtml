@@ -2,56 +2,155 @@
 @{
     ViewData["Title"] = "Edit Order Information";
 }
-<h2>Edit Order Information</h2>
-<form asp-action="Edit" asp-route-id="@Model.OrderId" method="post">
-    <input type="hidden" asp-for="OrderId" />
-    <input type="hidden" asp-for="Status" />
-    <input type="hidden" asp-for="OrderDate" />
 
-    <div class="form-group">
-        <label asp-for="Customer.Name"></label>
-        <input asp-for="Customer.Name" class="form-control" />
-        <span asp-validation-for="Customer.Name" class="text-danger"></span>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .edit-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .edit-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .edit-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .edit-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .edit-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+        .form-control:focus {
+            border-color: #6476f8;
+            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+        }
+
+    .btn-save {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .btn-cancel {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 edit-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="edit-header mb-1">
+                <span class="edit-header-icon"><i class="bi bi-pencil-square"></i></span>
+                <h2 class="fw-bold mb-0">Edit Order Information</h2>
+            </div>
+            <div class="edit-subtitle">Update order details for @Model.Customer.Name</div>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Customer.ContactNo"></label>
-        <input asp-for="Customer.ContactNo" class="form-control" />
-        <span asp-validation-for="Customer.ContactNo" class="text-danger"></span>
+
+    <div class="edit-card">
+        <form asp-action="Edit" asp-route-id="@Model.OrderId" method="post">
+            <input type="hidden" asp-for="OrderId" />
+            <input type="hidden" asp-for="Status" />
+            <input type="hidden" asp-for="OrderDate" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.Name" class="form-label fw-semibold">Customer Name</label>
+                    <input asp-for="Customer.Name" class="form-control" placeholder="Enter customer name" />
+                    <span asp-validation-for="Customer.Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.ContactNo" class="form-label fw-semibold">Contact Number</label>
+                    <input asp-for="Customer.ContactNo" class="form-control" placeholder="Enter contact number" />
+                    <span asp-validation-for="Customer.ContactNo" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Customer.Address" class="form-label fw-semibold">Address</label>
+                <input asp-for="Customer.Address" class="form-control" placeholder="Enter address" />
+                <span asp-validation-for="Customer.Address" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Venue" class="form-label fw-semibold">Venue</label>
+                    <input asp-for="Venue" class="form-control" placeholder="Enter venue" />
+                    <span asp-validation-for="Venue" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="CateringDate" class="form-label fw-semibold">Catering Date</label>
+                    <input asp-for="CateringDate" type="date" class="form-control" />
+                    <span asp-validation-for="CateringDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="timeOfFoodServing" class="form-label fw-semibold">Time of Food Serving</label>
+                    <input asp-for="timeOfFoodServing" type="time" class="form-control" />
+                    <span asp-validation-for="timeOfFoodServing" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Occasion" class="form-label fw-semibold">Occasion</label>
+                    <input asp-for="Occasion" class="form-control" placeholder="Enter occasion" />
+                    <span asp-validation-for="Occasion" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Motif" class="form-label fw-semibold">Motif</label>
+                <input asp-for="Motif" class="form-control" placeholder="Enter motif" />
+                <span asp-validation-for="Motif" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-save">
+                    <i class="bi bi-check-lg me-2"></i>Save Changes
+                </button>
+                <a asp-controller="Customers" asp-action="ViewOrder" asp-route-id="@Model.CustomerID" class="btn btn-outline-secondary btn-cancel">
+                    <i class="bi bi-x-lg me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="Customer.Address"></label>
-        <input asp-for="Customer.Address" class="form-control" />
-        <span asp-validation-for="Customer.Address" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Venue"></label>
-        <input asp-for="Venue" class="form-control" />
-        <span asp-validation-for="Venue" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="CateringDate"></label>
-        <input asp-for="CateringDate" type="date" class="form-control" />
-        <span asp-validation-for="CateringDate" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="timeOfFoodServing"></label>
-        <input asp-for="timeOfFoodServing" type="time" class="form-control" />
-        <span asp-validation-for="timeOfFoodServing" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Occasion"></label>
-        <input asp-for="Occasion" class="form-control" />
-        <span asp-validation-for="Occasion" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Motif"></label>
-        <input asp-for="Motif" class="form-control" />
-        <span asp-validation-for="Motif" class="text-danger"></span>
-    </div>
-    <br />
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a asp-controller="Customers" asp-action="ViewOrder" asp-route-id="@Model.CustomerID" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

@@ -3,76 +3,162 @@
     ViewData["Title"] = "Waiters Management";
 }
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Waiters</h2>
-        @* If you ever need to add more head waiters *@
-        <a asp-action="UpSert" class="btn btn-success">
-            <i class="bi bi-plus-lg"></i> Add New Waiter
-        </a>
+<style>
+    body, .container-fluid, .card, .table {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .waiters-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .waiters-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .waiters-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .waiters-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .add-waiter-btn {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 10px 22px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .card {
+        border-radius: 20px !important;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+    }
+
+    .table {
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+        .table thead th {
+            background: #f1f5f9;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #344767;
+            border-bottom: 2px solid #e0e7ef;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:hover {
+            background: #e0f2fe;
+            transition: background 0.2s;
+        }
+
+    .action-btn {
+        border-radius: 8px;
+        font-size: 1rem;
+        padding: 6px 16px;
+        margin-left: 2px;
+        margin-right: 2px;
+        transition: background 0.2s, color 0.2s;
+    }
+
+        .action-btn i {
+            margin-right: 4px;
+        }
+</style>
+
+<div class="container-fluid mt-4 px-4 waiters-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="waiters-header mb-1">
+                <span class="waiters-header-icon"><i class="bi bi-people"></i></span>
+                <h2 class="fw-bold mb-0">Waiters</h2>
+            </div>
+            <div class="waiters-subtitle">Manage your catering waiters here.</div>
+        </div>
+        <a asp-action="UpSert" class="btn btn-success add-waiter-btn"><i class="bi bi-plus-lg"></i> Add New Waiter</a>
     </div>
-
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>Username</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Head Waiter</th>
-                <th>Employee Status</th>
-                <th>Availability</th>
-                <th class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var head in Model)
-            {
-                <tr>
-                    <td>@head.User.Username</td>
-                    <td>@head.User.FirstName</td>
-                    <td>@head.User.LastName</td>
-                    <!-- ✅ HeadWaiter column -->
-                    <td>
-                        @if (head.HeadWaiter != null && head.HeadWaiter.User != null)
-                        {
-                            @($"{head.HeadWaiter.User.FirstName} {head.HeadWaiter.User.LastName}")
-                        }
-                        else
-                        {
-                            <span class="text-muted">None</span>
-                        }
-                    </td>
-                    <!-- ✅ Status column -->
-                    <td>
-                        @if (head.isTemporary)
-                        {
-                            <span class="badge bg-secondary">Temporary</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning text-dark">Regular</span>
-                        }
-                    </td>
-
-                    <td>
-                        @if (head.Availability == "Busy")
-                        {
-                            <span class="badge bg-danger">Busy</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning text-dark">Available</span>
-                        }
-                    </td>
-
-                    <td class="text-center">
-                        <a asp-action="UpSert" asp-route-id="@head.WaiterId" class="btn btn-outline-primary btn-sm">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@head.WaiterId" class="btn btn-outline-danger btn-sm">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Head Waiter</th>
+                        <th>Employee Status</th>
+                        <th>Availability</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var head in Model)
+                    {
+                        <tr>
+                            <td>@head.User.Username</td>
+                            <td>@head.User.FirstName</td>
+                            <td>@head.User.LastName</td>
+                            <td>
+                                @if (head.HeadWaiter != null && head.HeadWaiter.User != null)
+                                {
+                                    @($"{head.HeadWaiter.User.FirstName} {head.HeadWaiter.User.LastName}")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">None</span>
+                                }
+                            </td>
+                            <td>
+                                @if (head.isTemporary)
+                                {
+                                    <span class="badge bg-secondary">Temporary</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Regular</span>
+                                }
+                            </td>
+                            <td>
+                                @if (head.Availability == "Busy")
+                                {
+                                    <span class="badge bg-danger">Busy</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">Available</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="UpSert" asp-route-id="@head.WaiterId" class="btn btn-outline-primary btn-sm action-btn"><i class="bi bi-pencil-square"></i> Edit</a>
+                                <a asp-action="Delete" asp-route-id="@head.WaiterId" class="btn btn-outline-danger btn-sm action-btn"><i class="bi bi-trash"></i> Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 @section Scripts {

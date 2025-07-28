@@ -12,37 +12,153 @@
         })
     );
 }
-<h2>Review Selected Foods</h2>
 
-<table class="table" id="food-table">
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>Price</th>
-            <th>Subtotal</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-    <tfoot>
-        <tr>
-            <td colspan="3" class="text-end"><strong>Total:</strong></td>
-            <td colspan="2" id="total">0.00</td>
-        </tr>
-    </tfoot>
-</table>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-<div class="d-flex gap-2">
+    .review-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
 
-    <!-- BACK button: will POST the cart back to ClientMenus/Index -->
-    <form id="backForm" method="post" action="/ClientMenus/Index">
-        @* carry the JSON payload back *@
-        <input type="hidden" name="OrderItemsJson" id="backItemsJson" />
-        <button type="submit" class="btn btn-secondary">← Order More </button>
-    </form>
+    .review-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
 
-    <!-- NEXT button: confirm & go forward -->
-    <button id="confirmBtn" class="btn btn-primary ms-auto">Next →</button>
+    .review-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .review-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .review-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .table thead th {
+            background: #f8fafc;
+            border: none;
+            font-weight: 600;
+            color: #344767;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:hover {
+            background: #e0f2fe;
+        }
+
+        .table tfoot td {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #344767;
+            padding: 1rem;
+            border: none;
+        }
+
+    .btn-action {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+
+    .btn-next {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .total-section {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 review-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="review-header mb-1">
+                <span class="review-header-icon"><i class="bi bi-list-check"></i></span>
+                <h2 class="fw-bold mb-0">Review Selected Foods</h2>
+            </div>
+            <div class="review-subtitle">Review your selected menu items before proceeding.</div>
+        </div>
+    </div>
+
+    <div class="review-card">
+        <table class="table" id="food-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                    <td colspan="2" id="total">₱0.00</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="d-flex gap-3">
+        <!-- BACK button: will POST the cart back to ClientMenus/Index -->
+        <form id="backForm" method="post" action="/ClientMenus/Index">
+            @* carry the JSON payload back *@
+            <input type="hidden" name="OrderItemsJson" id="backItemsJson" />
+            <button type="submit" class="btn btn-outline-secondary btn-action">
+                <i class="bi bi-arrow-left me-2"></i>Order More
+            </button>
+        </form>
+
+        <!-- NEXT button: confirm & go forward -->
+        <button id="confirmBtn" class="btn btn-primary btn-next ms-auto">
+            <i class="bi bi-check-lg me-2"></i>Next
+        </button>
+    </div>
 </div>
 
 @section Scripts {
@@ -51,25 +167,25 @@
         // keep cart entirely in JS
         let cartItems = @Html.Raw(initJson)
 
-        function renderTable() {
-            const $tbody = $('#food-table tbody').empty();
-            let total = 0;
-            cartItems.forEach(item => {
-                const subtotal = item.Quantity * item.price;
-                total += subtotal;
-                $tbody.append(`
-                            <tr data-id="${item.MenuId}">
-                                <td>${item.Name}</td>
-                                <td class="qty">${item.Quantity}</td>
-                                <td>${item.price.toFixed(2)}</td>
-                                <td class="subtotal">${subtotal.toFixed(2)}</td>
-                                <td>
-                                </td>
-                            </tr>
-                        `);
-            });
-            $('#total').text(total.toFixed(2));
-        }
+            function renderTable() {
+                const $tbody = $('#food-table tbody').empty();
+                let total = 0;
+                cartItems.forEach(item => {
+                    const subtotal = item.Quantity * item.price;
+                    total += subtotal;
+                    $tbody.append(`
+                                    <tr data-id="${item.MenuId}">
+                                        <td>${item.Name}</td>
+                                        <td class="qty">${item.Quantity}</td>
+                                        <td>₱${item.price.toFixed(2)}</td>
+                                        <td class="subtotal">₱${subtotal.toFixed(2)}</td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                `);
+                });
+                $('#total').text(`₱${total.toFixed(2)}`);
+            }
 
         // on + or −
         $(document).on('click', '.update', function () {

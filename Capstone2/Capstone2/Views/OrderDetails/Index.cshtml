@@ -6,59 +6,274 @@
 
 <input type="hidden" id="orders" value="@TempData["Order"]" />
 
-<div class="mb-3" style="position:absolute; left:10px; top:70px">
-    <button type="button" class="btn btn-secondary" style="margin-left: 0;" onclick="window.history.back();">
-        <i class="bi bi-arrow-left"></i> Back
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .confirm-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .confirm-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .confirm-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .confirm-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .confirm-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .confirm-row {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .confirm-row:last-child {
+            border-bottom: none;
+        }
+
+    .confirm-label {
+        font-weight: 600;
+        color: #344767;
+        font-size: 1rem;
+    }
+
+    .confirm-value {
+        color: #64748b;
+        font-size: 1rem;
+    }
+
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .table thead th {
+            background: #f8fafc;
+            border: none;
+            font-weight: 600;
+            color: #344767;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:hover {
+            background: #e0f2fe;
+        }
+
+    .btn-back {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        position: absolute;
+        left: 2rem;
+        top: 2rem;
+        z-index: 1000;
+    }
+
+    .btn-submit {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .total-section {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 confirm-bg">
+    <button type="button" class="btn btn-outline-secondary btn-back" onclick="window.history.back();">
+        <i class="bi bi-arrow-left me-2"></i>Back
     </button>
-</div>
 
-<h2>Confirm Order for @Model.Customer.Name</h2>
-
-<p><strong>Contact:</strong> @Model.Customer.ContactNo</p>
-<p><strong>Address:</strong> @Model.Customer.Address</p>
-<p><strong>Venue:</strong> @Model.Venue</p>
-<p><strong>No. of Pax:</strong> @Model.NoOfPax</p>
-<p><strong>Order Date:</strong> @Model.OrderDate.ToShortDateString()</p>
-<p><strong>Catering Date:</strong> @Model.CateringDate.ToShortDateString()</p>
-<p><strong>Time of Food Serving:</strong> @Model.timeOfFoodServing.ToShortTimeString()</p>
-<p><strong>Occasion:</strong> @Model.Occasion</p>
-<p><strong>Motif:</strong> @Model.Motif</p>
-
-@if (Model.OrderDetails != null && Model.OrderDetails.Any())
-{
-    <h4>Ordered Items</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Menu</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.OrderDetails)
-            {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@item.Quantity</td>
-                    <td>P@(item.Menu.Price.ToString("0.00"))</td>
-                    <td>P@((item.Menu.Price * item.Quantity).ToString("0.00"))</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <div class="form-group">
-        <label asp-for="TotalPayment" class="form-label">
-            Total Payment: @Model.TotalPayment.ToString("0.00")
-        </label>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="confirm-header mb-1">
+                <span class="confirm-header-icon"><i class="bi bi-check-circle"></i></span>
+                <h2 class="fw-bold mb-0">Confirm Order</h2>
+            </div>
+            <div class="confirm-subtitle">Review and confirm order for @Model.Customer.Name</div>
+        </div>
     </div>
-    
-    <br />
-    <button type="submit" id="confirmOrder">Submit Order</button>
-}
 
+    <div class="confirm-card">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Contact:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value">@Model.Customer.ContactNo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Address:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value">@Model.Customer.Address</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Venue:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value">@Model.Venue</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">No. of Pax:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value">@Model.NoOfPax</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Order Date:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value">@Model.OrderDate.ToShortDateString()</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Catering Date:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value">@Model.CateringDate.ToShortDateString()</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Time of Food Serving:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value">@Model.timeOfFoodServing.ToShortTimeString()</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Occasion:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value">@Model.Occasion</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Motif:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value">@Model.Motif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+    {
+        <div class="confirm-card">
+            <h4 class="fw-bold mb-3">Ordered Items</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Menu</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Quantity</td>
+                            <td>₱@(item.Menu.Price.ToString("0.00"))</td>
+                            <td>₱@((item.Menu.Price * item.Quantity).ToString("0.00"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="total-section">
+                <h5 class="fw-bold mb-0">Total Payment: ₱@Model.TotalPayment.ToString("0.00")</h5>
+            </div>
+        </div>
+    }
+
+    <div class="d-flex justify-content-center mt-4">
+        <button type="submit" id="confirmOrder" class="btn btn-primary btn-submit">
+            <i class="bi bi-check-lg me-2"></i>Submit Order
+        </button>
+    </div>
+</div>
 
 <script>
     $(function () {

@@ -4,51 +4,247 @@
     ViewData["Title"] = "View Order";
 }
 
-<h2>Order Details for @Model.Customer.Name</h2>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .details-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+    .details-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .details-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+    .details-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+    .details-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .details-row {
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .details-row:last-child {
+        border-bottom: none;
+    }
+    .details-label {
+        font-weight: 600;
+        color: #344767;
+        font-size: 1.1rem;
+    }
+    .details-value {
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .table thead th {
+        background: #f8fafc;
+        border: none;
+        font-weight: 600;
+        color: #344767;
+        padding: 1rem;
+    }
+    .table tbody td {
+        padding: 1rem;
+        border: none;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .table tbody tr:nth-child(even) {
+        background: #f8fafc;
+    }
+    .table tbody tr:hover {
+        background: #e0f2fe;
+    }
+    .btn-back {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+    .total-section {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+</style>
 
-<p><strong>Customer Name:</strong> @Model.Customer.Name</p>
-<p><strong>Contact:</strong> @Model.Customer.ContactNo</p>
-<p><strong>Address:</strong> @Model.Customer.Address</p>
-<p><strong>Venue:</strong> @Model.Venue</p>
-<p><strong>No. Of Pax: </strong>@Model.NoOfPax</p>
-<p><strong>Date:</strong> @Model.OrderDate.ToShortDateString()</p>
-<p><strong>Time of Food Serving:</strong> @Model.timeOfFoodServing.ToShortTimeString()</p>
-<p><strong>Occasion:</strong> @Model.Occasion</p>
-<p><strong>Motif:</strong> @Model.Motif</p>
-
-@if (Model.OrderDetails?.Any() == true)
-{
-    <h4>Ordered Items</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Menu</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Subtotal</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.OrderDetails)
-            {
-                <tr>
-                    <td>@item.Menu.Name</td>
-                    <td>@item.Quantity</td>
-                    <td>P@(item.Menu.Price.ToString("0.00"))</td>
-                    <td>P@((item.Menu.Price * item.Quantity).ToString("0.00"))</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <div class="mt-3">
-        <strong>Total Payment:</strong>
-        P@(Model.TotalPayment.ToString("0.00"))
+<div class="container-fluid mt-4 px-4 details-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="details-header mb-1">
+                <span class="details-header-icon"><i class="bi bi-receipt"></i></span>
+                <h2 class="fw-bold mb-0">Order Details</h2>
+            </div>
+            <div class="details-subtitle">View order information for @Model.Customer.Name</div>
+        </div>
     </div>
-}
-else
-{
-    <p><em>No items in this order.</em></p>
-}
 
-<a asp-action="Index" class="btn btn-secondary mt-4">Back to Paid Orders</a>
+    <div class="details-card">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="details-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="details-label">Customer Name:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="details-value">@Model.Customer.Name</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="details-label">Contact:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="details-value">@Model.Customer.ContactNo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="details-label">Address:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="details-value">@Model.Customer.Address</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="details-label">Venue:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="details-value">@Model.Venue</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="details-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="details-label">No. Of Pax:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="details-value">@Model.NoOfPax</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="details-label">Date:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="details-value">@Model.OrderDate.ToShortDateString()</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="details-label">Time of Food Serving:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="details-value">@Model.timeOfFoodServing.ToShortTimeString()</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="details-label">Occasion:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="details-value">@Model.Occasion</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="details-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="details-label">Motif:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="details-value">@Model.Motif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.OrderDetails?.Any() == true)
+    {
+        <div class="details-card">
+            <h4 class="fw-bold mb-3">Ordered Items</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Menu</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderDetails)
+                    {
+                        <tr>
+                            <td>@item.Menu.Name</td>
+                            <td>@item.Quantity</td>
+                            <td>₱@(item.Menu.Price.ToString("0.00"))</td>
+                            <td>₱@((item.Menu.Price * item.Quantity).ToString("0.00"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="total-section">
+                <h5 class="fw-bold mb-0">Total Payment: ₱@(Model.TotalPayment.ToString("0.00"))</h5>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="details-card">
+            <div class="text-center">
+                <p class="text-muted"><em>No items in this order.</em></p>
+            </div>
+        </div>
+    }
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-back">
+            <i class="bi bi-arrow-left me-2"></i>Back to Paid Orders
+        </a>
+    </div>
+</div>

@@ -3,55 +3,215 @@
     ViewData["Title"] = "Edit Food Items";
     var menus = ViewBag.Menus as List<Capstone2.Models.Menu>;
 }
-<h2>Edit Food Items for @Model.Customer.Name</h2>
-<form asp-action="Edit" asp-route-orderId="@Model.OrderId" method="post">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Menu</th>
-                <th>Quantity</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="orderDetailsBody">
-            @for (int i = 0; i < Model.OrderDetails.Count; i++)
-            {
-                <tr>
-                    <td>
-                        <input type="hidden" name="orderDetails[@i].OrderDetailId" value="@Model.OrderDetails[i].OrderDetailId" />
-                        <input type="hidden" name="orderDetails[@i].MenuId" value="@Model.OrderDetails[i].MenuId" />
-                        <input type="hidden" name="orderDetails[@i].Name" value="@Model.OrderDetails[i].Name" />
-                        @Model.OrderDetails[i].Name
-                    </td>
-                    <td>
-                        <input type="number" name="orderDetails[@i].Quantity" value="@Model.OrderDetails[i].Quantity" min="1" class="form-control" />
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="form-group">
-        <label><strong>Total Payment:</strong> <span id="totalPayment">0.00</span></label>
+
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .edit-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .edit-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .edit-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .edit-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .edit-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .table thead th {
+            background: #f8fafc;
+            border: none;
+            font-weight: 600;
+            color: #344767;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:hover {
+            background: #e0f2fe;
+        }
+
+    .form-control, .form-select {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #6476f8;
+            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+        }
+
+    .btn-save {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .btn-cancel {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+
+    .btn-add {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+
+    .btn-remove {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+
+    .total-section {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .add-section {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 edit-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="edit-header mb-1">
+                <span class="edit-header-icon"><i class="bi bi-list-ul"></i></span>
+                <h2 class="fw-bold mb-0">Edit Food Items</h2>
+            </div>
+            <div class="edit-subtitle">Modify food items for @Model.Customer.Name</div>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Add Menu Item:</label>
-        <select id="menuSelect" class="form-control">
-            <option value="">-- Select Menu --</option>
-            @foreach (var menu in menus)
-            {
-                <option value="@menu.MenuId" data-name="@menu.Name">@menu.Name</option>
-            }
-        </select>
-        <input type="number" id="menuQuantity" class="form-control mt-2" placeholder="Quantity" min="1" value="1" />
-        <button type="button" class="btn btn-success mt-2" onclick="addMenuItem()">Add</button>
+
+    <div class="edit-card">
+        <form asp-action="Edit" asp-route-orderId="@Model.OrderId" method="post">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Menu</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="orderDetailsBody">
+                    @for (int i = 0; i < Model.OrderDetails.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <input type="hidden" name="orderDetails[@i].OrderDetailId" value="@Model.OrderDetails[i].OrderDetailId" />
+                                <input type="hidden" name="orderDetails[@i].MenuId" value="@Model.OrderDetails[i].MenuId" />
+                                <input type="hidden" name="orderDetails[@i].Name" value="@Model.OrderDetails[i].Name" />
+                                @Model.OrderDetails[i].Name
+                            </td>
+                            <td>
+                                <input type="number" name="orderDetails[@i].Quantity" value="@Model.OrderDetails[i].Quantity" min="1" class="form-control" />
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
+                                    <i class="bi bi-trash me-1"></i>Remove
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="total-section">
+                <h5 class="fw-bold mb-0">Total Payment: ₱<span id="totalPayment">0.00</span></h5>
+            </div>
+
+            <div class="add-section">
+                <h5 class="fw-bold mb-3">Add Menu Item</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Select Menu</label>
+                        <select id="menuSelect" class="form-select">
+                            <option value="">-- Select Menu --</option>
+                            @foreach (var menu in menus)
+                            {
+                                <option value="@menu.MenuId" data-name="@menu.Name">@menu.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Quantity</label>
+                        <input type="number" id="menuQuantity" class="form-control" placeholder="Quantity" min="1" value="1" />
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-success btn-add" onclick="addMenuItem()">
+                            <i class="bi bi-plus-lg me-1"></i>Add Item
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-3 mt-4">
+                <button type="submit" class="btn btn-primary btn-save">
+                    <i class="bi bi-check-lg me-2"></i>Save Changes
+                </button>
+                <a asp-controller="Customers" asp-action="ViewOrder" asp-route-id="@Model.Customer.CustomerID" class="btn btn-outline-secondary btn-cancel">
+                    <i class="bi bi-x-lg me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
     </div>
-    <br />
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a asp-controller="Customers" asp-action="ViewOrder" asp-route-id="@Model.Customer.CustomerID" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
+
 @section Scripts {
     <script>
         function removeRow(btn) {
@@ -75,12 +235,14 @@
             if (!menuId || !quantity || quantity < 1) return;
             var index = $('#orderDetailsBody tr').length;
             var row = `<tr>
-                    <td><input type="hidden" name="orderDetails[${index}].MenuId" value="${menuId}" />
-                        <input type="hidden" name="orderDetails[${index}].Name" value="${menuName}" />
-                        ${menuName}</td>
-                    <td><input type="number" name="orderDetails[${index}].Quantity" value="${quantity}" min="1" class="form-control" /></td>
-                    <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
-                </tr>`;
+                            <td><input type="hidden" name="orderDetails[${index}].MenuId" value="${menuId}" />
+                                <input type="hidden" name="orderDetails[${index}].Name" value="${menuName}" />
+                                ${menuName}</td>
+                            <td><input type="number" name="orderDetails[${index}].Quantity" value="${quantity}" min="1" class="form-control" /></td>
+                            <td><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
+                                <i class="bi bi-trash me-1"></i>Remove
+                            </button></td>
+                        </tr>`;
             $('#orderDetailsBody').append(row);
 
             // Optionally reset the dropdown and quantity for user convenience

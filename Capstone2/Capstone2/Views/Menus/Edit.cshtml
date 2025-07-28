@@ -4,23 +4,109 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-<h4>Menu</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    .edit-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .edit-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .edit-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .edit-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .form-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #6476f8;
+            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+        }
+
+    .btn-save {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .btn-back {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+
+    .current-image {
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 edit-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="edit-header mb-1">
+                <span class="edit-header-icon"><i class="bi bi-list-ul"></i></span>
+                <h2 class="fw-bold mb-0">Edit Menu Item</h2>
+            </div>
+            <div class="edit-subtitle">Update menu item information.</div>
+        </div>
+    </div>
+
+    <div class="form-card">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MenuId" />
             <input type="hidden" asp-for="ImagePath" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Name" class="form-label fw-semibold">Name</label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter dish name" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Price" class="form-label fw-semibold">Price</label>
+                    <input asp-for="Price" class="form-control" placeholder="Enter price" />
+                </div>
             </div>
-            <div class="form-group">
-                <div class="dishType">
-                    <select asp-for="DishType" id="DishType">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Dish Type</label>
+                    <select asp-for="DishType" id="DishType" class="form-select">
                         <option selected value="MAINDISH">Main</option>
                         <option value="SIDEDISH">Side</option>
                         <option value="DESSERTS">Dessert</option>
@@ -28,45 +114,49 @@
                         <option value="RICE">Rice</option>
                     </select>
                 </div>
-                <label asp-for="Category" class="control-label"></label>
-                <select asp-for="Category" class="form-control" id="CategoryType">
-                    <option value="Pork">Pork</option>
-                    <option value="Beef">Beef</option>
-                    <option value="Chicken">Chicken</option>
-                    <option value="Seafood">Seafood</option>
-                    <option value="Vegetables">Vegetables</option>
-                    <option value="Noodles & Pasta">Noodles & Pasta</option>
-                    <option value="Salad">Salad</option>
-                    <option value="Dessert">Dessert</option>
-                    <option value="SoftDrinks">Soft Drinks</option>
-                    <option value="Rice">Rice</option>
-                </select>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Category" class="form-label fw-semibold">Category</label>
+                    <select asp-for="Category" class="form-select" id="CategoryType">
+                        <option value="Pork">Pork</option>
+                        <option value="Beef">Beef</option>
+                        <option value="Chicken">Chicken</option>
+                        <option value="Seafood">Seafood</option>
+                        <option value="Vegetables">Vegetables</option>
+                        <option value="Noodles & Pasta">Noodles & Pasta</option>
+                        <option value="Salad">Salad</option>
+                        <option value="Dessert">Dessert</option>
+                        <option value="SoftDrinks">Soft Drinks</option>
+                        <option value="Rice">Rice</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>Upload Image</label>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Upload Image</label>
                 <input type="file" value="@Model.ImagePath" name="ImageFile" class="form-control" />
                 @if (!string.IsNullOrEmpty(Model.ImagePath))
                 {
-                    <img src="@Model.ImagePath"
-                         alt="@Model.Name"
-                         style="width:150px;height:150px;object-fit:cover;border-radius:6px" />
+                    <div class="mt-2">
+                        <img src="@Model.ImagePath"
+                             alt="@Model.Name"
+                             class="current-image"
+                             style="width:150px;height:150px;object-fit:cover;" />
+                    </div>
                 }
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-save">
+                    <i class="bi bi-check-lg me-2"></i>Save Changes
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-back">
+                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                </a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

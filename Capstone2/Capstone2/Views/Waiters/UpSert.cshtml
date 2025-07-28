@@ -4,68 +4,175 @@
     ViewData["Title"] = "Waiters";
 }
 
-<div class="container mt-5">
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-    <form asp-action="UpSert" method="post">
-        <input asp-for="WaiterId" type="hidden" />
-        <input asp-for="User.Role" type="hidden" value="WAITER" />
+    .upsert-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
 
-        <div class="mb-3">
-            <div class="form-check">
-                <input asp-for="isTemporary" class="form-check-input" type="checkbox" id="isTemporaryCheckbox" />
-                <label class="form-check-label" for="isTemporaryCheckbox">
-                    Check if this is a temporary waiter
-                </label>
+    .upsert-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .upsert-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .upsert-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .form-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #6476f8;
+            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+        }
+
+    .btn-submit {
+        font-weight: 600;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        padding: 0.75rem 2rem;
+        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+    }
+
+    .btn-back {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+
+    .form-check-input {
+        border-radius: 6px;
+        border: 1px solid #e0e7ef;
+    }
+
+        .form-check-input:checked {
+            background-color: #6476f8;
+            border-color: #6476f8;
+        }
+
+    .input-group {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .input-group .form-control {
+            border-radius: 12px 0 0 12px;
+        }
+
+        .input-group .btn {
+            border-radius: 0 12px 12px 0;
+            border: 1px solid #e0e7ef;
+            border-left: none;
+        }
+</style>
+
+<div class="container-fluid mt-4 px-4 upsert-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="upsert-header mb-1">
+                <span class="upsert-header-icon"><i class="bi bi-people"></i></span>
+                <h2 class="fw-bold mb-0">Waiter Management</h2>
             </div>
+            <div class="upsert-subtitle">Add or update waiter information.</div>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="User.Username" class="form-label">Username</label>
-            <input asp-for="User.Username" class="form-control" placeholder="Enter username" />
-            <span asp-validation-for="User.Username" class="text-danger"></span>
-        </div>
+    <div class="form-card">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-        <div class="mb-3">
-            <label asp-for="User.Password" class="form-label">Password</label>
-            <div class="input-group">
-                <input asp-for="User.Password" type="text" class="form-control" placeholder="Enter password" id="passwordInput" />
-                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
-                    Show
+        <form asp-action="UpSert" method="post">
+            <input asp-for="WaiterId" type="hidden" />
+            <input asp-for="User.Role" type="hidden" value="WAITER" />
+
+            <div class="mb-4">
+                <div class="form-check">
+                    <input asp-for="isTemporary" class="form-check-input" type="checkbox" id="isTemporaryCheckbox" />
+                    <label class="form-check-label fw-semibold" for="isTemporaryCheckbox">
+                        Check if this is a temporary waiter
+                    </label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="User.Username" class="form-label fw-semibold">Username</label>
+                    <input asp-for="User.Username" class="form-control" placeholder="Enter username" />
+                    <span asp-validation-for="User.Username" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="User.Password" class="form-label fw-semibold">Password</label>
+                    <div class="input-group">
+                        <input asp-for="User.Password" type="text" class="form-control" placeholder="Enter password" id="passwordInput" />
+                        <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                            Show
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="User.FirstName" class="form-label fw-semibold">First Name</label>
+                    <input asp-for="User.FirstName" class="form-control" placeholder="Enter first name" />
+                    <span asp-validation-for="User.FirstName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="User.LastName" class="form-label fw-semibold">Last Name</label>
+                    <input asp-for="User.LastName" class="form-control" placeholder="Enter last name" />
+                    <span asp-validation-for="User.LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="HeadWaiterId" class="form-label fw-semibold">Assign Head Waiter</label>
+                <select asp-for="HeadWaiterId" class="form-select"
+                        asp-items="@(new SelectList(ViewBag.HeadWaiterList, "HeadWaiterId", "User.Username"))">
+                    <option value="">-- Select Head Waiter --</option>
+                </select>
+                <span asp-validation-for="HeadWaiterId" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary btn-submit">
+                    <i class="bi bi-check-lg me-2"></i>Submit
                 </button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-back">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Waiters
+                </a>
             </div>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="User.FirstName" class="form-label">First Name</label>
-            <input asp-for="User.FirstName" class="form-control" placeholder="Enter first name" />
-            <span asp-validation-for="User.FirstName" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="User.LastName" class="form-label">Last Name</label>
-            <input asp-for="User.LastName" class="form-control" placeholder="Enter last name" />
-            <span asp-validation-for="User.LastName" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="HeadWaiterId" class="form-label">Assign Head Waiter</label>
-            <select asp-for="HeadWaiterId" class="form-control"
-                    asp-items="@(new SelectList(ViewBag.HeadWaiterList, "HeadWaiterId", "User.Username"))">
-                <option value="">-- Select Head Waiter --</option>
-            </select>
-            <span asp-validation-for="HeadWaiterId" class="text-danger"></span>
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <a asp-action="Index" class="btn btn-secondary">
-                <i class="bi bi-arrow-left-circle"></i> Back to Waiters
-            </a>
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-save-fill"></i> Submit
-            </button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 @section Scripts {
