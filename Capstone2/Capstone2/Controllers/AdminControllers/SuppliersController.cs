@@ -33,24 +33,6 @@ namespace Capstone2.Controllers.AdminControllers
             return View(await suppliers.ToListAsync());
         }
 
-        // GET: Suppliers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var supplier = await _context.Suppliers
-                .FirstOrDefaultAsync(m => m.SupplierId == id);
-            if (supplier == null)
-            {
-                return NotFound();
-            }
-
-            return View(supplier);
-        }
-
         // GET: Suppliers/Create
         public IActionResult Create()
         {
