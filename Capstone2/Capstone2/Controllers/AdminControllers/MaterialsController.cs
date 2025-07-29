@@ -33,24 +33,6 @@ namespace Capstone2.Controllers.AdminControllers
             return View(await materials.ToListAsync());
         }
 
-        // GET: Materials/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var material = await _context.Materials
-                .FirstOrDefaultAsync(m => m.MaterialId == id);
-            if (material == null)
-            {
-                return NotFound();
-            }
-
-            return View(material);
-        }
-
         // GET: Materials/Create
         public IActionResult Create()
         {

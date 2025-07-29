@@ -25,24 +25,6 @@ namespace Capstone2.Controllers.AdminControllers
             return View(await _context.MenuPackages.ToListAsync());
         }
 
-        // GET: MenuPackages/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var menuPackages = await _context.MenuPackages
-                .FirstOrDefaultAsync(m => m.MenuPackageId == id);
-            if (menuPackages == null)
-            {
-                return NotFound();
-            }
-
-            return View(menuPackages);
-        }
-
         // GET: MenuPackages/Create
         public IActionResult Create()
         {
