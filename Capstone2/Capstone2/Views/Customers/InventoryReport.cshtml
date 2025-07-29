@@ -8,17 +8,20 @@
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .inventory-bg {
         background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
         min-height: 100vh;
         border-radius: 24px;
         padding-bottom: 2rem;
     }
+
     .inventory-header {
         display: flex;
         align-items: center;
         gap: 16px;
     }
+
     .inventory-header-icon {
         font-size: 2.5rem;
         color: #0d6efd;
@@ -27,41 +30,49 @@
         padding: 8px 14px;
         box-shadow: 0 2px 8px rgba(13,110,253,0.08);
     }
+
     .inventory-subtitle {
         color: #6c757d;
         font-size: 1.1rem;
         margin-top: -8px;
         margin-bottom: 18px;
     }
+
     .inventory-card {
         background: #fff;
         border-radius: 20px;
         box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
         padding: 2rem;
     }
+
     .table {
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    .table thead th {
-        background: #f8fafc;
-        border: none;
-        font-weight: 600;
-        color: #344767;
-        padding: 1rem;
-    }
-    .table tbody td {
-        padding: 1rem;
-        border: none;
-        border-bottom: 1px solid #f1f5f9;
-    }
-    .table tbody tr:nth-child(even) {
-        background: #f8fafc;
-    }
-    .table tbody tr:hover {
-        background: #e0f2fe;
-    }
+
+        .table thead th {
+            background: #f8fafc;
+            border: none;
+            font-weight: 600;
+            color: #344767;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:hover {
+            background: #e0f2fe;
+        }
+
     .btn-back {
         font-weight: 500;
         border-radius: 8px;
@@ -97,9 +108,18 @@
                     <tr>
                         <td>@item.MaterialName</td>
                         <td>@item.PulledOut</td>
-                        <td>@item.Returned</td>
-                        <td>@item.Lost</td>
-                        <td>@item.Damaged</td>
+                        @if (item.IsConsumable)
+                        {
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        }
+                        else
+                        {
+                            <td>@item.Returned</td>
+                            <td>@item.Lost</td>
+                            <td>@item.Damaged</td>
+                        }
                     </tr>
                 }
             </tbody>

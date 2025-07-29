@@ -101,10 +101,10 @@
     {
         <div class="alert alert-warning">@TempData["CateringStatusError"]</div>
     }
-    @*     @if (TempData["HeadWaiterAssigned"] != null)
+        @if (TempData["HeadWaiterAssigned"] != null)
     {
     <div class="alert alert-success">@TempData["HeadWaiterAssigned"]</div>
-    } *@
+    }
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
             <div class="customers-header mb-1">
@@ -139,7 +139,7 @@
                         <th class="fw-bold" style="font-size: 1.2rem;">@Html.DisplayNameFor(model => model.First().Address)</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Order Status</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Catering Status</th>
-                        @*                             <th>Head Waiter</th> *@
+                        <th class="fw-bold" style="font-size: 1.2rem;">Head Waiter</th>
                         <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
                     </tr>
                 </thead>
@@ -186,25 +186,29 @@
                                     </select>
                                 </form>
                             </td>
-                            @*                                 <td>
-                        @if (order?.HeadWaiter != null && order.HeadWaiter.User != null)
-                        {
-                        @($"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}")
-                        }
-                        else
-                        {
-                        <span class="text-muted">None</span>
-                        }
-                        </td> *@
+                            <td>
+                                @if (order?.HeadWaiter != null && order.HeadWaiter.User != null)
+                                {
+                                @($"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}")
+                                }
+                                else
+                                {
+                                <span class="text-muted">None</span>
+                                }
+                            </td>
 
                             <td class="text-end">
                                 <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-outline-secondary action-btn"><i class="bi bi-eye"></i> View Order</a>
                                 <a asp-action="PaymentDetails" asp-route-id="@item.CustomerID" class="btn btn-outline-success action-btn"><i class="bi bi-credit-card"></i> Payment Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-outline-danger action-btn"><i class="bi bi-trash"></i> Delete</a>
+                                @if (order != null && order.Status != "Completed" && order.AmountPaid >= 0.5 * order.TotalPayment)
+                                {
+                                    <a asp-action="AssignHeadWaiter" asp-route-id="@item.CustomerID" class="btn btn-outline-primary action-btn"><i class="bi bi-person-plus"></i> Assign Head Waiter</a>
+                                }
                                 @if (order != null && order.Status == "Completed")
                                 {
                                     <a asp-action="InventoryReport" asp-route-id="@item.CustomerID" class="btn btn-outline-info action-btn"><i class="bi bi-clipboard-data"></i> Inventory Report</a>
                                 }
+                                <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-outline-danger action-btn"><i class="bi bi-trash"></i> Delete</a>
                             </td>
                         </tr>
                     }

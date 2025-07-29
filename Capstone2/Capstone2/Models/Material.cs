@@ -15,5 +15,6 @@ namespace Capstone2.Models
         public int Quantity { get; set; }
 
         public decimal ChargePerItem { get; set; }
+        public bool IsConsumable { get; set; } // true for consumables, false for non-consumables
     }
 }

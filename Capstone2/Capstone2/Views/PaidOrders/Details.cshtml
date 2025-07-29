@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "View Order";
+    var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
+    var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
+    var updatedTotal = (decimal)Model.TotalPayment + additionalCharges;
 }
 
 <style>
@@ -233,11 +236,76 @@
             </div>
         </div>
     }
-    else
+
+    @if (additionalCharges > 0)
     {
         <div class="details-card">
-            <div class="text-center">
-                <p class="text-muted"><em>No items in this order.</em></p>
+            <h4 class="fw-bold mb-3">Additional Charges</h4>
+            <div class="details-row">
+                <div class="row">
+                    <div class="col-md-4">
+                        <span class="details-label">Additional Charges (Lost/Damaged):</span>
+                    </div>
+                    <div class="col-md-8">
+                        <span class="fw-bold mb-0">₱@additionalCharges</span>
+                        @if (chargedItems != null && chargedItems.Any())
+                        {
+                            <button type="button" class="btn btn-sm btn-info ms-2" data-bs-toggle="modal" data-bs-target="#chargedItemsModal">
+                                Items Charged
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="details-row">
+                <div class="row">
+                    <div class="col-md-4">
+                        <span class="details-label">Updated Total Payment:</span>
+                    </div>
+                    <div class="col-md-8">
+                        <span class="fw-bold mb-0">₱@updatedTotal.ToString("0.00")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Modal for Items Charged -->
+    @if (chargedItems != null && chargedItems.Any())
+    {
+        <div class="modal fade" id="chargedItemsModal" tabindex="-1" aria-labelledby="chargedItemsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="chargedItemsModalLabel">Items Charged (Lost/Damaged)</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Material</th>
+                                    <th>Lost</th>
+                                    <th>Damaged</th>
+                                    <th>Charge Per Item</th>
+                                    <th>Total Charge</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in chargedItems)
+                                {
+                                    <tr>
+                                        <td>@item.MaterialName</td>
+                                        <td>@item.Lost</td>
+                                        <td>@item.Damaged</td>
+                                        <td>₱@item.ChargePerItem</td>
+                                        <td>₱@((item.Lost + item.Damaged) * item.ChargePerItem)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     }

@@ -67,6 +67,18 @@ namespace Capstone2.Controllers
             if (order == null)
                 return NotFound();
 
+            // Calculate additional charges for lost/damaged materials
+            var materialReturns = await _context.Set<MaterialReturn>().Where(r => r.OrderId == order.OrderId).ToListAsync();
+            var additionalCharges = materialReturns.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem);
+            ViewBag.AdditionalCharges = additionalCharges;
+
+            // Prepare list of charged items for modal
+            var chargedItems = materialReturns
+                .Where(r => r.Lost > 0 || r.Damaged > 0)
+                .Select(r => new { r.MaterialName, r.Lost, r.Damaged, r.ChargePerItem })
+                .ToList();
+            ViewBag.ChargedItems = chargedItems;
+
             return View(order);
         }
         // GET: PaidOrders/Attendances/5  (5 == CustomerId)
@@ -293,18 +305,23 @@ namespace Capstone2.Controllers
                 .Include(p => p.Items)
                 .FirstOrDefaultAsync(p => p.OrderId == order.OrderId);
 
-            var materials = await _context.Materials.ToListAsync();
+            var materials = await _context.Materials.Where(m => !m.IsConsumable).ToListAsync();
 
-            var pulledOutItems = pullOut?.Items.Select(i => new ReturnMaterialItem
-            {
-                MaterialId = materials.FirstOrDefault(m => m.Name == i.MaterialName)?.MaterialId ?? 0,
-                MaterialName = i.MaterialName,
-                PulledOut = i.Quantity,
-                Returned = i.Quantity,
-                Lost = 0,
-                Damaged = 0,
-                ChargePerItem = materials.FirstOrDefault(m => m.Name == i.MaterialName)?.ChargePerItem ?? 0
-            }).ToList() ?? new List<ReturnMaterialItem>();
+            var pulledOutItems = pullOut?.Items
+                .Where(i => materials.Any(m => m.Name == i.MaterialName))
+                .Select(i => {
+                    var mat = materials.First(m => m.Name == i.MaterialName);
+                    return new ReturnMaterialItem
+                    {
+                        MaterialId = mat.MaterialId,
+                        MaterialName = i.MaterialName,
+                        PulledOut = i.Quantity,
+                        Returned = i.Quantity,
+                        Lost = 0,
+                        Damaged = 0,
+                        ChargePerItem = mat.ChargePerItem
+                    };
+                }).ToList() ?? new List<ReturnMaterialItem>();
 
             var viewModel = new ReturnMaterialsViewModel
             {
@@ -330,26 +347,26 @@ namespace Capstone2.Controllers
                     _context.Materials.Update(material);
 
                     // Always use the name from the database
+                    totalCharge += (item.Lost + item.Damaged) * item.ChargePerItem;
+                    // Store charge per item in MaterialReturn
                     var materialReturn = new MaterialReturn
                     {
                         OrderId = model.OrderId,
                         MaterialId = item.MaterialId,
-                        MaterialName = material.Name, // use DB value
+                        MaterialName = material != null ? material.Name : item.MaterialName,
                         Returned = item.Returned,
                         Lost = item.Lost,
-                        Damaged = item.Damaged
+                        Damaged = item.Damaged,
+                        ChargePerItem = item.ChargePerItem
                     };
                     _context.Add(materialReturn);
                 }
-                // Add charge for lost and damaged (10 pesos each)
-                totalCharge += (item.Lost + item.Damaged) * 10;
             }
             // Set order status to Completed
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == model.OrderId);
             if (order != null)
             {
                 order.Status = "Completed";
-                order.TotalPayment += (double)totalCharge;
                 _context.Orders.Update(order);
             }
             await _context.SaveChangesAsync();

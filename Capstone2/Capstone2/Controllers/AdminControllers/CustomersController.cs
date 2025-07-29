@@ -59,7 +59,7 @@ namespace Capstone2.Controllers.AdminControllers
             }
             return View(customer);
         }
-        
+
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 
@@ -170,8 +170,15 @@ namespace Capstone2.Controllers.AdminControllers
 
             // Calculate additional charges for lost/damaged materials
             var materialReturns = await _context.Set<MaterialReturn>().Where(r => r.OrderId == customer.Order.OrderId).ToListAsync();
-            var additionalCharges = materialReturns.Sum(r => (r.Lost + r.Damaged) * 10);
+            var additionalCharges = materialReturns.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem);
             ViewBag.AdditionalCharges = additionalCharges;
+
+            // Prepare list of charged items for modal
+            var chargedItems = materialReturns
+                .Where(r => r.Lost > 0 || r.Damaged > 0)
+                .Select(r => new { r.MaterialName, r.Lost, r.Damaged, r.ChargePerItem })
+                .ToList();
+            ViewBag.ChargedItems = chargedItems;
 
             ViewBag.Payments = payments;
             return View(customer);
@@ -302,18 +309,45 @@ namespace Capstone2.Controllers.AdminControllers
             if (order == null || order.Status != "Completed")
                 return NotFound();
 
+            // Get all material pull outs for this order
+            var materialPullOut = await _context.MaterialPullOuts
+                .Include(p => p.Items)
+                .FirstOrDefaultAsync(p => p.OrderId == order.OrderId);
+
             // Get all material returns for this order
             var materialReturns = await _context.Set<MaterialReturn>().Where(r => r.OrderId == order.OrderId).ToListAsync();
 
-            var reportItems = materialReturns.Select(r => new InventoryReportItemViewModel
+            // Get all materials with their consumable status
+            var materialsDict = _context.Materials.ToDictionary(m => m.MaterialId, m => m.IsConsumable);
+
+            var reportItems = new List<InventoryReportItemViewModel>();
+
+            if (materialPullOut?.Items != null)
             {
-                MaterialId = r.MaterialId,
-                MaterialName = r.MaterialName,
-                PulledOut = r.Returned + r.Lost + r.Damaged,
-                Returned = r.Returned,
-                Lost = r.Lost,
-                Damaged = r.Damaged
-            }).ToList();
+                foreach (var pullOutItem in materialPullOut.Items)
+                {
+                    // Find the material to get its ID and consumable status
+                    var material = _context.Materials.FirstOrDefault(m => m.Name == pullOutItem.MaterialName);
+                    var isConsumable = material?.IsConsumable ?? false;
+                    var materialId = material?.MaterialId ?? 0;
+
+                    // Find corresponding return data (if any)
+                    var returnData = materialReturns.FirstOrDefault(r => r.MaterialName == pullOutItem.MaterialName);
+
+                    var reportItem = new InventoryReportItemViewModel
+                    {
+                        MaterialId = materialId,
+                        MaterialName = pullOutItem.MaterialName,
+                        PulledOut = pullOutItem.Quantity,
+                        Returned = isConsumable ? 0 : (returnData?.Returned ?? 0),
+                        Lost = isConsumable ? 0 : (returnData?.Lost ?? 0),
+                        Damaged = isConsumable ? 0 : (returnData?.Damaged ?? 0),
+                        IsConsumable = isConsumable
+                    };
+
+                    reportItems.Add(reportItem);
+                }
+            }
 
             var viewModel = new InventoryReportViewModel
             {

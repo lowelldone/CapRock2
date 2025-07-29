@@ -3,6 +3,12 @@
     ViewData["Title"] = "Payment Details";
     var order = Model.Order;
     var payments = ViewBag.Payments as List<Capstone2.Models.Payment>;
+    var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
+    var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
+    var orderTotal = (decimal)order.TotalPayment;
+    var downPayment = orderTotal * 0.5m;
+    var downPaymentRemaining = downPayment - (decimal)order.AmountPaid;
+    var balance = orderTotal + additionalCharges - (decimal)order.AmountPaid;
 }
 
 <style>
@@ -160,7 +166,7 @@
                     <span class="payment-label">Order Total</span>
                 </div>
                 <div class="col-md-9">
-                    <span class="payment-value">@order?.TotalPayment.ToString("C")</span>
+                    <span class="payment-value">@orderTotal.ToString("C")</span>
                 </div>
             </div>
         </div>
@@ -172,19 +178,13 @@
                 <div class="col-md-9">
                     @if (order != null)
                     {
-                        var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
-                        var totalDue = (decimal)order.TotalPayment + additionalCharges;
-                        var downPayment = (decimal)order.TotalPayment * 0.5m;
-                        var paidPercent = totalDue > 0 ? ((decimal)order.AmountPaid / totalDue) : 0;
-                        if (paidPercent >= 0.5m)
+                        if (downPaymentRemaining <= 0)
                         {
-                            <span class="badge bg-success">DONE</span>
+                            <span class="badge bg-success fs-6 px-1 py-1">Done</span>
                         }
                         else
                         {
-                            var remaining = downPayment - (decimal)order.AmountPaid;
-                            if (remaining < 0) { remaining = 0; }
-                            <span class="payment-value">@(remaining.ToString("C"))</span>
+                            <span class="payment-value">@downPaymentRemaining.ToString("C")</span>
                         }
                     }
                     else
@@ -200,7 +200,13 @@
                     <span class="payment-label">Additional Charges (Lost/Damaged)</span>
                 </div>
                 <div class="col-md-9">
-                    <span class="payment-value">₱@ViewBag.AdditionalCharges</span>
+                    <span class="payment-value">₱@additionalCharges</span>
+                    @if (chargedItems != null && chargedItems.Any())
+                    {
+                        <button type="button" class="btn btn-sm btn-info ms-2" data-bs-toggle="modal" data-bs-target="#chargedItemsModal">
+                            Items Charged
+                        </button>
+                    }
                 </div>
             </div>
         </div>
@@ -210,7 +216,7 @@
                     <span class="payment-label">Amount Paid</span>
                 </div>
                 <div class="col-md-9">
-                    <span class="payment-value">@order?.AmountPaid.ToString("C")</span>
+                    <span class="payment-value">@order.AmountPaid.ToString("C")</span>
                 </div>
             </div>
         </div>
@@ -220,16 +226,7 @@
                     <span class="payment-label">Balance</span>
                 </div>
                 <div class="col-md-9">
-                    @if (order != null)
-                    {
-                        var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
-                        var balance = (decimal)order.TotalPayment + additionalCharges - (decimal)order.AmountPaid;
-                        <span class="payment-value">@((balance > 0 ? balance.ToString("C") : "0.00"))</span>
-                    }
-                    else
-                    {
-                        <span class="payment-value">None</span>
-                    }
+                    <span class="payment-value">@((balance > 0 ? balance.ToString("C") : "0.00"))</span>
                 </div>
             </div>
         </div>
@@ -241,16 +238,17 @@
                 <div class="col-md-9">
                     @if (order != null)
                     {
-                        var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
-                        var totalDue = (decimal)order.TotalPayment + additionalCharges;
-                        var paidPercent = totalDue > 0 ? ((decimal)order.AmountPaid / totalDue) : 0;
-                        if (paidPercent < 0.5m)
+                        if (balance <= 0)
                         {
-                            <span class="badge bg-danger">Incomplete Payment</span>
+                            <span class="badge bg-success fs-6 px-1 py-1">Payment Complete</span>
                         }
-                        else if (paidPercent >= 0.5m)
+                        else if (downPaymentRemaining > 0)
                         {
-                            <span class="badge bg-success">DONE</span>
+                            <span class="badge bg-danger fs-6 px-1 py-1">Incomplete Payment</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success fs-6 px-1 py-1">Ready To Cater</span>
                         }
                     }
                     else
@@ -331,4 +329,44 @@
             <i class="bi bi-arrow-left me-2"></i>Back to Customers
         </a>
     </div>
-</div> 
+</div>
+
+<!-- Modal for Items Charged -->
+@if (chargedItems != null && chargedItems.Any())
+{
+    <div class="modal fade" id="chargedItemsModal" tabindex="-1" aria-labelledby="chargedItemsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chargedItemsModalLabel">Items Charged (Lost/Damaged)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Lost</th>
+                                <th>Damaged</th>
+                                <th>Charge Per Item</th>
+                                <th>Total Charge</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in chargedItems)
+                            {
+                                <tr>
+                                    <td>@item.MaterialName</td>
+                                    <td>@item.Lost</td>
+                                    <td>@item.Damaged</td>
+                                    <td>₱@item.ChargePerItem</td>
+                                    <td>₱@((item.Lost + item.Damaged) * item.ChargePerItem)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+} 
