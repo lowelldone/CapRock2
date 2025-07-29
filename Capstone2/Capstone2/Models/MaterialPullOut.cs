@@ -28,5 +28,6 @@ namespace Capstone2.Models
         public int Returned { get; set; }
         public int Lost { get; set; }
         public int Damaged { get; set; }
+        public decimal ChargePerItem { get; set; } // Added for custom charge per item
     }
 }

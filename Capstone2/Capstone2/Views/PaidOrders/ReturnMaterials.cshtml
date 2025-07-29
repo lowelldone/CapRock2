@@ -124,6 +124,7 @@
                         <th>Returned</th>
                         <th>Lost</th>
                         <th>Damaged</th>
+                        <th>Charge Per Item</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -143,6 +144,9 @@
                             </td>
                             <td>
                                 <input type="number" name="Items[@i].Damaged" id="damaged_@i" value="0" min="0" max="@Model.Items[i].PulledOut" class="form-control" oninput="updateReturned(@i)" />
+                            </td>
+                            <td>
+                                <input type="number" name="Items[@i].ChargePerItem" id="charge_@i" value="@Model.Items[i].ChargePerItem" min="0" step="0.01" class="form-control" />
                             </td>
                         </tr>
                     }
