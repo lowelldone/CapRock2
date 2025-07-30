@@ -19,8 +19,6 @@ namespace Capstone2.Controllers
         {
             var waiters = _context.Waiters
                 .Include(w => w.User)
-                .Include(w => w.HeadWaiter)
-                    .ThenInclude(h => h.User)
                 .Where(w => !w.isDeleted).ToList();
 
             return View(waiters);
@@ -29,10 +27,6 @@ namespace Capstone2.Controllers
         // GET: Waiters/UpSert/5 or create
         public IActionResult UpSert(int? id)
         {
-            ViewBag.HeadWaiterList = _context.HeadWaiters
-                .Include(h => h.User)
-                .ToList();
-
             if (id == null)
             {
                 return View(new Waiter
@@ -52,18 +46,10 @@ namespace Capstone2.Controllers
         [HttpPost]
         public IActionResult UpSert(Waiter waiter)
         {
-            // ✅ Validate HeadWaiter exists
-            if (!_context.HeadWaiters.Any(h => h.HeadWaiterId == waiter.HeadWaiterId))
-            {
-                ModelState.AddModelError("HeadWaiterId", "The selected Head Waiter does not exist.");
-                ViewBag.HeadWaiterList = _context.HeadWaiters.Include(h => h.User).ToList();
-                return View(waiter);
-            }
-
             if (waiter.WaiterId == 0)
             {
                 // ✅ Create User first
-                waiter.User.Role = "Waiter";
+                waiter.User.Role = "WAITER";
                 _context.Users.Add(waiter.User);
                 _context.SaveChanges();
 
@@ -74,22 +60,6 @@ namespace Capstone2.Controllers
             }
             else
             {
-                //if (_context.Waiters.FirstOrDefault(w => w.WaiterId == waiter.WaiterId) == null) return RedirectToAction("Index");
-
-                // ✅ Fetch existing waiter from DB to retain existing password if needed
-                //var existingWaiter = _context.Waiters
-                //    .Include(w => w.User)
-                //    .FirstOrDefault(w => w.WaiterId == waiter.WaiterId);
-
-                //if (existingWaiter != null)
-                //{
-                //    // Prevent password loss unless explicitly changed
-                //    if (!string.IsNullOrWhiteSpace(waiter.User.Password))
-                //    {
-                //        existingWaiter.User.Password = waiter.User.Password;
-                //    }
-                //}
-
                 _context.Waiters.Update(waiter);
             }
 
@@ -110,6 +80,43 @@ namespace Capstone2.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        
+
+        // GET: Waiters/AssignedOrder/5
+        public async Task<IActionResult> AssignedOrder(int id)
+        {
+            var waiter = await _context.Waiters
+                .Include(w => w.User)
+                .FirstOrDefaultAsync(w => w.WaiterId == id);
+
+            if (waiter == null)
+                return NotFound();
+
+            // Check if waiter is actually busy
+            if (waiter.Availability != "Busy")
+            {
+                TempData["NoOrderAssigned"] = "This waiter is not currently assigned to any order.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Get the current active order for this waiter
+            var assignedOrder = await _context.OrderWaiters
+                .Include(ow => ow.Order)
+                    .ThenInclude(o => o.Customer)
+                .Include(ow => ow.Order)
+                    .ThenInclude(o => o.HeadWaiter)
+                        .ThenInclude(hw => hw.User)
+                .Where(ow => ow.WaiterId == id && ow.Order.Status != "Completed")
+                .Select(ow => ow.Order)
+                .FirstOrDefaultAsync();
+
+            if (assignedOrder == null)
+            {
+                TempData["NoOrderAssigned"] = "This waiter is not currently assigned to any active order.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(assignedOrder);
+        }
+
     }
 }

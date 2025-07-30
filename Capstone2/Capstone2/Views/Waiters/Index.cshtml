@@ -88,6 +88,14 @@
 </style>
 
 <div class="container-fluid mt-4 px-4 waiters-bg">
+    @if (TempData["NoOrderAssigned"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="bi bi-info-circle me-2"></i>
+            @TempData["NoOrderAssigned"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
             <div class="waiters-header mb-1">
@@ -106,7 +114,6 @@
                         <th>Username</th>
                         <th>First Name</th>
                         <th>Last Name</th>
-                        <th>Head Waiter</th>
                         <th>Employee Status</th>
                         <th>Availability</th>
                         <th class="text-center">Actions</th>
@@ -119,16 +126,6 @@
                             <td>@head.User.Username</td>
                             <td>@head.User.FirstName</td>
                             <td>@head.User.LastName</td>
-                            <td>
-                                @if (head.HeadWaiter != null && head.HeadWaiter.User != null)
-                                {
-                                    @($"{head.HeadWaiter.User.FirstName} {head.HeadWaiter.User.LastName}")
-                                }
-                                else
-                                {
-                                    <span class="text-muted">None</span>
-                                }
-                            </td>
                             <td>
                                 @if (head.isTemporary)
                                 {
@@ -151,6 +148,10 @@
                             </td>
                             <td class="text-center">
                                 <a asp-action="UpSert" asp-route-id="@head.WaiterId" class="btn btn-outline-primary btn-sm action-btn"><i class="bi bi-pencil-square"></i> Edit</a>
+                                @if (head.Availability == "Busy")
+                                {
+                                    <a asp-action="AssignedOrder" asp-route-id="@head.WaiterId" class="btn btn-outline-info btn-sm action-btn"><i class="bi bi-eye"></i> View Order</a>
+                                }
                                 <a asp-action="Delete" asp-route-id="@head.WaiterId" class="btn btn-outline-danger btn-sm action-btn"><i class="bi bi-trash"></i> Delete</a>
                             </td>
                         </tr>

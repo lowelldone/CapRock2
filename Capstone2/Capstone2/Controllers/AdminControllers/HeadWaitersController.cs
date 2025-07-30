@@ -42,7 +42,7 @@ namespace Capstone2.Controllers.AdminControllers
                     existingUser.Password = headWaiter.User.Password;
                     existingUser.FirstName = headWaiter.User.FirstName;
                     existingUser.LastName = headWaiter.User.LastName;
-                    existingUser.Role = "HeadWaiter";
+                    existingUser.Role = "HEADWAITER";
                     _context.Users.Update(existingUser);
                     _context.SaveChanges();
                     headWaiter.UserId = existingUser.UserId;
@@ -50,7 +50,7 @@ namespace Capstone2.Controllers.AdminControllers
                 }
                 else
                 {
-                    headWaiter.User.Role = "HeadWaiter";
+                    headWaiter.User.Role = "HEADWAITER";
                     _context.Users.Add(headWaiter.User);
                     _context.SaveChanges();
                     headWaiter.UserId = headWaiter.User.UserId;
@@ -68,7 +68,7 @@ namespace Capstone2.Controllers.AdminControllers
                     user.Password = headWaiter.User.Password;
                     user.FirstName = headWaiter.User.FirstName;
                     user.LastName = headWaiter.User.LastName;
-                    user.Role = "HeadWaiter";
+                    user.Role = "HEADWAITER";
                     _context.Users.Update(user);
                 }
                 _context.HeadWaiters.Update(headWaiter);

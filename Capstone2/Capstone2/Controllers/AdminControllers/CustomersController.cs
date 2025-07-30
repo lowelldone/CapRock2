@@ -93,9 +93,7 @@ namespace Capstone2.Controllers.AdminControllers
                 if (customer.Order != null)
                 {
                     var orderId = customer.Order.OrderId;
-                    // Remove attendances
-                    var attendances = _context.Attendances.Where(a => a.OrderId == orderId);
-                    _context.Attendances.RemoveRange(attendances);
+
                     // Remove order waiters
                     var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == orderId);
                     _context.OrderWaiters.RemoveRange(orderWaiters);
@@ -129,10 +127,24 @@ namespace Capstone2.Controllers.AdminControllers
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Menu)
+                .Include(o => o.HeadWaiter)
+                    .ThenInclude(hw => hw.User)
                 .FirstOrDefaultAsync(o => o.CustomerID == id.Value);
 
             if (order == null)
                 return NotFound();
+
+            // If order is completed, get the waiters who were assigned to this order
+            if (order.Status == "Completed")
+            {
+                var orderWaiters = await _context.OrderWaiters
+                    .Include(ow => ow.Waiter)
+                        .ThenInclude(w => w.User)
+                    .Where(ow => ow.OrderId == order.OrderId)
+                    .ToListAsync();
+
+                ViewBag.OrderWaiters = orderWaiters;
+            }
 
             return View(order);
         }
@@ -257,9 +269,6 @@ namespace Capstone2.Controllers.AdminControllers
                         _context.Waiters.Update(waiter);
                     }
                 }
-                _context.OrderWaiters.RemoveRange(orderWaiters);
-                var attendances = _context.Attendances.Where(a => a.OrderId == customer.Order.OrderId).ToList();
-                _context.Attendances.RemoveRange(attendances);
             }
 
             _context.Orders.Update(customer.Order);

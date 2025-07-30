@@ -15,5 +15,6 @@ namespace Capstone2.Models
         public string Name { get; set; }
         public int CurrentQuantity { get; set; } // Inventory
         public int PullOutQuantity { get; set; } // Editable by user
+        public bool IsFirstPullOut { get; set; } // Indicates if this is the first pull-out for the order
     }
 }

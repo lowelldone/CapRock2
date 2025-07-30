@@ -21,7 +21,7 @@ namespace Capstone2.Controllers
         public async Task<IActionResult> Index(string statusFilter, int? headWaiterId)
         {
             // If not provided, get from session for logged-in headwaiters
-            if (!headWaiterId.HasValue && HttpContext.Session.GetString("Role") == "HeadWaiter")
+            if (!headWaiterId.HasValue && HttpContext.Session.GetString("Role") == "HEADWAITER")
             {
                 var userId = HttpContext.Session.GetInt32("UserId");
                 if (userId != null)
@@ -80,74 +80,6 @@ namespace Capstone2.Controllers
             ViewBag.ChargedItems = chargedItems;
 
             return View(order);
-        }
-        // GET: PaidOrders/Attendances/5  (5 == CustomerId)
-        public async Task<IActionResult> Attendances(int id)
-        {
-            // 1) find that customer’s order
-            var order = await _context.Orders
-                .FirstOrDefaultAsync(o => o.CustomerID == id);
-            if (order == null) return NotFound();
-
-            // 2) pull in all waiters assigned & any existing attendance for this order
-            var waiters = await _context.Waiters
-                .Include(w => w.User)
-                .Include(w => w.Attendance
-                              .Where(a => a.OrderId == order.OrderId))
-                .ToListAsync();
-
-            var vm = new AttendancesViewModel
-            {
-                CustomerId = id,
-                OrderId = order.OrderId,
-                Waiters = waiters
-            };
-            return View(vm);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RecordTimeIn(int customerId, int orderId, int waiterId)
-        {
-            var att = await _context.Attendances
-                .FirstOrDefaultAsync(a => a.OrderId == orderId
-                                       && a.WaiterId == waiterId);
-
-            if (att == null)
-            {
-                att = new Attendance
-                {
-                    OrderId = orderId,
-                    WaiterId = waiterId,
-                    TimeIn = DateTime.Now
-                };
-                _context.Attendances.Add(att);
-            }
-            else
-            {
-                att.TimeIn = DateTime.Now;
-                _context.Attendances.Update(att);
-            }
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Attendances), new { id = customerId });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RecordTimeOut(int customerId, int orderId, int waiterId)
-        {
-            var att = await _context.Attendances
-                .FirstOrDefaultAsync(a => a.OrderId == orderId
-                                       && a.WaiterId == waiterId);
-            if (att != null)
-            {
-                att.TimeOut = DateTime.Now;
-                _context.Attendances.Update(att);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction(nameof(Attendances), new { id = customerId });
         }
 
         // GET: PaidOrders/DeployWaiter/5
@@ -239,13 +171,24 @@ namespace Capstone2.Controllers
             if (order == null) return NotFound();
             int pax = order.NoOfPax;
 
+            // Get existing pull-out for this order
+            var existingPullOut = await _context.MaterialPullOuts
+                .Include(p => p.Items)
+                .FirstOrDefaultAsync(p => p.OrderId == order.OrderId);
+
             var allMaterials = await _context.Materials.ToListAsync();
-            var materialsVm = allMaterials.Select(m => new PullOutMaterialItemViewModel
-            {
-                MaterialId = m.MaterialId,
-                Name = m.Name,
-                CurrentQuantity = m.Quantity,
-                PullOutQuantity = Capstone2.Helpers.MaterialCalculator.GetSuggestedQuantity(m.Name, pax)
+            var materialsVm = allMaterials.Select(m => {
+                var existingItem = existingPullOut?.Items?.FirstOrDefault(i => i.MaterialName == m.Name);
+                var suggestedQuantity = Capstone2.Helpers.MaterialCalculator.GetSuggestedQuantity(m.Name, pax);
+
+                return new PullOutMaterialItemViewModel
+                {
+                    MaterialId = m.MaterialId,
+                    Name = m.Name,
+                    CurrentQuantity = m.Quantity,
+                    PullOutQuantity = existingItem != null ? existingItem.Quantity : 0,
+                    IsFirstPullOut = existingPullOut == null
+                };
             }).ToList();
 
             var viewModel = new PullOutMaterialsViewModel
@@ -264,18 +207,52 @@ namespace Capstone2.Controllers
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == model.CustomerId);
             if (order == null) return NotFound();
 
-            var pullOut = new MaterialPullOut
-            {
-                OrderId = order.OrderId,
-                Date = DateTime.Now,
-                Items = model.Materials.Where(m => m.PullOutQuantity > 0).Select(m => new MaterialPullOutItem
-                {
-                    MaterialName = m.Name,
-                    Quantity = m.PullOutQuantity
-                }).ToList()
-            };
-            _context.MaterialPullOuts.Add(pullOut);
+            // Check if there's an existing pull-out for this order
+            var existingPullOut = await _context.MaterialPullOuts
+                .Include(p => p.Items)
+                .FirstOrDefaultAsync(p => p.OrderId == order.OrderId);
 
+            if (existingPullOut != null)
+            {
+                // Update existing pull-out items
+                foreach (var item in model.Materials.Where(m => m.PullOutQuantity > 0))
+                {
+                    var existingItem = existingPullOut.Items.FirstOrDefault(i => i.MaterialName == item.Name);
+                    if (existingItem != null)
+                    {
+                        // Add new quantity to existing quantity
+                        existingItem.Quantity += item.PullOutQuantity;
+                    }
+                    else
+                    {
+                        // Add new item to existing pull-out
+                        existingPullOut.Items.Add(new MaterialPullOutItem
+                        {
+                            MaterialName = item.Name,
+                            Quantity = item.PullOutQuantity
+                        });
+                    }
+                }
+                existingPullOut.Date = DateTime.Now; // Update the date
+                _context.MaterialPullOuts.Update(existingPullOut);
+            }
+            else
+            {
+                // Create new pull-out
+                var pullOut = new MaterialPullOut
+                {
+                    OrderId = order.OrderId,
+                    Date = DateTime.Now,
+                    Items = model.Materials.Where(m => m.PullOutQuantity > 0).Select(m => new MaterialPullOutItem
+                    {
+                        MaterialName = m.Name,
+                        Quantity = m.PullOutQuantity
+                    }).ToList()
+                };
+                _context.MaterialPullOuts.Add(pullOut);
+            }
+
+            // Update material inventory
             foreach (var item in model.Materials)
             {
                 if (item.PullOutQuantity > 0)
@@ -368,6 +345,18 @@ namespace Capstone2.Controllers
             {
                 order.Status = "Completed";
                 _context.Orders.Update(order);
+
+                // Set waiters back to Available when order is completed
+                var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).ToList();
+                foreach (var ow in orderWaiters)
+                {
+                    var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == ow.WaiterId);
+                    if (waiter != null)
+                    {
+                        waiter.Availability = "Available";
+                        _context.Waiters.Update(waiter);
+                    }
+                }
             }
             await _context.SaveChangesAsync();
             TempData["ReturnSuccess"] = $"Materials returned successfully! Additional charge for lost/damaged: ₱{totalCharge}.";

@@ -51,6 +51,7 @@ namespace Capstone2.Controllers
             user.Role = user.Role.ToUpper();
             HttpContext.Session.SetString("Role", user.Role);
             HttpContext.Session.SetString("Username", user.Username);
+            HttpContext.Session.SetString("FirstName", user.FirstName);
             HttpContext.Session.SetInt32("UserId", user.UserId);
 
             string designatedPage = user.Role switch
