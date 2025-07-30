@@ -7,7 +7,6 @@ namespace Capstone2.Models
     {
         [Key]
         public int AdminId { get; set; }
-
         public User User { get; set; }
         [ForeignKey("User")]
         public int UserId { get; set; }

@@ -9,10 +9,6 @@ namespace Capstone2.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Attendance>()
-            .Property(a => a.TimeOut)
-            .IsRequired(false);
-
             modelBuilder.Entity<HeadWaiter>()
                 .HasOne(h => h.User)
                 .WithMany()
@@ -40,7 +36,6 @@ namespace Capstone2.Data
         public DbSet<Material> Materials { get; set; }
 
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Attendance> Attendances { get; set; }
         public DbSet<HeadWaiter> HeadWaiters { get; set; }
         public DbSet<OrderWaiter> OrderWaiters { get; set; }
         public DbSet<Waiter> Waiters { get; set; }

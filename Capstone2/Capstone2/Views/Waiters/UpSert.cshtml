@@ -154,14 +154,7 @@
                 </div>
             </div>
 
-            <div class="mb-4">
-                <label asp-for="HeadWaiterId" class="form-label fw-semibold">Assign Head Waiter</label>
-                <select asp-for="HeadWaiterId" class="form-select"
-                        asp-items="@(new SelectList(ViewBag.HeadWaiterList, "HeadWaiterId", "User.Username"))">
-                    <option value="">-- Select Head Waiter --</option>
-                </select>
-                <span asp-validation-for="HeadWaiterId" class="text-danger"></span>
-            </div>
+
 
             <div class="d-flex gap-3">
                 <button type="submit" class="btn btn-primary btn-submit">

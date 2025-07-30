@@ -161,119 +161,125 @@
 <body>
     @{
         string role = HttpContextAccessor.HttpContext?.Session.GetString("Role");
+        string firstName = HttpContextAccessor.HttpContext?.Session.GetString("FirstName");
     }
 
     @if (role != null)
     {
-        <nav class="soft-sidebar">
-            <div class="sidebar-logo mb-4">
-                <i class="bi bi-diagram-3"></i>
-                <span class="sidebar-logo-text">
-                    @if (role == "ADMIN") {
-                        @:Admin
-                    } else if (role == "HEADWAITER") {
-                        @:HeadWaiter
-                    } else {
-                        @:Waiter
+            <nav class="soft-sidebar">
+                <div class="sidebar-logo mb-4">
+                    <i class="bi bi-diagram-3"></i>
+                    <span class="sidebar-logo-text">
+                    @if (role == "ADMIN")
+                    {
+                        @:Administrator
                     }
-                </span>
-            </div>
-            <ul class="nav flex-column w-100">
+                    else if (role == "HEADWAITER")
+                    {
+                        @(!string.IsNullOrEmpty(firstName) ? firstName : "HeadWaiter")
+                    }
+                    else
+                    {
+                        @(!string.IsNullOrEmpty(firstName) ? firstName : "Waiter")
+                    }
+                    </span>
+                </div>
+                <ul class="nav flex-column w-100">
                 @switch (role)
                 {
                     case "ADMIN":
-                    {
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
-                                <i class="bi bi-card-list"></i>
-                                <span>Customer Orders</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
-                                <i class="bi bi-person-badge"></i>
-                                <span>HeadWaiters</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Materials" ? "active" : "")" asp-controller="Materials" asp-action="Index">
-                                <i class="bi bi-box-seam"></i>
-                                <span>Materials</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Menus" ? "active" : "")" asp-controller="Menus" asp-action="Index">
-                                <i class="bi bi-list-ul"></i>
-                                <span>Menus</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MenuPackages" ? "active" : "")" asp-controller="MenuPackages" asp-action="Index">
-                                <i class="bi bi-bag-check"></i>
-                                <span>Menu Packages</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-controller="Suppliers" asp-action="Index">
-                                <i class="bi bi-truck"></i>
-                                <span>Suppliers</span>
-                            </a>
-                        </li>
-                    }
-                    break;
+                        {
+                                        <li class="nav-item mb-2">
+                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
+                                                <i class="bi bi-card-list"></i>
+                                                <span>Customer Orders</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item mb-2">
+                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
+                                                <i class="bi bi-person-badge"></i>
+                                                <span>HeadWaiters</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item mb-2">
+                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Materials" ? "active" : "")" asp-controller="Materials" asp-action="Index">
+                                                <i class="bi bi-box-seam"></i>
+                                                <span>Materials</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item mb-2">
+                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Menus" ? "active" : "")" asp-controller="Menus" asp-action="Index">
+                                                <i class="bi bi-list-ul"></i>
+                                                <span>Menus</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item mb-2">
+                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MenuPackages" ? "active" : "")" asp-controller="MenuPackages" asp-action="Index">
+                                                <i class="bi bi-bag-check"></i>
+                                                <span>Menu Packages</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item mb-2">
+                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-controller="Suppliers" asp-action="Index">
+                                                <i class="bi bi-truck"></i>
+                                                <span>Suppliers</span>
+                                            </a>
+                                        </li>
+                        }
+                        break;
                     case "HEADWAITER":
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PaidOrders" ? "active" : "")" asp-controller="PaidOrders" asp-action="Index">
-                                <i class="bi bi-receipt"></i>
-                                <span>Customer Orders</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Waiters" ? "active" : "")" asp-controller="Waiters" asp-action="Index">
-                                <i class="bi bi-people"></i>
-                                <span>Waiters</span>
-                            </a>
-                        </li>
-                    break;
+                                    <li class="nav-item mb-2">
+                                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PaidOrders" ? "active" : "")" asp-controller="PaidOrders" asp-action="Index">
+                                            <i class="bi bi-receipt"></i>
+                                            <span>Customer Orders</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item mb-2">
+                                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Waiters" ? "active" : "")" asp-controller="Waiters" asp-action="Index">
+                                            <i class="bi bi-people"></i>
+                                            <span>Waiters</span>
+                                        </a>
+                                    </li>
+                        break;
                     default:
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedules" ? "active" : "")" asp-controller="Schedules" asp-action="Index">
-                                <i class="bi bi-calendar-event"></i>
-                                <span>Schedules</span>
-                            </a>
-                        </li>
-                    break;
+                                    <li class="nav-item mb-2">
+                                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedules" ? "active" : "")" asp-controller="Schedules" asp-action="Index">
+                                            <i class="bi bi-calendar-event"></i>
+                                            <span>Schedules</span>
+                                        </a>
+                                    </li>
+                        break;
                 }
-                <li class="nav-item mb-2">
-                    <a class="nav-link" asp-controller="Home" asp-action="Logout" id="logout-link">
-                        <i class="bi bi-box-arrow-right"></i>
-                        <span>Logout</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link" asp-controller="Home" asp-action="Logout" id="logout-link">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
     }
     else
     {
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-                <div class="container">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Homepage">GRUSH Catering System</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <a asp-action="Login" class="btn btn-outline-primary rounded-pill px-4 py-2 ms-3" style="color:white; border-color: white;">LOG IN</a>
-                </div>
-            </nav>
-        </header>
+            <header>
+                <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+                    <div class="container">
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Homepage">GRUSH Catering System</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <a asp-action="Login" class="btn btn-outline-primary rounded-pill px-4 py-2 ms-3" style="color:white; border-color: white;">LOG IN</a>
+                    </div>
+                </nav>
+            </header>
     }
 
     <div class="main-content">
         @if (ViewData["Title"]?.ToString() == "Home")
         {
-         
+
         }
-        
+
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -285,7 +291,7 @@
 
     <footer>
         <div class="container">
-            
+
         </div>
     </footer>
 

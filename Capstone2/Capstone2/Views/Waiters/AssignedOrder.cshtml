@@ -1,0 +1,191 @@
+﻿@model Capstone2.Models.Order
+@{
+    ViewData["Title"] = "Assigned Order Details";
+}
+
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .order-details-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .order-details-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .order-details-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .order-details-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .order-info-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #344767;
+        min-width: 150px;
+        margin-right: 1rem;
+    }
+
+    .info-value {
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .status-badge {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .btn-back {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 order-details-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="order-details-header mb-1">
+                <span class="order-details-header-icon"><i class="bi bi-receipt"></i></span>
+                <h2 class="fw-bold mb-0">Assigned Order Details</h2>
+            </div>
+            <div class="order-details-subtitle">View the order this waiter is currently assigned to.</div>
+        </div>
+    </div>
+
+    <div class="order-info-card">
+        <h4 class="mb-3 text-primary">Customer Information</h4>
+        <div class="info-row">
+            <span class="info-label">Customer Name:</span>
+            <span class="info-value">@Model.Customer.Name</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Contact Number:</span>
+            <span class="info-value">@Model.Customer.ContactNo</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Address:</span>
+            <span class="info-value">@Model.Customer.Address</span>
+        </div>
+    </div>
+
+    <div class="order-info-card">
+        <h4 class="mb-3 text-primary">Order Information</h4>
+        <div class="info-row">
+            <span class="info-label">Catering Date:</span>
+            <span class="info-value">@Model.CateringDate.ToString("MMMM dd, yyyy")</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Venue:</span>
+            <span class="info-value">@Model.Venue</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Number of Pax:</span>
+            <span class="info-value">@Model.NoOfPax</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Food Serving Time:</span>
+            <span class="info-value">@Model.timeOfFoodServing.ToString("hh:mm tt")</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Occasion:</span>
+            <span class="info-value">@Model.Occasion</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Motif:</span>
+            <span class="info-value">@Model.Motif</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Total Payment:</span>
+            <span class="info-value">₱@Model.TotalPayment.ToString("N2")</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Amount Paid:</span>
+            <span class="info-value">₱@Model.AmountPaid.ToString("N2")</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Balance:</span>
+            <span class="info-value">₱@Model.Balance.ToString("N2")</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Status:</span>
+            <span class="info-value">
+                @if (Model.Status == "Upcoming")
+                {
+                    <span class="badge bg-warning text-dark status-badge">@Model.Status</span>
+                }
+                else if (Model.Status == "Ongoing")
+                {
+                    <span class="badge bg-primary status-badge">@Model.Status</span>
+                }
+                else if (Model.Status == "Completed")
+                {
+                    <span class="badge bg-success status-badge">@Model.Status</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary status-badge">@Model.Status</span>
+                }
+            </span>
+        </div>
+    </div>
+
+    @if (Model.HeadWaiter != null)
+    {
+        <div class="order-info-card">
+            <h4 class="mb-3 text-primary">Head Waiter Information</h4>
+            <div class="info-row">
+                <span class="info-label">Head Waiter:</span>
+                <span class="info-value">@Model.HeadWaiter.User.FirstName @Model.HeadWaiter.User.LastName</span>
+            </div>
+        </div>
+    }
+
+    <div class="d-flex justify-content-start mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-back">
+            <i class="bi bi-arrow-left me-2"></i>Back to Waiters
+        </a>
+    </div>
+</div> 
