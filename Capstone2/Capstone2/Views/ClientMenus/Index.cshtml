@@ -364,6 +364,10 @@
         $(".food-no").on('change', function () {
             $(this).val($(this).val() < 0 ? 0 : $(this).val());
             updateOrder($(this));
+        }).on('focus', function () {
+            $(this).val($(this).val() == 0 ? '' : $(this).val());
+        }).on('blur', function () {
+            $(this).val($(this).val() == '' ? 0 : $(this).val());
         });
 
         function updateOrder($input) {
