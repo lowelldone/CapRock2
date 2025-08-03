@@ -4,7 +4,7 @@
     ViewData["Title"] = "Manage Orders";
     string selectedFilter = Context.Request.Query["statusFilter"];
 
-    string[] status = ["Ongoing", "Upcoming", "Completed"];
+    string[] status = ["Accepted", "Ongoing", "Completed"];
     int? headWaiterId = null;
     if (Context.Request.Query["headWaiterId"].Count > 0)
     {
@@ -156,7 +156,7 @@
                                            class="btn btn-warning action-btn mb-1"><i class="bi bi-person-plus"></i> Deploy Waiter</a>
                                     }
                                 }
-                                else if (item.Order?.Status == "Upcoming")
+                                else if (item.Order?.Status == "Accepted")
                                 {
                                     @if (headWaiterId != null)
                                     {

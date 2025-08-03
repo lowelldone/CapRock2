@@ -47,7 +47,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("CustomerID");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.HeadWaiter", b =>
@@ -68,7 +68,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("HeadWaiters");
+                    b.ToTable("HeadWaiters", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.Material", b =>
@@ -98,7 +98,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("MaterialId");
 
-                    b.ToTable("Materials");
+                    b.ToTable("Materials", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.MaterialPullOut", b =>
@@ -117,7 +117,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MaterialPullOuts");
+                    b.ToTable("MaterialPullOuts", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.MaterialPullOutItem", b =>
@@ -142,7 +142,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("MaterialPullOutId");
 
-                    b.ToTable("MaterialPullOutItems");
+                    b.ToTable("MaterialPullOutItems", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.MaterialReturn", b =>
@@ -177,7 +177,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MaterialReturns");
+                    b.ToTable("MaterialReturns", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.Menu", b =>
@@ -207,7 +207,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("MenuId");
 
-                    b.ToTable("Menu");
+                    b.ToTable("Menu", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.MenuPackages", b =>
@@ -239,7 +239,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("MenuPackageId");
 
-                    b.ToTable("MenuPackages");
+                    b.ToTable("MenuPackages", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.Order", b =>
@@ -297,7 +297,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("HeadWaiterId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.OrderDetail", b =>
@@ -327,7 +327,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.OrderWaiter", b =>
@@ -350,7 +350,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("WaiterId");
 
-                    b.ToTable("OrderWaiters");
+                    b.ToTable("OrderWaiters", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.Payment", b =>
@@ -374,7 +374,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.Supplier", b =>
@@ -399,7 +399,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.User", b =>
@@ -432,7 +432,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.Waiter", b =>
@@ -465,7 +465,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Waiters");
+                    b.ToTable("Waiters", (string)null);
                 });
 
             modelBuilder.Entity("Capstone2.Models.HeadWaiter", b =>

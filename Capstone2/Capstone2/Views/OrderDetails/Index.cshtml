@@ -263,6 +263,27 @@
             </table>
 
             <div class="total-section">
+                @if (Model.IsRushOrder)
+                {
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-2">Base Amount:</h6>
+                            <p class="text-muted mb-0">₱@Model.BaseAmount.ToString("0.00")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-2">Rush Order Fee (10%):</h6>
+                            <p class="text-muted mb-0">₱@Model.RushOrderFee.ToString("0.00")</p>
+                        </div>
+                    </div>
+                    <hr class="my-3">
+                }
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-2">50% Downpayment:</h6>
+                        <p class="text-muted mb-0">₱@((Model.TotalPayment * 0.5).ToString("0.00"))</p>
+                    </div>
+                </div>
+                <hr class="my-3">
                 <h5 class="fw-bold mb-0">Total Payment: ₱@Model.TotalPayment.ToString("0.00")</h5>
             </div>
         </div>
@@ -289,13 +310,19 @@
                             icon: "success"
                         }).then(() => {
                             window.location.href = "/Home/Homepage";
-                        });;
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Order Cannot Be Confirmed",
+                            text: data.message,
+                            icon: "error"
+                        });
                     }
                 },
                 error: function (xhr, status, error) {
                     Swal.fire({
-                        title: "Error confirming error",
-                        text: "",
+                        title: "Error confirming order",
+                        text: "An unexpected error occurred. Please try again.",
                         icon: "error"
                     });
                 }

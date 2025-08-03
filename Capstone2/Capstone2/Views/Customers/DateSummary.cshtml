@@ -1,0 +1,208 @@
+﻿@model Capstone2.Models.DateSummaryPageViewModel
+
+@{
+    ViewData["Title"] = "Orders Date Summary";
+}
+
+<style>
+    .admin-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .admin-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .date-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e0e7ef;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .date-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+    .pax-warning {
+        border-left: 4px solid #f59e0b;
+        background: #fef3c7;
+    }
+
+    .pax-danger {
+        border-left: 4px solid #ef4444;
+        background: #fee2e2;
+    }
+
+    .large-order {
+        border-left: 4px solid #3b82f6;
+        background: #dbeafe;
+    }
+
+    .available {
+        border-left: 4px solid #10b981;
+        background: #d1fae5;
+    }
+
+    .btn-admin {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+    }
+
+    .date-picker {
+        border-radius: 8px;
+        border: 1px solid #e0e7ef;
+        padding: 0.5rem;
+    }
+
+    .pax-badge {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+    }
+</style>
+
+<div class="admin-bg">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <a href="@Url.Action("Index", "Customers")" class="btn btn-outline-secondary btn-admin">
+                <i class="bi bi-arrow-left me-2"></i>Back to Customers
+            </a>
+            <h2 class="fw-bold mb-0">Orders Date Summary</h2>
+        </div>
+        <a href="@Url.Action("OrdersByDate", "Customers")" class="btn btn-outline-primary btn-admin">
+            <i class="bi bi-calendar me-2"></i>Daily View
+        </a>
+    </div>
+
+    <!-- Date Range Selection -->
+    <div class="admin-card">
+        <form method="get" class="row align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Start Date:</label>
+                <input type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")"
+                       class="form-control date-picker" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">End Date:</label>
+                <input type="date" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")"
+                       class="form-control date-picker" />
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary btn-admin">
+                    <i class="bi bi-search me-2"></i>View Summary
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="admin-card">
+        <h4 class="fw-bold mb-3">Summary Statistics</h4>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="text-center">
+                    <h3 class="fw-bold text-primary">@Model.DateSummary.Count</h3>
+                    <p class="text-muted mb-0">Days with Orders</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <h3 class="fw-bold text-success">@Model.DateSummary.Sum(x => x.OrderCount)</h3>
+                    <p class="text-muted mb-0">Total Orders</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <h3 class="fw-bold text-info">@Model.DateSummary.Sum(x => x.TotalPax)</h3>
+                    <p class="text-muted mb-0">Total Pax</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <h3 class="fw-bold text-warning">@Model.DateSummary.Count(x => x.HasLargeOrder)</h3>
+                    <p class="text-muted mb-0">Large Order Days</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date-wise Summary -->
+    <div class="admin-card">
+        <h4 class="fw-bold mb-3">Orders by Date</h4>
+
+        @if (!Model.DateSummary.Any())
+        {
+            <div class="text-center py-4">
+                <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                <p class="text-muted mt-2">No orders found in the selected date range.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var dateSummary in Model.DateSummary)
+                {
+                    var statusClass = dateSummary.HasLargeOrder ? "large-order" :
+                    dateSummary.TotalPax > 700 ? "pax-danger" :
+                    dateSummary.TotalPax > 560 ? "pax-warning" : "available";
+
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="date-card @statusClass">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="fw-bold mb-0">@dateSummary.Date.ToString("MMM dd, yyyy")</h6>
+                                <span class="badge @(dateSummary.HasLargeOrder ? "bg-primary" :
+                                                   dateSummary.TotalPax > 700 ? "bg-danger" :
+                                                   dateSummary.TotalPax > 560 ? "bg-warning" : "bg-success") pax-badge">
+                                    @dateSummary.TotalPax / 700 pax
+                                </span>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <small class="text-muted">Orders:</small><br>
+                                    <strong>@dateSummary.OrderCount</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Status:</small><br>
+                                    @if (dateSummary.HasLargeOrder)
+                                    {
+                                        <span class="text-primary fw-semibold">Large Order</span>
+                                    }
+                                    else if (dateSummary.TotalPax > 700)
+                                    {
+                                        <span class="text-danger fw-semibold">Over Capacity</span>
+                                    }
+                                    else if (dateSummary.TotalPax > 560)
+                                    {
+                                        <span class="text-warning fw-semibold">Full Capacity</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success fw-semibold">Available Capacity</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <a href="@Url.Action("OrdersByDate", "Customers", new { selectedDate = dateSummary.Date.ToString("yyyy-MM-dd") })"
+                                   class="btn btn-sm btn-outline-primary w-100">
+                                    <i class="bi bi-eye me-1"></i>View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div> 

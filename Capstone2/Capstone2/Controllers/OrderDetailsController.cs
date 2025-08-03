@@ -22,13 +22,47 @@ namespace Capstone2.Controllers
             return View(order);
         }
 
-        public IActionResult OrderConfirmed(string orderJson)
+        public async Task<IActionResult> OrderConfirmed(string orderJson)
         {
             Order order = JsonSerializer.Deserialize<Order>(orderJson);
             order.OrderDetails.ForEach(x => x.Menu = null);
 
+            // Check pax limits for the catering date
+            var existingOrdersForDate = await _context.Orders
+                .Where(o => o.CateringDate.Date == order.CateringDate.Date && o.Status != "Cancelled")
+                .ToListAsync();
+
+            int totalPaxForDate = existingOrdersForDate.Sum(o => o.NoOfPax);
+            int newOrderPax = order.NoOfPax;
+
+            // Check if this is a large order (701-1500 pax)
+            if (newOrderPax >= 701 && newOrderPax <= 1500)
+            {
+                // Large orders can only be the only order for that day
+                if (existingOrdersForDate.Any())
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Large orders (701-1500 pax) cannot be scheduled on the same day as other orders. Please choose a different date."
+                    });
+                }
+            }
+            else
+            {
+                // Regular orders - check total pax limit
+                if (totalPaxForDate + newOrderPax > 700)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"Cannot accept this order. Total pax for {order.CateringDate.Date:MMM dd, yyyy} would be {totalPaxForDate + newOrderPax}, which exceeds the maximum limit of 700 pax per day."
+                    });
+                }
+            }
+
             _context.Orders.Add(order);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Json(new { success = true });
         }

@@ -367,5 +367,61 @@ namespace Capstone2.Controllers.AdminControllers
             };
             return View(viewModel);
         }
+
+        // GET: Customers/OrdersByDate
+        public async Task<IActionResult> OrdersByDate(DateTime? selectedDate = null)
+        {
+            var date = selectedDate ?? DateTime.Today;
+
+            var ordersForDate = await _context.Orders
+                .Include(o => o.Customer)
+                .Where(o => o.CateringDate.Date == date.Date)
+                .OrderBy(o => o.timeOfFoodServing)
+                .ToListAsync();
+
+            int totalPax = ordersForDate.Sum(o => o.NoOfPax);
+            bool hasLargeOrder = ordersForDate.Any(o => o.NoOfPax >= 701 && o.NoOfPax <= 1500);
+
+            ViewBag.SelectedDate = date;
+            ViewBag.TotalPax = totalPax;
+            ViewBag.HasLargeOrder = hasLargeOrder;
+            ViewBag.MaxPax = 700;
+
+            return View(ordersForDate);
+        }
+
+        // GET: Customers/DateSummary
+        public async Task<IActionResult> DateSummary(DateTime? startDate = null, DateTime? endDate = null)
+        {
+            var start = startDate ?? DateTime.Today.AddDays(-30);
+            var end = endDate ?? DateTime.Today.AddDays(30);
+
+            var ordersInRange = await _context.Orders
+                .Include(o => o.Customer)
+                .Where(o => o.CateringDate.Date >= start.Date && o.CateringDate.Date <= end.Date)
+                .OrderBy(o => o.CateringDate)
+                .ToListAsync();
+
+            var dateSummary = ordersInRange
+                .GroupBy(o => o.CateringDate.Date)
+                .Select(g => new DateSummaryViewModel
+                {
+                    Date = g.Key,
+                    TotalPax = g.Sum(o => o.NoOfPax),
+                    HasLargeOrder = g.Any(o => o.NoOfPax >= 701 && o.NoOfPax <= 1500),
+                    OrderCount = g.Count()
+                })
+                .OrderBy(x => x.Date)
+                .ToList();
+
+            var viewModel = new DateSummaryPageViewModel
+            {
+                StartDate = start,
+                EndDate = end,
+                DateSummary = dateSummary
+            };
+
+            return View(viewModel);
+        }
     }
 }
