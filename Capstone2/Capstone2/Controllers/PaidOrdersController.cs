@@ -150,12 +150,6 @@ namespace Capstone2.Controllers
                     _context.Waiters.Update(waiter);
                 }
             }
-            // If order was Upcoming, set to Ongoing
-            if (order.Status == "Upcoming")
-            {
-                order.Status = "Ongoing";
-                _context.Orders.Update(order);
-            }
             _context.SaveChanges();
 
             if (headWaiterId.HasValue)
@@ -266,6 +260,13 @@ namespace Capstone2.Controllers
                     }
                 }
             }
+            // If order was Upcoming, set to Ongoing when materials are pulled out
+            if (order.Status == "Accepted")
+            {
+                order.Status = "Ongoing";
+                _context.Orders.Update(order);
+            }
+
             await _context.SaveChangesAsync();
             TempData["PullOutSuccess"] = "Materials pulled out successfully!";
             return RedirectToAction("Index");

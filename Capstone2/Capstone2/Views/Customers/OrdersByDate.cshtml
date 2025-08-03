@@ -1,0 +1,211 @@
+﻿@model IEnumerable<Capstone2.Models.Order>
+
+@{
+    ViewData["Title"] = "Orders by Date";
+}
+
+<style>
+    .admin-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .admin-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .pax-summary {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .pax-warning {
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        color: #92400e;
+    }
+
+    .pax-danger {
+        background: #fee2e2;
+        border: 1px solid #ef4444;
+        color: #991b1b;
+    }
+
+    .large-order {
+        background: #dbeafe;
+        border: 1px solid #3b82f6;
+        color: #1e40af;
+    }
+
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+        .table thead th {
+            background: #f8fafc;
+            border: none;
+            font-weight: 600;
+            color: #344767;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .table tbody tr:hover {
+            background: #e0f2fe;
+        }
+
+    .btn-admin {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+    }
+
+    .date-picker {
+        border-radius: 8px;
+        border: 1px solid #e0e7ef;
+        padding: 0.5rem;
+    }
+</style>
+
+<div class="admin-bg">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <a href="@Url.Action("Index", "Customers")" class="btn btn-outline-secondary btn-admin">
+                <i class="bi bi-arrow-left me-2"></i>Back to Customers
+            </a>
+            <h2 class="fw-bold mb-0">Orders by Date</h2>
+        </div>
+        <a href="@Url.Action("DateSummary", "Customers")" class="btn btn-outline-primary btn-admin">
+            <i class="bi bi-calendar-range me-2"></i>Order Summary
+        </a>
+    </div>
+
+    <!-- Date Selection -->
+    <div class="admin-card">
+        <form method="get" class="row align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Select Date:</label>
+                <input type="date" name="selectedDate" value="@ViewBag.SelectedDate.ToString("yyyy-MM-dd")"
+                       class="form-control date-picker" onchange="this.form.submit()" />
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary btn-admin">
+                    <i class="bi bi-search me-2"></i>View Orders
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Pax Summary -->
+    <div class="admin-card">
+        <div class="pax-summary @(ViewBag.TotalPax > ViewBag.MaxPax ? "pax-danger" : ViewBag.TotalPax > ViewBag.MaxPax * 0.8 ? "pax-warning" : "") @(ViewBag.HasLargeOrder ? "large-order" : "")">
+            <div class="row">
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-1">Selected Date:</h6>
+                    <p class="mb-0">@ViewBag.SelectedDate.ToString("MMMM dd, yyyy")</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-1">Total Orders:</h6>
+                    <p class="mb-0">@Model.Count()</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-1">Total Pax:</h6>
+                    <p class="mb-0">@ViewBag.TotalPax / @ViewBag.MaxPax</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-1">Status:</h6>
+                    @if (ViewBag.HasLargeOrder)
+                    {
+                        <p class="mb-0 text-primary">Large Order Day</p>
+                    }
+                    else if (ViewBag.TotalPax > ViewBag.MaxPax)
+                    {
+                        <p class="mb-0 text-danger">Over Capacity</p>
+                    }
+                    else if (ViewBag.TotalPax > ViewBag.MaxPax * 0.8)
+                    {
+                        <p class="mb-0 text-warning">Near Capacity</p>
+                    }
+                    else
+                    {
+                        <p class="mb-0 text-success">Available</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="admin-card">
+        <h4 class="fw-bold mb-3">Orders for @ViewBag.SelectedDate.ToString("MMMM dd, yyyy")</h4>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-4">
+                <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                <p class="text-muted mt-2">No orders scheduled for this date.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Customer</th>
+                            <th>Venue</th>
+                            <th>Pax</th>
+                            <th>Occasion</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr class="@(order.NoOfPax >= 701 && order.NoOfPax <= 1500 ? "table-primary" : "")">
+                                <td>@order.timeOfFoodServing.ToString("HH:mm")</td>
+                                <td>
+                                    <strong>@order.Customer.Name</strong><br>
+                                    <small class="text-muted">@order.Customer.ContactNo</small>
+                                </td>
+                                <td>@order.Venue</td>
+                                <td>
+                                    <span class="badge @(order.NoOfPax >= 701 && order.NoOfPax <= 1500 ? "bg-primary" : "bg-secondary")">
+                                        @order.NoOfPax pax
+                                    </span>
+                                </td>
+                                <td>@order.Occasion</td>
+                                <td>
+                                    <span class="badge @(order.Status == "Accepted" ? "bg-warning" :
+                                                       order.Status == "Completed" ? "bg-success" :
+                                                       order.Status == "Cancelled" ? "bg-danger" : "bg-secondary")">
+                                        @order.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div> 

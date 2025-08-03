@@ -27,6 +27,12 @@ namespace Capstone2.Models
         public double Balance => TotalPayment - AmountPaid; // New: Remaining balance
         [NotMapped]
         public bool DownPaymentMet => AmountPaid >= 0.5 * TotalPayment; // New: 50% rule
+        [NotMapped]
+        public double BaseAmount { get; set; } // Base amount before rush order fee
+        [NotMapped]
+        public double RushOrderFee { get; set; } // Rush order fee (10% of base amount)
+        [NotMapped]
+        public bool IsRushOrder => OrderDate.Date == CateringDate.Date; // Check if it's a rush order
         public List<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public Customer Customer { get; set; }
 

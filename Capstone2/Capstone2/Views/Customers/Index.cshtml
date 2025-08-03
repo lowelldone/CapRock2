@@ -101,9 +101,9 @@
     {
         <div class="alert alert-warning">@TempData["CateringStatusError"]</div>
     }
-        @if (TempData["HeadWaiterAssigned"] != null)
+    @if (TempData["HeadWaiterAssigned"] != null)
     {
-    <div class="alert alert-success">@TempData["HeadWaiterAssigned"]</div>
+        <div class="alert alert-success">@TempData["HeadWaiterAssigned"]</div>
     }
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
@@ -113,7 +113,17 @@
             </div>
             <div class="customers-subtitle">Track and manage all catering customer orders here.</div>
         </div>
-        <a asp-action="Create" class="btn btn-primary add-customer-btn"><i class="bi bi-plus-lg"></i> Add New Customer</a>
+        <div class="d-flex gap-2">
+            <a asp-action="OrdersByDate" class="btn btn-outline-primary add-customer-btn">
+                <i class="bi bi-calendar-day"></i> Daily Orders
+            </a>
+            <a asp-action="DateSummary" class="btn btn-outline-info add-customer-btn">
+                <i class="bi bi-calendar-range"></i> Order Summary
+            </a>
+            <a asp-action="Create" class="btn btn-primary add-customer-btn">
+                <i class="bi bi-plus-lg"></i> Add New Customer
+            </a>
+        </div>
     </div>
 
     <div class="card mb-4 shadow-sm border-0 rounded-4">
@@ -169,7 +179,7 @@
 
                                     <select name="cateringStatus" class="form-select form-select-lg me-2 catering-status-dropdown" style="font-size: 1.1rem;">
                                         @{
-                                            string[] status = ["Upcoming", "Ongoing", "Completed"];
+                                            string[] status = ["Pending", "Ongoing", "Completed"];
                                         }
 
                                         @for (int i = 0; i < status.Length; i++)
@@ -189,11 +199,11 @@
                             <td>
                                 @if (order?.HeadWaiter != null && order.HeadWaiter.User != null)
                                 {
-                                @($"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}")
+                                    @($"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}")
                                 }
                                 else
                                 {
-                                <span class="text-muted">None</span>
+                                    <span class="text-muted">None</span>
                                 }
                             </td>
 

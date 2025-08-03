@@ -33,7 +33,7 @@ namespace Capstone2.Controllers
 
             ModelState.Remove("Customer.Order");
             ModelState.Remove("Status");
-            order.Status = "Upcoming";
+            order.Status = "Pending";
 
             // Step 2: Final submission
             if (ModelState.IsValid)
@@ -45,6 +45,23 @@ namespace Capstone2.Controllers
                 });
 
                 order.OrderDetails = selectedItems;
+
+                // Calculate base amount and rush order fee
+                double baseAmount = selectedItems.Sum(x => x.Menu.Price * x.Quantity);
+                order.BaseAmount = baseAmount;
+
+                // Check if it's a rush order (same day)
+                if (order.OrderDate.Date == order.CateringDate.Date)
+                {
+                    order.RushOrderFee = baseAmount * 0.10; // 10% rush order fee
+                    order.TotalPayment = baseAmount + order.RushOrderFee;
+                }
+                else
+                {
+                    order.RushOrderFee = 0;
+                    order.TotalPayment = baseAmount;
+                }
+
                 TempData["Order"] = JsonSerializer.Serialize(order);
                 return RedirectToAction("Index", "OrderDetails");
             }
