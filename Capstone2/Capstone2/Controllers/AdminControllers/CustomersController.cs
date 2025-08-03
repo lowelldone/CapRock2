@@ -32,7 +32,12 @@ namespace Capstone2.Controllers.AdminControllers
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                customers = customers.Where(s => s.Name.ToLower().Contains(searchString.ToLower()));
+                var searchTerm = searchString.ToLower().Trim();
+                customers = customers.Where(s =>
+                    s.Name.ToLower().Contains(searchTerm) ||
+                    (s.Order != null && !string.IsNullOrEmpty(s.Order.OrderNumber) &&
+                     s.Order.OrderNumber.ToLower().Contains(searchTerm))
+                );
             }
 
             return View(await customers.ToListAsync());
@@ -94,8 +99,23 @@ namespace Capstone2.Controllers.AdminControllers
                 {
                     var orderId = customer.Order.OrderId;
 
+                    // Get order waiters and set their availability to Available before removing
+                    var orderWaiters = await _context.OrderWaiters
+                        .Include(ow => ow.Waiter)
+                        .Where(ow => ow.OrderId == orderId)
+                        .ToListAsync();
+
+                    // Set waiters' availability to Available
+                    foreach (var orderWaiter in orderWaiters)
+                    {
+                        if (orderWaiter.Waiter != null)
+                        {
+                            orderWaiter.Waiter.Availability = "Available";
+                            _context.Waiters.Update(orderWaiter.Waiter);
+                        }
+                    }
+
                     // Remove order waiters
-                    var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == orderId);
                     _context.OrderWaiters.RemoveRange(orderWaiters);
                     // Remove material pull outs
                     var pullOuts = _context.MaterialPullOuts.Where(p => p.OrderId == orderId);
@@ -223,6 +243,13 @@ namespace Capstone2.Controllers.AdminControllers
             // Update order's AmountPaid
             customer.Order.AmountPaid += paymentAmount;
             _context.Orders.Update(customer.Order);
+
+            // Check if down payment is now met and update status to Accepted
+            if (customer.Order.DownPaymentMet && customer.Order.Status == "Pending")
+            {
+                customer.Order.Status = "Accepted";
+                _context.Orders.Update(customer.Order);
+            }
 
             // Mark as paid if fully paid
             if (customer.Order.AmountPaid >= customer.Order.TotalPayment)

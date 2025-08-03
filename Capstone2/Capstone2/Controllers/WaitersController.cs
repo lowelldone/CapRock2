@@ -49,7 +49,7 @@ namespace Capstone2.Controllers
             if (waiter.WaiterId == 0)
             {
                 // ✅ Create User first
-                waiter.User.Role = "WAITER";
+                waiter.User.Role = "Waiter";
                 _context.Users.Add(waiter.User);
                 _context.SaveChanges();
 

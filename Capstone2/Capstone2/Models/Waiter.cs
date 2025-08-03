@@ -15,10 +15,6 @@ namespace Capstone2.Models
         [ForeignKey("User")]
         public int UserId { get; set; }
 
-        public HeadWaiter? HeadWaiter { get; set; }
-        [ForeignKey("HeadWaiter")]
-        public int? HeadWaiterId { get; set; }
-
         // Availability: 'Available' or 'Busy'
         public string Availability { get; set; } = "Available";
 

@@ -260,7 +260,7 @@ namespace Capstone2.Controllers
                     }
                 }
             }
-            // If order was Upcoming, set to Ongoing when materials are pulled out
+            // If order was Accepted, set to Ongoing when materials are pulled out
             if (order.Status == "Accepted")
             {
                 order.Status = "Ongoing";

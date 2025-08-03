@@ -191,6 +191,7 @@
             const data = JSON.parse(saved);
             Object.keys(data).forEach(function (key) {
                 const el = document.querySelector('[name="' + key + '"]');
+                console.log(el);
                 if (el && (!el.value || parseInt(el.value) == 0)) {
                     el.value = data[key];
                 }
@@ -229,7 +230,7 @@
         });
 
         // Handle rush order fee display
-        const cateringDateInput = document.getElementById('cateringDate');
+        // const cateringDateInput = document.getElementById('cateringDate');
         const rushOrderAlert = document.getElementById('rushOrderAlert');
 
         function checkRushOrder() {
