@@ -176,29 +176,40 @@
 </div>
 
 <script>
-    // Save form data to sessionStorage on submit
-    document.getElementById('orderForm').addEventListener('submit', function () {
-        var formData = {};
-        var form = this;
-        Array.from(form.elements).forEach(function (el) {
-            if (el.name && (el.type !== 'submit' && el.type !== 'button')) {
-                formData[el.name] = el.value;
-            }
-        });
-        sessionStorage.setItem('orderFormData', JSON.stringify(formData));
-    });
+        const STORAGE_KEY = 'orderFormData';
 
-    // Restore form data from sessionStorage on page load
-    window.addEventListener('DOMContentLoaded', function () {
-        var saved = sessionStorage.getItem('orderFormData');
+        // On page load: restore if there is saved data
+        window.addEventListener('DOMContentLoaded', function () {
+        const saved = sessionStorage.getItem(STORAGE_KEY);
         if (saved) {
-            var data = JSON.parse(saved);
+          const data = JSON.parse(saved);
             Object.keys(data).forEach(function (key) {
-                var el = document.querySelector('[name="' + key + '"]');
-                if (el) el.value = data[key];
-            });
+                const el = document.querySelector('[name="' + key + '"]');
+            if (el && (!el.value || parseInt(el.value) == 0)) {
+                el.value = data[key];
+            }
+          });
         }
-    });
+      });
+
+        // On submit: only save if it’s new or changed
+        document.getElementById('orderForm').addEventListener('submit', function (e) {
+        const form = this;
+        const formData = { };
+        Array.from(form.elements).forEach(el => {
+          if (el.name && el.type !== 'submit' && el.type !== 'button') {
+            formData[el.name] = el.value;
+          }
+        });
+
+        const newJson = JSON.stringify(formData);
+        const oldJson = sessionStorage.getItem(STORAGE_KEY);
+
+        if (!oldJson || oldJson !== newJson) {
+            // only write if it’s missing or has changed
+            sessionStorage.setItem(STORAGE_KEY, newJson);
+        }
+      });
 
     // Clear sessionStorage after successful submit (optional, if you redirect on success)
     // You may want to clear it on the OrderDetails page after confirmation as well.
