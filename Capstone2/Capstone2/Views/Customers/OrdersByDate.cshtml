@@ -170,11 +170,9 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Time</th>
+                            <th>Order Number</th>
                             <th>Customer</th>
-                            <th>Venue</th>
                             <th>Pax</th>
-                            <th>Occasion</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -182,18 +180,25 @@
                         @foreach (var order in Model)
                         {
                             <tr class="@(order.NoOfPax >= 701 && order.NoOfPax <= 1500 ? "table-primary" : "")">
-                                <td>@order.timeOfFoodServing.ToString("HH:mm")</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(order.OrderNumber))
+                                    {
+                                        <span class="fw-bold text-primary">@order.OrderNumber</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
                                 <td>
                                     <strong>@order.Customer.Name</strong><br>
                                     <small class="text-muted">@order.Customer.ContactNo</small>
                                 </td>
-                                <td>@order.Venue</td>
                                 <td>
                                     <span class="badge @(order.NoOfPax >= 701 && order.NoOfPax <= 1500 ? "bg-primary" : "bg-secondary")">
                                         @order.NoOfPax pax
                                     </span>
                                 </td>
-                                <td>@order.Occasion</td>
                                 <td>
                                     <span class="badge @(order.Status == "Accepted" ? "bg-warning" :
                                                        order.Status == "Completed" ? "bg-success" :

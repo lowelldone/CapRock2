@@ -7,6 +7,7 @@ namespace Capstone2.Models
     {
         [Key]
         public int OrderId { get; set; }
+        public string OrderNumber { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
         [Required]
         public DateTime CateringDate { get; set; }

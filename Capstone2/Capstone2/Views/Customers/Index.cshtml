@@ -118,7 +118,7 @@
                 <i class="bi bi-calendar-day"></i> Daily Orders
             </a>
             <a asp-action="DateSummary" class="btn btn-outline-info add-customer-btn">
-                <i class="bi bi-calendar-range"></i> Order Summary
+                <i class="bi bi-calendar-range"></i> Orders Summary
             </a>
             <a asp-action="Create" class="btn btn-primary add-customer-btn">
                 <i class="bi bi-plus-lg"></i> Add New Customer
@@ -129,11 +129,17 @@
     <div class="card mb-4 shadow-sm border-0 rounded-4">
         <div class="card-body">
             <form asp-controller="Customers" asp-action="Index" method="get" class="row g-3">
-                <div class="col-md-10">
-                    <input type="text" name="searchString" class="form-control" placeholder="Search customers by name..." />
+                <div class="col-md-6">
+                    <input type="text" name="searchString" class="form-control" placeholder="Search by Order Number, Customer Name..." />
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-outline-primary w-100">Search</button>
+                </div>
+                <div class="col-md-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">Clear</a>
+                </div>
+                <div class="col-md-2">
+                    <a asp-action="Index" class="btn btn-success w-100">View All</a>
                 </div>
             </form>
         </div>
@@ -144,6 +150,7 @@
             <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
                 <thead class="table-light rounded-4">
                     <tr>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Order Number</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">@Html.DisplayNameFor(model => model.First().Name)</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">@Html.DisplayNameFor(model => model.First().ContactNo)</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">@Html.DisplayNameFor(model => model.First().Address)</th>
@@ -158,28 +165,63 @@
                     {
                         var order = item.Order;
                         <tr>
+                            <td style="font-size: 1.1rem;">
+                                @if (order?.OrderNumber != null)
+                                {
+                                    <span class="fw-bold text-primary">@order.OrderNumber</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
                             <td style="font-size: 1.1rem;">@Html.DisplayFor(modelItem => item.Name)</td>
                             <td style="font-size: 1.1rem;">@Html.DisplayFor(modelItem => item.ContactNo)</td>
                             <td style="font-size: 1.1rem;">@Html.DisplayFor(modelItem => item.Address)</td>
                             <td>
-                                <form asp-action="ToggleStatus"
-                                      asp-route-id="@item.CustomerID"
-                                      method="post"
-                                      class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit"
-                                            class="btn btn-lg px-4 @(item.IsPaid ? "btn-success" : "btn-outline-secondary")"
-                                    @(item.Order != null && item.Order.AmountPaid < item.Order.TotalPayment ? "disabled" : "")>
-                                        <span style="font-size: 1.1rem;">@(item.IsPaid ? "Paid" : "Not Paid")</span>
-                                    </button>
-                                </form>
+                                @if (order != null)
+                                {
+                                    var downPayment = (decimal)order.TotalPayment * 0.5m;
+                                    var downPaymentRemaining = downPayment - (decimal)order.AmountPaid;
+                                    var balance = (decimal)order.TotalPayment - (decimal)order.AmountPaid;
+                                    var isReadyToCater = downPaymentRemaining <= 0 && balance > 0;
+
+                                    <form asp-action="ToggleStatus"
+                                          asp-route-id="@item.CustomerID"
+                                          method="post"
+                                          class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn @(item.IsPaid ? "btn-success" : "btn-outline-secondary") btn-sm"
+                                        @(order.AmountPaid < order.TotalPayment ? "disabled" : "")>
+                                            <span style="font-size: 0.9rem;">
+                                                @if (item.IsPaid)
+                                                {
+                                                    @("Paid")
+                                                }
+                                                else if (isReadyToCater)
+                                                {
+                                                    @("Not Totally Paid")
+                                                }
+                                                else
+                                                {
+                                                    @("Not Paid")
+                                                }
+                                            </span>
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No Order</span>
+                                }
                             </td>
                             <td>
                                 <form method="post" class="update-status-form d-flex align-items-center" data-id="@item.CustomerID">
 
                                     <select name="cateringStatus" class="form-select form-select-lg me-2 catering-status-dropdown" style="font-size: 1.1rem;">
                                         @{
-                                            string[] status = ["Pending", "Ongoing", "Completed"];
+                                            string[] status = ["Pending", "Accepted", "Ongoing", "Completed"];
                                         }
 
                                         @for (int i = 0; i < status.Length; i++)

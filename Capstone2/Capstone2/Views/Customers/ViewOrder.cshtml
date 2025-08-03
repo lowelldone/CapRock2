@@ -345,7 +345,7 @@
     }
 
     <div class="d-flex gap-3 mt-4">
-        @if (Model.Status != "Completed" && Model.Status != "Ongoing")
+        @if (Model.Status != "Completed" && Model.Status != "Ongoing" && Model.Status != "Accepted")
         {
             <a asp-controller="Orders" asp-action="Edit" asp-route-id="@Model.OrderId" class="btn btn-primary btn-action">
                 <i class="bi bi-pencil-square me-2"></i>Edit Information

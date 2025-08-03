@@ -299,31 +299,47 @@
 <script>
     $(function () {
         $("#confirmOrder").click(function () {
-            $.ajax({
-                url: '/OrderDetails/OrderConfirmed',
-                type: 'POST',
-                data: { orderJson: $("#orders").val() },
-                success: function (data) {
-                    if (data.success) {
-                        Swal.fire({
-                            title: "Order Confirmed!",
-                            icon: "success"
-                        }).then(() => {
-                            window.location.href = "/Home/Homepage";
-                        });
-                    } else {
-                        Swal.fire({
-                            title: "Order Cannot Be Confirmed",
-                            text: data.message,
-                            icon: "error"
-                        });
-                    }
-                },
-                error: function (xhr, status, error) {
-                    Swal.fire({
-                        title: "Error confirming order",
-                        text: "An unexpected error occurred. Please try again.",
-                        icon: "error"
+            Swal.fire({
+                title: "Confirm Order Submission",
+                text: "Are you sure to submit this order? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, submit order!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/OrderDetails/OrderConfirmed',
+                        type: 'POST',
+                        data: { orderJson: $("#orders").val() },
+                        success: function (data) {
+                            if (data.success) {
+                                sessionStorage.removeItem('orderFormData');
+                                Swal.fire({
+                                    title: "Order Confirmed!",
+                                    html: `Your order has been successfully submitted.<br><br><strong>Order Number: ${data.orderNumber}</strong><br><br>Please go to their office to make the payment and present this number for your reference.`,
+                                    icon: "success",
+                                    confirmButtonText: "OK"
+                                }).then(() => {
+                                    window.location.href = "/Home/Homepage";
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Order Cannot Be Confirmed",
+                                    text: data.message,
+                                    icon: "error"
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                title: "Error confirming order",
+                                text: "An unexpected error occurred. Please try again.",
+                                icon: "error"
+                            });
+                        }
                     });
                 }
             });

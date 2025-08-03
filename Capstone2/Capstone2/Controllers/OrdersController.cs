@@ -33,6 +33,7 @@ namespace Capstone2.Controllers
 
             ModelState.Remove("Customer.Order");
             ModelState.Remove("Status");
+            ModelState.Remove("OrderNumber");
             order.Status = "Pending";
 
             // Step 2: Final submission

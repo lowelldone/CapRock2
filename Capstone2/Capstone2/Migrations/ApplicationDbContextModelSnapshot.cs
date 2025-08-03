@@ -47,7 +47,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("CustomerID");
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Capstone2.Models.HeadWaiter", b =>
@@ -68,7 +68,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("HeadWaiters", (string)null);
+                    b.ToTable("HeadWaiters");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Material", b =>
@@ -98,7 +98,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("MaterialId");
 
-                    b.ToTable("Materials", (string)null);
+                    b.ToTable("Materials");
                 });
 
             modelBuilder.Entity("Capstone2.Models.MaterialPullOut", b =>
@@ -117,7 +117,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MaterialPullOuts", (string)null);
+                    b.ToTable("MaterialPullOuts");
                 });
 
             modelBuilder.Entity("Capstone2.Models.MaterialPullOutItem", b =>
@@ -142,7 +142,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("MaterialPullOutId");
 
-                    b.ToTable("MaterialPullOutItems", (string)null);
+                    b.ToTable("MaterialPullOutItems");
                 });
 
             modelBuilder.Entity("Capstone2.Models.MaterialReturn", b =>
@@ -177,7 +177,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MaterialReturns", (string)null);
+                    b.ToTable("MaterialReturns");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Menu", b =>
@@ -207,7 +207,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("MenuId");
 
-                    b.ToTable("Menu", (string)null);
+                    b.ToTable("Menu");
                 });
 
             modelBuilder.Entity("Capstone2.Models.MenuPackages", b =>
@@ -239,7 +239,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("MenuPackageId");
 
-                    b.ToTable("MenuPackages", (string)null);
+                    b.ToTable("MenuPackages");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Order", b =>
@@ -276,6 +276,10 @@ namespace Capstone2.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("OrderNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -297,7 +301,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("HeadWaiterId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Capstone2.Models.OrderDetail", b =>
@@ -327,7 +331,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("Capstone2.Models.OrderWaiter", b =>
@@ -350,7 +354,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("WaiterId");
 
-                    b.ToTable("OrderWaiters", (string)null);
+                    b.ToTable("OrderWaiters");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Payment", b =>
@@ -374,7 +378,7 @@ namespace Capstone2.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Supplier", b =>
@@ -399,7 +403,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("SupplierId");
 
-                    b.ToTable("Suppliers", (string)null);
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("Capstone2.Models.User", b =>
@@ -432,7 +436,7 @@ namespace Capstone2.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Waiter", b =>
@@ -447,9 +451,6 @@ namespace Capstone2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HeadWaiterId")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -461,11 +462,9 @@ namespace Capstone2.Migrations
 
                     b.HasKey("WaiterId");
 
-                    b.HasIndex("HeadWaiterId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("Waiters", (string)null);
+                    b.ToTable("Waiters");
                 });
 
             modelBuilder.Entity("Capstone2.Models.HeadWaiter", b =>
@@ -557,17 +556,11 @@ namespace Capstone2.Migrations
 
             modelBuilder.Entity("Capstone2.Models.Waiter", b =>
                 {
-                    b.HasOne("Capstone2.Models.HeadWaiter", "HeadWaiter")
-                        .WithMany()
-                        .HasForeignKey("HeadWaiterId");
-
                     b.HasOne("Capstone2.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("HeadWaiter");
 
                     b.Navigation("User");
                 });

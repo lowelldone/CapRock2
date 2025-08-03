@@ -48,25 +48,31 @@ namespace Capstone2.Controllers
                     });
                 }
             }
-            else
-            {
-                // Regular orders - check total pax limit
-                if (totalPaxForDate + newOrderPax > 700)
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        message = $"Cannot accept this order. Total pax for {order.CateringDate.Date:MMM dd, yyyy} would be {totalPaxForDate + newOrderPax}, which exceeds the maximum limit of 700 pax per day."
-                    });
-                }
-            }
+
+            // Generate unique order number
+            order.OrderNumber = await GenerateOrderNumber();
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            return Json(new { success = true });
+            return Json(new { success = true, orderNumber = order.OrderNumber });
         }
 
+        private async Task<string> GenerateOrderNumber()
+        {
+            var today = DateTime.Today;
+            var dateString = today.ToString("yyyyMMdd");
+
+            // Get the count of orders for today
+            var todayOrderCount = await _context.Orders
+                .Where(o => o.OrderDate.Date == today)
+                .CountAsync();
+
+            // Generate sequential number (starting from 1)
+            var sequentialNumber = todayOrderCount + 1;
+
+            return $"ORD-{dateString}-{sequentialNumber:D3}";
+        }
         [HttpGet]
         public async Task<IActionResult> Edit(int orderId)
         {
