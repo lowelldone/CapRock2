@@ -35,19 +35,19 @@ namespace Capstone2.Controllers
             int totalPaxForDate = existingOrdersForDate.Sum(o => o.NoOfPax);
             int newOrderPax = order.NoOfPax;
 
-            // Check if this is a large order (701-1500 pax)
-            if (newOrderPax >= 701 && newOrderPax <= 1500)
-            {
-                // Large orders can only be the only order for that day
-                if (existingOrdersForDate.Any())
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        message = "Large orders (701-1500 pax) cannot be scheduled on the same day as other orders. Please choose a different date."
-                    });
-                }
-            }
+            //// Check if this is a large order (701-1500 pax)
+            //if (newOrderPax >= 701 && newOrderPax <= 1500)
+            //{
+            //    // Large orders can only be the only order for that day
+            //    if (existingOrdersForDate.Any())
+            //    {
+            //        return Json(new
+            //        {
+            //            success = false,
+            //            message = "Large orders (701-1500 pax) cannot be scheduled on the same day as other orders. Please choose a different date."
+            //        });
+            //    }
+            //}
 
             // Generate unique order number
             order.OrderNumber = await GenerateOrderNumber();
