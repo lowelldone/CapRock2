@@ -5,33 +5,85 @@
 }
 
 <style>
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
     body, .container, .card, .btn, h2, label, input {
         font-family: 'Segoe UI', sans-serif;
     }
-
     .login-bg {
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(100, 118, 248, 0.08);
+        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
     }
-
     .login-card {
         background: #fff;
         border-radius: 1.5rem;
-        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.12);
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.15);
+        border: 1px solid var(--purple-border);
         padding: 2.5rem 2rem 2rem 2rem;
         max-width: 400px;
         width: 100%;
+        transition: all 0.3s ease;
     }
-
+    .login-card:hover {
+        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.2);
+        transform: translateY(-2px);
+    }
     .btn-login {
         font-size: 1.1rem;
         font-weight: 600;
         border-radius: 1.5rem;
         padding: 0.75rem 0;
-        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .btn-login:hover {
+        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+    }
+    .form-control {
+        border-radius: 12px;
+        border: 2px solid var(--purple-border);
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: var(--primary-purple);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        outline: none;
+    }
+    .alert-danger {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 1px solid var(--danger-color);
+        color: #991b1b;
+        border-radius: 12px;
+    }
+    .text-danger {
+        color: var(--danger-color) !important;
+    }
+    .form-label {
+        color: var(--text-purple);
+        font-weight: 600;
     }
 </style>
 

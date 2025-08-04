@@ -9,11 +9,28 @@
     <title>@ViewData["Title"] - GRUSH Catering System</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
     @RenderSection("Styles", required: false)
     <style>
+        :root {
+            --primary-purple: #7c3aed;
+            --primary-purple-dark: #6d28d9;
+            --primary-purple-light: #a78bfa;
+            --secondary-purple: #8b5cf6;
+            --accent-purple: #c084fc;
+            --purple-bg: #faf5ff;
+            --purple-bg-light: #f3e8ff;
+            --purple-border: #e9d5ff;
+            --text-purple: #581c87;
+            --text-purple-light: #7c3aed;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
         body {
-            background: #B2B0E8;
+            background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
             font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
         }
@@ -22,7 +39,8 @@
             min-height: 100vh;
             background: #fff;
             border-radius: 20px;
-            box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+            border: 1px solid var(--purple-border);
             padding: 32px 0 16px 0;
             position: fixed;
             left: 0;
@@ -36,6 +54,7 @@
         }
         .soft-sidebar:hover {
             width: 260px;
+            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
         }
         .soft-sidebar .sidebar-logo {
             display: flex;
@@ -44,7 +63,7 @@
             margin-bottom: 40px;
             font-weight: 700;
             font-size: 1.2rem;
-            color: #344767;
+            color: var(--text-purple);
             white-space: nowrap;
             overflow: hidden;
             width: 100%;
@@ -55,6 +74,7 @@
             margin-right: 10px;
             min-width: 32px;
             text-align: center;
+            color: var(--primary-purple);
         }
         .soft-sidebar .sidebar-logo-text {
             opacity: 0;
@@ -77,13 +97,14 @@
             padding: 12px;
             margin: 8px 16px;
             border-radius: 12px;
-            color: #344767;
+            color: var(--text-purple);
             font-weight: 500;
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
             white-space: nowrap;
             overflow: hidden;
             width: calc(100% - 32px);
             min-height: 48px;
+            border: 2px solid transparent;
         }
         .soft-sidebar:hover .nav-link {
             justify-content: flex-start;
@@ -112,12 +133,13 @@
             opacity: 1;
             width: auto;
         }
-        .soft-sidebar .nav-link.active, 
-        .soft-sidebar .nav-link:focus, 
+        .soft-sidebar .nav-link.active,
+        .soft-sidebar .nav-link:focus,
         .soft-sidebar .nav-link:hover {
-            background: linear-gradient(90deg, #ec4899 0%, #a855f7 100%);
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
             color: #fff !important;
-            box-shadow: 0 4px 12px 0 rgba(236, 72, 153, 0.15);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+            transform: translateY(-2px);
         }
         .main-content {
             margin-left: 100px;
@@ -125,6 +147,84 @@
         }
         .soft-sidebar:hover ~ .main-content {
             margin-left: 280px;
+        }
+        /* Enhanced button styles */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            border-color: var(--primary-purple);
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+        }
+        .btn-outline-primary {
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
+            background: transparent;
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-primary:hover {
+            background: var(--primary-purple);
+            color: white;
+            transform: translateY(-2px);
+        }
+        /* Form controls enhancement */
+        .form-control:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        .form-select:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        /* Card enhancements */
+        .card {
+            border-radius: 16px;
+            border: 1px solid var(--purple-border);
+            box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
+        /* Badge enhancements */
+        .badge.bg-primary {
+            background: var(--primary-purple) !important;
+        }
+        .badge.bg-success {
+            background: var(--success-color) !important;
+        }
+        .badge.bg-warning {
+            background: var(--warning-color) !important;
+        }
+        .badge.bg-danger {
+            background: var(--danger-color) !important;
+        }
+        .badge.bg-info {
+            background: var(--info-color) !important;
+        }
+        /* Text color enhancements */
+        .text-primary {
+            color: var(--primary-purple) !important;
+        }
+        .text-success {
+            color: var(--success-color) !important;
+        }
+        .text-warning {
+            color: var(--warning-color) !important;
+        }
+        .text-info {
+            color: var(--info-color) !important;
         }
         @@media (max-width: 991.98px) {
             .soft-sidebar {
@@ -166,10 +266,10 @@
 
     @if (role != null)
     {
-            <nav class="soft-sidebar">
-                <div class="sidebar-logo mb-4">
-                    <i class="bi bi-diagram-3"></i>
-                    <span class="sidebar-logo-text">
+        <nav class="soft-sidebar">
+            <div class="sidebar-logo mb-4">
+                <i class="bi bi-diagram-3"></i>
+                <span class="sidebar-logo-text">
                     @if (role == "ADMIN")
                     {
                         @:Administrator
@@ -182,96 +282,102 @@
                     {
                         @(!string.IsNullOrEmpty(firstName) ? firstName : "Waiter")
                     }
-                    </span>
-                </div>
-                <ul class="nav flex-column w-100">
+                </span>
+            </div>
+            <ul class="nav flex-column w-100">
                 @switch (role)
                 {
                     case "ADMIN":
                         {
-                                        <li class="nav-item mb-2">
-                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
-                                                <i class="bi bi-card-list"></i>
-                                                <span>Customer Orders</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item mb-2">
-                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
-                                                <i class="bi bi-person-badge"></i>
-                                                <span>HeadWaiters</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item mb-2">
-                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Materials" ? "active" : "")" asp-controller="Materials" asp-action="Index">
-                                                <i class="bi bi-box-seam"></i>
-                                                <span>Materials</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item mb-2">
-                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Menus" ? "active" : "")" asp-controller="Menus" asp-action="Index">
-                                                <i class="bi bi-list-ul"></i>
-                                                <span>Menus</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item mb-2">
-                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MenuPackages" ? "active" : "")" asp-controller="MenuPackages" asp-action="Index">
-                                                <i class="bi bi-bag-check"></i>
-                                                <span>Menu Packages</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item mb-2">
-                                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-controller="Suppliers" asp-action="Index">
-                                                <i class="bi bi-truck"></i>
-                                                <span>Suppliers</span>
-                                            </a>
-                                        </li>
+                            <li class="nav-item mb-2">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "DashboardDateSummary" ? "active" : "")" asp-controller="DashboardDateSummary" asp-action="Index">
+                                    <i class="bi bi-card-list"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
+                                    <i class="bi bi-card-list"></i>
+                                    <span>Customer Orders</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
+                                    <i class="bi bi-person-badge"></i>
+                                    <span>HeadWaiters</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Materials" ? "active" : "")" asp-controller="Materials" asp-action="Index">
+                                    <i class="bi bi-box-seam"></i>
+                                    <span>Materials</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Menus" ? "active" : "")" asp-controller="Menus" asp-action="Index">
+                                    <i class="bi bi-list-ul"></i>
+                                    <span>Menus</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MenuPackages" ? "active" : "")" asp-controller="MenuPackages" asp-action="Index">
+                                    <i class="bi bi-bag-check"></i>
+                                    <span>Menu Packages</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-2">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-controller="Suppliers" asp-action="Index">
+                                    <i class="bi bi-truck"></i>
+                                    <span>Suppliers</span>
+                                </a>
+                            </li>
                         }
                         break;
                     case "HEADWAITER":
-                                    <li class="nav-item mb-2">
-                                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PaidOrders" ? "active" : "")" asp-controller="PaidOrders" asp-action="Index">
-                                            <i class="bi bi-receipt"></i>
-                                            <span>Customer Orders</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item mb-2">
-                                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Waiters" ? "active" : "")" asp-controller="Waiters" asp-action="Index">
-                                            <i class="bi bi-people"></i>
-                                            <span>Waiters</span>
-                                        </a>
-                                    </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PaidOrders" ? "active" : "")" asp-controller="PaidOrders" asp-action="Index">
+                                <i class="bi bi-receipt"></i>
+                                <span>Customer Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Waiters" ? "active" : "")" asp-controller="Waiters" asp-action="Index">
+                                <i class="bi bi-people"></i>
+                                <span>Waiters</span>
+                            </a>
+                        </li>
                         break;
                     default:
-                                    <li class="nav-item mb-2">
-                                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedules" ? "active" : "")" asp-controller="Schedules" asp-action="Index">
-                                            <i class="bi bi-calendar-event"></i>
-                                            <span>Schedules</span>
-                                        </a>
-                                    </li>
+                        <li class="nav-item mb-2">
+                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedules" ? "active" : "")" asp-controller="Schedules" asp-action="Index">
+                                <i class="bi bi-calendar-event"></i>
+                                <span>Schedules</span>
+                            </a>
+                        </li>
                         break;
                 }
-                    <li class="nav-item mb-2">
-                        <a class="nav-link" asp-controller="Home" asp-action="Logout" id="logout-link">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Logout</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                <li class="nav-item mb-2">
+                    <a class="nav-link" asp-controller="Home" asp-action="Logout" id="logout-link">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     }
     else
     {
-            <header>
-                <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-                    <div class="container">
-                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Homepage">GRUSH Catering System</a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <a asp-action="Login" asp-controller="Home" class="btn btn-outline-primary rounded-pill px-4 py-2 ms-3" style="color:white; border-color: white;">LOG IN</a>
-                    </div>
-                </nav>
-            </header>
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Homepage">GRUSH Catering System</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <a asp-action="Login" asp-controller="Home" class="btn btn-outline-primary rounded-pill px-4 py-2 ms-3" style="color: var(--primary-purple); border-color: var(--primary-purple); background: white;">LOG IN</a>
+                </div>
+            </nav>
+        </header>
     }
 
     <div class="main-content">
@@ -291,16 +397,15 @@
 
     <footer>
         <div class="container">
-
         </div>
     </footer>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var logoutLink = document.getElementById('logout-link');
             if (logoutLink) {
-                logoutLink.addEventListener('click', function(e) {
+                logoutLink.addEventListener('click', function (e) {
                     if (!confirm('Are you sure you want to log out?')) {
                         e.preventDefault();
                     }

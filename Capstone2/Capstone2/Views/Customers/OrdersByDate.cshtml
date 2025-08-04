@@ -10,7 +10,6 @@
         min-height: 100vh;
         padding: 2rem;
     }
-
     .admin-card {
         background: #fff;
         border-radius: 20px;
@@ -18,66 +17,55 @@
         padding: 2rem;
         margin-bottom: 2rem;
     }
-
     .pax-summary {
         background: #f8fafc;
         border-radius: 12px;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
     }
-
     .pax-warning {
         background: #fef3c7;
         border: 1px solid #f59e0b;
         color: #92400e;
     }
-
     .pax-danger {
         background: #fee2e2;
         border: 1px solid #ef4444;
         color: #991b1b;
     }
-
     .large-order {
         background: #dbeafe;
         border: 1px solid #3b82f6;
         color: #1e40af;
     }
-
     .table {
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
-        .table thead th {
-            background: #f8fafc;
-            border: none;
-            font-weight: 600;
-            color: #344767;
-            padding: 1rem;
-        }
-
-        .table tbody td {
-            padding: 1rem;
-            border: none;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-        .table tbody tr:hover {
-            background: #e0f2fe;
-        }
-
+    .table thead th {
+        background: #f8fafc;
+        border: none;
+        font-weight: 600;
+        color: #344767;
+        padding: 1rem;
+    }
+    .table tbody td {
+        padding: 1rem;
+        border: none;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .table tbody tr:nth-child(even) {
+        background: #f8fafc;
+    }
+    .table tbody tr:hover {
+        background: #e0f2fe;
+    }
     .btn-admin {
         border-radius: 8px;
         font-weight: 600;
         padding: 0.5rem 1rem;
     }
-
     .date-picker {
         border-radius: 8px;
         border: 1px solid #e0e7ef;
@@ -93,7 +81,7 @@
             </a>
             <h2 class="fw-bold mb-0">Orders by Date</h2>
         </div>
-        <a href="@Url.Action("DateSummary", "Customers")" class="btn btn-outline-primary btn-admin">
+        <a href="@Url.Action("Index", "DashboardDateSummary")" class="btn btn-outline-primary btn-admin">
             <i class="bi bi-calendar-range me-2"></i>Order Summary
         </a>
     </div>

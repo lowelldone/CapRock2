@@ -56,7 +56,7 @@ namespace Capstone2.Controllers
 
             string designatedPage = user.Role switch
             {
-                "ADMIN" => "Customers", // change to dashboard
+                "ADMIN" => "DashboardDateSummary", // change to dashboard
                 "HEADWAITER" => "PaidOrders",
                 _ => "Schedules"
             };
