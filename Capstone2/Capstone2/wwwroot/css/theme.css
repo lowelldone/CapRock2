@@ -1,3 +1,4 @@
+﻿/* GRUSH Catering System - Purple Theme */
 :root {
     --primary-purple: #7c3aed;
     --primary-purple-dark: #6d28d9;
@@ -14,63 +15,22 @@
     --danger-color: #ef4444;
     --info-color: #3b82f6;
 }
+/* Global Background */
 body {
     background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
     font-family: 'Segoe UI', sans-serif;
     min-height: 100vh;
 }
-.navbar {
-    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--purple-border);
-}
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--text-purple);
-}
-.nav-link {
-    font-weight: 500;
-    color: var(--text-purple) !important;
-    transition: all 0.3s ease;
-    border-radius: 8px;
-    padding: 8px 16px;
-}
-.nav-link:hover {
-    color: var(--primary-purple) !important;
-    background: var(--purple-bg-light);
-    transform: translateY(-1px);
-}
-.hero-section {
-    background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
-    padding: 80px 20px;
-    text-align: center;
-    border-radius: 20px;
-    margin-bottom: 2rem;
-    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-    border: 1px solid var(--purple-border);
-}
-.hero-section h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    color: var(--text-purple);
-    margin-bottom: 1rem;
-}
-.hero-section p {
-    font-size: 1.3rem;
-    color: var(--text-purple-light);
-    margin-bottom: 2rem;
-}
+/* Enhanced Button Styles */
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-    border: none;
-    border-radius: 12px;
-    padding: 12px 30px;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    border-color: var(--primary-purple);
     color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
 }
 .btn-primary:hover {
     background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
@@ -83,7 +43,7 @@ body {
     background: transparent;
     border-radius: 12px;
     font-weight: 600;
-    padding: 12px 30px;
+    padding: 0.75rem 1.5rem;
     transition: all 0.3s ease;
 }
 .btn-outline-primary:hover {
@@ -91,7 +51,33 @@ body {
     color: white;
     transform: translateY(-2px);
 }
-/* Enhanced form controls */
+.btn-outline-secondary {
+    border-color: #6b7280;
+    color: #6b7280;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+.btn-outline-secondary:hover {
+    background: #6b7280;
+    color: white;
+    transform: translateY(-2px);
+}
+.btn-outline-info {
+    border-color: var(--info-color);
+    color: var(--info-color);
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+.btn-outline-info:hover {
+    background: var(--info-color);
+    color: white;
+    transform: translateY(-2px);
+    }
+/* Form Controls Enhancement */
 .form-control {
     border-radius: 12px;
     border: 2px solid var(--purple-border);
@@ -114,7 +100,7 @@ body {
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
     outline: none;
 }
-/* Card enhancements */
+/* Card Enhancements */
 .card {
     border-radius: 16px;
     border: 1px solid var(--purple-border);
@@ -133,7 +119,7 @@ body {
     font-weight: 600;
     color: var(--text-purple);
 }
-/* Badge enhancements */
+/* Badge Enhancements */
 .badge.bg-primary {
     background: var(--primary-purple) !important;
 }
@@ -149,7 +135,7 @@ body {
 .badge.bg-info {
     background: var(--info-color) !important;
 }
-/* Text color enhancements */
+/* Text Color Enhancements */
 .text-primary {
     color: var(--primary-purple) !important;
 }
@@ -162,7 +148,10 @@ body {
 .text-info {
     color: var(--info-color) !important;
 }
-/* Table enhancements */
+.text-danger {
+    color: var(--danger-color) !important;
+}
+/* Table Enhancements */
 .table {
     border-radius: 12px;
     overflow: hidden;
@@ -176,8 +165,9 @@ body {
 }
 .table tbody tr:hover {
     background: var(--purple-bg-light);
+    transition: all 0.3s ease;
 }
-/* Alert enhancements */
+/* Alert Enhancements */
 .alert-primary {
     background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
     border: 1px solid var(--primary-purple);
@@ -202,6 +192,37 @@ body {
     color: #991b1b;
     border-radius: 12px;
 }
+.alert-info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border: 1px solid var(--info-color);
+    color: #1e40af;
+    border-radius: 12px;
+}
+/* Navbar Enhancements */
+.navbar {
+    box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--purple-border);
+}
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-purple);
+}
+.nav-link {
+    font-weight: 500;
+    color: var(--text-purple) !important;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    padding: 8px 16px;
+}
+.nav-link:hover {
+    color: var(--primary-purple) !important;
+    background: var(--purple-bg-light);
+    transform: translateY(-1px);
+}
+/* Footer Enhancement */
 footer {
     background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 100%);
     border-top: 1px solid var(--purple-border);
@@ -210,4 +231,47 @@ footer {
     font-size: 0.9rem;
     color: var(--text-purple);
     margin-top: 3rem;
+}
+/* Custom Utility Classes */
+.purple-gradient {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+}
+.purple-bg {
+    background: var(--purple-bg);
+}
+.purple-bg-light {
+    background: var(--purple-bg-light);
+}
+.purple-border {
+    border-color: var(--purple-border);
+}
+.purple-text {
+    color: var(--text-purple);
+}
+.purple-text-light {
+    color: var(--text-purple-light);
+}
+/* Animation Classes */
+.hover-lift {
+    transition: all 0.3s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
+}
+.hover-scale {
+    transition: all 0.3s ease;
+}
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    .card {
+        margin-bottom: 1rem;
+    }
 }

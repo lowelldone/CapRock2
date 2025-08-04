@@ -10,124 +10,141 @@
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
         font-family: 'Segoe UI', sans-serif;
     }
-
     .confirm-bg {
-        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
+        border-radius: 12px;
+        padding-bottom: 1rem;
     }
-
     .confirm-header {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 8px;
     }
-
     .confirm-header-icon {
-        font-size: 2.5rem;
-        color: #0d6efd;
-        background: #e0f2fe;
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+        font-size: 1.5rem;
+        color: var(--primary-purple);
+        background: var(--purple-bg-light);
+        border-radius: 8px;
+        padding: 4px 8px;
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
     }
-
     .confirm-subtitle {
         color: #6c757d;
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
+        font-size: 0.9rem;
+        margin-top: -4px;
+        margin-bottom: 10px;
     }
-
     .confirm-card {
         background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
-        padding: 2rem;
-        margin-bottom: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 3px 16px 0 rgba(124, 58, 237, 0.08);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid var(--purple-border);
     }
-
     .confirm-row {
-        padding: 0.75rem 0;
+        padding: 0.6rem 0;
         border-bottom: 1px solid #f1f5f9;
     }
-
-        .confirm-row:last-child {
-            border-bottom: none;
-        }
-
+    .confirm-row:last-child {
+        border-bottom: none;
+    }
     .confirm-label {
         font-weight: 600;
-        color: #344767;
-        font-size: 1rem;
+        color: var(--text-purple);
+        font-size: 0.9rem;
     }
-
     .confirm-value {
         color: #64748b;
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
-
     .table {
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        border: 1px solid var(--purple-border);
     }
-
-        .table thead th {
-            background: #f8fafc;
-            border: none;
-            font-weight: 600;
-            color: #344767;
-            padding: 1rem;
-        }
-
-        .table tbody td {
-            padding: 1rem;
-            border: none;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-        .table tbody tr:hover {
-            background: #e0f2fe;
-        }
-
+    .table thead th {
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        border: none;
+        font-weight: 600;
+        color: #fff;
+        padding: 0.8rem;
+        border-bottom: 2px solid var(--primary-purple-dark);
+        text-align: center;
+    }
+    .table tbody td {
+        padding: 0.8rem;
+        border: none;
+        border-bottom: 1px solid var(--purple-border);
+        text-align: center;
+        vertical-align: middle;
+    }
+    .table tbody tr {
+        background: #fff;
+    }
+    .table tbody tr:hover {
+        background: var(--purple-bg);
+        transition: background-color 0.2s ease;
+    }
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
     .btn-back {
         font-weight: 500;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
         position: absolute;
-        left: 2rem;
-        top: 2rem;
+        left: 1rem;
+        top: 1rem;
         z-index: 1000;
+        font-size: 0.9rem;
     }
-
     .btn-submit {
         font-weight: 600;
-        font-size: 1.1rem;
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
-        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+        font-size: 1rem;
+        border-radius: 8px;
+        padding: 0.6rem 1.5rem;
+        box-shadow: 0 2px 6px 0 rgba(124, 58, 237, 0.10);
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        border: 1px solid var(--primary-purple);
     }
-
+    .btn-submit:hover {
+        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+    }
     .total-section {
-        background: #f8fafc;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-top: 1rem;
+        background: var(--purple-bg-light);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 0.8rem;
+        border: 1px solid var(--purple-border);
     }
-    .btn-back {
-        position: absolute;
-        left: 5px;
+    .ordered-items-header {
+        color: var(--text-purple);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--purple-border);
+    }
+    /* Purple theme variables */
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
     }
 </style>
 
-<div class="container-fluid mt-4 px-4 confirm-bg">
-    <button type="button" class="btn btn-outline-secondary mt-5 btn-back" onclick="window.history.back();">
+<div class="container-fluid mt-2 px-2 confirm-bg">
+    <button type="button" class="btn btn-outline-secondary mt-3 btn-back" onclick="window.history.back();">
         <i class="bi bi-arrow-left me-2"></i>Back
     </button>
 
@@ -135,7 +152,7 @@
         <div>
             <div class="confirm-header mb-1">
                 <span class="confirm-header-icon"><i class="bi bi-check-circle"></i></span>
-                <h2 class="fw-bold mb-0">Confirm Order</h2>
+                <h2 class="fw-bold mb-0" style="font-size: 1.5rem;">Confirm Order</h2>
             </div>
             <div class="confirm-subtitle">Review and confirm order for @Model.Customer.Name</div>
         </div>
@@ -243,7 +260,7 @@
     @if (Model.OrderDetails != null && Model.OrderDetails.Any())
     {
         <div class="confirm-card">
-            <h4 class="fw-bold mb-3">Ordered Items</h4>
+            <h4 class="ordered-items-header" style="font-size: 1.2rem;">Ordered Items</h4>
             <table class="table">
                 <thead>
                     <tr>
@@ -257,10 +274,10 @@
                     @foreach (var item in Model.OrderDetails)
                     {
                         <tr>
-                            <td>@item.Name</td>
-                            <td>@item.Quantity</td>
-                            <td>₱@(item.Menu.Price.ToString("0.00"))</td>
-                            <td>₱@((item.Menu.Price * item.Quantity).ToString("0.00"))</td>
+                            <td style="text-align: left; font-weight: 500; color: var(--text-purple);">@item.Name</td>
+                            <td style="font-weight: 600; color: var(--primary-purple);">@item.Quantity</td>
+                            <td style="color: var(--text-purple-light);">₱@(item.Menu.Price.ToString("0.00"))</td>
+                            <td style="font-weight: 700; color: var(--primary-purple);">₱@((item.Menu.Price * item.Quantity).ToString("0.00"))</td>
                         </tr>
                     }
                 </tbody>
@@ -271,24 +288,24 @@
                 {
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <h6 class="fw-bold mb-2">Base Amount:</h6>
+                            <h6 class="fw-bold mb-2" style="color: var(--text-purple);">Base Amount:</h6>
                             <p class="text-muted mb-0">₱@Model.BaseAmount.ToString("0.00")</p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="fw-bold mb-2">Rush Order Fee (10%):</h6>
+                            <h6 class="fw-bold mb-2" style="color: var(--text-purple);">Rush Order Fee (10%):</h6>
                             <p class="text-muted mb-0">₱@Model.RushOrderFee.ToString("0.00")</p>
                         </div>
                     </div>
-                    <hr class="my-3">
+                    <hr class="my-3" style="border-color: var(--purple-border);">
                 }
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="fw-bold mb-2">50% Downpayment:</h6>
+                        <h6 class="fw-bold mb-2" style="color: var(--text-purple);">50% Downpayment:</h6>
                         <p class="text-muted mb-0">₱@((Model.TotalPayment * 0.5).ToString("0.00"))</p>
                     </div>
                 </div>
-                <hr class="my-3">
-                <h5 class="fw-bold mb-0">Total Payment: ₱@Model.TotalPayment.ToString("0.00")</h5>
+                <hr class="my-3" style="border-color: var(--purple-border);">
+                <h5 class="fw-bold mb-0" style="color: var(--primary-purple);">Total Payment: ₱@Model.TotalPayment.ToString("0.00")</h5>
             </div>
         </div>
     }

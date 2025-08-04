@@ -3,65 +3,125 @@
 }
 
 <style>
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p {
         font-family: 'Segoe UI', sans-serif;
     }
-
     .hero-section {
-        background: rgba(255,255,255,0.85);
+        background: rgba(255,255,255,0.95);
         border-radius: 2rem;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.15);
+        border: 1px solid var(--purple-border);
         padding: 3rem 2rem 2rem 2rem;
         margin-top: 2rem;
         margin-bottom: 2rem;
+        transition: all 0.3s ease;
     }
-
+    .hero-section:hover {
+        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.2);
+        transform: translateY(-2px);
+    }
     .hero-img-wrapper {
         position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
     }
-
-        .hero-img-wrapper img {
-            border-radius: 1.5rem;
-            box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.12);
-            max-width: 90%;
-            filter: brightness(0.97) saturate(1.1);
-        }
-
+    .hero-img-wrapper img {
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.2);
+        max-width: 90%;
+        filter: brightness(0.97) saturate(1.1);
+        transition: all 0.3s ease;
+    }
+    .hero-img-wrapper img:hover {
+        transform: scale(1.02);
+        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.3);
+    }
     .section-divider {
         height: 4px;
-        background: linear-gradient(90deg, #6476f8 0%, #a855f7 100%);
+        background: linear-gradient(90deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
         border-radius: 2px;
         margin: 3rem 0 2rem 0;
-        opacity: 0.12;
+        opacity: 0.3;
     }
-
     .feature-card {
         background: #fff;
         border-radius: 1.5rem;
-        box-shadow: 0 2px 12px 0 rgba(34, 41, 47, 0.08);
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
         padding: 2rem 1.5rem 1.5rem 1.5rem;
         margin-bottom: 2rem;
         min-height: 260px;
+        transition: all 0.3s ease;
     }
-
+    .feature-card:hover {
+        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+        transform: translateY(-3px);
+        border-color: var(--primary-purple);
+    }
+    .feature-card i {
+        color: var(--primary-purple);
+        transition: all 0.3s ease;
+    }
+    .feature-card:hover i {
+        transform: scale(1.1);
+        color: var(--secondary-purple);
+    }
     .btn-order {
         font-size: 1.25rem;
         font-weight: 600;
         padding: 0.75rem 2.5rem;
         border-radius: 2rem;
-        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
+        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
     }
-
+    .btn-order:hover {
+        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+    }
     .cta-section {
-        background: rgba(255,255,255,0.92);
+        background: rgba(255,255,255,0.95);
         border-radius: 1.5rem;
-        box-shadow: 0 2px 12px 0 rgba(34, 41, 47, 0.08);
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
         margin-top: 2rem;
         margin-bottom: 2rem;
         padding: 2.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+    .cta-section:hover {
+        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+        transform: translateY(-2px);
+    }
+    /* Text color enhancements */
+    .text-warning {
+        color: var(--warning-color) !important;
+    }
+    .text-success {
+        color: var(--success-color) !important;
+    }
+    .text-primary {
+        color: var(--primary-purple) !important;
     }
 </style>
 

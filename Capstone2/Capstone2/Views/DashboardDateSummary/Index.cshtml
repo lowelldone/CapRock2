@@ -1,0 +1,594 @@
+﻿@model Capstone2.Models.DateSummaryPageViewModel
+
+@{
+    ViewData["Title"] = "Orders Date Summary";
+}
+
+<style>
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
+
+    .admin-bg {
+        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .admin-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+
+        .admin-card:hover {
+            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
+
+    .date-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 2px solid var(--purple-border);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .date-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+        }
+
+        .date-card:hover {
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
+            transform: translateY(-3px);
+            border-color: var(--primary-purple);
+        }
+
+    .pax-warning {
+        border-left: 4px solid var(--warning-color);
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    }
+
+    .pax-danger {
+        border-left: 4px solid var(--danger-color);
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    }
+
+    .large-order {
+        border-left: 4px solid var(--primary-purple);
+        background: linear-gradient(135deg, var(--purple-bg-light) 0%, #e9d5ff 100%);
+    }
+
+    .available {
+        border-left: 4px solid var(--success-color);
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    }
+
+    .btn-admin {
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        border-color: var(--primary-purple);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+        }
+
+    .btn-outline-primary {
+        border-color: var(--primary-purple);
+        color: var(--primary-purple);
+        background: transparent;
+    }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-purple);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+    .btn-outline-secondary {
+        border-color: #6b7280;
+        color: #6b7280;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #6b7280;
+            color: white;
+        }
+
+    .btn-outline-info {
+        border-color: var(--info-color);
+        color: var(--info-color);
+    }
+
+        .btn-outline-info:hover {
+            background: var(--info-color);
+            color: white;
+        }
+
+    .date-picker {
+        border-radius: 12px;
+        border: 2px solid var(--purple-border);
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+        .date-picker:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+            outline: none;
+        }
+
+    .pax-badge {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+    }
+
+    .calendar-container {
+        background: #fff;
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--purple-border);
+    }
+
+    .calendar-nav-btn {
+        background: var(--purple-bg-light);
+        border: 2px solid var(--purple-border);
+        font-size: 1.1rem;
+        color: var(--primary-purple);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .calendar-nav-btn:hover {
+            background: var(--primary-purple);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+
+    .calendar-day-header {
+        text-align: center;
+        font-weight: 700;
+        color: var(--text-purple);
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        position: relative;
+        font-size: 0.9rem;
+        min-height: 40px;
+        border: 2px solid transparent;
+    }
+
+        .calendar-day:hover {
+            background: var(--purple-bg-light);
+            transform: scale(1.1);
+            border-color: var(--primary-purple);
+        }
+
+        .calendar-day.has-orders {
+            background: linear-gradient(135deg, var(--purple-bg-light) 0%, #e9d5ff 100%);
+            color: var(--text-purple);
+            font-weight: 700;
+            border-color: var(--primary-purple);
+        }
+
+            .calendar-day.has-orders:hover {
+                background: linear-gradient(135deg, var(--primary-purple-light) 0%, var(--accent-purple) 100%);
+                color: white;
+                transform: scale(1.1);
+                box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            }
+
+        .calendar-day.has-large-order {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            font-weight: 700;
+            border-color: var(--warning-color);
+        }
+
+            .calendar-day.has-large-order:hover {
+                background: linear-gradient(135deg, var(--warning-color) 0%, #f59e0b 100%);
+                color: white;
+                transform: scale(1.1);
+                box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            }
+
+        .calendar-day.other-month {
+            color: #d1d5db;
+            opacity: 0.6;
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            color: white;
+            font-weight: 700;
+            border-color: var(--success-color);
+        }
+
+            .calendar-day.today:hover {
+                background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                transform: scale(1.1);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            }
+
+    .order-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--primary-purple);
+        box-shadow: 0 0 4px rgba(124, 58, 237, 0.5);
+    }
+
+    .calendar-day.has-orders .order-indicator {
+        background: var(--primary-purple);
+    }
+
+    .calendar-day.has-large-order .order-indicator {
+        background: var(--warning-color);
+    }
+
+    /* Statistics cards enhancement */
+    .text-primary {
+        color: var(--primary-purple) !important;
+    }
+
+    .text-success {
+        color: var(--success-color) !important;
+    }
+
+    .text-warning {
+        color: var(--warning-color) !important;
+    }
+
+    .text-info {
+        color: var(--info-color) !important;
+    }
+
+    /* Form controls enhancement */
+    .form-control:focus {
+        border-color: var(--primary-purple);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    .form-select:focus {
+        border-color: var(--primary-purple);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    /* Badge enhancements */
+    .badge.bg-primary {
+        background: var(--primary-purple) !important;
+    }
+
+    .badge.bg-success {
+        background: var(--success-color) !important;
+    }
+
+    .badge.bg-warning {
+        background: var(--warning-color) !important;
+    }
+
+    .badge.bg-danger {
+        background: var(--danger-color) !important;
+    }
+
+    .badge.bg-info {
+        background: var(--info-color) !important;
+    }
+</style>
+
+<div class="admin-bg">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+@*             <a href="@Url.Action("Index", "Customers")" class="btn btn-outline-secondary btn-admin">
+                <i class="bi bi-arrow-left me-2"></i>Back to Customers
+            </a> *@
+            <h2 class="fw-bold mb-0">Orders Date Summary</h2>
+        </div>
+@*         <a href="@Url.Action("OrdersByDate", "Customers")" class="btn btn-outline-primary btn-admin">
+            <i class="bi bi-calendar me-2"></i>Daily View
+        </a> *@
+    </div>
+
+    <!-- Calendar View -->
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <button class="calendar-nav-btn" onclick="previousMonth()">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <h5 class="fw-bold mb-0" id="currentMonth">@Model.StartDate.ToString("MMMM yyyy")</h5>
+            <button class="calendar-nav-btn" onclick="nextMonth()">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+        <div class="calendar-grid">
+            <div class="calendar-day-header">Sun</div>
+            <div class="calendar-day-header">Mon</div>
+            <div class="calendar-day-header">Tue</div>
+            <div class="calendar-day-header">Wed</div>
+            <div class="calendar-day-header">Thu</div>
+            <div class="calendar-day-header">Fri</div>
+            <div class="calendar-day-header">Sat</div>
+
+            @{
+                // Use the start date from the model, which will be the filtered month
+                var currentDate = Model.StartDate;
+                var firstDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+                var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                var startDate = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek);
+                var endDate = startDate.AddDays(41); // 6 weeks
+
+                var ordersByDate = Model.DateSummary.ToDictionary(x => x.Date, x => x);
+            }
+
+            @for (var date = startDate; date < endDate; date = date.AddDays(1))
+            {
+                var isCurrentMonth = date.Month == currentDate.Month;
+                var isToday = date.Date == DateTime.Today.Date;
+                var hasOrders = ordersByDate.ContainsKey(date.Date);
+                var dateSummary = hasOrders ? ordersByDate[date.Date] : null;
+                var hasLargeOrder = dateSummary?.HasLargeOrder ?? false;
+
+                var cssClass = "calendar-day";
+                if (!isCurrentMonth) cssClass += " other-month";
+                if (isToday) cssClass += " today";
+                if (hasLargeOrder) cssClass += " has-large-order";
+                else if (hasOrders) cssClass += " has-orders";
+
+                <div class="@cssClass"
+                     onclick="@(hasOrders ? $"window.location.href='{Url.Action("OrdersByDate", "Customers", new { selectedDate = date.ToString("yyyy-MM-dd") })}'" : "")"
+                     style="@(hasOrders ? "cursor: pointer;" : "")">
+                    @date.Day
+                    @if (hasOrders)
+                    {
+                        <div class="order-indicator"></div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Date Range Selection -->
+    <div class="admin-card">
+        <form method="get" class="row align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Start Date:</label>
+                <input type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")"
+                       class="form-control date-picker" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">End Date:</label>
+                <input type="date" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")"
+                       class="form-control date-picker" />
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary btn-admin">
+                    <i class="bi bi-search me-2"></i>View Summary
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="admin-card">
+        <h4 class="fw-bold mb-3">Summary Statistics</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <h3 class="fw-bold text-primary">@Model.DateSummary.Count</h3>
+                    <p class="text-muted mb-0">Days with Orders</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <h3 class="fw-bold text-success">@Model.DateSummary.Sum(x => x.OrderCount)</h3>
+                    <p class="text-muted mb-0">Total Orders</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <h3 class="fw-bold text-warning">@Model.DateSummary.Count(x => x.HasLargeOrder)</h3>
+                    <p class="text-muted mb-0">Large Order Days</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date-wise Summary -->
+    <div class="admin-card">
+        <h4 class="fw-bold mb-3">Orders by Date</h4>
+
+        @if (!Model.DateSummary.Any())
+        {
+            <div class="text-center py-4">
+                <i class="bi bi-calendar-x fs-1 text-muted"></i>
+                <p class="text-muted mt-2">No orders found in the selected date range.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var dateSummary in Model.DateSummary)
+                {
+                    var statusClass = dateSummary.HasLargeOrder ? "large-order" :
+                    dateSummary.TotalPax > 700 ? "pax-danger" :
+                    dateSummary.TotalPax > 560 ? "pax-warning" : "available";
+
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="date-card @statusClass" style="cursor: pointer;"
+                             onclick="window.location.href='@Url.Action("OrdersByDate", "Customers", new { selectedDate = dateSummary.Date.ToString("yyyy-MM-dd") })'">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="fw-bold mb-0">@dateSummary.Date.ToString("MMM dd, yyyy")</h6>
+                                <span class="badge @(dateSummary.HasLargeOrder ? "bg-primary" :
+                                                   dateSummary.TotalPax > 700 ? "bg-danger" :
+                                                   dateSummary.TotalPax > 560 ? "bg-warning" : "bg-success") pax-badge">
+                                    @dateSummary.TotalPax / 700 pax
+                                </span>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <small class="text-muted">Orders:</small><br>
+                                    <strong>@dateSummary.OrderCount</strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Status:</small><br>
+                                    @if (dateSummary.HasLargeOrder)
+                                    {
+                                        <span class="text-primary fw-semibold">Large Order</span>
+                                    }
+                                    else if (dateSummary.TotalPax >= 700)
+                                    {
+                                        <span class="text-danger fw-semibold">Full Capacity</span>
+                                    }
+                                    else if (dateSummary.TotalPax > 560)
+                                    {
+                                        <span class="text-warning fw-semibold">Near Capacity</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success fw-semibold">Available Capacity</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="mt-3 text-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-cursor me-1"></i>Click to view details
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    // Initialize with the month from the model (filtered dates)
+    let currentMonth = @Model.StartDate.Month;
+    let currentYear = @Model.StartDate.Year;
+
+    function previousMonth() {
+        currentMonth--;
+        if (currentMonth < 1) {
+            currentMonth = 12;
+            currentYear--;
+        }
+        updateCalendar();
+    }
+
+    function nextMonth() {
+        currentMonth++;
+        if (currentMonth > 12) {
+            currentMonth = 1;
+            currentYear++;
+        }
+        updateCalendar();
+    }
+
+    function updateCalendar() {
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        document.getElementById('currentMonth').textContent = `${monthNames[currentMonth - 1]} ${currentYear}`;
+
+        // Calculate the first and last day of the selected month
+        const firstDay = new Date(currentYear, currentMonth - 1, 1);
+        const lastDay = new Date(currentYear, currentMonth, 0);
+
+        // Format dates for URL parameters
+        const startDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-01`;
+        const endDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${lastDay.getDate()}`;
+
+        // Update the date range form inputs
+        document.querySelector('input[name="startDate"]').value = startDate;
+        document.querySelector('input[name="endDate"]').value = endDate;
+
+        // Submit the form to reload with new dates
+        document.querySelector('form').submit();
+    }
+</script> 
