@@ -14,87 +14,103 @@
 }
 
 <style>
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
     body, .container-fluid, .card, .table {
-        font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     }
 
     .menus-bg {
-        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
+    background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+    min-height: 100vh;
+    border-radius: 24px;
+    padding-bottom: 2rem;
     }
 
     .menus-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
     }
 
     .menus-header-icon {
-        font-size: 2.5rem;
-        color: #0d6efd;
-        background: #e0f2fe;
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    font-size: 2.5rem;
+    color: #0d6efd;
+    background: #e0f2fe;
+    border-radius: 12px;
+    padding: 8px 14px;
+    box-shadow: 0 2px 8px rgba(13,110,253,0.08);
     }
 
     .menus-subtitle {
-        color: #6c757d;
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-top: -8px;
+    margin-bottom: 18px;
     }
 
     .add-menu-btn {
-        font-weight: 600;
-        font-size: 1.1rem;
-        border-radius: 12px;
-        padding: 10px 22px;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    padding: 10px 22px;
+    box-shadow: 0 2px 8px rgba(13,110,253,0.08);
     }
 
     .card {
-        border-radius: 20px !important;
-        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+    border-radius: 20px !important;
+    box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
     }
 
     .table {
-        border-radius: 16px;
-        overflow: hidden;
-        background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
     }
 
-        .table thead th {
-            background: #f1f5f9;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #344767;
-            border-bottom: 2px solid #e0e7ef;
-        }
+    .table thead th {
+        background: #f1f5f9;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #344767;
+        border-bottom: 2px solid #e0e7ef;
+    }
 
-        .table tbody tr:nth-child(even) {
-            background: #f8fafc;
-        }
+    .table tbody tr:nth-child(even) {
+        background: #f8fafc;
+    }
 
-        .table tbody tr:hover {
-            background: #e0f2fe;
-            transition: background 0.2s;
-        }
+    .table tbody tr:hover {
+        background: #e0f2fe;
+        transition: background 0.2s;
+    }
 
     .action-btn {
-        border-radius: 8px;
-        font-size: 1rem;
-        padding: 6px 16px;
-        margin-left: 2px;
-        margin-right: 2px;
-        transition: background 0.2s, color 0.2s;
+    border-radius: 8px;
+    font-size: 1rem;
+    padding: 6px 16px;
+    margin-left: 2px;
+    margin-right: 2px;
+    transition: background 0.2s, color 0.2s;
     }
 
-        .action-btn i {
-            margin-right: 4px;
-        }
+    .action-btn i {
+        margin-right: 4px;
+    }
 </style>
 
 <div class="container-fluid mt-4 px-4 menus-bg">
@@ -229,8 +245,8 @@
                                     <td>@item.Category</td>
                                     <td>@($"P{item.Price:0.00}")</td>
                                     <td class="text-end">
-                                        <a asp-action="Edit" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
-                                        <a asp-action="Delete" asp-route-id="@item.MenuId" class="btn btn-sm btn-outline-danger">Delete</a>
+                                        <a asp-action="Edit" asp-route-id="@item.MenuId" class="btn btn-outline-primary btn-sm action-btn"><i class="bi bi-pencil-square"></i>Edit</a>
+                                        <a asp-action="Delete" asp-route-id="@item.MenuId" class="btn btn-outline-danger action-btn"><i class="bi bi-trash"></i> Delete</a>
                                     </td>
                                 </tr>
                             }
