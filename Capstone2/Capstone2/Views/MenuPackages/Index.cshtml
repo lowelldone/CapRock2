@@ -139,8 +139,8 @@
                             <td>@item.NoOfRice</td>
                             <td>@item.NoOfSoftDrinks</td>
                             <td class="text-end">
-                                <a asp-action="Edit" asp-route-id="@item.MenuPackageId" class="btn btn-outline-primary btn-sm action-btn" style="min-width: 80px;">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.MenuPackageId" class="btn btn-sm btn-outline-danger" style="min-width: 80px;">Delete</a>
+                                <a asp-action="Edit" asp-route-id="@item.MenuPackageId" class="btn btn-outline-primary btn-sm action-btn"><i class="bi bi-pencil-square"></i> Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.MenuPackageId" class="btn btn-outline-danger action-btn" style="min-width: 80px;"><i class="bi bi-trash"></i> Delete</a>
                             </td>
                         </tr>
                     }

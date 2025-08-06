@@ -16,5 +16,6 @@ namespace Capstone2.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public List<DateSummaryViewModel> DateSummary { get; set; } = new List<DateSummaryViewModel>();
+        public List<DateSummaryViewModel> AllDateSummary { get; set; } = new List<DateSummaryViewModel>();
     }
 }
