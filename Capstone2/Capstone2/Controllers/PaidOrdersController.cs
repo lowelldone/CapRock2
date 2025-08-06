@@ -363,5 +363,62 @@ namespace Capstone2.Controllers
             TempData["ReturnSuccess"] = $"Materials returned successfully! Additional charge for lost/damaged: ₱{totalCharge}.";
             return RedirectToAction("Index");
         }
+
+        // POST: PaidOrders/UpdateProfile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(string username, string currentPassword, string newPassword)
+        {
+            try
+            {
+                // Get current user from session
+                var userId = HttpContext.Session.GetInt32("UserId");
+                if (!userId.HasValue)
+                {
+                    TempData["ProfileError"] = "User session not found. Please log in again.";
+                    return RedirectToAction("Index");
+                }
+
+                // Find the current user
+                var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId.Value);
+                if (currentUser == null)
+                {
+                    TempData["ProfileError"] = "User not found.";
+                    return RedirectToAction("Index");
+                }
+
+                // Verify current password
+                if (currentUser.Password != currentPassword)
+                {
+                    TempData["ProfileError"] = "Current password is incorrect.";
+                    return RedirectToAction("Index");
+                }
+
+                // Check if new username already exists (if username is being changed)
+                if (username != currentUser.Username)
+                {
+                    var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.UserId != userId.Value);
+                    if (existingUser != null)
+                    {
+                        TempData["ProfileError"] = "Username already exists. Please choose a different username.";
+                        return RedirectToAction("Index");
+                    }
+                }
+
+                // Update user information
+                currentUser.Username = username;
+                currentUser.Password = newPassword;
+                _context.Users.Update(currentUser);
+                await _context.SaveChangesAsync();
+
+                TempData["ProfileSuccess"] = "Profile updated successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ProfileError"] = $"Error updating profile: {ex.Message}";
+                return RedirectToAction("Index");
+            }
+        }
     }
 }

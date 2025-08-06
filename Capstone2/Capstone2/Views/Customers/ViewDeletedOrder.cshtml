@@ -1,0 +1,286 @@
+﻿@model Capstone2.Models.Customer
+
+@{
+    ViewData["Title"] = "Deleted Customer Details";
+}
+
+<style>
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
+
+    body, .container-fluid, .card {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .deleted-details-bg {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 50%, #fecaca 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .deleted-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .deleted-header-icon {
+        font-size: 2.5rem;
+        color: var(--danger-color);
+        background: #fee2e2;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
+        border: 1px solid #fecaca;
+    }
+
+    .deleted-subtitle {
+        color: #991b1b;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .card {
+        border-radius: 20px !important;
+        box-shadow: 0 8px 32px 0 rgba(239, 68, 68, 0.1);
+        border: 1px solid #fecaca;
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            box-shadow: 0 12px 40px 0 rgba(239, 68, 68, 0.15);
+            transform: translateY(-2px);
+        }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #fecaca;
+    }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-weight: 600;
+        color: #991b1b;
+        font-size: 1.1rem;
+    }
+
+    .info-value {
+        color: #374151;
+        font-size: 1.1rem;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 1px solid var(--warning-color);
+        color: #92400e;
+        border-radius: 12px;
+    }
+
+    .action-btn {
+        border-radius: 8px;
+        font-size: 1rem;
+        padding: 8px 20px;
+        margin-left: 8px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+    .restore-btn {
+        background: var(--success-color);
+        border-color: var(--success-color);
+        color: white;
+    }
+
+        .restore-btn:hover {
+            background: #059669;
+            border-color: #059669;
+            color: white;
+        }
+</style>
+
+<div class="container-fluid mt-4 px-4 deleted-details-bg">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <div class="deleted-header mb-1">
+                <span class="deleted-header-icon"><i class="bi bi-person-x"></i></span>
+                <h2 class="fw-bold mb-0">Deleted Customer Details</h2>
+            </div>
+            <div class="deleted-subtitle">View details of the deleted customer record.</div>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="DeletedHistory" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to History
+            </a>
+            <form asp-action="RestoreCustomer" asp-route-id="@Model.CustomerID" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn restore-btn action-btn"
+                        onclick="return confirm('Are you sure you want to restore this customer and their order?')">
+                    <i class="bi bi-arrow-clockwise"></i> Restore Customer
+                </button>
+            </form>
+            <form asp-action="PermanentlyDeleteCustomer" asp-route-id="@Model.CustomerID" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger action-btn"
+                        onclick="return confirm('⚠️ WARNING: This action cannot be undone! Are you absolutely sure you want to permanently delete this customer and all associated data?')">
+                    <i class="bi bi-trash-fill"></i> Delete Forever
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @if (ViewBag.OrderDeleted == true)
+    {
+        <div class="alert alert-info mb-4">
+            <i class="bi bi-info-circle"></i>
+            <strong>Note:</strong> The associated order is also soft-deleted and will be restored along with the customer.
+        </div>
+    }
+    @if (TempData["PermanentDeleteError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["PermanentDeleteError"]</div>
+    }
+    @if (TempData["PermanentDeleteSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["PermanentDeleteSuccess"]</div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-person"></i> Customer Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="info-label">Customer Name:</span>
+                        <span class="info-value fw-bold text-danger">@Model.Name</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Contact Number:</span>
+                        <span class="info-value">@Model.ContactNo</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Address:</span>
+                        <span class="info-value">@Model.Address</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Payment Status:</span>
+                        <span class="info-value">
+                            <span class="badge @(Model.IsPaid ? "bg-success" : "bg-warning")">
+                                @(Model.IsPaid ? "Paid" : "Not Paid")
+                            </span>
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Customer ID:</span>
+                        <span class="info-value">@Model.CustomerID</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-cart"></i> Order Information</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Order != null)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">Order Number:</span>
+                            <span class="info-value fw-bold text-primary">@Model.Order.OrderNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Order Status:</span>
+                            <span class="info-value">
+                                <span class="badge @(Model.Order.Status switch {
+                                    "Pending" => "bg-warning",
+                                    "Accepted" => "bg-info",
+                                    "Ongoing" => "bg-primary",
+                                    "Completed" => "bg-success",
+                                    _ => "bg-secondary"
+                                })">
+                                    @Model.Order.Status
+                                </span>
+                            </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Catering Date:</span>
+                            <span class="info-value">@Model.Order.CateringDate.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Number of Pax:</span>
+                            <span class="info-value">@Model.Order.NoOfPax</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Total Payment:</span>
+                            <span class="info-value">₱@Model.Order.TotalPayment.ToString("N2")</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Amount Paid:</span>
+                            <span class="info-value">₱@Model.Order.AmountPaid.ToString("N2")</span>
+                        </div>
+                        @if (Model.Order.HeadWaiter != null && Model.Order.HeadWaiter.User != null)
+                        {
+                            <div class="info-row">
+                                <span class="info-label">Head Waiter:</span>
+                                <span class="info-value">@($"{Model.Order.HeadWaiter.User.FirstName} {Model.Order.HeadWaiter.User.LastName}")</span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-cart-x" style="font-size: 3rem; color: #d1d5db;"></i>
+                            <h6 class="mt-3 text-muted">No Order Associated</h6>
+                            <p class="text-muted">This customer doesn't have any associated order.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Order != null && ViewBag.OrderDeleted == true)
+    {
+        <div class="card shadow-sm border-0 rounded-4 mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Order Restoration</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info mb-0">
+                    <strong>Good News:</strong> When you restore this customer, the associated order and all its details
+                    (order details, payments, material pull-outs, etc.) will also be restored automatically.
+                </div>
+            </div>
+        </div>
+    }
+</div> 

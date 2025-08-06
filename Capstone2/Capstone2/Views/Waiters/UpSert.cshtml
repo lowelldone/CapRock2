@@ -113,7 +113,9 @@
 
         <form asp-action="UpSert" method="post">
             <input asp-for="WaiterId" type="hidden" />
-            <input asp-for="User.Role" type="hidden" value="WAITER" />
+            <input asp-for="UserId" type="hidden" />
+            <input asp-for="User.UserId" type="hidden" />
+            <input asp-for="User.Role" type="hidden" value="Waiter" />
 
             <div class="mb-4">
                 <div class="form-check">

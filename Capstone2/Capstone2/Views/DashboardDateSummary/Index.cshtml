@@ -595,7 +595,7 @@
         <h1 class="brand-title">GRUSH Catering Services</h1>
         <div class="header-controls">
             @* <i class="bi bi-bell header-icon"></i> *@
-            <i class="bi bi-person-circle header-icon"></i>
+            <i class="bi bi-person-circle header-icon" onclick="openProfileModal()" style="cursor: pointer;"></i>
         </div>
     </div>
 
@@ -773,6 +773,43 @@
     </div>
 </div>
 
+<!-- Profile Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profileModalLabel">Update Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm" method="post" asp-controller="PaidOrders" asp-action="UpdateProfile">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="profileForm" class="btn btn-primary">Update Profile</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     let currentMonth = @Model.StartDate.Month;
     let currentYear = @Model.StartDate.Year;
@@ -827,4 +864,32 @@
     function applyFilter() {
         document.getElementById('filterForm').submit();
     }
+
+    function openProfileModal() {
+        const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+        modal.show();
+    }
+
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function () {
+        const profileForm = document.getElementById('profileForm');
+        if (profileForm) {
+            profileForm.addEventListener('submit', function (e) {
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (newPassword !== confirmPassword) {
+                    e.preventDefault();
+                    alert('New password and confirm password do not match!');
+                    return false;
+                }
+
+                if (newPassword.length < 6) {
+                    e.preventDefault();
+                    alert('Password must be at least 6 characters long!');
+                    return false;
+                }
+            });
+        }
+    });
 </script> 

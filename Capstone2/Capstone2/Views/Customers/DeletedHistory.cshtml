@@ -1,0 +1,454 @@
+﻿@model IEnumerable<Capstone2.Models.Customer>
+
+@{
+    ViewData["Title"] = "Deleted Customers History";
+}
+
+<style>
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
+
+    body, .container-fluid, .card, .table {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .deleted-history-bg {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 50%, #fecaca 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .deleted-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .deleted-header-icon {
+        font-size: 2.5rem;
+        color: var(--danger-color);
+        background: #fee2e2;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
+        border: 1px solid #fecaca;
+    }
+
+    .deleted-subtitle {
+        color: #991b1b;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .card {
+        border-radius: 20px !important;
+        box-shadow: 0 8px 32px 0 rgba(239, 68, 68, 0.1);
+        border: 1px solid #fecaca;
+        transition: all 0.3s ease;
+    }
+
+        .card:hover {
+            box-shadow: 0 12px 40px 0 rgba(239, 68, 68, 0.15);
+            transform: translateY(-2px);
+        }
+
+    .table {
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 16px 0 rgba(239, 68, 68, 0.1);
+    }
+
+        .table thead th {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #991b1b;
+            border-bottom: 2px solid #fecaca;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #fef2f2;
+        }
+
+        .table tbody tr:hover {
+            background: #fee2e2;
+            transition: all 0.3s ease;
+            transform: scale(1.01);
+        }
+
+    .action-btn {
+        border-radius: 8px;
+        font-size: 1rem;
+        padding: 6px 16px;
+        margin-left: 2px;
+        margin-right: 2px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        .action-btn i {
+            margin-right: 4px;
+        }
+
+    .restore-btn {
+        background: var(--success-color);
+        border-color: var(--success-color);
+        color: white;
+    }
+
+        .restore-btn:hover {
+            background: #059669;
+            border-color: #059669;
+            color: white;
+        }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 1px solid var(--warning-color);
+        color: #92400e;
+        border-radius: 12px;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        border: 1px solid var(--success-color);
+        color: #065f46;
+        border-radius: 12px;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 1px solid var(--danger-color);
+        color: #991b1b;
+        border-radius: 12px;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 deleted-history-bg">
+    @if (TempData["RestoreError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["RestoreError"]</div>
+    }
+    @if (TempData["RestoreWarning"] != null)
+    {
+        <div class="alert alert-warning">@TempData["RestoreWarning"]</div>
+    }
+    @if (TempData["RestoreSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["RestoreSuccess"]</div>
+    }
+    @if (TempData["PermanentDeleteError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["PermanentDeleteError"]</div>
+    }
+    @if (TempData["PermanentDeleteSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["PermanentDeleteSuccess"]</div>
+    }
+    @if (TempData["BulkRestoreError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["BulkRestoreError"]</div>
+    }
+    @if (TempData["BulkRestoreSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["BulkRestoreSuccess"]</div>
+    }
+    @if (TempData["BulkPermanentDeleteError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["BulkPermanentDeleteError"]</div>
+    }
+    @if (TempData["BulkPermanentDeleteSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["BulkPermanentDeleteSuccess"]</div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="deleted-header mb-1">
+                <span class="deleted-header-icon"><i class="bi bi-trash"></i></span>
+                <h2 class="fw-bold mb-0">Deleted Customers History</h2>
+            </div>
+            <div class="deleted-subtitle">View and restore previously deleted customer records.</div>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Back to Customers
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow-sm border-0 rounded-4">
+        <div class="card-body">
+            <form asp-controller="Customers" asp-action="DeletedHistory" method="get" class="row g-3">
+                <div class="col-md-8">
+                    <input type="text" name="searchString" class="form-control" placeholder="Search by Customer Name or Order Number..." value="@Context.Request.Query["searchString"]" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-primary w-100">Search</button>
+                </div>
+                <div class="col-md-2">
+                    <a asp-action="DeletedHistory" class="btn btn-outline-secondary w-100">Clear</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-trash" style="font-size: 4rem; color: #d1d5db;"></i>
+                    <h4 class="mt-3 text-muted">No Deleted Customers Found</h4>
+                    <p class="text-muted">There are no deleted customer records to display.</p>
+                    <a asp-action="Index" class="btn btn-primary">Back to Customers</a>
+                </div>
+            }
+            else
+            {
+                <form id="bulkActionForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="bulk-actions-bar p-3 bg-light border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="selectAll">
+                                    <label class="form-check-label fw-bold" for="selectAll">
+                                        Select All
+                                    </label>
+                                </div>
+                                <span class="text-muted" id="selectedCount">0 selected</span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" formaction="@Url.Action("BulkRestoreCustomers")"
+                                        class="btn restore-btn action-btn" id="bulkRestoreBtn" disabled>
+                                    <i class="bi bi-arrow-clockwise"></i> Restore Selected
+                                </button>
+                                <button type="submit" formaction="@Url.Action("BulkPermanentlyDeleteCustomers")"
+                                        class="btn btn-danger action-btn" id="bulkDeleteBtn" disabled
+                                        onclick="return confirm('⚠️ WARNING: This action cannot be undone! Are you absolutely sure you want to permanently delete the selected customers and all their associated data?')">
+                                    <i class="bi bi-trash-fill"></i> Delete Selected
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
+                        <thead class="table-light rounded-4">
+                            <tr>
+                                <th class="fw-bold" style="font-size: 1.2rem; width: 50px;">
+                                    <i class="bi bi-check-square"></i>
+                                </th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Customer Name</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Contact No.</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Address</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Order Number</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Order Status</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Payment Status</th>
+                                <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var order = item.Order;
+                                <tr>
+                                    <td class="text-center">
+                                        <input type="checkbox" class="form-check-input customer-checkbox"
+                                               name="customerIds" value="@item.CustomerID"
+                                               style="transform: scale(1.2);">
+                                    </td>
+                                    <td style="font-size: 1.1rem;">
+                                        <span class="fw-bold text-danger">@Html.DisplayFor(modelItem => item.Name)</span>
+                                    </td>
+                                    <td style="font-size: 1.1rem;">@Html.DisplayFor(modelItem => item.ContactNo)</td>
+                                    <td style="font-size: 1.1rem;">@Html.DisplayFor(modelItem => item.Address)</td>
+                                    <td style="font-size: 1.1rem;">
+                                        @if (order?.OrderNumber != null)
+                                        {
+                                            <span class="fw-bold text-primary">@order.OrderNumber</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No Order</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (order != null)
+                                        {
+                                            <span class="badge @(order.Status switch {
+                                            "Pending" => "bg-warning",
+                                            "Accepted" => "bg-info",
+                                            "Ongoing" => "bg-primary",
+                                            "Completed" => "bg-success",
+                                            _ => "bg-secondary"
+                                        })">
+                                                @order.Status
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No Order</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (order != null)
+                                        {
+                                            <span class="badge @(item.IsPaid ? "bg-success" : "bg-warning")">
+                                                @(item.IsPaid ? "Paid" : "Not Paid")
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No Order</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <a asp-action="ViewDeletedOrder" asp-route-id="@item.CustomerID" class="btn btn-outline-info action-btn">
+                                            <i class="bi bi-eye"></i> View Details
+                                        </a>
+                                        <button type="button" class="btn restore-btn action-btn"
+                                                onclick="restoreSingleCustomer(@item.CustomerID)">
+                                            <i class="bi bi-arrow-clockwise"></i> Restore
+                                        </button>
+                                        <button type="button" class="btn btn-danger action-btn"
+                                                onclick="permanentlyDeleteSingleCustomer(@item.CustomerID)">
+                                            <i class="bi bi-trash-fill"></i> Delete Forever
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        const selectAllCheckbox = $('#selectAll');
+        const customerCheckboxes = $('.customer-checkbox');
+        const selectedCountSpan = $('#selectedCount');
+        const bulkRestoreBtn = $('#bulkRestoreBtn');
+        const bulkDeleteBtn = $('#bulkDeleteBtn');
+
+        // Handle "Select All" checkbox
+        selectAllCheckbox.on('change', function () {
+            const isChecked = $(this).is(':checked');
+            customerCheckboxes.prop('checked', isChecked);
+            updateSelectedCount();
+            updateBulkButtons();
+        });
+
+        // Handle individual customer checkboxes
+        customerCheckboxes.on('change', function () {
+            updateSelectAllState();
+            updateSelectedCount();
+            updateBulkButtons();
+        });
+
+        // Update "Select All" checkbox state
+        function updateSelectAllState() {
+            const totalCheckboxes = customerCheckboxes.length;
+            const checkedCheckboxes = customerCheckboxes.filter(':checked').length;
+
+            if (checkedCheckboxes === 0) {
+                selectAllCheckbox.prop('indeterminate', false).prop('checked', false);
+            } else if (checkedCheckboxes === totalCheckboxes) {
+                selectAllCheckbox.prop('indeterminate', false).prop('checked', true);
+            } else {
+                selectAllCheckbox.prop('indeterminate', true);
+            }
+        }
+
+        // Update selected count display
+        function updateSelectedCount() {
+            const selectedCount = customerCheckboxes.filter(':checked').length;
+            selectedCountSpan.text(selectedCount + ' selected');
+        }
+
+        // Update bulk action buttons state
+        function updateBulkButtons() {
+            const selectedCount = customerCheckboxes.filter(':checked').length;
+            const hasSelection = selectedCount > 0;
+
+            bulkRestoreBtn.prop('disabled', !hasSelection);
+            bulkDeleteBtn.prop('disabled', !hasSelection);
+        }
+
+        // Initialize
+        updateSelectedCount();
+        updateBulkButtons();
+    });
+
+    // Function to restore a single customer
+    function restoreSingleCustomer(customerId) {
+        if (confirm('Are you sure you want to restore this customer and their order?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '@Url.Action("RestoreCustomer")';
+
+            const antiforgeryToken = document.createElement('input');
+            antiforgeryToken.type = 'hidden';
+            antiforgeryToken.name = '__RequestVerificationToken';
+            antiforgeryToken.value = $('input[name="__RequestVerificationToken"]').val();
+            form.appendChild(antiforgeryToken);
+
+            const customerIdInput = document.createElement('input');
+            customerIdInput.type = 'hidden';
+            customerIdInput.name = 'id';
+            customerIdInput.value = customerId;
+            form.appendChild(customerIdInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Function to permanently delete a single customer
+    function permanentlyDeleteSingleCustomer(customerId) {
+        if (confirm('⚠️ WARNING: This action cannot be undone! Are you absolutely sure you want to permanently delete this customer and all associated data?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '@Url.Action("PermanentlyDeleteCustomer")';
+
+            const antiforgeryToken = document.createElement('input');
+            antiforgeryToken.type = 'hidden';
+            antiforgeryToken.name = '__RequestVerificationToken';
+            antiforgeryToken.value = $('input[name="__RequestVerificationToken"]').val();
+            form.appendChild(antiforgeryToken);
+
+            const customerIdInput = document.createElement('input');
+            customerIdInput.type = 'hidden';
+            customerIdInput.name = 'id';
+            customerIdInput.value = customerId;
+            form.appendChild(customerIdInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script> 

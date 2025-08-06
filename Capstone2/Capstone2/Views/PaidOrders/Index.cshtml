@@ -29,20 +29,24 @@
         --danger-color: #ef4444;
         --info-color: #3b82f6;
     }
+
     body, .container-fluid, .card, .table {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .paidorders-bg {
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
         border-radius: 24px;
         padding-bottom: 2rem;
     }
+
     .paidorders-header {
         display: flex;
         align-items: center;
         gap: 16px;
     }
+
     .paidorders-header-icon {
         font-size: 2.5rem;
         color: var(--primary-purple);
@@ -52,43 +56,51 @@
         box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
         border: 1px solid var(--purple-border);
     }
+
     .paidorders-subtitle {
         color: var(--text-purple-light);
         font-size: 1.1rem;
         margin-top: -8px;
         margin-bottom: 18px;
     }
+
     .card {
         border-radius: 20px !important;
         box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
         border: 1px solid var(--purple-border);
         transition: all 0.3s ease;
     }
-    .card:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        transform: translateY(-2px);
-    }
+
+        .card:hover {
+            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
+
     .table {
         border-radius: 16px;
         overflow: hidden;
         background: #fff;
         box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.1);
     }
-    .table thead th {
-        background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: var(--text-purple);
-        border-bottom: 2px solid var(--purple-border);
-    }
-    .table tbody tr:nth-child(even) {
-        background: var(--purple-bg);
-    }
-    .table tbody tr:hover {
-        background: var(--purple-bg-light);
-        transition: all 0.3s ease;
-        transform: scale(1.01);
-    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-purple);
+            border-bottom: 2px solid var(--purple-border);
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: var(--purple-bg);
+        }
+
+        .table tbody tr:hover {
+            background: var(--purple-bg-light);
+            transition: all 0.3s ease;
+            transform: scale(1.01);
+        }
+
     .action-btn {
         border-radius: 8px;
         font-size: 1rem;
@@ -98,23 +110,28 @@
         transition: all 0.3s ease;
         border: 2px solid transparent;
     }
-    .action-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-    }
-    .action-btn i {
-        margin-right: 4px;
-    }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
+        .action-btn i {
+            margin-right: 4px;
+        }
     /* Status badge enhancements */
     .badge.bg-success {
         background: var(--success-color) !important;
     }
+
     .badge.bg-warning {
         background: var(--warning-color) !important;
     }
+
     .badge.bg-danger {
         background: var(--danger-color) !important;
     }
+
     .badge.bg-info {
         background: var(--info-color) !important;
     }
@@ -125,6 +142,7 @@
         color: #065f46;
         border-radius: 12px;
     }
+
     .alert-danger {
         background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
         border: 1px solid var(--danger-color);
@@ -134,6 +152,14 @@
 </style>
 
 <div class="container-fluid mt-4 px-4 paidorders-bg">
+    @if (TempData["ProfileError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ProfileError"]</div>
+    }
+    @if (TempData["ProfileSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["ProfileSuccess"]</div>
+    }
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
             <div class="paidorders-header mb-1">
@@ -142,8 +168,11 @@
             </div>
             <div class="paidorders-subtitle">View and manage all paid catering orders here.</div>
         </div>
+        <div class="d-flex gap-2">
+            <i class="bi bi-person-circle header-icon" onclick="openProfileModal()" style="cursor: pointer; font-size: 1.5rem; color: #6b7280; padding: 0.5rem; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='var(--purple-bg-light)'; this.style.color='var(--primary-purple)'" onmouseout="this.style.background='transparent'; this.style.color='#6b7280'"></i>
+        </div>
     </div>
-    
+
     <div class="card mb-4 shadow-sm border-0 rounded-4">
         <div class="card-body">
             <form asp-action="Index" method="get" class="row g-3">
@@ -166,7 +195,7 @@
             </form>
         </div>
     </div>
-    
+
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-0">
             <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
@@ -242,3 +271,65 @@
         </div>
     </div>
 </div>
+
+<!-- Profile Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profileModalLabel">Update Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm" method="post" asp-controller="PaidOrders" asp-action="UpdateProfile">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="profileForm" class="btn btn-primary">Update Profile</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openProfileModal() {
+        const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+        modal.show();
+    }
+
+    // Form validation
+    document.getElementById('profileForm').addEventListener('submit', function (e) {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (newPassword !== confirmPassword) {
+            e.preventDefault();
+            alert('New password and confirm password do not match!');
+            return false;
+        }
+
+        if (newPassword.length < 6) {
+            e.preventDefault();
+            alert('Password must be at least 6 characters long!');
+            return false;
+        }
+    });
+</script>

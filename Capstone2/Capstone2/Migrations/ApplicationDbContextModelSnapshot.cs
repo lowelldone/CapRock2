@@ -45,6 +45,9 @@ namespace Capstone2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
+
                     b.HasKey("CustomerID");
 
                     b.ToTable("Customers");
@@ -290,6 +293,9 @@ namespace Capstone2.Migrations
                     b.Property<string>("Venue")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("timeOfFoodServing")
                         .HasColumnType("datetime2");
