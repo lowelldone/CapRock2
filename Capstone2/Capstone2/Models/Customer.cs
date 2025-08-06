@@ -16,6 +16,7 @@ namespace Capstone2.Models
         public string Address { get; set; }
 
         public bool IsPaid { get; set; } = false;
+        public bool isDeleted { get; set; } = false;
         public virtual Order Order { get; set; }
     }
 }

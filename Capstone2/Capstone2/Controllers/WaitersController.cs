@@ -60,10 +60,42 @@ namespace Capstone2.Controllers
             }
             else
             {
-                _context.Waiters.Update(waiter);
+                // Update existing waiter and its associated user
+                var existingWaiter = _context.Waiters
+                    .Include(w => w.User)
+                    .FirstOrDefault(w => w.WaiterId == waiter.WaiterId);
+
+                if (existingWaiter != null)
+                {
+                    // Update waiter properties
+                    existingWaiter.isTemporary = waiter.isTemporary;
+                    existingWaiter.Availability = waiter.Availability;
+                    _context.Waiters.Update(existingWaiter);
+
+                    // Update user credentials
+                    if (existingWaiter.User != null)
+                    {
+                        existingWaiter.User.Username = waiter.User.Username;
+                        existingWaiter.User.Password = waiter.User.Password;
+                        existingWaiter.User.FirstName = waiter.User.FirstName;
+                        existingWaiter.User.LastName = waiter.User.LastName;
+                        existingWaiter.User.Role = "Waiter";
+                        _context.Users.Update(existingWaiter.User);
+                    }
+                }
             }
 
             _context.SaveChanges();
+
+            if (waiter.WaiterId == 0)
+            {
+                TempData["Success"] = "Waiter created successfully!";
+            }
+            else
+            {
+                TempData["Success"] = "Waiter credentials updated successfully!";
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

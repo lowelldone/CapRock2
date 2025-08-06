@@ -49,6 +49,7 @@ namespace Capstone2.Models
         [ForeignKey("HeadWaiter")]
         public int? HeadWaiterId { get; set; }
         public HeadWaiter? HeadWaiter { get; set; }
+        public bool isDeleted { get; set; } = false;
     }
 }
 

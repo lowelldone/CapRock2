@@ -28,6 +28,7 @@ namespace Capstone2.Controllers.AdminControllers
                                     .Include(c => c.Order)
                                         .ThenInclude(o => o.HeadWaiter)
                                             .ThenInclude(hw => hw.User)
+                                    .Where(c => !c.isDeleted) // Filter out soft-deleted customers
                                     .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -83,7 +84,7 @@ namespace Capstone2.Controllers.AdminControllers
             }
 
             var customer = await _context.Customers
-                .FirstOrDefaultAsync(m => m.CustomerID == id);
+                .FirstOrDefaultAsync(m => m.CustomerID == id && !m.isDeleted);
             if (customer == null)
             {
                 return NotFound();
@@ -100,15 +101,20 @@ namespace Capstone2.Controllers.AdminControllers
             var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == id);
             if (customer != null)
             {
-                // Remove related records if order exists
+                // Soft delete the customer
+                customer.isDeleted = true;
+                _context.Customers.Update(customer);
+
+                // Soft delete the order if it exists
                 if (customer.Order != null)
                 {
-                    var orderId = customer.Order.OrderId;
+                    customer.Order.isDeleted = true;
+                    _context.Orders.Update(customer.Order);
 
-                    // Get order waiters and set their availability to Available before removing
+                    // Get order waiters and set their availability to Available
                     var orderWaiters = await _context.OrderWaiters
                         .Include(ow => ow.Waiter)
-                        .Where(ow => ow.OrderId == orderId)
+                        .Where(ow => ow.OrderId == customer.Order.OrderId)
                         .ToListAsync();
 
                     // Set waiters' availability to Available
@@ -120,28 +126,15 @@ namespace Capstone2.Controllers.AdminControllers
                             _context.Waiters.Update(orderWaiter.Waiter);
                         }
                     }
-
-                    // Remove order waiters
-                    _context.OrderWaiters.RemoveRange(orderWaiters);
-                    // Remove material pull outs
-                    var pullOuts = _context.MaterialPullOuts.Where(p => p.OrderId == orderId);
-                    _context.MaterialPullOuts.RemoveRange(pullOuts);
-                    // Remove material returns
-                    var returns = _context.MaterialReturns.Where(r => r.OrderId == orderId);
-                    _context.MaterialReturns.RemoveRange(returns);
-                    // Remove the order
-                    _context.Orders.Remove(customer.Order);
                 }
-                // Remove the customer
-                _context.Customers.Remove(customer);
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CustomerExists(int id)
         {
-            return _context.Customers.Any(e => e.CustomerID == id);
+            return _context.Customers.Any(e => e.CustomerID == id && !e.isDeleted);
         }
 
         public async Task<IActionResult> ViewOrder(int? id)
@@ -155,7 +148,7 @@ namespace Capstone2.Controllers.AdminControllers
                     .ThenInclude(od => od.Menu)
                 .Include(o => o.HeadWaiter)
                     .ThenInclude(hw => hw.User)
-                .FirstOrDefaultAsync(o => o.CustomerID == id.Value);
+                .FirstOrDefaultAsync(o => o.CustomerID == id.Value && !o.Customer.isDeleted && !o.isDeleted);
 
             if (order == null)
                 return NotFound();
@@ -179,7 +172,7 @@ namespace Capstone2.Controllers.AdminControllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleStatus(int id)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerID == id && !c.isDeleted);
             if (customer == null) return NotFound();
 
             customer.IsPaid = !customer.IsPaid;
@@ -197,7 +190,7 @@ namespace Capstone2.Controllers.AdminControllers
 
             var customer = await _context.Customers
                 .Include(c => c.Order)
-                .FirstOrDefaultAsync(c => c.CustomerID == id);
+                .FirstOrDefaultAsync(c => c.CustomerID == id && !c.isDeleted);
             if (customer == null || customer.Order == null)
                 return NotFound();
 
@@ -227,7 +220,7 @@ namespace Capstone2.Controllers.AdminControllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPayment(int customerId, double paymentAmount)
         {
-            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == customerId);
+            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == customerId && !c.isDeleted);
             if (customer == null || customer.Order == null)
                 return NotFound();
 
@@ -274,7 +267,7 @@ namespace Capstone2.Controllers.AdminControllers
         {
             var customer = await _context.Customers
                 .Include(c => c.Order)
-                .FirstOrDefaultAsync(c => c.CustomerID == id);
+                .FirstOrDefaultAsync(c => c.CustomerID == id && !c.isDeleted);
 
             if (customer == null || customer.Order == null)
             {
@@ -316,7 +309,7 @@ namespace Capstone2.Controllers.AdminControllers
             if (id == null)
                 return NotFound();
 
-            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == id);
+            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == id && !c.isDeleted);
             if (customer == null || customer.Order == null)
                 return NotFound();
 
@@ -332,7 +325,7 @@ namespace Capstone2.Controllers.AdminControllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignHeadWaiter(int id, int headWaiterId)
         {
-            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == id);
+            var customer = await _context.Customers.Include(c => c.Order).FirstOrDefaultAsync(c => c.CustomerID == id && !c.isDeleted);
             if (customer == null || customer.Order == null)
                 return NotFound();
 
@@ -347,7 +340,7 @@ namespace Capstone2.Controllers.AdminControllers
         public async Task<IActionResult> InventoryReport(int id)
         {
             // id = CustomerId
-            Order order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id);
+            Order order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id && !o.Customer.isDeleted);
             if (order == null || order.Status != "Completed")
                 return NotFound();
 
@@ -408,7 +401,7 @@ namespace Capstone2.Controllers.AdminControllers
 
             var ordersForDate = await _context.Orders
                 .Include(o => o.Customer)
-                .Where(o => o.CateringDate.Date == date.Date)
+                .Where(o => o.CateringDate.Date == date.Date && !o.Customer.isDeleted && !o.isDeleted)
                 .OrderBy(o => o.timeOfFoodServing)
                 .ToListAsync();
 
@@ -421,6 +414,302 @@ namespace Capstone2.Controllers.AdminControllers
             ViewBag.MaxPax = 700;
 
             return View(ordersForDate);
+        }
+
+        // GET: Customers/DeletedHistory
+        public async Task<IActionResult> DeletedHistory(string searchString)
+        {
+            var deletedCustomers = _context.Customers
+                .Include(c => c.Order)
+                    .ThenInclude(o => o.HeadWaiter)
+                        .ThenInclude(hw => hw.User)
+                .Where(c => c.isDeleted) // Only show soft-deleted customers
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var searchTerm = searchString.ToLower().Trim();
+                deletedCustomers = deletedCustomers.Where(s =>
+                    s.Name.ToLower().Contains(searchTerm) ||
+                    (s.Order != null && !string.IsNullOrEmpty(s.Order.OrderNumber) &&
+                     s.Order.OrderNumber.ToLower().Contains(searchTerm))
+                );
+            }
+
+            return View(await deletedCustomers.ToListAsync());
+        }
+
+        // POST: Customers/RestoreCustomer
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RestoreCustomer(int id)
+        {
+            try
+            {
+                var customer = await _context.Customers
+                    .Include(c => c.Order)
+                    .FirstOrDefaultAsync(c => c.CustomerID == id && c.isDeleted);
+
+                if (customer == null)
+                {
+                    TempData["RestoreError"] = "Customer not found or not deleted.";
+                    return RedirectToAction(nameof(DeletedHistory));
+                }
+
+                // Restore the customer
+                customer.isDeleted = false;
+                _context.Customers.Update(customer);
+
+                // Restore the order if it exists
+                if (customer.Order != null)
+                {
+                    customer.Order.isDeleted = false;
+                    _context.Orders.Update(customer.Order);
+                    TempData["RestoreSuccess"] = "Customer and order restored successfully.";
+                }
+                else
+                {
+                    TempData["RestoreSuccess"] = "Customer restored successfully.";
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(DeletedHistory));
+            }
+            catch (Exception ex)
+            {
+                TempData["RestoreError"] = $"Error restoring customer: {ex.Message}";
+                return RedirectToAction(nameof(DeletedHistory));
+            }
+        }
+
+        // POST: Customers/PermanentlyDeleteCustomer
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PermanentlyDeleteCustomer(int id)
+        {
+            var customer = await _context.Customers
+                .Include(c => c.Order)
+                .FirstOrDefaultAsync(c => c.CustomerID == id && c.isDeleted);
+
+            if (customer == null)
+            {
+                TempData["PermanentDeleteError"] = "Customer not found or not deleted.";
+                return RedirectToAction(nameof(DeletedHistory));
+            }
+
+            // Permanently delete the customer and all related data
+            if (customer.Order != null)
+            {
+                var orderId = customer.Order.OrderId;
+
+                // Remove order waiters
+                var orderWaiters = await _context.OrderWaiters
+                    .Where(ow => ow.OrderId == orderId)
+                    .ToListAsync();
+                _context.OrderWaiters.RemoveRange(orderWaiters);
+
+                // Remove material pull outs
+                var pullOuts = await _context.MaterialPullOuts
+                    .Where(p => p.OrderId == orderId)
+                    .ToListAsync();
+                _context.MaterialPullOuts.RemoveRange(pullOuts);
+
+                // Remove material returns
+                var returns = await _context.MaterialReturns
+                    .Where(r => r.OrderId == orderId)
+                    .ToListAsync();
+                _context.MaterialReturns.RemoveRange(returns);
+
+                // Remove payments
+                var payments = await _context.Payments
+                    .Where(p => p.OrderId == orderId)
+                    .ToListAsync();
+                _context.Payments.RemoveRange(payments);
+
+                // Remove order details
+                var orderDetails = await _context.OrderDetails
+                    .Where(od => od.OrderId == orderId)
+                    .ToListAsync();
+                _context.OrderDetails.RemoveRange(orderDetails);
+
+                // Permanently remove the order
+                _context.Orders.Remove(customer.Order);
+            }
+
+            // Permanently remove the customer
+            _context.Customers.Remove(customer);
+            await _context.SaveChangesAsync();
+
+            TempData["PermanentDeleteSuccess"] = "Customer permanently deleted from the database.";
+            return RedirectToAction(nameof(DeletedHistory));
+        }
+
+        // POST: Customers/BulkRestoreCustomers
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BulkRestoreCustomers(int[] customerIds)
+        {
+            try
+            {
+                if (customerIds == null || customerIds.Length == 0)
+                {
+                    TempData["BulkRestoreError"] = "No customers selected for restoration.";
+                    return RedirectToAction(nameof(DeletedHistory));
+                }
+
+                var customers = await _context.Customers
+                    .Include(c => c.Order)
+                    .Where(c => customerIds.Contains(c.CustomerID) && c.isDeleted)
+                    .ToListAsync();
+
+                if (!customers.Any())
+                {
+                    TempData["BulkRestoreError"] = "No valid customers found for restoration.";
+                    return RedirectToAction(nameof(DeletedHistory));
+                }
+
+                int restoredCount = 0;
+                int orderRestoredCount = 0;
+
+                foreach (var customer in customers)
+                {
+                    // Restore the customer
+                    customer.isDeleted = false;
+                    _context.Customers.Update(customer);
+                    restoredCount++;
+
+                    // Restore the order if it exists
+                    if (customer.Order != null)
+                    {
+                        customer.Order.isDeleted = false;
+                        _context.Orders.Update(customer.Order);
+                        orderRestoredCount++;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                if (orderRestoredCount > 0)
+                {
+                    TempData["BulkRestoreSuccess"] = $"{restoredCount} customers and {orderRestoredCount} orders restored successfully.";
+                }
+                else
+                {
+                    TempData["BulkRestoreSuccess"] = $"{restoredCount} customers restored successfully.";
+                }
+
+                return RedirectToAction(nameof(DeletedHistory));
+            }
+            catch (Exception ex)
+            {
+                TempData["BulkRestoreError"] = $"Error during bulk restore: {ex.Message}";
+                return RedirectToAction(nameof(DeletedHistory));
+            }
+        }
+
+        // POST: Customers/BulkPermanentlyDeleteCustomers
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BulkPermanentlyDeleteCustomers(int[] customerIds)
+        {
+            if (customerIds == null || customerIds.Length == 0)
+            {
+                TempData["BulkPermanentDeleteError"] = "No customers selected for permanent deletion.";
+                return RedirectToAction(nameof(DeletedHistory));
+            }
+
+            var customers = await _context.Customers
+                .Include(c => c.Order)
+                .Where(c => customerIds.Contains(c.CustomerID) && c.isDeleted)
+                .ToListAsync();
+
+            if (!customers.Any())
+            {
+                TempData["BulkPermanentDeleteError"] = "No valid customers found for permanent deletion.";
+                return RedirectToAction(nameof(DeletedHistory));
+            }
+
+            int deletedCount = 0;
+            int orderDeletedCount = 0;
+
+            foreach (var customer in customers)
+            {
+                // Permanently delete the customer and all related data
+                if (customer.Order != null)
+                {
+                    var orderId = customer.Order.OrderId;
+
+                    // Remove order waiters
+                    var orderWaiters = await _context.OrderWaiters
+                        .Where(ow => ow.OrderId == orderId)
+                        .ToListAsync();
+                    _context.OrderWaiters.RemoveRange(orderWaiters);
+
+                    // Remove material pull outs
+                    var pullOuts = await _context.MaterialPullOuts
+                        .Where(p => p.OrderId == orderId)
+                        .ToListAsync();
+                    _context.MaterialPullOuts.RemoveRange(pullOuts);
+
+                    // Remove material returns
+                    var returns = await _context.MaterialReturns
+                        .Where(r => r.OrderId == orderId)
+                        .ToListAsync();
+                    _context.MaterialReturns.RemoveRange(returns);
+
+                    // Remove payments
+                    var payments = await _context.Payments
+                        .Where(p => p.OrderId == orderId)
+                        .ToListAsync();
+                    _context.Payments.RemoveRange(payments);
+
+                    // Remove order details
+                    var orderDetails = await _context.OrderDetails
+                        .Where(od => od.OrderId == orderId)
+                        .ToListAsync();
+                    _context.OrderDetails.RemoveRange(orderDetails);
+
+                    // Permanently remove the order
+                    _context.Orders.Remove(customer.Order);
+                    orderDeletedCount++;
+                }
+
+                // Permanently remove the customer
+                _context.Customers.Remove(customer);
+                deletedCount++;
+            }
+
+            await _context.SaveChangesAsync();
+
+            if (orderDeletedCount > 0)
+            {
+                TempData["BulkPermanentDeleteSuccess"] = $"{deletedCount} customers and {orderDeletedCount} orders permanently deleted from the database.";
+            }
+            else
+            {
+                TempData["BulkPermanentDeleteSuccess"] = $"{deletedCount} customers permanently deleted from the database.";
+            }
+
+            return RedirectToAction(nameof(DeletedHistory));
+        }
+
+        // GET: Customers/ViewDeletedOrder
+        public async Task<IActionResult> ViewDeletedOrder(int? id)
+        {
+            if (id == null)
+                return BadRequest();
+
+            var customer = await _context.Customers
+                .Include(c => c.Order)
+                .FirstOrDefaultAsync(c => c.CustomerID == id.Value && c.isDeleted);
+
+            if (customer == null)
+                return NotFound();
+
+            // Check if the order is also soft-deleted
+            ViewBag.OrderDeleted = customer.Order != null && customer.Order.isDeleted;
+
+            return View(customer);
         }
 
         //// GET: Customers/DateSummary

@@ -60,20 +60,39 @@ namespace Capstone2.Controllers.AdminControllers
             }
             else
             {
-                // Update user info if needed
-                var user = _context.Users.FirstOrDefault(u => u.UserId == headWaiter.UserId);
-                if (user != null)
+                // Update existing head waiter and its associated user
+                var existingHeadWaiter = _context.HeadWaiters
+                    .Include(h => h.User)
+                    .FirstOrDefault(h => h.HeadWaiterId == headWaiter.HeadWaiterId);
+
+                if (existingHeadWaiter != null)
                 {
-                    user.Username = headWaiter.User.Username;
-                    user.Password = headWaiter.User.Password;
-                    user.FirstName = headWaiter.User.FirstName;
-                    user.LastName = headWaiter.User.LastName;
-                    user.Role = "HEADWAITER";
-                    _context.Users.Update(user);
+                    // Update head waiter properties
+                    existingHeadWaiter.isActive = headWaiter.isActive;
+                    _context.HeadWaiters.Update(existingHeadWaiter);
+
+                    // Update user credentials using the existing UserId
+                    if (existingHeadWaiter.User != null)
+                    {
+                        existingHeadWaiter.User.Username = headWaiter.User.Username;
+                        existingHeadWaiter.User.Password = headWaiter.User.Password;
+                        existingHeadWaiter.User.FirstName = headWaiter.User.FirstName;
+                        existingHeadWaiter.User.LastName = headWaiter.User.LastName;
+                        existingHeadWaiter.User.Role = "HeadWaiter";
+                        _context.Users.Update(existingHeadWaiter.User);
+                    }
                 }
-                _context.HeadWaiters.Update(headWaiter);
             }
             _context.SaveChanges();
+
+            if (headWaiter.HeadWaiterId == 0)
+            {
+                TempData["Success"] = "Head Waiter created successfully!";
+            }
+            else
+            {
+                TempData["Success"] = "Head Waiter credentials updated successfully!";
+            }
 
             return RedirectToAction(nameof(Index));
         }
