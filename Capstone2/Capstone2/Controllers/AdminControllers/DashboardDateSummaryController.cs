@@ -42,13 +42,32 @@ namespace Capstone2.Controllers.AdminControllers
             var start = startDate.Value;
             var end = endDate.Value;
 
-            var ordersInRange = await _context.Orders
+            // Get all orders for summary statistics and orders by date (across all months)
+            var allOrders = await _context.Orders
                 .Include(o => o.Customer)
-                .Where(o => o.CateringDate.Date >= start.Date && o.CateringDate.Date <= end.Date)
                 .OrderBy(o => o.CateringDate)
                 .ToListAsync();
 
-            var dateSummary = ordersInRange
+            // Get filtered orders for calendar view (only selected date range)
+            var ordersInRange = allOrders
+                .Where(o => o.CateringDate.Date >= start.Date && o.CateringDate.Date <= end.Date)
+                .ToList();
+
+            // Date summary for filtered range (calendar view)
+            var dateSummaryFiltered = ordersInRange
+                .GroupBy(o => o.CateringDate.Date)
+                .Select(g => new DateSummaryViewModel
+                {
+                    Date = g.Key,
+                    TotalPax = g.Sum(o => o.NoOfPax),
+                    HasLargeOrder = g.Any(o => o.NoOfPax >= 701 && o.NoOfPax <= 1500),
+                    OrderCount = g.Count()
+                })
+                .OrderBy(x => x.Date)
+                .ToList();
+
+            // Date summary for all orders (summary statistics and orders by date)
+            var dateSummaryAll = allOrders
                 .GroupBy(o => o.CateringDate.Date)
                 .Select(g => new DateSummaryViewModel
                 {
@@ -64,7 +83,8 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 StartDate = start,
                 EndDate = end,
-                DateSummary = dateSummary
+                DateSummary = dateSummaryFiltered, // For calendar view
+                AllDateSummary = dateSummaryAll // For summary statistics and orders by date
             };
 
             return View(viewModel);

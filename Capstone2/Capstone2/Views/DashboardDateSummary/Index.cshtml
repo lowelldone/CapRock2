@@ -22,39 +22,97 @@
         --info-color: #3b82f6;
     }
 
-    .admin-bg {
+    body {
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
-        padding: 2rem;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .admin-card {
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
+    .dashboard-container {
         padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Header Section */
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 2rem;
+        padding: 1rem 0;
+    }
+
+    .brand-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #374151;
+        margin: 0;
+    }
+
+    .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .header-icon {
+        font-size: 1.5rem;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 8px;
         transition: all 0.3s ease;
     }
 
-        .admin-card:hover {
-            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+        .header-icon:hover {
+            background: var(--purple-bg-light);
+            color: var(--primary-purple);
+        }
+
+    .daily-view-btn {
+        background: var(--primary-purple);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .daily-view-btn:hover {
+            background: var(--primary-purple-dark);
             transform: translateY(-2px);
         }
 
-    .date-card {
-        background: #fff;
-        border-radius: 16px;
-        border: 2px solid var(--purple-border);
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        transition: all 0.3s ease;
+    /* Main Content Grid */
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        top: -30px;
+    }
+
+    /* Calendar and Summary Statistics Container */
+    .calendar-stats-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
         position: relative;
         overflow: hidden;
     }
 
-        .date-card::before {
+        .calendar-stats-container::before {
             content: '';
             position: absolute;
             top: 0;
@@ -64,111 +122,71 @@
             background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
         }
 
-        .date-card:hover {
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
-            transform: translateY(-3px);
-            border-color: var(--primary-purple);
-        }
-
-    .pax-warning {
-        border-left: 4px solid var(--warning-color);
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    }
-
-    .pax-danger {
-        border-left: 4px solid var(--danger-color);
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-    }
-
-    .large-order {
-        border-left: 4px solid var(--primary-purple);
-        background: linear-gradient(135deg, var(--purple-bg-light) 0%, #e9d5ff 100%);
-    }
-
-    .available {
-        border-left: 4px solid var(--success-color);
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-    }
-
-    .btn-admin {
-        border-radius: 12px;
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        border-color: var(--primary-purple);
-        color: white;
-    }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
-        }
-
-    .btn-outline-primary {
-        border-color: var(--primary-purple);
-        color: var(--primary-purple);
-        background: transparent;
-    }
-
-        .btn-outline-primary:hover {
-            background: var(--primary-purple);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-    .btn-outline-secondary {
-        border-color: #6b7280;
-        color: #6b7280;
-    }
-
-        .btn-outline-secondary:hover {
-            background: #6b7280;
-            color: white;
-        }
-
-    .btn-outline-info {
-        border-color: var(--info-color);
-        color: var(--info-color);
-    }
-
-        .btn-outline-info:hover {
-            background: var(--info-color);
-            color: white;
-        }
-
-    .date-picker {
-        border-radius: 12px;
-        border: 2px solid var(--purple-border);
-        padding: 0.75rem;
-        transition: all 0.3s ease;
-    }
-
-        .date-picker:focus {
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-            outline: none;
-        }
-
-    .pax-badge {
-        font-size: 0.8rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 8px;
-    }
-
-    .calendar-container {
-        background: #fff;
+    /* Date Range Panel */
+    .date-range-panel {
+        background: white;
         border-radius: 20px;
         padding: 1.5rem;
-        margin-bottom: 2rem;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
+    }
+
+    .date-range-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 1rem;
+    }
+
+    .date-input-group {
+        margin-bottom: 0.75rem;
+    }
+
+    .date-label {
+        display: block;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.25rem;
+    }
+
+    .date-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--purple-border);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .date-input:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+    .view-summary-btn {
+        background: var(--primary-purple);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 0.75rem;
+    }
+
+        .view-summary-btn:hover {
+            background: var(--primary-purple-dark);
+            transform: translateY(-2px);
+        }
+
+    /* Calendar Panel */
+    .calendar-panel {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
         box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
         border: 1px solid var(--purple-border);
     }
@@ -177,15 +195,12 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid var(--purple-border);
+        margin-bottom: 1.5rem;
     }
 
     .calendar-nav-btn {
         background: var(--purple-bg-light);
         border: 2px solid var(--purple-border);
-        font-size: 1.1rem;
         color: var(--primary-purple);
         cursor: pointer;
         padding: 0.5rem;
@@ -202,13 +217,19 @@
             background: var(--primary-purple);
             color: white;
             transform: scale(1.1);
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
         }
+
+    .calendar-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0;
+    }
 
     .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 2px;
+        gap: 4px;
     }
 
     .calendar-day-header {
@@ -253,7 +274,6 @@
                 background: linear-gradient(135deg, var(--primary-purple-light) 0%, var(--accent-purple) 100%);
                 color: white;
                 transform: scale(1.1);
-                box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
             }
 
         .calendar-day.has-large-order {
@@ -267,7 +287,6 @@
                 background: linear-gradient(135deg, var(--warning-color) 0%, #f59e0b 100%);
                 color: white;
                 transform: scale(1.1);
-                box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
             }
 
         .calendar-day.other-month {
@@ -285,268 +304,476 @@
             .calendar-day.today:hover {
                 background: linear-gradient(135deg, #059669 0%, #047857 100%);
                 transform: scale(1.1);
-                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
             }
 
-    .order-indicator {
+    /* Summary Statistics - Capsule/Stadium Shape */
+    .summary-stats-panel {
+        border-radius: 50px;
+        border: 1px solid var(--purple-border);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: right;
+        min-height: 400px;
+    }
+
+        .summary-stats-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+        }
+
+    .summary-stats-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .stats-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        flex-grow: 1;
+        justify-content: center;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 20px;
+        border: 1px solid var(--purple-border);
+        transition: all 0.3s ease;
+    }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+        .stat-number.primary {
+            color: var(--primary-purple);
+        }
+
+        .stat-number.success {
+            color: var(--success-color);
+        }
+
+        .stat-number.warning {
+            color: var(--warning-color);
+        }
+
+    .stat-label {
+        color: #6b7280;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* Filter Button */
+    .filter-btn {
+        background: var(--primary-purple);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
         position: absolute;
-        bottom: 2px;
-        right: 2px;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--primary-purple);
-        box-shadow: 0 0 4px rgba(124, 58, 237, 0.5);
+        top: -50px;
+        right: -100px;
+        z-index: 10;
     }
 
-    .calendar-day.has-orders .order-indicator {
-        background: var(--primary-purple);
+        .filter-btn:hover {
+            background: var(--primary-purple-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+
+    /* Orders by Date Panel */
+    .orders-panel {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
+        position: relative;
+        top: -30px;
     }
 
-    .calendar-day.has-large-order .order-indicator {
-        background: var(--warning-color);
+    .orders-panel-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 1.5rem;
     }
 
-    /* Statistics cards enhancement */
-    .text-primary {
-        color: var(--primary-purple) !important;
+    .orders-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
     }
 
-    .text-success {
-        color: var(--success-color) !important;
+    .order-card {
+        background: white;
+        border-radius: 16px;
+        border: 2px solid var(--purple-border);
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
     }
 
-    .text-warning {
-        color: var(--warning-color) !important;
+        .order-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+        }
+
+        .order-card:hover {
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
+            transform: translateY(-3px);
+            border-color: var(--primary-purple);
+        }
+
+        .order-card.danger {
+            border-left: 4px solid var(--danger-color);
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        }
+
+        .order-card.success {
+            border-left: 4px solid var(--success-color);
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        }
+
+        .order-card.warning {
+            border-left: 4px solid var(--warning-color);
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+
+    .order-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
     }
 
-    .text-info {
-        color: var(--info-color) !important;
+    .order-date {
+        font-weight: 700;
+        color: #374151;
+        font-size: 1.1rem;
     }
 
-    /* Form controls enhancement */
-    .form-control:focus {
-        border-color: var(--primary-purple);
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    .pax-badge {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 600;
     }
 
-    .form-select:focus {
-        border-color: var(--primary-purple);
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        .pax-badge.danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .pax-badge.success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .pax-badge.warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+    .order-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1rem;
     }
 
-    /* Badge enhancements */
-    .badge.bg-primary {
-        background: var(--primary-purple) !important;
+    .order-detail-item {
+        text-align: center;
     }
 
-    .badge.bg-success {
-        background: var(--success-color) !important;
+    .order-detail-label {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin-bottom: 0.25rem;
     }
 
-    .badge.bg-warning {
-        background: var(--warning-color) !important;
+    .order-detail-value {
+        font-weight: 700;
+        color: #374151;
     }
 
-    .badge.bg-danger {
-        background: var(--danger-color) !important;
+    .order-status {
+        font-weight: 600;
+        font-size: 0.9rem;
     }
 
-    .badge.bg-info {
-        background: var(--info-color) !important;
+        .order-status.danger {
+            color: var(--danger-color);
+        }
+
+        .order-status.success {
+            color: var(--success-color);
+        }
+
+        .order-status.warning {
+            color: var(--warning-color);
+        }
+
+    .order-footer {
+        text-align: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--purple-border);
+    }
+
+    .order-footer-text {
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .orders-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .header-section {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .brand-title {
+            font-size: 2rem;
+        }
     }
 </style>
 
-<div class="admin-bg">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex align-items-center gap-3">
-@*             <a href="@Url.Action("Index", "Customers")" class="btn btn-outline-secondary btn-admin">
-                <i class="bi bi-arrow-left me-2"></i>Back to Customers
-            </a> *@
-            <h2 class="fw-bold mb-0">Orders Date Summary</h2>
+<div class="dashboard-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <h1 class="brand-title">GRUSH Catering Services</h1>
+        <div class="header-controls">
+            @* <i class="bi bi-bell header-icon"></i> *@
+            <i class="bi bi-person-circle header-icon"></i>
         </div>
-@*         <a href="@Url.Action("OrdersByDate", "Customers")" class="btn btn-outline-primary btn-admin">
-            <i class="bi bi-calendar me-2"></i>Daily View
-        </a> *@
     </div>
 
-    <!-- Calendar View -->
-    <div class="calendar-container">
-        <div class="calendar-header">
-            <button class="calendar-nav-btn" onclick="previousMonth()">
-                <i class="bi bi-chevron-left"></i>
-            </button>
-            <h5 class="fw-bold mb-0" id="currentMonth">@Model.StartDate.ToString("MMMM yyyy")</h5>
-            <button class="calendar-nav-btn" onclick="nextMonth()">
-                <i class="bi bi-chevron-right"></i>
-            </button>
-        </div>
-        <div class="calendar-grid">
-            <div class="calendar-day-header">Sun</div>
-            <div class="calendar-day-header">Mon</div>
-            <div class="calendar-day-header">Tue</div>
-            <div class="calendar-day-header">Wed</div>
-            <div class="calendar-day-header">Thu</div>
-            <div class="calendar-day-header">Fri</div>
-            <div class="calendar-day-header">Sat</div>
+    <!-- Calendar and Summary Statistics Container -->
+    <div class="content-grid">
+        <div class="calendar-stats-container">
+            <!-- Left Side - Calendar View -->
+            <div class="calendar-panel">
+                <div class="calendar-header">
+                    <button class="calendar-nav-btn" onclick="previousMonth()">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <h3 class="calendar-title" id="currentMonth">@Model.StartDate.ToString("MMMM yyyy")</h3>
+                    <button class="calendar-nav-btn" onclick="nextMonth()">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-day-header">SUN</div>
+                    <div class="calendar-day-header">MON</div>
+                    <div class="calendar-day-header">TUE</div>
+                    <div class="calendar-day-header">WED</div>
+                    <div class="calendar-day-header">THU</div>
+                    <div class="calendar-day-header">FRI</div>
+                    <div class="calendar-day-header">SAT</div>
 
-            @{
-                // Use the start date from the model, which will be the filtered month
-                var currentDate = Model.StartDate;
-                var firstDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
-                var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
-                var startDate = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek);
-                var endDate = startDate.AddDays(41); // 6 weeks
+                    @{
+                        var currentDate = Model.StartDate;
+                        var firstDayOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+                        var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+                        var startDate = firstDayOfMonth.AddDays(-(int)firstDayOfMonth.DayOfWeek);
+                        var endDate = startDate.AddDays(41);
 
-                var ordersByDate = Model.DateSummary.ToDictionary(x => x.Date, x => x);
-            }
+                        var ordersByDate = Model.DateSummary.ToDictionary(x => x.Date, x => x);
+                    }
 
-            @for (var date = startDate; date < endDate; date = date.AddDays(1))
-            {
-                var isCurrentMonth = date.Month == currentDate.Month;
-                var isToday = date.Date == DateTime.Today.Date;
-                var hasOrders = ordersByDate.ContainsKey(date.Date);
-                var dateSummary = hasOrders ? ordersByDate[date.Date] : null;
-                var hasLargeOrder = dateSummary?.HasLargeOrder ?? false;
-
-                var cssClass = "calendar-day";
-                if (!isCurrentMonth) cssClass += " other-month";
-                if (isToday) cssClass += " today";
-                if (hasLargeOrder) cssClass += " has-large-order";
-                else if (hasOrders) cssClass += " has-orders";
-
-                <div class="@cssClass"
-                     onclick="@(hasOrders ? $"window.location.href='{Url.Action("OrdersByDate", "Customers", new { selectedDate = date.ToString("yyyy-MM-dd") })}'" : "")"
-                     style="@(hasOrders ? "cursor: pointer;" : "")">
-                    @date.Day
-                    @if (hasOrders)
+                    @for (var date = startDate; date < endDate; date = date.AddDays(1))
                     {
-                        <div class="order-indicator"></div>
+                        var isCurrentMonth = date.Month == currentDate.Month;
+                        var isToday = date.Date == DateTime.Today.Date;
+                        var hasOrders = ordersByDate.ContainsKey(date.Date);
+                        var dateSummary = hasOrders ? ordersByDate[date.Date] : null;
+                        var hasLargeOrder = dateSummary?.HasLargeOrder ?? false;
+
+                        var cssClass = "calendar-day";
+                        if (!isCurrentMonth) cssClass += " other-month";
+                        if (isToday) cssClass += " today";
+                        if (hasLargeOrder) cssClass += " has-large-order";
+                        else if (hasOrders) cssClass += " has-orders";
+
+                        <div class="@cssClass"
+                             onclick="@(hasOrders ? $"window.location.href='{Url.Action("OrdersByDate", "Customers", new { selectedDate = date.ToString("yyyy-MM-dd") })}'" : "")"
+                             style="@(hasOrders ? "cursor: pointer;" : "")">
+                            @date.Day
+                        </div>
                     }
                 </div>
-            }
-        </div>
-    </div>
+            </div>
 
-    <!-- Date Range Selection -->
-    <div class="admin-card">
-        <form method="get" class="row align-items-end">
-            <div class="col-md-3">
-                <label class="form-label fw-semibold">Start Date:</label>
-                <input type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")"
-                       class="form-control date-picker" />
-            </div>
-            <div class="col-md-3">
-                <label class="form-label fw-semibold">End Date:</label>
-                <input type="date" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")"
-                       class="form-control date-picker" />
-            </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary btn-admin">
-                    <i class="bi bi-search me-2"></i>View Summary
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Summary Statistics -->
-    <div class="admin-card">
-        <h4 class="fw-bold mb-3">Summary Statistics</h4>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="text-center">
-                    <h3 class="fw-bold text-primary">@Model.DateSummary.Count</h3>
-                    <p class="text-muted mb-0">Days with Orders</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="text-center">
-                    <h3 class="fw-bold text-success">@Model.DateSummary.Sum(x => x.OrderCount)</h3>
-                    <p class="text-muted mb-0">Total Orders</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="text-center">
-                    <h3 class="fw-bold text-warning">@Model.DateSummary.Count(x => x.HasLargeOrder)</h3>
-                    <p class="text-muted mb-0">Large Order Days</p>
+            <!-- Right Side - Summary Statistics (Capsule/Stadium Shape) -->
+            <div class="summary-stats-panel">
+                <h3 class="summary-stats-title">Summary Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number primary">@Model.AllDateSummary.Count</div>
+                        <div class="stat-label">Days with Orders</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number success">@Model.AllDateSummary.Sum(x => x.OrderCount)</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number warning">@Model.AllDateSummary.Count(x => x.HasLargeOrder)</div>
+                        <div class="stat-label">Large Order Days</div>
+                    </div>
                 </div>
             </div>
         </div>
+
+
     </div>
 
-    <!-- Date-wise Summary -->
-    <div class="admin-card">
-        <h4 class="fw-bold mb-3">Orders by Date</h4>
+    <!-- Filter Button - Between Summary Statistics and Orders by Date -->
+    <div style="position: relative; margin: 1rem 0;">
+        <button class="filter-btn" onclick="openFilterModal()">
+            <i class="bi bi-funnel"></i>
+            Filter
+        </button>
+    </div>
+</div>
 
-        @if (!Model.DateSummary.Any())
-        {
-            <div class="text-center py-4">
-                <i class="bi bi-calendar-x fs-1 text-muted"></i>
-                <p class="text-muted mt-2">No orders found in the selected date range.</p>
-            </div>
-        }
-        else
-        {
-            <div class="row">
-                @foreach (var dateSummary in Model.DateSummary)
-                {
-                    var statusClass = dateSummary.HasLargeOrder ? "large-order" :
-                    dateSummary.TotalPax > 700 ? "pax-danger" :
-                    dateSummary.TotalPax > 560 ? "pax-warning" : "available";
 
-                    <div class="col-md-6 col-lg-4 mb-3">
-                        <div class="date-card @statusClass" style="cursor: pointer;"
-                             onclick="window.location.href='@Url.Action("OrdersByDate", "Customers", new { selectedDate = dateSummary.Date.ToString("yyyy-MM-dd") })'">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="fw-bold mb-0">@dateSummary.Date.ToString("MMM dd, yyyy")</h6>
-                                <span class="badge @(dateSummary.HasLargeOrder ? "bg-primary" :
-                                                   dateSummary.TotalPax > 700 ? "bg-danger" :
-                                                   dateSummary.TotalPax > 560 ? "bg-warning" : "bg-success") pax-badge">
-                                    @dateSummary.TotalPax / 700 pax
-                                </span>
-                            </div>
 
-                            <div class="row mb-2">
-                                <div class="col-6">
-                                    <small class="text-muted">Orders:</small><br>
-                                    <strong>@dateSummary.OrderCount</strong>
-                                </div>
-                                <div class="col-6">
-                                    <small class="text-muted">Status:</small><br>
-                                    @if (dateSummary.HasLargeOrder)
-                                    {
-                                        <span class="text-primary fw-semibold">Large Order</span>
-                                    }
-                                    else if (dateSummary.TotalPax >= 700)
-                                    {
-                                        <span class="text-danger fw-semibold">Full Capacity</span>
-                                    }
-                                    else if (dateSummary.TotalPax > 560)
-                                    {
-                                        <span class="text-warning fw-semibold">Near Capacity</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-success fw-semibold">Available Capacity</span>
-                                    }
-                                </div>
-                            </div>
+<!-- Orders by Date -->
+<div class="orders-panel">
+    <h3 class="orders-panel-title">Orders by Date</h3>
 
-                            <div class="mt-3 text-center">
-                                <small class="text-muted">
-                                    <i class="bi bi-cursor me-1"></i>Click to view details
-                                </small>
-                            </div>
+    @if (!Model.AllDateSummary.Any())
+    {
+        <div class="text-center py-4">
+            <i class="bi bi-calendar-x fs-1 text-muted"></i>
+            <p class="text-muted mt-2">No orders found.</p>
+        </div>
+    }
+    else
+    {
+        <div class="orders-grid">
+            @foreach (var dateSummary in Model.AllDateSummary)
+            {
+                var statusClass = dateSummary.HasLargeOrder ? "warning" :
+                dateSummary.TotalPax > 700 ? "danger" :
+                dateSummary.TotalPax > 560 ? "warning" : "success";
+
+                var statusText = dateSummary.HasLargeOrder ? "Large Order" :
+                dateSummary.TotalPax >= 700 ? "Full Capacity" :
+                dateSummary.TotalPax > 560 ? "Near Capacity" : "Available Capacity";
+
+                <div class="order-card @statusClass"
+                     onclick="window.location.href='@Url.Action("OrdersByDate", "Customers", new { selectedDate = dateSummary.Date.ToString("yyyy-MM-dd") })'">
+                    <div class="order-card-header">
+                        <div class="order-date">@dateSummary.Date.ToString("MMM dd, yyyy")</div>
+                        <span class="pax-badge @statusClass">@dateSummary.TotalPax/700 pax</span>
+                    </div>
+
+                    <div class="order-details">
+                        <div class="order-detail-item">
+                            <div class="order-detail-label">Orders:</div>
+                            <div class="order-detail-value">@dateSummary.OrderCount</div>
+                        </div>
+                        <div class="order-detail-item">
+                            <div class="order-detail-label">Status:</div>
+                            <div class="order-status @statusClass">@statusText</div>
                         </div>
                     </div>
-                }
+
+                    <div class="order-footer">
+                        <div class="order-footer-text">
+                            <i class="bi bi-cursor me-1"></i>Click to view details
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filterModalLabel">Date Range Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        }
+            <div class="modal-body">
+                <form method="get" id="filterForm">
+                    <div class="mb-3">
+                        <label class="form-label">Start Date:</label>
+                        <input type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")"
+                               class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">End Date:</label>
+                        <input type="date" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")"
+                               class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="applyFilter()">Apply Filter</button>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    // Initialize with the month from the model (filtered dates)
     let currentMonth = @Model.StartDate.Month;
     let currentYear = @Model.StartDate.Year;
 
@@ -576,19 +803,28 @@
 
         document.getElementById('currentMonth').textContent = `${monthNames[currentMonth - 1]} ${currentYear}`;
 
-        // Calculate the first and last day of the selected month
         const firstDay = new Date(currentYear, currentMonth - 1, 1);
         const lastDay = new Date(currentYear, currentMonth, 0);
 
-        // Format dates for URL parameters
         const startDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-01`;
         const endDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${lastDay.getDate()}`;
 
-        // Update the date range form inputs
-        document.querySelector('input[name="startDate"]').value = startDate;
-        document.querySelector('input[name="endDate"]').value = endDate;
+        // Update the modal form inputs
+        const modalStartDate = document.querySelector('#filterModal input[name="startDate"]');
+        const modalEndDate = document.querySelector('#filterModal input[name="endDate"]');
+        if (modalStartDate) modalStartDate.value = startDate;
+        if (modalEndDate) modalEndDate.value = endDate;
 
-        // Submit the form to reload with new dates
-        document.querySelector('form').submit();
+        // Submit the form
+        document.getElementById('filterForm').submit();
+    }
+
+    function openFilterModal() {
+        const modal = new bootstrap.Modal(document.getElementById('filterModal'));
+        modal.show();
+    }
+
+    function applyFilter() {
+        document.getElementById('filterForm').submit();
     }
 </script> 

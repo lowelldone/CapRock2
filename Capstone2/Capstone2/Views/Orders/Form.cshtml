@@ -8,17 +8,20 @@
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .form-bg {
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
         border-radius: 12px;
         padding-bottom: 1rem;
     }
+
     .form-header {
         display: flex;
         align-items: center;
         gap: 8px;
     }
+
     .form-header-icon {
         font-size: 1.5rem;
         color: var(--primary-purple);
@@ -27,12 +30,14 @@
         padding: 4px 8px;
         box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
     }
+
     .form-subtitle {
         color: #6c757d;
         font-size: 0.9rem;
         margin-top: -4px;
         margin-bottom: 10px;
     }
+
     .form-card {
         background: #fff;
         border-radius: 12px;
@@ -40,16 +45,19 @@
         padding: 1rem;
         border: 1px solid var(--purple-border);
     }
+
     .form-control {
         border-radius: 8px;
         border: 1px solid var(--purple-border);
         padding: 0.6rem 0.8rem;
         font-size: 0.9rem;
     }
-    .form-control:focus {
-        border-color: var(--primary-purple);
-        box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
-    }
+
+        .form-control:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
+        }
+
     .btn-back {
         font-weight: 500;
         border-radius: 6px;
@@ -60,6 +68,7 @@
         z-index: 1000;
         font-size: 0.9rem;
     }
+
     .btn-submit {
         font-weight: 600;
         font-size: 1rem;
@@ -69,19 +78,23 @@
         background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
         border: 1px solid var(--primary-purple);
     }
-    .btn-submit:hover {
-        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-    }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
     .alert {
         border-radius: 8px;
         border: none;
     }
+
     .alert-info {
         background: var(--purple-bg-light);
         color: var(--text-purple);
         border: 1px solid var(--purple-border);
     }
+
     .alert-warning {
         background: #fef3c7;
         color: #92400e;
@@ -157,7 +170,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label asp-for="timeOfFoodServing" class="form-label fw-semibold">Time of Food Serving</label>
-                    <input asp-for="timeOfFoodServing" type="time" class="form-control" required />
+                    <input asp-for="timeOfFoodServing" type="time" class="form-control" id="timeOfFoodServing" required />
                 </div>
             </div>
 
@@ -200,6 +213,20 @@
 <script>
     const STORAGE_KEY = 'orderFormData';
 
+    // Immediate fallback to set current time
+    function setCurrentTime() {
+        const timeInput = document.getElementById('timeOfFoodServing');
+        if (timeInput) {
+            const now = new Date();
+            const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            console.log('Immediate fallback - Setting time to:', currentTime);
+            timeInput.value = currentTime;
+        }
+    }
+
+    // Try to set time immediately
+    setCurrentTime();
+
     // On page load: restore if there is saved data
     window.addEventListener('DOMContentLoaded', function () {
         const saved = sessionStorage.getItem(STORAGE_KEY);
@@ -218,6 +245,18 @@
         const cateringDateInput = document.getElementById('cateringDate');
         const today = new Date().toISOString().split('T')[0];
         cateringDateInput.setAttribute('min', today);
+
+        // Set default time of food serving to current time (backup)
+        setTimeout(() => {
+            const timeOfFoodServingInput = document.getElementById('timeOfFoodServing');
+            console.log('DOMContentLoaded backup - Time input found:', timeOfFoodServingInput);
+            if (timeOfFoodServingInput) {
+                const now = new Date();
+                const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                console.log('DOMContentLoaded backup - Setting time to:', currentTime);
+                timeOfFoodServingInput.value = currentTime;
+            }
+        }, 100);
 
         // Handle Number of PAX input
         const noOfPaxInput = document.getElementById('noOfPax');
@@ -256,14 +295,48 @@
         function checkRushOrder() {
             const cateringDate = new Date(cateringDateInput.value);
             const today = new Date();
+            const currentHour = today.getHours();
+            const isPM = currentHour >= 12; // 12 PM and later
 
             if (cateringDateInput.value &&
                 cateringDate.getDate() === today.getDate() &&
                 cateringDate.getMonth() === today.getMonth() &&
                 cateringDate.getFullYear() === today.getFullYear()) {
-                rushOrderAlert.style.display = 'block';
+
+                if (isPM) {
+                    // Show restriction message for PM rush orders
+                    rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>Rush Order Restriction:</strong> Cannot take rush order in this hour. Please select a future date for your catering order.';
+                    rushOrderAlert.className = 'alert alert-danger mb-4';
+                    rushOrderAlert.style.display = 'block';
+
+                    // Disable the submit button
+                    const submitBtn = document.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Order Restricted';
+                    }
+                } else {
+                    // Show rush order fee message for AM rush orders
+                    rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>Rush Order Fee:</strong> Since your catering date is the same as your order date, a <strong>10% rush order fee</strong> has been added to your total amount.';
+                    rushOrderAlert.className = 'alert alert-warning mb-4';
+                    rushOrderAlert.style.display = 'block';
+
+                    // Enable the submit button
+                    const submitBtn = document.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Place Order';
+                    }
+                }
             } else {
                 rushOrderAlert.style.display = 'none';
+
+                // Enable the submit button for non-rush orders
+                const submitBtn = document.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Place Order';
+                }
             }
         }
 
@@ -272,12 +345,46 @@
 
         // Check when catering date changes
         cateringDateInput.addEventListener('change', checkRushOrder);
+
+        // Handle Contact Number validation
+        const contactNoInput = document.querySelector('input[name="Customer.ContactNo"]');
+
+        // Only allow numbers and limit to 11 digits
+        contactNoInput.addEventListener('input', function () {
+            // Remove any non-digit characters
+            this.value = this.value.replace(/\D/g, '');
+
+            // Limit to 11 digits
+            if (this.value.length > 11) {
+                this.value = this.value.slice(0, 11);
+            }
+        });
+
+        // Prevent paste of non-numeric characters
+        contactNoInput.addEventListener('paste', function (e) {
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            const numericOnly = pastedText.replace(/\D/g, '');
+            const currentValue = this.value.replace(/\D/g, '');
+            const newValue = currentValue + numericOnly;
+
+            if (newValue.length <= 11) {
+                this.value = newValue;
+            } else {
+                this.value = newValue.slice(0, 11);
+            }
+        });
+
+        // Prevent drag and drop of non-numeric characters
+        contactNoInput.addEventListener('drop', function (e) {
+            e.preventDefault();
+        });
     });
 
     // On submit: only save if it’s new or changed
     document.getElementById('orderForm').addEventListener('submit', function (e) {
         const form = this;
-        const formData = { };
+        const formData = {};
         Array.from(form.elements).forEach(el => {
             if (el.name && el.type !== 'submit' && el.type !== 'button') {
                 formData[el.name] = el.value;
