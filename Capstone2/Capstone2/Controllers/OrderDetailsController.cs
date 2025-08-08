@@ -103,24 +103,30 @@ namespace Capstone2.Controllers
             await _context.SaveChangesAsync();
 
             double total = 0;
-            foreach (var detail in orderDetails)
+            if (orderDetails != null)
             {
-                detail.OrderId = orderId;
-                // Get the menu price from the database
-                var menu = await _context.Menu.FindAsync(detail.MenuId);
-                if (menu != null)
+                foreach (var detail in orderDetails)
                 {
-                    total += menu.Price * detail.Quantity;
+                    if (detail != null && detail.MenuId > 0)
+                    {
+                        // Get the menu price from the database
+                        var menu = await _context.Menu.FindAsync(detail.MenuId);
+                        if (menu != null)
+                        {
+                            total += menu.Price * detail.Quantity;
+                        }
+                        _context.OrderDetails.Add(new OrderDetail
+                        {
+                            MenuId = detail.MenuId,
+                            Name = detail.Name,
+                            Quantity = detail.Quantity,
+                            OrderId = orderId
+                        });
+                    }
                 }
-                _context.OrderDetails.Add(new OrderDetail
-                {
-                    MenuId = detail.MenuId,
-                    Name = detail.Name,
-                    Quantity = detail.Quantity,
-                    OrderId = orderId
-                });
             }
             order.TotalPayment = total;
+            _context.Orders.Update(order);
             await _context.SaveChangesAsync();
 
             return RedirectToAction("ViewOrder", "Customers", new { id = order.CustomerID });

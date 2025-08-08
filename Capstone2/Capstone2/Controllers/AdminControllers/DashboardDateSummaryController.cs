@@ -45,6 +45,7 @@ namespace Capstone2.Controllers.AdminControllers
             // Get all orders for summary statistics and orders by date (across all months)
             var allOrders = await _context.Orders
                 .Include(o => o.Customer)
+                .Where(o => o.Status != "Completed" && !o.isDeleted && !o.Customer.isDeleted)
                 .OrderBy(o => o.CateringDate)
                 .ToListAsync();
 

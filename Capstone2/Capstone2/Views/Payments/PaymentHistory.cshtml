@@ -1,0 +1,258 @@
+﻿@model Capstone2.Models.Order
+
+@{
+    ViewData["Title"] = "Payment History";
+    var payments = ViewBag.Payments as List<Capstone2.Models.Payment>;
+    var remainingBalance = ViewBag.RemainingBalance as double? ?? 0;
+}
+
+<style>
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --danger-color: #ef4444;
+        --info-color: #3b82f6;
+    }
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .paymenthistory-bg {
+        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+    .paymenthistory-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .paymenthistory-header-icon {
+        font-size: 2.5rem;
+        color: var(--primary-purple);
+        background: var(--purple-bg-light);
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+    }
+    .paymenthistory-subtitle {
+        color: var(--text-purple);
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+    .order-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    .order-card:hover {
+        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+        transform: translateY(-2px);
+    }
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
+    }
+    .table thead th {
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        border: none;
+        font-weight: 600;
+        color: white;
+        padding: 1rem;
+    }
+    .table tbody td {
+        padding: 1rem;
+        border: none;
+        border-bottom: 1px solid var(--purple-border);
+    }
+    .table tbody tr {
+        background: #fff;
+    }
+    .table tbody tr:hover {
+        background: var(--purple-bg-light);
+    }
+    .btn-action {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-secondary {
+        border-color: var(--text-purple);
+        color: var(--text-purple);
+        background: transparent;
+    }
+    .btn-outline-secondary:hover {
+        background: var(--text-purple);
+        color: white;
+        transform: translateY(-2px);
+    }
+    .total-section {
+        background: var(--purple-bg-light);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border: 1px solid var(--purple-border);
+    }
+    .payment-summary {
+        background: var(--purple-bg-light);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid var(--purple-border);
+    }
+    .payment-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    .payment-status.paid {
+        background: var(--success-color);
+        color: white;
+    }
+    .payment-status.partial {
+        background: var(--warning-color);
+        color: white;
+    }
+    .payment-status.unpaid {
+        background: var(--danger-color);
+        color: white;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 paymenthistory-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="paymenthistory-header mb-1">
+                <span class="paymenthistory-header-icon"><i class="bi bi-clock-history"></i></span>
+                <h2 class="fw-bold mb-0">Payment History</h2>
+            </div>
+            <div class="paymenthistory-subtitle">Payment history for @Model.Customer.Name</div>
+        </div>
+    </div>
+
+    <div class="order-card">
+        <h4 class="fw-bold mb-3">Order Information</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Order Number:</strong> <span class="text-primary">@Model.OrderNumber</span></p>
+                <p><strong>Customer:</strong> @Model.Customer.Name</p>
+                <p><strong>Contact:</strong> @Model.Customer.ContactNo</p>
+                <p><strong>Address:</strong> @Model.Customer.Address</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Catering Date:</strong> @Model.CateringDate.ToShortDateString()</p>
+                <p><strong>No. of Pax:</strong> @Model.NoOfPax</p>
+                <p><strong>Venue:</strong> @Model.Venue</p>
+                <p>
+                    <strong>Status:</strong>
+                    <span class="badge @(Model.Status switch {
+                        "Pending" => "bg-warning",
+                        "Accepted" => "bg-info",
+                        "Ongoing" => "bg-primary",
+                        "Completed" => "bg-success",
+                        _ => "bg-secondary"
+                    })">@Model.Status</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="order-card">
+        <h4 class="fw-bold mb-3">Payment Summary</h4>
+        <div class="payment-summary">
+            <div class="row">
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-1">Total Amount</h6>
+                    <p class="mb-0 fs-5">₱@Model.TotalPayment.ToString("F2")</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-1">Amount Paid</h6>
+                    <p class="mb-0 fs-5 text-success">₱@Model.AmountPaid.ToString("F2")</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-1">Remaining Balance</h6>
+                    <p class="mb-0 fs-5 text-danger">₱@remainingBalance.ToString("F2")</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold mb-1">Payment Status</h6>
+                    @{
+                        var paymentPercentage = (Model.AmountPaid / Model.TotalPayment) * 100;
+                        var statusClass = paymentPercentage >= 100 ? "paid" :
+                        paymentPercentage >= 50 ? "partial" : "unpaid";
+                        var statusText = paymentPercentage >= 100 ? "Fully Paid" :
+                        paymentPercentage >= 50 ? "Partially Paid" : "Unpaid";
+                    }
+                    <span class="payment-status @statusClass">@statusText</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (payments?.Any() == true)
+    {
+        <div class="order-card">
+            <h4 class="fw-bold mb-3">Payment History</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Amount</th>
+                        <th>Running Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        double runningTotal = 0;
+                    }
+                    @foreach (var payment in payments)
+                    {
+                        runningTotal += payment.Amount;
+                        <tr>
+                            <td>@payment.Date.ToString("MMM dd, yyyy HH:mm")</td>
+                            <td>₱@payment.Amount.ToString("F2")</td>
+                            <td>₱@runningTotal.ToString("F2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="order-card">
+            <div class="text-center py-4">
+                <i class="bi bi-clock-history text-muted" style="font-size: 3rem;"></i>
+                <h5 class="mt-3 text-muted">No Payment History</h5>
+                <p class="text-muted">No payments have been recorded for this order yet.</p>
+            </div>
+        </div>
+    }
+
+    <div class="d-flex gap-3 mt-4">
+        <a asp-action="ProcessPayment" asp-route-id="@Model.OrderId" class="btn btn-primary btn-action">
+            <i class="bi bi-credit-card me-2"></i>Process Payment
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-action">
+            <i class="bi bi-arrow-left me-2"></i>Back to Payments
+        </a>
+    </div>
+</div>

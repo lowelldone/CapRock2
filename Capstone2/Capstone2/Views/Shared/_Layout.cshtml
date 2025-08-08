@@ -307,6 +307,12 @@
                                 </a>
                             </li>
                             <li class="nav-item mb-2">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payments" ? "active" : "")" asp-controller="Payments" asp-action="Index">
+                                    <i class="bi bi-credit-card"></i>
+                                    <span>Payments</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-2">
                                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
                                     <i class="bi bi-person-badge"></i>
                                     <span>HeadWaiters</span>

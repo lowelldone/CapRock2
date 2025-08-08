@@ -235,14 +235,14 @@
             if (!menuId || !quantity || quantity < 1) return;
             var index = $('#orderDetailsBody tr').length;
             var row = `<tr>
-                            <td><input type="hidden" name="orderDetails[${index}].MenuId" value="${menuId}" />
-                                <input type="hidden" name="orderDetails[${index}].Name" value="${menuName}" />
-                                ${menuName}</td>
-                            <td><input type="number" name="orderDetails[${index}].Quantity" value="${quantity}" min="1" class="form-control" /></td>
-                            <td><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
-                                <i class="bi bi-trash me-1"></i>Remove
-                            </button></td>
-                        </tr>`;
+                                    <td><input type="hidden" name="orderDetails[${index}].MenuId" value="${menuId}" />
+                                        <input type="hidden" name="orderDetails[${index}].Name" value="${menuName}" />
+                                        ${menuName}</td>
+                                    <td><input type="number" name="orderDetails[${index}].Quantity" value="${quantity}" min="1" class="form-control" /></td>
+                                    <td><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
+                                        <i class="bi bi-trash me-1"></i>Remove
+                                    </button></td>
+                                </tr>`;
             $('#orderDetailsBody').append(row);
 
             // Optionally reset the dropdown and quantity for user convenience
@@ -251,25 +251,37 @@
             recalculateTotal(); // Call recalculateTotal after adding a row
         }
 
-        function recalculateTotal() {
-            var menus = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Menus));
-            var total = 0;
-            $('#orderDetailsBody tr').each(function () {
-                var menuId = $(this).find('input[name*=".MenuId"]').val();
-                var quantity = parseInt($(this).find('input[name*=".Quantity"]').val()) || 0;
-                var menu = menus.find(m => m.menuId == menuId);
-                if (menu) {
-                    total += menu.price * quantity;
-                }
-            });
-            $('#totalPayment').text(total.toFixed(2));
+        // Create menu data object
+        var menuData = {};
+        @foreach (var menu in menus)
+        {
+            <text>
+                    menuData[@menu.MenuId] = @menu.Price;
+            </text>
         }
+
+            function recalculateTotal() {
+                var total = 0;
+                $('#orderDetailsBody tr').each(function () {
+                    var menuId = parseInt($(this).find('input[name*=".MenuId"]').val());
+                    var quantity = parseInt($(this).find('input[name*=".Quantity"]').val()) || 0;
+                    var price = menuData[menuId] || 0;
+                    total += price * quantity;
+                });
+                $('#totalPayment').text(total.toFixed(2));
+            }
 
         $(function () {
             recalculateTotal();
         });
 
+        // Recalculate total when quantity changes
         $('#orderDetailsBody').on('input', 'input[name*=".Quantity"]', function () {
+            recalculateTotal();
+        });
+
+        // Recalculate total when page loads
+        $(document).ready(function () {
             recalculateTotal();
         });
     </script>

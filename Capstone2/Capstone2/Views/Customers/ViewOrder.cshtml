@@ -21,20 +21,24 @@
         --danger-color: #ef4444;
         --info-color: #3b82f6;
     }
+
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .vieworder-bg {
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
         border-radius: 24px;
         padding-bottom: 2rem;
     }
+
     .vieworder-header {
         display: flex;
         align-items: center;
         gap: 16px;
     }
+
     .vieworder-header-icon {
         font-size: 2.5rem;
         color: var(--primary-purple);
@@ -43,12 +47,14 @@
         padding: 8px 14px;
         box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
     }
+
     .vieworder-subtitle {
         color: var(--text-purple);
         font-size: 1.1rem;
         margin-top: -8px;
         margin-bottom: 18px;
     }
+
     .order-card {
         background: #fff;
         border-radius: 20px;
@@ -58,86 +64,104 @@
         margin-bottom: 1.5rem;
         transition: all 0.3s ease;
     }
-    .order-card:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        transform: translateY(-2px);
-    }
+
+        .order-card:hover {
+            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
+
     .order-row {
         padding: 0.75rem 0;
         border-bottom: 1px solid var(--purple-border);
     }
-    .order-row:last-child {
-        border-bottom: none;
-    }
+
+        .order-row:last-child {
+            border-bottom: none;
+        }
+
     .order-label {
         font-weight: 600;
         color: var(--text-purple);
         font-size: 1rem;
     }
+
     .order-value {
         color: var(--text-purple-light);
         font-size: 1rem;
     }
+
     .table {
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
         border: 1px solid var(--purple-border);
     }
-    .table thead th {
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        border: none;
-        font-weight: 600;
-        color: white;
-        padding: 1rem;
-    }
-    .table tbody td {
-        padding: 1rem;
-        border: none;
-        border-bottom: 1px solid var(--purple-border);
-    }
-    .table tbody tr {
-        background: #fff;
-    }
-    .table tbody tr:hover {
-        background: var(--purple-bg-light);
-    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            border: none;
+            font-weight: 600;
+            color: white;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid var(--purple-border);
+        }
+
+        .table tbody tr {
+            background: #fff;
+        }
+
+            .table tbody tr:hover {
+                background: var(--purple-bg-light);
+            }
+
     .btn-action {
         font-weight: 500;
         border-radius: 8px;
         padding: 0.5rem 1rem;
         transition: all 0.3s ease;
     }
+
     .btn-primary {
         background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
         border-color: var(--primary-purple);
         color: white;
     }
-    .btn-primary:hover {
-        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
-    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+        }
+
     .btn-warning {
         background: linear-gradient(135deg, var(--warning-color) 0%, #fbbf24 100%);
         border-color: var(--warning-color);
         color: white;
     }
-    .btn-warning:hover {
-        background: linear-gradient(135deg, #d97706 0%, var(--warning-color) 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
-    }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #d97706 0%, var(--warning-color) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
     .btn-outline-secondary {
         border-color: var(--text-purple);
         color: var(--text-purple);
         background: transparent;
     }
-    .btn-outline-secondary:hover {
-        background: var(--text-purple);
-        color: white;
-        transform: translateY(-2px);
-    }
+
+        .btn-outline-secondary:hover {
+            background: var(--text-purple);
+            color: white;
+            transform: translateY(-2px);
+        }
+
     .total-section {
         background: var(--purple-bg-light);
         border-radius: 12px;
@@ -145,6 +169,7 @@
         margin-top: 1rem;
         border: 1px solid var(--purple-border);
     }
+
     .staff-section {
         background: var(--purple-bg-light);
         border-radius: 12px;
@@ -152,6 +177,7 @@
         margin-bottom: 1rem;
         border: 1px solid var(--purple-border);
     }
+
     .staff-info {
         background: #fff;
         border-radius: 8px;
@@ -159,25 +185,31 @@
         border: 1px solid var(--purple-border);
         box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
     }
+
     .table-sm {
         font-size: 0.9rem;
     }
-    .table-sm thead th {
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        color: white;
-        font-weight: 600;
-        padding: 0.75rem;
-    }
-    .table-sm tbody td {
-        padding: 0.75rem;
-        border-bottom: 1px solid var(--purple-border);
+
+        .table-sm thead th {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem;
         }
+
+        .table-sm tbody td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--purple-border);
+        }
+
     .text-primary {
         color: var(--primary-purple) !important;
     }
+
     .text-success {
         color: var(--success-color) !important;
     }
+
     .text-muted {
         color: var(--text-purple) !important;
     }
@@ -402,5 +434,11 @@
         <a asp-action="Index" class="btn btn-outline-secondary btn-action">
             <i class="bi bi-arrow-left me-2"></i>Back to Customers
         </a>
+        @if (Model.Status != "Accepted" && Model.Status != "Completed")
+        {
+            <a asp-action="PaymentDetails" asp-route-id="@Model.Customer.CustomerID" class="btn btn-success btn-action ms-auto">
+                <i class="bi bi-check-circle me-2"></i>Confirm Order
+            </a>
+        }
     </div>
 </div>

@@ -324,10 +324,16 @@
         }
     </div>
 
-    <div class="mt-4">
+    <div class="d-flex gap-3 mt-4">
         <a asp-action="Index" class="btn btn-outline-secondary btn-action">
             <i class="bi bi-arrow-left me-2"></i>Back to Customers
         </a>
+        @if (order != null && downPaymentRemaining <= 0 && order.HeadWaiterId == null)
+        {
+            <a asp-action="AssignHeadWaiter" asp-route-id="@Model.CustomerID" class="btn btn-primary btn-action ms-auto">
+                <i class="bi bi-person-badge me-2"></i>Assign Head Waiter
+            </a>
+        }
     </div>
 </div>
 

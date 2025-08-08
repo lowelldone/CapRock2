@@ -319,7 +319,7 @@
 
                             <td class="text-end">
                                 <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-outline-secondary action-btn" style="border: 2px solid;"><i class="bi bi-eye"></i> View Order</a>
-                                <a asp-action="PaymentDetails" asp-route-id="@item.CustomerID" class="btn btn-outline-success action-btn" style="border: 2px solid;"><i class="bi bi-credit-card"></i> Payment Details</a>
+                                @* <a asp-action="PaymentDetails" asp-route-id="@item.CustomerID" class="btn btn-outline-success action-btn" style="border: 2px solid;"><i class="bi bi-credit-card"></i> Payment Details</a> *@
                                 @if (order != null && order.Status != "Completed" && order.AmountPaid >= 0.5 * order.TotalPayment)
                                 {
                                     <a asp-action="AssignHeadWaiter" asp-route-id="@item.CustomerID" class="btn btn-outline-primary action-btn" style="border: 2px solid;"><i class="bi bi-person-plus"></i> Assign Head Waiter</a>
