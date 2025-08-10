@@ -1,0 +1,273 @@
+﻿@model List<Capstone2.Models.Order>
+@{
+    ViewData["Title"] = "Head Waiter Orders";
+}
+
+<style>
+    body, .container-fluid, .card, .btn, h1, h2, h3, h4, h5, h6, p, label {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .orders-bg {
+        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
+        min-height: 100vh;
+        border-radius: 24px;
+        padding-bottom: 2rem;
+    }
+
+    .orders-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .orders-header-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        background: #e0f2fe;
+        border-radius: 12px;
+        padding: 8px 14px;
+        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+    }
+
+    .orders-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+        margin-top: -8px;
+        margin-bottom: 18px;
+    }
+
+    .order-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px 0 rgba(34, 41, 47, 0.12);
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #344767;
+        min-width: 150px;
+        margin-right: 1rem;
+    }
+
+    .info-value {
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .status-badge {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    .btn-back {
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+    }
+
+    .waiter-list {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .waiter-item {
+        background: #fff;
+        border-radius: 8px;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        border-left: 4px solid #0d6efd;
+    }
+
+    .waiter-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .no-orders {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .no-orders i {
+        font-size: 4rem;
+        color: #dee2e6;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="container-fluid mt-4 px-4 orders-bg">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="orders-header mb-1">
+                <span class="orders-header-icon"><i class="bi bi-receipt"></i></span>
+                <h2 class="fw-bold mb-0">Orders Assigned to @ViewBag.HeadWaiter.User.FirstName @ViewBag.HeadWaiter.User.LastName</h2>
+            </div>
+            <div class="orders-subtitle">View all orders assigned to this head waiter.</div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="order-card no-orders">
+            <i class="bi bi-inbox"></i>
+            <h4>No Orders Assigned</h4>
+            <p>This head waiter has not been assigned to any orders yet.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var order in Model)
+        {
+            <div class="order-card">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="mb-3 text-primary">Customer Information</h4>
+                        <div class="info-row">
+                            <span class="info-label">Customer Name:</span>
+                            <span class="info-value">@order.Customer.Name</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Contact Number:</span>
+                            <span class="info-value">@order.Customer.ContactNo</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value">@order.Customer.Address</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="mb-3 text-primary">Order Information</h4>
+                        <div class="info-row">
+                            <span class="info-label">Order Number:</span>
+                            <span class="info-value">@order.OrderNumber</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Catering Date:</span>
+                            <span class="info-value">@order.CateringDate.ToString("MMMM dd, yyyy")</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Venue:</span>
+                            <span class="info-value">@order.Venue</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Number of Pax:</span>
+                            <span class="info-value">@order.NoOfPax</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Food Serving Time:</span>
+                            <span class="info-value">@order.timeOfFoodServing.ToString("hh:mm tt")</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Occasion:</span>
+                            <span class="info-value">@order.Occasion</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Motif:</span>
+                            <span class="info-value">@order.Motif</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Total Payment:</span>
+                            <span class="info-value">₱@order.TotalPayment.ToString("N2")</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Amount Paid:</span>
+                            <span class="info-value">₱@order.AmountPaid.ToString("N2")</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Balance:</span>
+                            <span class="info-value">₱@order.Balance.ToString("N2")</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Status:</span>
+                            <span class="info-value">
+                                @if (order.Status == "Accepted")
+                                {
+                                    <span class="badge bg-warning text-dark status-badge">@order.Status</span>
+                                }
+                                else if (order.Status == "Ongoing")
+                                {
+                                    <span class="badge bg-primary status-badge">@order.Status</span>
+                                }
+                                else if (order.Status == "Completed")
+                                {
+                                    <span class="badge bg-success status-badge">@order.Status</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary status-badge">@order.Status</span>
+                                }
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                @if (order.OrderWaiters != null && order.OrderWaiters.Any())
+                {
+                    <div class="waiter-list">
+                        <h5 class="mb-3 text-primary">Assigned Waiters</h5>
+                        @foreach (var orderWaiter in order.OrderWaiters)
+                        {
+                            <div class="waiter-item">
+                                <strong>@orderWaiter.Waiter.User.FirstName @orderWaiter.Waiter.User.LastName</strong>
+                                <span class="badge @(orderWaiter.Waiter.Availability == "Busy" ? "bg-danger" : "bg-success") ms-2">
+                                    @orderWaiter.Waiter.Availability
+                                </span>
+                                @if (orderWaiter.Waiter.isTemporary)
+                                {
+                                    <span class="badge bg-secondary ms-2">Temporary</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark ms-2">Regular</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="waiter-list">
+                        <h5 class="mb-3 text-primary">Assigned Waiters</h5>
+                        <p class="text-muted mb-0">No waiters have been assigned to this order yet.</p>
+                    </div>
+                }
+            </div>
+        }
+    }
+
+    <div class="d-flex justify-content-start mt-4">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-back">
+            <i class="bi bi-arrow-left me-2"></i>Back to Head Waiters
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
