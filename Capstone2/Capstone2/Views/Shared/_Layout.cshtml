@@ -36,7 +36,7 @@
             min-height: 100vh;
         }
         .soft-sidebar {
-            width: 120px;
+            width: 60px;
             min-height: 100vh;
             background-color: lightgray;
             border-radius: 20px;
@@ -54,7 +54,7 @@
             overflow: hidden;
         }
         .soft-sidebar:hover {
-            width: 380px;
+            width: 280px;
             box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
         }
         .soft-sidebar .sidebar-logo {
@@ -89,33 +89,86 @@
             opacity: 1;
             width: auto;
         }
+        
+        /* Responsive GRUSH Logo Styling */
+        .sidebar-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0 8px;
+        }
+        
+        .grush-logo {
+            max-width: 100%;
+            height: auto;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Logo sizing for collapsed sidebar */
+        .soft-sidebar .grush-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+        }
+        
+        /* Logo sizing for expanded sidebar */
+.soft-sidebar:hover .grush-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+        
+        /* Responsive breakpoints for logo */
+        @@media (max-width: 768px) {
+    .soft-sidebar .grush-logo {
+        width: 35px;
+        height: 35px;
+    }
+    .soft-sidebar:hover .grush-logo {
+        width: 65px;
+        height: 65px;
+    }
+}
+        
+        @@media (max-width: 576px) {
+    .soft-sidebar .grush-logo {
+        width: 30px;
+        height: 30px;
+    }
+    .soft-sidebar:hover .grush-logo {
+        width: 55px;
+        height: 55px;
+    }
+}
         .soft-sidebar .nav {
             width: 100%;
         }
         .soft-sidebar .nav-link {
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 12px;
-            margin: 8px 16px;
+            justify-content: flex-start;
+            padding: 12px 12px;
+            margin: 8px 8px 8px 8px;
             border-radius: 12px;
             color: var(--text-purple);
             font-weight: 500;
             transition: all 0.3s ease;
             white-space: nowrap;
             overflow: hidden;
-            width: calc(100% - 32px);
             min-height: 48px;
             border: 2px solid transparent;
         }
         .soft-sidebar:hover .nav-link {
             justify-content: flex-start;
-            padding: 12px 24px;
+            padding: 12px 12px;
         }
         .soft-sidebar .nav-link i {
             font-size: 1.3rem;
             margin-right: 0;
-            min-width: 24px;
+            min-width: 20px;
             text-align: center;
             display: flex;
             align-items: center;
@@ -174,11 +227,27 @@
         
         .soft-sidebar .collapse .nav {
             margin-top: 8px;
+            margin-left: 0;
+            padding-left: 0;
+        }
+        
+        .soft-sidebar .collapse .nav .nav-item {
+            margin-left: 0;
+            padding-left: 0;
+        }
+        
+        .soft-sidebar .collapse .nav .nav-item .nav-link {
+            margin-left: 0;
+            padding-left: 56px;
+        }
+        
+        .soft-sidebar .collapse .nav .nav-item .nav-link.sub-sub-nav-link {
+            padding-left: 72px;
         }
         
         .soft-sidebar .sub-nav-link {
-            padding: 8px 16px 8px 56px;
-            margin: 4px 16px;
+            padding: 8px 12px;
+            margin: 4px 8px 4px 8px;
             font-size: 0.9rem;
             min-height: 40px;
             border-radius: 8px;
@@ -201,8 +270,8 @@
         
         /* Third-level submenu styles */
         .soft-sidebar .sub-sub-nav-link {
-            padding: 6px 16px 6px 72px;
-            margin: 2px 16px;
+            padding: 6px 12px;
+            margin: 2px 8px 2px 8px;
             font-size: 0.85rem;
             min-height: 36px;
             border-radius: 6px;
@@ -225,19 +294,19 @@
         
         /* Hover state adjustments for submenus */
         .soft-sidebar:hover .sub-nav-link {
-            padding: 8px 16px 8px 56px;
+            padding: 8px 12px;
         }
         
         .soft-sidebar:hover .sub-sub-nav-link {
-            padding: 6px 16px 6px 72px;
+            padding: 6px 12px;
         }
         
         .main-content {
-            margin-left: 140px;
+            margin-left: 80px;
             transition: margin-left 0.3s ease;
         }
         .soft-sidebar:hover ~ .main-content {
-            margin-left: 400px;
+            margin-left: 300px;
         }
         /* Enhanced button styles */
         .btn-primary {
@@ -358,8 +427,8 @@
     @if (role != null)
     {
         <nav class="soft-sidebar">
-            <div class="mb-4">
-                <img src="~/images/GRUSH logo-modified.png" width="90" height="90"/>
+            <div class="sidebar-logo-container mb-4">
+                <img src="~/images/GRUSH logo-modified.png" alt="GRUSH Logo" class="grush-logo"/>
             </div>
             <div class="sidebar-logo mb-4 ms-3">
                 <i class="bi bi-diagram-3"></i>
@@ -397,14 +466,14 @@
                                     <span>File Management</span>
                                 </a>
                                 <div class="collapse" id="fileManagementCollapse">
-                                    <ul class="nav flex-column ms-3">
+                                    <ul class="nav flex-column">
                                         <li class="nav-item">
                                             <a class="nav-link sub-nav-link dropdown-toggle" data-bs-toggle="collapse" href="#personnelCollapse" role="button" aria-expanded="false" aria-controls="personnelCollapse">
                                                 <i class="bi bi-people"></i>
                                                 <span>Personnel</span>
                                             </a>
                                             <div class="collapse" id="personnelCollapse">
-                                                <ul class="nav flex-column ms-3">
+                                                <ul class="nav flex-column">
                                                     <li class="nav-item">
                                                         <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
                                                             <i class="bi bi-person-badge"></i>
@@ -455,26 +524,26 @@
                                     <span>Transactions</span>
                                 </a>
                                 <div class="collapse" id="transactionsCollapse">
-                                    <ul class="nav flex-column ms-3">
+                                    <ul class="nav flex-column">
                                         <li class="nav-item">
                                             <a class="nav-link sub-nav-link dropdown-toggle" data-bs-toggle="collapse" href="#ordersCollapse" role="button" aria-expanded="false" aria-controls="ordersCollapse">
                                                 <i class="bi bi-cart"></i>
                                                 <span>Orders</span>
                                             </a>
                                             <div class="collapse" id="ordersCollapse">
-                                                <ul class="nav flex-column ms-3">
+                                                <ul class="nav flex-column">
                                                     <li class="nav-item">
                                                         <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
                                                             <i class="bi bi-receipt"></i>
                                                             <span>Customer Orders</span>
                                                         </a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    @* <li class="nav-item">
                                                         <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payments" ? "active" : "")" asp-controller="Payments" asp-action="Index">
                                                             <i class="bi bi-credit-card"></i>
                                                             <span>Payment Details</span>
                                                         </a>
-                                                    </li>
+                                                    </li> *@
                                                     <li class="nav-item">
                                                         <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PaidOrders" ? "active" : "")" asp-controller="PaidOrders" asp-action="Index">
                                                             <i class="bi bi-person-check"></i>
