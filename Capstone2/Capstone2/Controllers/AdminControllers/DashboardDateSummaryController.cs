@@ -9,7 +9,7 @@ using Capstone2.Models;
 
 namespace Capstone2.Controllers.AdminControllers
 {
-    public class DashboardDateSummaryController : Controller
+    public class DashboardDateSummaryController : GenericController
     {
         private readonly ApplicationDbContext _context;
 

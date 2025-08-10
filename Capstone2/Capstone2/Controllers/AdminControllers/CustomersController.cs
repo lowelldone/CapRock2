@@ -12,7 +12,7 @@ using Capstone2.Helpers;
 
 namespace Capstone2.Controllers.AdminControllers
 {
-    public class CustomersController : Controller
+    public class CustomersController : GenericController
     {
         private readonly ApplicationDbContext _context;
 

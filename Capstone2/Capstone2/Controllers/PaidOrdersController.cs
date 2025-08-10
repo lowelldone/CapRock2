@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;      // where your Customer model live
 
 namespace Capstone2.Controllers
 {
-    public class PaidOrdersController : Controller
+    public class PaidOrdersController : GenericController
     {
         private readonly ApplicationDbContext _context;
 

@@ -5,7 +5,7 @@ using Capstone2.Models;
 
 namespace Capstone2.Controllers
 {
-    public class WaitersController : Controller
+    public class WaitersController : GenericController
     {
         private readonly ApplicationDbContext _context;
 
