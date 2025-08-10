@@ -9,7 +9,7 @@ using Capstone2.Models;
 
 namespace Capstone2.Controllers.AdminControllers
 {
-    public class PaymentsController : Controller
+    public class PaymentsController : GenericController
     {
         private readonly ApplicationDbContext _context;
 

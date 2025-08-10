@@ -8,7 +8,7 @@ using Microsoft.Identity.Client;
 
 namespace Capstone2.Controllers.AdminControllers
 {
-    public class HeadWaitersController : Controller
+    public class HeadWaitersController : GenericController
     {
         private readonly ApplicationDbContext _context;
 

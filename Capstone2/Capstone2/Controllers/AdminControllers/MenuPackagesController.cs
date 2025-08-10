@@ -10,7 +10,7 @@ using Capstone2.Models;
 
 namespace Capstone2.Controllers.AdminControllers
 {
-    public class MenuPackagesController : Controller
+    public class MenuPackagesController : GenericController
     {
         private readonly ApplicationDbContext _context;
 

@@ -36,7 +36,7 @@
             min-height: 100vh;
         }
         .soft-sidebar {
-            width: 80px;
+            width: 120px;
             min-height: 100vh;
             background-color: lightgray;
             border-radius: 20px;
@@ -54,7 +54,7 @@
             overflow: hidden;
         }
         .soft-sidebar:hover {
-            width: 260px;
+            width: 380px;
             box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
         }
         .soft-sidebar .sidebar-logo {
@@ -143,12 +143,101 @@
             box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
             transform: translateY(-2px);
         }
+        
+        /* Dropdown toggle styles */
+        .soft-sidebar .nav-link.dropdown-toggle {
+            position: relative;
+        }
+        
+        .soft-sidebar .nav-link.dropdown-toggle::after {
+            content: '';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid currentColor;
+            transition: transform 0.3s ease;
+        }
+        
+        .soft-sidebar .nav-link.dropdown-toggle[aria-expanded="true"]::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+        
+        /* Submenu styles */
+        .soft-sidebar .collapse {
+            transition: all 0.3s ease;
+        }
+        
+        .soft-sidebar .collapse .nav {
+            margin-top: 8px;
+        }
+        
+        .soft-sidebar .sub-nav-link {
+            padding: 8px 16px 8px 56px;
+            margin: 4px 16px;
+            font-size: 0.9rem;
+            min-height: 40px;
+            border-radius: 8px;
+            background: rgba(124, 58, 237, 0.05);
+            border: 1px solid rgba(124, 58, 237, 0.1);
+        }
+        
+        .soft-sidebar .sub-nav-link:hover,
+        .soft-sidebar .sub-nav-link.active {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            color: #fff !important;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        .soft-sidebar .sub-nav-link i {
+            font-size: 1rem;
+            margin-right: 12px;
+        }
+        
+        /* Third-level submenu styles */
+        .soft-sidebar .sub-sub-nav-link {
+            padding: 6px 16px 6px 72px;
+            margin: 2px 16px;
+            font-size: 0.85rem;
+            min-height: 36px;
+            border-radius: 6px;
+            background: rgba(124, 58, 237, 0.03);
+            border: 1px solid rgba(124, 58, 237, 0.08);
+        }
+        
+        .soft-sidebar .sub-sub-nav-link:hover,
+        .soft-sidebar .sub-sub-nav-link.active {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            color: #fff !important;
+            box-shadow: 0 3px 12px rgba(124, 58, 237, 0.25);
+            transform: translateY(-1px);
+        }
+        
+        .soft-sidebar .sub-sub-nav-link i {
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+        
+        /* Hover state adjustments for submenus */
+        .soft-sidebar:hover .sub-nav-link {
+            padding: 8px 16px 8px 56px;
+        }
+        
+        .soft-sidebar:hover .sub-sub-nav-link {
+            padding: 6px 16px 6px 72px;
+        }
+        
         .main-content {
-            margin-left: 100px;
+            margin-left: 140px;
             transition: margin-left 0.3s ease;
         }
         .soft-sidebar:hover ~ .main-content {
-            margin-left: 280px;
+            margin-left: 400px;
         }
         /* Enhanced button styles */
         .btn-primary {
@@ -296,46 +385,115 @@
                         {
                             <li class="nav-item mb-2">
                                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "DashboardDateSummary" ? "active" : "")" asp-controller="DashboardDateSummary" asp-action="Index">
-                                    <i class="bi bi-list"></i>
+                                    <i class="bi bi-speedometer2"></i>
                                     <span>Dashboard</span>
                                 </a>
                             </li>
+                            
+                            <!-- File Management Dropdown -->
                             <li class="nav-item mb-2">
-                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
-                                    <i class="bi bi-cart"></i>
-                                    <span>Customer Orders</span>
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#fileManagementCollapse" role="button" aria-expanded="false" aria-controls="fileManagementCollapse">
+                                    <i class="bi bi-folder2-open"></i>
+                                    <span>File Management</span>
                                 </a>
+                                <div class="collapse" id="fileManagementCollapse">
+                                    <ul class="nav flex-column ms-3">
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-nav-link dropdown-toggle" data-bs-toggle="collapse" href="#personnelCollapse" role="button" aria-expanded="false" aria-controls="personnelCollapse">
+                                                <i class="bi bi-people"></i>
+                                                <span>Personnel</span>
+                                            </a>
+                                            <div class="collapse" id="personnelCollapse">
+                                                <ul class="nav flex-column ms-3">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
+                                                            <i class="bi bi-person-badge"></i>
+                                                            <span>Head Waiters</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Waiters" ? "active" : "")" asp-controller="Waiters" asp-action="Index">
+                                                            <i class="bi bi-person"></i>
+                                                            <span>Waiters</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedules" ? "active" : "")" asp-controller="Schedules" asp-action="Index">
+                                                            <i class="bi bi-calendar-event"></i>
+                                                            <span>Schedules</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Menus" ? "active" : "")" asp-controller="Menus" asp-action="Index">
+                                                <i class="bi bi-card-list"></i>
+                                                <span>Menus</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MenuPackages" ? "active" : "")" asp-controller="MenuPackages" asp-action="Index">
+                                                <i class="bi bi-bag-check"></i>
+                                                <span>Menu Packages</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Materials" ? "active" : "")" asp-controller="Materials" asp-action="Index">
+                                                <i class="bi bi-box-seam"></i>
+                                                <span>Materials</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
+                            
+                            <!-- Transactions Dropdown -->
                             <li class="nav-item mb-2">
-                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payments" ? "active" : "")" asp-controller="Payments" asp-action="Index">
-                                    <i class="bi bi-credit-card"></i>
-                                    <span>Payments</span>
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#transactionsCollapse" role="button" aria-expanded="false" aria-controls="transactionsCollapse">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                    <span>Transactions</span>
                                 </a>
+                                <div class="collapse" id="transactionsCollapse">
+                                    <ul class="nav flex-column ms-3">
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-nav-link dropdown-toggle" data-bs-toggle="collapse" href="#ordersCollapse" role="button" aria-expanded="false" aria-controls="ordersCollapse">
+                                                <i class="bi bi-cart"></i>
+                                                <span>Orders</span>
+                                            </a>
+                                            <div class="collapse" id="ordersCollapse">
+                                                <ul class="nav flex-column ms-3">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Customers" ? "active" : "")" asp-controller="Customers" asp-action="Index">
+                                                            <i class="bi bi-receipt"></i>
+                                                            <span>Customer Orders</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payments" ? "active" : "")" asp-controller="Payments" asp-action="Index">
+                                                            <i class="bi bi-credit-card"></i>
+                                                            <span>Payment Details</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PaidOrders" ? "active" : "")" asp-controller="PaidOrders" asp-action="Index">
+                                                            <i class="bi bi-person-check"></i>
+                                                            <span>Assign Staffs</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payments" ? "active" : "")" asp-controller="Payments" asp-action="Index">
+                                                <i class="bi bi-credit-card"></i>
+                                                <span>Payments</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
-                            <li class="nav-item mb-2">
-                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
-                                    <i class="bi bi-person-badge"></i>
-                                    <span>HeadWaiters</span>
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Materials" ? "active" : "")" asp-controller="Materials" asp-action="Index">
-                                    <i class="bi bi-box-seam"></i>
-                                    <span>Materials</span>
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Menus" ? "active" : "")" asp-controller="Menus" asp-action="Index">
-                                    <i class="bi bi-card-list"></i>
-                                    <span>Menus</span>
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "MenuPackages" ? "active" : "")" asp-controller="MenuPackages" asp-action="Index">
-                                    <i class="bi bi-bag-check"></i>
-                                    <span>Menu Packages</span>
-                                </a>
-                            </li>
+                            
                             <li class="nav-item mb-2">
                                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-controller="Suppliers" asp-action="Index">
                                     <i class="bi bi-truck"></i>
@@ -422,6 +580,91 @@
                     }
                 });
             }
+            
+            // Handle dropdown state persistence
+            var dropdowns = document.querySelectorAll('.collapse');
+            dropdowns.forEach(function(dropdown) {
+                // Check if this dropdown should be expanded based on active submenu
+                var activeSubmenu = dropdown.querySelector('.sub-nav-link.active, .sub-sub-nav-link.active');
+                if (activeSubmenu) {
+                    dropdown.classList.add('show');
+                    var toggleButton = document.querySelector('[href="#' + dropdown.id + '"]');
+                    if (toggleButton) {
+                        toggleButton.setAttribute('aria-expanded', 'true');
+                    }
+                }
+                
+                // Add smooth animation
+                dropdown.addEventListener('show.bs.collapse', function() {
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                dropdown.addEventListener('hide.bs.collapse', function() {
+                    this.style.transition = 'all 0.3s ease';
+                });
+            });
+            
+            // Auto-expand parent dropdowns when child items are active
+            function expandParentDropdowns() {
+                var activeSubSubItems = document.querySelectorAll('.sub-sub-nav-link.active');
+                activeSubSubItems.forEach(function(activeItem) {
+                    // Find and expand the orders dropdown if this is an active orders submenu
+                    var ordersDropdown = activeItem.closest('#ordersCollapse');
+                    if (ordersDropdown) {
+                        ordersDropdown.classList.add('show');
+                        var ordersToggle = document.querySelector('[href="#ordersCollapse"]');
+                        if (ordersToggle) {
+                            ordersToggle.setAttribute('aria-expanded', 'true');
+                        }
+                    }
+                    
+                    // Find and expand the personnel dropdown if this is an active personnel submenu
+                    var personnelDropdown = activeItem.closest('#personnelCollapse');
+                    if (personnelDropdown) {
+                        personnelDropdown.classList.add('show');
+                        var personnelToggle = document.querySelector('[href="#personnelCollapse"]');
+                        if (personnelToggle) {
+                            personnelToggle.setAttribute('aria-expanded', 'true');
+                        }
+                    }
+                });
+            }
+            
+            // Call the function to expand parent dropdowns
+            expandParentDropdowns();
+            
+            // Auto-expand dropdown when hovering over sidebar (for better UX)
+            var sidebar = document.querySelector('.soft-sidebar');
+            var sidebarTimeout;
+            
+            sidebar.addEventListener('mouseenter', function() {
+                clearTimeout(sidebarTimeout);
+                // Auto-expand dropdowns that have active items when hovering
+                dropdowns.forEach(function(dropdown) {
+                    var activeSubmenu = dropdown.querySelector('.sub-nav-link.active, .sub-sub-nav-link.active');
+                    if (activeSubmenu && !dropdown.classList.contains('show')) {
+                        dropdown.classList.add('show');
+                        var toggleButton = document.querySelector('[href="#' + dropdown.id + '"]');
+                        if (toggleButton) {
+                            toggleButton.setAttribute('aria-expanded', 'true');
+                        }
+                    }
+                });
+            });
+            
+            sidebar.addEventListener('mouseleave', function() {
+                // Keep dropdowns expanded if they have active items
+                dropdowns.forEach(function(dropdown) {
+                    var activeSubmenu = dropdown.querySelector('.sub-nav-link.active, .sub-sub-nav-link.active');
+                    if (!activeSubmenu) {
+                        dropdown.classList.remove('show');
+                        var toggleButton = document.querySelector('[href="#' + dropdown.id + '"]');
+                        if (toggleButton) {
+                            toggleButton.setAttribute('aria-expanded', 'false');
+                        }
+                    }
+                });
+            });
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)

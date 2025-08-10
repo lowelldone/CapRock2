@@ -5,7 +5,7 @@ using Capstone2.Models;
 
 namespace Capstone2.Controllers
 {
-    public class SchedulesController : Controller
+    public class SchedulesController : GenericController
     {
         private readonly ApplicationDbContext _context;
 
@@ -17,23 +17,10 @@ namespace Capstone2.Controllers
         // GET: Schedules
         public async Task<IActionResult> Index()
         {
-            // Get the logged-in waiter's UserId from session
-            var waiterUserId = HttpContext.Session.GetInt32("UserId");
-
-            if (!waiterUserId.HasValue)
-            {
-                return RedirectToAction("Login", "Home");
-            }
-
             // Get the waiter record for the logged-in user
             var waiter = await _context.Waiters
                 .Include(w => w.User)
-                .FirstOrDefaultAsync(w => w.UserId == waiterUserId.Value);
-
-            if (waiter == null)
-            {
-                return RedirectToAction("Login", "Home");
-            }
+                .FirstOrDefaultAsync(w => w.UserId == userId);
 
             // Get orders assigned to this specific waiter
             var schedules = await _context.OrderWaiters

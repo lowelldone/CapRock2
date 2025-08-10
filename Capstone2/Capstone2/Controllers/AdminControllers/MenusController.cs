@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace Capstone2.Controllers.AdminControllers
 {
-    public class MenusController : Controller
+    public class MenusController : GenericController
     {
         private readonly ApplicationDbContext _context;
 
