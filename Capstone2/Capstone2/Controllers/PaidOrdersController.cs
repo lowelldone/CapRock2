@@ -20,9 +20,34 @@ namespace Capstone2.Controllers
         // GET: PaidOrders
         public async Task<IActionResult> Index(string statusFilter, int? headWaiterId)
         {
-            // If not provided, get from session for logged-in headwaiters
-            if (!headWaiterId.HasValue && HttpContext.Session.GetString("Role") == "HEADWAITER")
+            var role = HttpContext.Session.GetString("Role");
+
+            if (role == "ADMIN")
             {
+                // Admin sees all accepted orders and can assign headwaiters
+                var acceptedOrders = _context.Customers
+                    .Include(c => c.Order)
+                        .ThenInclude(o => o.HeadWaiter)
+                    .Where(c => c.Order != null &&
+                               c.Order.AmountPaid >= 0.5 * c.Order.TotalPayment &&
+                               c.Order.Status == "Accepted");
+
+                if (!string.IsNullOrEmpty(statusFilter))
+                {
+                    acceptedOrders = acceptedOrders.Where(c => c.Order.Status == statusFilter);
+                }
+
+                ViewBag.IsAdmin = true;
+                ViewBag.HeadWaiters = await _context.HeadWaiters
+                    .Include(h => h.User)
+                    .Where(h => h.isActive)
+                    .ToListAsync();
+
+                return View("AdminIndex", await acceptedOrders.ToListAsync());
+            }
+            else if (role == "HEADWAITER")
+            {
+                // Headwaiter sees only their assigned orders
                 var userId = HttpContext.Session.GetInt32("UserId");
                 if (userId != null)
                 {
@@ -30,26 +55,29 @@ namespace Capstone2.Controllers
                     if (headWaiter != null)
                         headWaiterId = headWaiter.HeadWaiterId;
                 }
+
+                var paidOrders = _context.Customers
+                    .Include(c => c.Order)
+                        .ThenInclude(o => o.HeadWaiter)
+                    .Where(c => c.Order != null &&
+                               c.Order.AmountPaid >= 0.5 * c.Order.TotalPayment &&
+                               c.Order.HeadWaiterId == headWaiterId);
+
+                if (!string.IsNullOrEmpty(statusFilter))
+                {
+                    paidOrders = paidOrders.Where(c => c.Order.Status == statusFilter);
+                }
+
+                ViewBag.IsAdmin = false;
+                ViewBag.MaterialPullOuts = await _context.MaterialPullOuts.ToListAsync();
+
+                return View(await paidOrders.ToListAsync());
             }
-
-            var paidOrders = _context.Customers
-                .Include(c => c.Order)
-                    .ThenInclude(o => o.HeadWaiter)
-                .Where(c => c.Order != null && c.Order.AmountPaid >= 0.5 * c.Order.TotalPayment);
-
-            if (headWaiterId.HasValue)
+            else
             {
-                paidOrders = paidOrders.Where(c => c.Order.HeadWaiterId == headWaiterId.Value);
+                // Other roles see nothing
+                return RedirectToAction("Index", "Home");
             }
-
-            if (!string.IsNullOrEmpty(statusFilter))
-            {
-                paidOrders = paidOrders.Where(c => c.Order.Status == statusFilter);
-            }
-
-            ViewBag.MaterialPullOuts = await _context.MaterialPullOuts.ToListAsync();
-
-            return View(await paidOrders.ToListAsync());
         }
 
         // GET: PaidOrders/Details/5
@@ -58,14 +86,28 @@ namespace Capstone2.Controllers
             if (id == null)
                 return BadRequest();
 
+            var role = HttpContext.Session.GetString("Role");
             var order = await _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Menu)
+                .Include(o => o.HeadWaiter)
+                    .ThenInclude(h => h.User)
                 .FirstOrDefaultAsync(o => o.CustomerID == id.Value);
 
             if (order == null)
                 return NotFound();
+
+            // Check if user has access to this order
+            if (role == "HEADWAITER")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                if (headWaiter == null || order.HeadWaiterId != headWaiter.HeadWaiterId)
+                {
+                    return Forbid();
+                }
+            }
 
             // Calculate additional charges for lost/damaged materials
             var materialReturns = await _context.Set<MaterialReturn>().Where(r => r.OrderId == order.OrderId).ToListAsync();
@@ -79,17 +121,85 @@ namespace Capstone2.Controllers
                 .ToList();
             ViewBag.ChargedItems = chargedItems;
 
+            ViewBag.IsAdmin = role == "ADMIN";
             return View(order);
+        }
+
+        // GET: PaidOrders/AssignHeadWaiter/5
+        public async Task<IActionResult> AssignHeadWaiter(int id)
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role != "ADMIN")
+                return Forbid();
+
+            var customer = await _context.Customers
+                .Include(c => c.Order)
+                .FirstOrDefaultAsync(c => c.CustomerID == id);
+
+            if (customer == null || customer.Order == null)
+                return NotFound();
+
+            var headWaiters = await _context.HeadWaiters
+                .Include(h => h.User)
+                .Where(h => h.isActive)
+                .ToListAsync();
+
+            ViewBag.HeadWaiters = headWaiters;
+            ViewBag.CurrentHeadWaiterId = customer.Order.HeadWaiterId;
+            return View(customer);
+        }
+
+        // POST: PaidOrders/AssignHeadWaiter/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignHeadWaiter(int id, int headWaiterId)
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role != "ADMIN")
+                return Forbid();
+
+            var customer = await _context.Customers
+                .Include(c => c.Order)
+                .FirstOrDefaultAsync(c => c.CustomerID == id);
+
+            if (customer == null || customer.Order == null)
+                return NotFound();
+
+            var headWaiter = await _context.HeadWaiters
+                .FirstOrDefaultAsync(h => h.HeadWaiterId == headWaiterId && h.isActive);
+
+            if (headWaiter == null)
+                return NotFound();
+
+            customer.Order.HeadWaiterId = headWaiterId;
+            _context.Orders.Update(customer.Order);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = $"Order assigned to {headWaiter.User?.FirstName} {headWaiter.User?.LastName} successfully!";
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: PaidOrders/DeployWaiter/5
         public IActionResult DeployWaiter(int id)
         {
+            var role = HttpContext.Session.GetString("Role");
             var customer = _context.Customers.Include(c => c.Order).FirstOrDefault(c => c.CustomerID == id);
             if (customer == null || customer.Order == null)
                 return NotFound();
 
             var order = customer.Order;
+
+            // Check if user has access to this order
+            if (role == "HEADWAITER")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                if (headWaiter == null || order.HeadWaiterId != headWaiter.HeadWaiterId)
+                {
+                    return Forbid();
+                }
+            }
+
             // Get all waiters that are not deleted
             var waiters = _context.Waiters.Include(w => w.User).Where(w => !w.isDeleted).ToList();
             // Get IDs of waiters already assigned to this order
@@ -97,6 +207,7 @@ namespace Capstone2.Controllers
 
             ViewBag.Waiters = waiters;
             ViewBag.AssignedWaiterIds = assignedWaiterIds;
+            ViewBag.IsAdmin = role == "ADMIN";
             return View(order);
         }
 
@@ -105,9 +216,21 @@ namespace Capstone2.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeployWaiter(int id, int[] waiterIds, int? headWaiterId)
         {
+            var role = HttpContext.Session.GetString("Role");
             var order = _context.Orders.FirstOrDefault(o => o.CustomerID == id);
             if (order == null)
                 return NotFound();
+
+            // Check if user has access to this order
+            if (role == "HEADWAITER")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                if (headWaiter == null || order.HeadWaiterId != headWaiter.HeadWaiterId)
+                {
+                    return Forbid();
+                }
+            }
 
             // Declare assignedWaiterIds at the top
             List<int> assignedWaiterIds;
@@ -128,6 +251,7 @@ namespace Capstone2.Controllers
                 assignedWaiterIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
                 ViewBag.Waiters = waiters;
                 ViewBag.AssignedWaiterIds = assignedWaiterIds;
+                ViewBag.IsAdmin = role == "ADMIN";
                 return View(order);
             }
 
@@ -152,7 +276,9 @@ namespace Capstone2.Controllers
             }
             _context.SaveChanges();
 
-            if (headWaiterId.HasValue)
+            if (role == "ADMIN")
+                return RedirectToAction(nameof(Index));
+            else if (headWaiterId.HasValue)
                 return RedirectToAction(nameof(Index), new { headWaiterId = headWaiterId.Value });
             else
                 return RedirectToAction(nameof(Index));
@@ -161,8 +287,21 @@ namespace Capstone2.Controllers
         // GET: PaidOrders/PullOutMaterials/5
         public async Task<IActionResult> PullOutMaterials(int id)
         {
+            var role = HttpContext.Session.GetString("Role");
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id);
             if (order == null) return NotFound();
+
+            // Check if user has access to this order
+            if (role == "HEADWAITER")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                if (headWaiter == null || order.HeadWaiterId != headWaiter.HeadWaiterId)
+                {
+                    return Forbid();
+                }
+            }
+
             int pax = order.NoOfPax;
 
             // Get existing pull-out for this order
@@ -191,6 +330,7 @@ namespace Capstone2.Controllers
                 Pax = pax,
                 Materials = materialsVm
             };
+            ViewBag.IsAdmin = role == "ADMIN";
             return View(viewModel);
         }
 
@@ -198,8 +338,20 @@ namespace Capstone2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PullOutMaterials(PullOutMaterialsViewModel model)
         {
+            var role = HttpContext.Session.GetString("Role");
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == model.CustomerId);
             if (order == null) return NotFound();
+
+            // Check if user has access to this order
+            if (role == "HEADWAITER")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                if (headWaiter == null || order.HeadWaiterId != headWaiter.HeadWaiterId)
+                {
+                    return Forbid();
+                }
+            }
 
             // Check if there's an existing pull-out for this order
             var existingPullOut = await _context.MaterialPullOuts
@@ -269,15 +421,31 @@ namespace Capstone2.Controllers
 
             await _context.SaveChangesAsync();
             TempData["PullOutSuccess"] = "Materials pulled out successfully!";
-            return RedirectToAction("Index");
+
+            if (role == "ADMIN")
+                return RedirectToAction(nameof(Index));
+            else
+                return RedirectToAction(nameof(Index));
         }
 
         // GET: PaidOrders/ReturnMaterials/5
         public async Task<IActionResult> ReturnMaterials(int id)
         {
+            var role = HttpContext.Session.GetString("Role");
             // id = CustomerId
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id);
             if (order == null) return NotFound();
+
+            // Check if user has access to this order
+            if (role == "HEADWAITER")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                if (headWaiter == null || order.HeadWaiterId != headWaiter.HeadWaiterId)
+                {
+                    return Forbid();
+                }
+            }
 
             var pullOut = await _context.MaterialPullOuts
                 .Include(p => p.Items)
@@ -307,6 +475,7 @@ namespace Capstone2.Controllers
                 CustomerId = id,
                 Items = pulledOutItems
             };
+            ViewBag.IsAdmin = role == "ADMIN";
             return View(viewModel);
         }
 
@@ -314,6 +483,7 @@ namespace Capstone2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ReturnMaterials(ReturnMaterialsViewModel model)
         {
+            var role = HttpContext.Session.GetString("Role");
             decimal totalCharge = 0;
             foreach (var item in model.Items)
             {
@@ -361,7 +531,11 @@ namespace Capstone2.Controllers
             }
             await _context.SaveChangesAsync();
             TempData["ReturnSuccess"] = $"Materials returned successfully! Additional charge for lost/damaged: ₱{totalCharge}.";
-            return RedirectToAction("Index");
+
+            if (role == "ADMIN")
+                return RedirectToAction(nameof(Index));
+            else
+                return RedirectToAction(nameof(Index));
         }
 
         // POST: PaidOrders/UpdateProfile
