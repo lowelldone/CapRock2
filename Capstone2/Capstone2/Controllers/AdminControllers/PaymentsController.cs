@@ -21,24 +21,43 @@ namespace Capstone2.Controllers.AdminControllers
         // GET: Payments
         public async Task<IActionResult> Index(string searchString)
         {
-            var ordersWithBalance = await _context.Orders
+            var role = HttpContext.Session.GetString("Role");
+            var ordersWithBalance = _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.HeadWaiter)
                     .ThenInclude(hw => hw.User)
-                .Where(o => !o.isDeleted && !o.Customer.isDeleted && o.AmountPaid < o.TotalPayment)
-                .OrderBy(o => o.CateringDate)
-                .ToListAsync();
+                .Where(o => !o.isDeleted && !o.Customer.isDeleted && o.AmountPaid < o.TotalPayment);
+
+            // If head waiter, show only their assigned orders
+            if (role == "HEADWAITER")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var headWaiter = await _context.HeadWaiters
+                    .FirstOrDefaultAsync(h => h.UserId == userId.Value && h.isActive);
+
+                if (headWaiter != null)
+                {
+                    ordersWithBalance = ordersWithBalance
+                        .Where(o => o.HeadWaiterId == headWaiter.HeadWaiterId);
+                }
+                else
+                {
+                    return Forbid();
+                }
+            }
+
+            var list = await ordersWithBalance.OrderBy(o => o.CateringDate).ToListAsync();
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 var searchTerm = searchString.ToLower().Trim();
-                ordersWithBalance = ordersWithBalance.Where(o =>
+                list = list.Where(o =>
                     o.OrderNumber.ToLower().Contains(searchTerm) ||
                     o.Customer.Name.ToLower().Contains(searchTerm)
                 ).ToList();
             }
 
-            return View(ordersWithBalance);
+            return View(list);
         }
 
         // GET: Payments/ProcessPayment/5

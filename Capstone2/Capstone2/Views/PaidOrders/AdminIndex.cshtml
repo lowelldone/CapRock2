@@ -223,7 +223,7 @@
                     <tr>
                         <th class="fw-bold" style="font-size: 1.2rem;">Customer Name</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Contact Info</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Order Details</th>
+                        @* <th class="fw-bold" style="font-size: 1.2rem;">Order Details</th> *@
                         <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Assigned HeadWaiter</th>
                         <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
@@ -240,11 +240,11 @@
                             <td style="font-size: 1.1rem;">
                                 <i class="bi bi-telephone"></i> @item.ContactNo
                             </td>
-                            <td style="font-size: 1.1rem;">
+                            @* <td style="font-size: 1.1rem;">
                                 <strong>₱@item.Order.TotalPayment.ToString("N2")</strong><br>
                                 <small class="text-muted">@item.Order.NoOfPax pax • @item.Order.Occasion</small><br>
                                 <small class="text-muted">@item.Order.CateringDate.ToString("MMM dd, yyyy") at @item.Order.timeOfFoodServing.ToString("HH:mm")</small>
-                            </td>
+                            </td> *@
                             <td style="font-size: 1.1rem;">
                                 <span class="badge bg-@(item.Order.Status == "Accepted" ? "warning" :
                                                    item.Order.Status == "Ongoing" ? "info" :

@@ -514,18 +514,29 @@ namespace Capstone2.Controllers
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == model.OrderId);
             if (order != null)
             {
-                order.Status = "Completed";
+                // Only complete if fully paid
+                if (order.AmountPaid >= order.TotalPayment)
+                {
+                    order.Status = "Completed";
+                }
+                else
+                {
+                    order.Status = "Ongoing"; // Still ongoing if balance remains
+                }
                 _context.Orders.Update(order);
 
-                // Set waiters back to Available when order is completed
-                var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).ToList();
-                foreach (var ow in orderWaiters)
+                // Set waiters back to Available only if completed
+                if (order.Status == "Completed")
                 {
-                    var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == ow.WaiterId);
-                    if (waiter != null)
+                    var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).ToList();
+                    foreach (var ow in orderWaiters)
                     {
-                        waiter.Availability = "Available";
-                        _context.Waiters.Update(waiter);
+                        var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == ow.WaiterId);
+                        if (waiter != null)
+                        {
+                            waiter.Availability = "Available";
+                            _context.Waiters.Update(waiter);
+                        }
                     }
                 }
             }
