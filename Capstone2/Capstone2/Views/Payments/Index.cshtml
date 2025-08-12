@@ -166,7 +166,7 @@
                         <th class="fw-bold" style="font-size: 1.2rem;">Total Amount</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Amount Paid</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Balance</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Payment Progress</th>
+                        @* <th class="fw-bold" style="font-size: 1.2rem;">Payment Progress</th> *@
                         <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
                     </tr>
                 </thead>
@@ -189,12 +189,12 @@
                             <td>
                                 <span class="balance-badge @balanceClass">₱@balance.ToString("F2")</span>
                             </td>
-                            <td style="width: 200px;">
+                            @* <td style="width: 200px;">
                                 <div class="progress-bar">
                                     <div class="progress-fill" style="width: @paymentPercentage%"></div>
                                 </div>
                                 <small class="text-muted">@paymentPercentage.ToString("F1")%</small>
-                            </td>
+                            </td> *@
                             <td class="text-end">
                                 <a asp-action="ProcessPayment" asp-route-id="@item.OrderId" class="btn btn-outline-success action-btn" style="border: 2px solid;">
                                     <i class="bi bi-credit-card"></i> Process Payment

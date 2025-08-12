@@ -434,7 +434,7 @@
         <a asp-action="Index" class="btn btn-outline-secondary btn-action">
             <i class="bi bi-arrow-left me-2"></i>Back to Customers
         </a>
-        @if (Model.Status != "Accepted" && Model.Status != "Completed")
+        @if (Model.Status != "Accepted" && Model.Status != "Ongoing" && Model.Status != "Completed")
         {
             <a asp-action="PaymentDetails" asp-route-id="@Model.Customer.CustomerID" class="btn btn-success btn-action ms-auto">
                 <i class="bi bi-check-circle me-2"></i>Confirm Order
