@@ -23,7 +23,12 @@ namespace Capstone2.Controllers.AdminControllers
         // GET: Menus
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Menu.ToListAsync());
+            var viewModel = new Capstone2.Models.MenusManagementViewModel
+            {
+                Menus = await _context.Menu.ToListAsync(),
+                MenuPackagesList = await _context.MenuPackages.ToListAsync()
+            };
+            return View(viewModel);
         }
 
         // GET: Menus/Create

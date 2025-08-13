@@ -4,6 +4,9 @@
     ViewData["Title"] = "Process Payment";
     var existingPayments = ViewBag.ExistingPayments as List<Capstone2.Models.Payment>;
     var remainingBalance = ViewBag.RemainingBalance as double? ?? 0;
+    var additionalCharges = ViewBag.AdditionalCharges as decimal? ?? 0m;
+    var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
+    var effectiveTotal = Model.TotalPayment + (double)additionalCharges;
 }
 
 <style>
@@ -233,12 +236,20 @@
                         <h5 class="fw-bold mb-0">Total Amount: ₱@Model.TotalPayment.ToString("F2")</h5>
                     </div>
                     <div class="col-md-4">
-                        <h5 class="fw-bold mb-0">Amount Paid: ₱@Model.AmountPaid.ToString("F2")</h5>
+                        <h5 class="fw-bold mb-0">Additional Charges: ₱@additionalCharges.ToString("F2")</h5>
                     </div>
                     <div class="col-md-4">
-                        <h5 class="fw-bold mb-0 text-danger">Remaining Balance: ₱@remainingBalance.ToString("F2")</h5>
+                        <h5 class="fw-bold mb-0">Updated Total: ₱@effectiveTotal.ToString("F2")</h5>
                     </div>
                 </div>
+                @if (chargedItems != null && chargedItems.Any())
+                {
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#chargedItemsModal">
+                            View Charged Items
+                        </button>
+                    </div>
+                }
             </div>
         </div>
     }
@@ -307,6 +318,45 @@
         </div>
     }
 </div>
+
+@if (chargedItems != null && chargedItems.Any())
+{
+    <div class="modal fade" id="chargedItemsModal" tabindex="-1" aria-labelledby="chargedItemsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chargedItemsModalLabel">Items Charged (Lost/Damaged)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Lost</th>
+                                <th>Damaged</th>
+                                <th>Charge Per Item</th>
+                                <th>Total Charge</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in chargedItems)
+                            {
+                                <tr>
+                                    <td>@item.MaterialName</td>
+                                    <td>@item.Lost</td>
+                                    <td>@item.Damaged</td>
+                                    <td>₱@item.ChargePerItem</td>
+                                    <td>₱@((item.Lost + item.Damaged) * item.ChargePerItem)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <script>
     document.getElementById('paymentAmount').addEventListener('input', function() {

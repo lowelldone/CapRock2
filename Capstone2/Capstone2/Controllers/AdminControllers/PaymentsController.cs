@@ -22,11 +22,12 @@ namespace Capstone2.Controllers.AdminControllers
         public async Task<IActionResult> Index(string searchString)
         {
             var role = HttpContext.Session.GetString("Role");
-            var ordersWithBalance = _context.Orders
+            // Base query (no balance filter yet; we'll compute effective balance including additional charges in-memory)
+            var ordersQuery = _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.HeadWaiter)
                     .ThenInclude(hw => hw.User)
-                .Where(o => !o.isDeleted && !o.Customer.isDeleted && o.AmountPaid < o.TotalPayment);
+                .Where(o => !o.isDeleted && !o.Customer.isDeleted);
 
             // If head waiter, show only their assigned orders
             if (role == "HEADWAITER")
@@ -37,8 +38,7 @@ namespace Capstone2.Controllers.AdminControllers
 
                 if (headWaiter != null)
                 {
-                    ordersWithBalance = ordersWithBalance
-                        .Where(o => o.HeadWaiterId == headWaiter.HeadWaiterId);
+                    ordersQuery = ordersQuery.Where(o => o.HeadWaiterId == headWaiter.HeadWaiterId);
                 }
                 else
                 {
@@ -46,18 +46,42 @@ namespace Capstone2.Controllers.AdminControllers
                 }
             }
 
-            var list = await ordersWithBalance.OrderBy(o => o.CateringDate).ToListAsync();
+            var orders = await ordersQuery.OrderBy(o => o.CateringDate).ToListAsync();
+
+            // Compute additional charges per order (lost/damaged materials)
+            var additionalChargesByOrder = await _context.Set<MaterialReturn>()
+                .GroupBy(r => r.OrderId)
+                .Select(g => new
+                {
+                    OrderId = g.Key,
+                    TotalCharge = g.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem)
+                })
+                .ToListAsync();
+            var additionalChargesDict = additionalChargesByOrder.ToDictionary(x => x.OrderId, x => x.TotalCharge);
+
+            // Filter orders that still have outstanding balance considering additional charges
+            var ordersWithBalance = orders
+                .Where(o =>
+                {
+                    var extra = additionalChargesDict.TryGetValue(o.OrderId, out var totalDec) ? (double)totalDec : 0d;
+                    var effectiveTotal = o.TotalPayment + extra;
+                    return o.AmountPaid < effectiveTotal;
+                })
+                .ToList();
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 var searchTerm = searchString.ToLower().Trim();
-                list = list.Where(o =>
+                ordersWithBalance = ordersWithBalance.Where(o =>
                     o.OrderNumber.ToLower().Contains(searchTerm) ||
                     o.Customer.Name.ToLower().Contains(searchTerm)
                 ).ToList();
             }
 
-            return View(list);
+            // Expose additional charges to the view for balance display per order
+            ViewBag.AdditionalChargesByOrder = additionalChargesDict;
+
+            return View(ordersWithBalance);
         }
 
         // GET: Payments/ProcessPayment/5
@@ -77,8 +101,8 @@ namespace Capstone2.Controllers.AdminControllers
 
             if (order.AmountPaid >= order.TotalPayment)
             {
-                TempData["PaymentError"] = "This order is already fully paid.";
-                return RedirectToAction(nameof(Index));
+                // Even if AmountPaid >= TotalPayment, there may still be additional charges.
+                // We'll continue to show the page but validate remaining balance against the effective total below.
             }
 
             // Get existing payments for this order
@@ -87,8 +111,24 @@ namespace Capstone2.Controllers.AdminControllers
                 .OrderByDescending(p => p.Date)
                 .ToListAsync();
 
+            // Compute additional charges and charged items list
+            var materialReturns = await _context.Set<MaterialReturn>()
+                .Where(r => r.OrderId == order.OrderId)
+                .ToListAsync();
+            var additionalCharges = materialReturns.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem);
+            ViewBag.AdditionalCharges = additionalCharges;
+
+            var chargedItems = materialReturns
+                .Where(r => r.Lost > 0 || r.Damaged > 0)
+                .Select(r => new { r.MaterialName, r.Lost, r.Damaged, r.ChargePerItem })
+                .ToList();
+            ViewBag.ChargedItems = chargedItems;
+
+            // Remaining balance includes additional charges
+            var remainingBalance = (order.TotalPayment + (double)additionalCharges) - order.AmountPaid;
+
             ViewBag.ExistingPayments = existingPayments;
-            ViewBag.RemainingBalance = order.TotalPayment - order.AmountPaid;
+            ViewBag.RemainingBalance = remainingBalance;
 
             return View(order);
         }
@@ -111,7 +151,14 @@ namespace Capstone2.Controllers.AdminControllers
                 return RedirectToAction("ProcessPayment", new { id = orderId });
             }
 
-            var remainingBalance = order.TotalPayment - order.AmountPaid;
+            // Compute additional charges to validate against effective remaining balance
+            var additionalCharges = await _context.Set<MaterialReturn>()
+                .Where(r => r.OrderId == order.OrderId)
+                .Select(r => (r.Lost + r.Damaged) * r.ChargePerItem)
+                .SumAsync();
+
+            var remainingBalance = (order.TotalPayment + (double)additionalCharges) - order.AmountPaid;
+
             if (paymentAmount > remainingBalance)
             {
                 TempData["PaymentError"] = $"Payment amount cannot exceed the remaining balance of ₱{remainingBalance:F2}.";
@@ -129,27 +176,47 @@ namespace Capstone2.Controllers.AdminControllers
 
             // Update order's AmountPaid
             order.AmountPaid += paymentAmount;
-            _context.Orders.Update(order);
 
             // Check if down payment is now met and update status to Accepted
             if (order.DownPaymentMet && order.Status == "Pending")
             {
                 order.Status = "Accepted";
-                _context.Orders.Update(order);
             }
 
-            // Mark customer as paid if fully paid
-            if (order.AmountPaid >= order.TotalPayment)
+            // Calculate effective total (including additional charges)
+            var effectiveTotal = order.TotalPayment + (double)additionalCharges;
+
+            // Mark customer as paid if fully paid including additional charges
+            if (order.AmountPaid >= effectiveTotal)
             {
                 order.Customer.IsPaid = true;
-                _context.Customers.Update(order.Customer);
+                order.Status = "Completed"; // Fully paid = Completed
+
+                // Set waiters back to Available
+                var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).ToList();
+                foreach (var ow in orderWaiters)
+                {
+                    var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == ow.WaiterId);
+                    if (waiter != null)
+                    {
+                        waiter.Availability = "Available";
+                        _context.Waiters.Update(waiter);
+                    }
+                }
             }
+            else
+            {
+                order.Status = "Ongoing"; // Not fully paid yet
+            }
+
+            _context.Orders.Update(order);
 
             await _context.SaveChangesAsync();
 
             TempData["PaymentSuccess"] = $"Payment of ₱{paymentAmount:F2} has been recorded successfully.";
             return RedirectToAction("ProcessPayment", new { id = orderId });
         }
+
 
         // GET: Payments/PaymentHistory/5
         public async Task<IActionResult> PaymentHistory(int? id)
@@ -169,8 +236,15 @@ namespace Capstone2.Controllers.AdminControllers
                 .OrderByDescending(p => p.Date)
                 .ToListAsync();
 
+            // Include additional charges and compute updated remaining balance
+            var additionalCharges = await _context.Set<MaterialReturn>()
+                .Where(r => r.OrderId == order.OrderId)
+                .Select(r => (r.Lost + r.Damaged) * r.ChargePerItem)
+                .SumAsync();
+
             ViewBag.Payments = payments;
-            ViewBag.RemainingBalance = order.TotalPayment - order.AmountPaid;
+            ViewBag.AdditionalCharges = additionalCharges;
+            ViewBag.RemainingBalance = (order.TotalPayment + (double)additionalCharges) - order.AmountPaid;
 
             return View(order);
         }

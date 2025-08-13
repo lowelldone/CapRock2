@@ -1,4 +1,6 @@
-@model List<Capstone2.Models.Order>
+@model Capstone2.Models.SchedulesIndexViewModel
+@using System.Linq
+
 @{
     ViewData["Title"] = "Schedules";
 }
@@ -171,82 +173,258 @@
                 <span class="schedules-header-icon"><i class="bi bi-calendar-event"></i></span>
                 <h2 class="fw-bold mb-0">Schedules</h2>
             </div>
-            <div class="schedules-subtitle">View all upcoming catering schedules and assignments.</div>
+            @if ((ViewBag.Role as string) == "ADMIN")
+            {
+                <div class="schedules-subtitle">All head waiters' and waiters' assigned orders.</div>
+            }
+            else
+            {
+                <div class="schedules-subtitle">View your upcoming catering schedules and assignments.</div>
+            }
         </div>
-        <div class="d-flex gap-2">
-            <i class="bi bi-person-circle header-icon" onclick="openProfileModal()" style="cursor: pointer;"></i>
-        </div>
+        @if ((ViewBag.Role as string) != "ADMIN")
+        {
+            <div class="d-flex gap-2">
+                <i class="bi bi-person-circle header-icon" onclick="openProfileModal()" style="cursor: pointer;"></i>
+            </div>
+        }
     </div>
 
-    @if (Model.Any())
+    @if (Model.HeadWaiterAssignedOrders.Any() || Model.WaiterAssignedOrders.Any())
     {
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-0">
-                <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
-                    <thead class="table-light rounded-4">
-                        <tr>
-                            <th class="fw-bold" style="font-size: 1.2rem;">Customer Name</th>
-                            <th class="fw-bold" style="font-size: 1.2rem;">Address</th>
-                            <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
-                            <th class="fw-bold" style="font-size: 1.2rem;">Venue</th>
-                            <th class="fw-bold" style="font-size: 1.2rem;">Occasion</th>
-                            <th class="fw-bold" style="font-size: 1.2rem;">Time of Food Serving</th>
-                            <th class="fw-bold" style="font-size: 1.2rem;">Motif</th>
-                            <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
-                            @* <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th> *@
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var order in Model)
-                        {
+        @if (Model.HeadWaiterAssignedOrders.Any())
+        {
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-body p-0">
+                    <div class="px-4 pt-3">
+                        <h4 class="fw-bold mb-3" style="color: var(--text-purple);">Head Waiter Assigned Orders</h4>
+                    </div>
+                    <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
+                        <thead class="table-light rounded-4">
                             <tr>
-                                <td style="font-size: 1.1rem;">
-                                    <strong>@order.Customer.Name</strong><br>
-                                </td>
-                                <td style="font-size: 1.1rem;">@order.Customer.Address</td>
-                                <td style="font-size: 1.1rem;">@order.CateringDate.ToString("MMM dd, yyyy")</td>
-                                <td style="font-size: 1.1rem;">@order.Venue</td>
-                                <td style="font-size: 1.1rem;">@order.Occasion</td>
-                                <td style="font-size: 1.1rem;">@order.timeOfFoodServing.ToString("hh:mm tt")</td>
-                                <td style="font-size: 1.1rem;">@order.Motif</td>
-                                <td>
-                                    @if (order.Status == "Pending")
-                                    {
-                                        <span class="badge bg-warning text-dark fs-5 px-3 py-2">Pending</span>
-                                    }
-                                    else if (order.Status == "Confirmed")
-                                    {
-                                        <span class="badge bg-info fs-5 px-3 py-2">Confirmed</span>
-                                    }
-                                    else if (order.Status == "In Progress")
-                                    {
-                                        <span class="badge bg-primary fs-5 px-3 py-2">In Progress</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary fs-5 px-3 py-2">@order.Status</span>
-                                    }
-                                </td>
-                                @*                                 <td class="text-end">
-                        <a asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-outline-info action-btn">
-                        <i class="bi bi-eye"></i> View Details
-                        </a>
-                        </td> *@
+                                <th class="fw-bold" style="font-size: 1.2rem;">Head Waiter</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Customer Name</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Venue</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Occasion</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Time of Food Serving</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Waiters</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.HeadWaiterAssignedOrders)
+                            {
+                                <tr>
+                                    <td style="font-size: 1.1rem;">@order.HeadWaiter?.User?.FirstName</td>
+                                    
+                                    <td style="font-size: 1.1rem;">
+                                        <strong>@order.Customer.Name</strong><br>
+                                    </td>
+                                    <td style="font-size: 1.1rem;">@order.CateringDate.ToString("MMM dd, yyyy")</td>
+                                    <td style="font-size: 1.1rem;">@order.Venue</td>
+                                    <td style="font-size: 1.1rem;">@order.Occasion</td>
+                                    <td style="font-size: 1.1rem;">@order.timeOfFoodServing.ToString("hh:mm tt")</td>
+                                    <td style="font-size: 1.1rem;">
+                                        @if (order.OrderWaiters != null && order.OrderWaiters.Any())
+                                        {
+                                            @string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (order.Status == "Pending")
+                                        {
+                                            <span class="badge bg-warning text-dark fs-5 px-3 py-2">Pending</span>
+                                        }
+                                        else if (order.Status == "Confirmed")
+                                        {
+                                            <span class="badge bg-info fs-5 px-3 py-2">Confirmed</span>
+                                        }
+                                        else if (order.Status == "In Progress")
+                                        {
+                                            <span class="badge bg-primary fs-5 px-3 py-2">In Progress</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary fs-5 px-3 py-2">@order.Status</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+        }
+        @if (Model.WaiterAssignedOrders.Any())
+        {
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-0">
+                    <div class="px-4 pt-3">
+                        <h4 class="fw-bold mb-3" style="color: var(--text-purple);">Waiter Assigned Orders</h4>
+                    </div>
+                    <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
+                        <thead class="table-light rounded-4">
+                            <tr>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Waiters</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Head Waiter</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Customer Name</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Venue</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Occasion</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Time of Food Serving</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.WaiterAssignedOrders)
+                            {
+                                <tr>
+                                    <td style="font-size: 1.1rem;">
+                                        @if (order.OrderWaiters != null && order.OrderWaiters.Any())
+                                        {
+                                            @string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    </td>
+                                    <td style="font-size: 1.1rem;">@order.HeadWaiter?.User?.FirstName</td>
+                                    <td style="font-size: 1.1rem;">
+                                        <strong>@order.Customer.Name</strong><br>
+                                    </td>
+                                    <td style="font-size: 1.1rem;">@order.CateringDate.ToString("MMM dd, yyyy")</td>
+                                    <td style="font-size: 1.1rem;">@order.Venue</td>
+                                    <td style="font-size: 1.1rem;">@order.Occasion</td>
+                                    <td style="font-size: 1.1rem;">@order.timeOfFoodServing.ToString("hh:mm tt")</td>
+                                    <td>
+                                        @if (order.Status == "Pending")
+                                        {
+                                            <span class="badge bg-warning text-dark fs-5 px-3 py-2">Pending</span>
+                                        }
+                                        else if (order.Status == "Confirmed")
+                                        {
+                                            <span class="badge bg-info fs-5 px-3 py-2">Confirmed</span>
+                                        }
+                                        else if (order.Status == "In Progress")
+                                        {
+                                            <span class="badge bg-primary fs-5 px-3 py-2">In Progress</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary fs-5 px-3 py-2">@order.Status</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        
+        @if (Model.WaiterAssignedOrders.Any())
+        {
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-0">
+                    <div class="px-4 pt-3">
+                        <h4 class="fw-bold mb-3" style="color: var(--text-purple);">Waiter Assigned Orders</h4>
+                    </div>
+                    <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
+                        <thead class="table-light rounded-4">
+                            <tr>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Customer Name</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Address</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Venue</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Occasion</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Time of Food Serving</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Motif</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Head Waiter</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Waiters</th>
+                                <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.WaiterAssignedOrders)
+                            {
+                                <tr>
+                                    <td style="font-size: 1.1rem;">
+                                        <strong>@order.Customer.Name</strong><br>
+                                    </td>
+                                    <td style="font-size: 1.1rem;">@order.Customer.Address</td>
+                                    <td style="font-size: 1.1rem;">@order.CateringDate.ToString("MMM dd, yyyy")</td>
+                                    <td style="font-size: 1.1rem;">@order.Venue</td>
+                                    <td style="font-size: 1.1rem;">@order.Occasion</td>
+                                    <td style="font-size: 1.1rem;">@order.timeOfFoodServing.ToString("hh:mm tt")</td>
+                                    <td style="font-size: 1.1rem;">@order.Motif</td>
+                                    <td style="font-size: 1.1rem;">@order.HeadWaiter?.User?.FirstName</td>
+                                    <td style="font-size: 1.1rem;">
+                                        @if (order.OrderWaiters != null && order.OrderWaiters.Any())
+                                        {
+                                            @string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (order.Status == "Pending")
+                                        {
+                                            <span class="badge bg-warning text-dark fs-5 px-3 py-2">Pending</span>
+                                        }
+                                        else if (order.Status == "Confirmed")
+                                        {
+                                            <span class="badge bg-info fs-5 px-3 py-2">Confirmed</span>
+                                        }
+                                        else if (order.Status == "In Progress")
+                                        {
+                                            <span class="badge bg-primary fs-5 px-3 py-2">In Progress</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary fs-5 px-3 py-2">@order.Status</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
     }
     else
     {
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body text-center py-5">
                 <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
-                <h4 class="text-muted mt-3">No Assigned Schedules</h4>
-                <p class="text-muted">You don't have any assigned catering schedules at the moment.</p>
-                <p class="text-muted">Please check back later or contact your head waiter for assignments.</p>
+                @if ((ViewBag.Role as string) == "ADMIN")
+                {
+                    <h4 class="text-muted mt-3">No Assigned Orders</h4>
+                }
+                else
+                {
+                    <h4 class="text-muted mt-3">No Assigned Schedules</h4>
+                }
+                @if ((ViewBag.Role as string) == "ADMIN")
+                {
+                    <p class="text-muted">There are currently no orders assigned to any head waiter or waiter.</p>
+                }
+                else
+                {
+                    <p class="text-muted">You don't have any assigned catering schedules at the moment.</p>
+                }
+                @if ((ViewBag.Role as string) != "ADMIN")
+                {
+                    <p class="text-muted">Please check back later or contact your head waiter for assignments.</p>
+                }
             </div>
         </div>
     }

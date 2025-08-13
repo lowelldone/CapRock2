@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Capstone2.Models.Menu>
+﻿@model Capstone2.Models.MenusManagementViewModel
 
 @{
     ViewData["Title"] = "Food Menu";
@@ -6,11 +6,11 @@
     var mainDishCategories = new[] { "Pork", "Beef", "Chicken", "Seafood" };
     var sideDishCategories = new[] { "Noodles & Pasta", "Salad", "Vegetables" };
 
-    var mainDishes = Model.Where(m => mainDishCategories.Contains(m.Category));
-    var sideDishes = Model.Where(m => sideDishCategories.Contains(m.Category));
-    var desserts = Model.Where(m => m.Category == "Dessert");
-    var softDrinks = Model.Where(m => m.Category == "SoftDrinks");
-    var rice = Model.Where(m => m.Category == "Rice");
+    var mainDishes = Model.Menus.Where(m => mainDishCategories.Contains(m.Category));
+    var sideDishes = Model.Menus.Where(m => sideDishCategories.Contains(m.Category));
+    var desserts = Model.Menus.Where(m => m.Category == "Dessert");
+    var softDrinks = Model.Menus.Where(m => m.Category == "SoftDrinks");
+    var rice = Model.Menus.Where(m => m.Category == "Rice");
 }
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -331,4 +331,46 @@
             </div>
         </div>
     }
+
+    <!-- Menu Packages Section -->
+    <h4 class="fw-bold mt-5" style="justify-content: center; display: flex">Menu Packages</h4>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div></div>
+        <a asp-controller="MenuPackages" asp-action="Create" class="btn btn-primary add-menu-btn"><i class="bi bi-plus-lg"></i> Add New Package</a>
+    </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 rounded-4 overflow-hidden">
+                <thead class="table-light rounded-4">
+                    <tr>
+                        <th>Package Name</th>
+                        <th>Main Dishes</th>
+                        <th>Side Dishes</th>
+                        <th>Desserts</th>
+                        <th>Rice</th>
+                        <th>Soft Drinks</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.MenuPackagesList)
+                    {
+                        <tr>
+                            <td>@item.MenuPackageName</td>
+                            <td>@item.NoOfMainDish</td>
+                            <td>@item.NoOfSideDish</td>
+                            <td>@item.NoOfDessert</td>
+                            <td>@item.NoOfRice</td>
+                            <td>@item.NoOfSoftDrinks</td>
+                            <td class="text-end">
+                                <a asp-controller="MenuPackages" asp-action="Edit" asp-route-id="@item.MenuPackageId" class="btn btn-outline-primary btn-sm action-btn"><i class="bi bi-pencil-square"></i> Edit</a>
+                                <a asp-controller="MenuPackages" asp-action="Delete" asp-route-id="@item.MenuPackageId" class="btn btn-outline-danger action-btn" style="min-width: 80px;"><i class="bi bi-trash"></i> Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

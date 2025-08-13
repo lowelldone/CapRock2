@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = "Payments";
+    var additionalChargesByOrder = ViewBag.AdditionalChargesByOrder as System.Collections.Generic.IDictionary<int, decimal> ?? new System.Collections.Generic.Dictionary<int, decimal>();
+
+    // Show "Updated Total Amount" header only when any order in the Model has additional charges > 0
+    var hasAdditionalCharges = Model != null
+        && Model.Any(m => additionalChargesByOrder.ContainsKey(m.OrderId) && additionalChargesByOrder[m.OrderId] > 0m);
 }
 
 <style>
@@ -126,6 +131,10 @@
         background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
         transition: width 0.3s ease;
     }
+    .extra-note {
+        color: #64748b;
+        font-size: 0.85rem;
+    }
 </style>
 
 <div class="container-fluid mt-4 px-4 payments-bg">
@@ -166,6 +175,10 @@
                         <th class="fw-bold" style="font-size: 1.2rem;">Total Amount</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Amount Paid</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Balance</th>
+                        @if (hasAdditionalCharges)
+                        {
+                            <th class="fw-bold" style="font-size: 1.2rem;">Updated Total Amount</th>
+                        }
                         @* <th class="fw-bold" style="font-size: 1.2rem;">Payment Progress</th> *@
                         <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
                     </tr>
@@ -173,10 +186,12 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        var balance = item.TotalPayment - item.AmountPaid;
-                        var paymentPercentage = (item.AmountPaid / item.TotalPayment) * 100;
-                        var balanceClass = balance > item.TotalPayment * 0.5 ? "high" :
-                        balance > item.TotalPayment * 0.25 ? "medium" : "low";
+                        var extra = additionalChargesByOrder.ContainsKey(item.OrderId) ? (double)additionalChargesByOrder[item.OrderId] : 0d;
+                        var effectiveTotal = item.TotalPayment + extra;
+                        var balance = effectiveTotal - item.AmountPaid;
+                        var paymentPercentage = effectiveTotal > 0 ? (item.AmountPaid / effectiveTotal) * 100 : 0;
+                        var balanceClass = balance > effectiveTotal * 0.5 ? "high" :
+                        balance > effectiveTotal * 0.25 ? "medium" : "low";
 
                         <tr>
                             <td style="font-size: 1.1rem;">
@@ -188,7 +203,22 @@
                             <td style="font-size: 1.1rem;">₱@item.AmountPaid.ToString("F2")</td>
                             <td>
                                 <span class="balance-badge @balanceClass">₱@balance.ToString("F2")</span>
+                                @if (extra > 0)
+                                {
+                                    <div class="extra-note">incl. ₱@extra.ToString("F2") additional charges</div>
+                                }
                             </td>
+                            @if (hasAdditionalCharges)
+                            {
+                                if (extra > 0)
+                                {
+                                    <td style="font-size: 1.1rem;">₱@effectiveTotal.ToString("F2")</td>
+                                }
+                                else
+                                {
+                                    <td></td> <!-- empty cell to keep alignment -->
+                                }
+                            }
                             @* <td style="width: 200px;">
                                 <div class="progress-bar">
                                     <div class="progress-fill" style="width: @paymentPercentage%"></div>
