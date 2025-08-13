@@ -17,31 +17,102 @@ namespace Capstone2.Controllers
         // GET: Schedules
         public async Task<IActionResult> Index()
         {
-            // Get the waiter record for the logged-in user
-            var waiter = await _context.Waiters
-                .Include(w => w.User)
-                .FirstOrDefaultAsync(w => w.UserId == userId);
+            var role = (HttpContext.Session.GetString("Role") ?? string.Empty).ToUpper();
 
-            // Get orders assigned to this specific waiter
-            var schedules = await _context.OrderWaiters
-                .Include(ow => ow.Order)
-                    .ThenInclude(o => o.Customer)
-                .Include(ow => ow.Order)
-                    .ThenInclude(o => o.HeadWaiter)
+            List<Order> headWaiterOrders;
+            List<Order> waiterOrders;
+
+            if (role == "ADMIN")
+            {
+                // Admin: show all assigned orders across all staff
+                headWaiterOrders = await _context.Orders
+                    .Include(o => o.Customer)
+                    .Include(o => o.HeadWaiter)
                         .ThenInclude(hw => hw.User)
-                .Include(ow => ow.Order)
-                    .ThenInclude(o => o.OrderWaiters)
-                        .ThenInclude(ow2 => ow2.Waiter)
+                    .Include(o => o.OrderWaiters)
+                        .ThenInclude(ow => ow.Waiter)
                             .ThenInclude(w => w.User)
-                .Where(ow => ow.WaiterId == waiter.WaiterId &&
-                            ow.Order.Status != "Completed" &&
-                            ow.Order.Status != "Cancelled")
-                .Select(ow => ow.Order)
-                .OrderBy(o => o.CateringDate)
-                .ThenBy(o => o.timeOfFoodServing)
-                .ToListAsync();
+                    .Where(o => o.HeadWaiterId != null &&
+                                o.Status != "Completed" &&
+                                o.Status != "Cancelled")
+                    .OrderBy(o => o.CateringDate)
+                    .ThenBy(o => o.timeOfFoodServing)
+                    .ToListAsync();
 
-            return View(schedules);
+                waiterOrders = await _context.Orders
+                    .Include(o => o.Customer)
+                    .Include(o => o.HeadWaiter)
+                        .ThenInclude(hw => hw.User)
+                    .Include(o => o.OrderWaiters)
+                        .ThenInclude(ow => ow.Waiter)
+                            .ThenInclude(w => w.User)
+                    .Where(o => o.OrderWaiters.Any() &&
+                                o.Status != "Completed" &&
+                                o.Status != "Cancelled")
+                    .OrderBy(o => o.CateringDate)
+                    .ThenBy(o => o.timeOfFoodServing)
+                    .ToListAsync();
+            }
+            else
+            {
+                // Non-admin: show only assignments related to the logged-in user
+                headWaiterOrders = new List<Order>();
+                waiterOrders = new List<Order>();
+
+                var currentWaiter = await _context.Waiters
+                    .Include(w => w.User)
+                    .FirstOrDefaultAsync(w => w.UserId == userId);
+
+                var currentHeadWaiter = await _context.HeadWaiters
+                    .Include(hw => hw.User)
+                    .FirstOrDefaultAsync(hw => hw.UserId == userId);
+
+                if (currentWaiter != null)
+                {
+                    waiterOrders = await _context.OrderWaiters
+                        .Include(ow => ow.Order)
+                            .ThenInclude(o => o.Customer)
+                        .Include(ow => ow.Order)
+                            .ThenInclude(o => o.HeadWaiter)
+                                .ThenInclude(hw => hw.User)
+                        .Include(ow => ow.Order)
+                            .ThenInclude(o => o.OrderWaiters)
+                                .ThenInclude(ow2 => ow2.Waiter)
+                                    .ThenInclude(w => w.User)
+                        .Where(ow => ow.WaiterId == currentWaiter.WaiterId &&
+                                    ow.Order.Status != "Completed" &&
+                                    ow.Order.Status != "Cancelled")
+                        .Select(ow => ow.Order)
+                        .OrderBy(o => o.CateringDate)
+                        .ThenBy(o => o.timeOfFoodServing)
+                        .ToListAsync();
+                }
+
+                if (currentHeadWaiter != null)
+                {
+                    headWaiterOrders = await _context.Orders
+                        .Include(o => o.Customer)
+                        .Include(o => o.HeadWaiter)
+                            .ThenInclude(hw => hw.User)
+                        .Include(o => o.OrderWaiters)
+                            .ThenInclude(ow => ow.Waiter)
+                                .ThenInclude(w => w.User)
+                        .Where(o => o.HeadWaiterId == currentHeadWaiter.HeadWaiterId &&
+                                    o.Status != "Completed" &&
+                                    o.Status != "Cancelled")
+                        .OrderBy(o => o.CateringDate)
+                        .ThenBy(o => o.timeOfFoodServing)
+                        .ToListAsync();
+                }
+            }
+
+            var viewModel = new SchedulesIndexViewModel
+            {
+                WaiterAssignedOrders = waiterOrders,
+                HeadWaiterAssignedOrders = headWaiterOrders
+            };
+
+            return View(viewModel);
         }
 
         // GET: Schedules/Details/5

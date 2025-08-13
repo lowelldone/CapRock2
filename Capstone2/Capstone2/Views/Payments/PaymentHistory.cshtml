@@ -4,6 +4,8 @@
     ViewData["Title"] = "Payment History";
     var payments = ViewBag.Payments as List<Capstone2.Models.Payment>;
     var remainingBalance = ViewBag.RemainingBalance as double? ?? 0;
+    var additionalCharges = ViewBag.AdditionalCharges as decimal? ?? 0m;
+    var effectiveTotal = Model.TotalPayment + (double)additionalCharges;
 }
 
 <style>
@@ -185,6 +187,10 @@
                     <p class="mb-0 fs-5">₱@Model.TotalPayment.ToString("F2")</p>
                 </div>
                 <div class="col-md-3">
+                    <h6 class="fw-bold mb-1">Additional Charges</h6>
+                    <p class="mb-0 fs-5">₱@additionalCharges.ToString("F2")</p>
+                </div>
+                <div class="col-md-3">
                     <h6 class="fw-bold mb-1">Amount Paid</h6>
                     <p class="mb-0 fs-5 text-success">₱@Model.AmountPaid.ToString("F2")</p>
                 </div>
@@ -192,16 +198,21 @@
                     <h6 class="fw-bold mb-1">Remaining Balance</h6>
                     <p class="mb-0 fs-5 text-danger">₱@remainingBalance.ToString("F2")</p>
                 </div>
+            </div>
+            <div class="row mt-3">
                 <div class="col-md-3">
-                    <h6 class="fw-bold mb-1">Payment Status</h6>
+                    <h6 class="fw-bold mb-1">Updated Total</h6>
+                    <p class="mb-0 fs-5">₱@effectiveTotal.ToString("F2")</p>
+                </div>
+                <div class="col-md-9">
                     @{
-                        var paymentPercentage = (Model.AmountPaid / Model.TotalPayment) * 100;
-                        var statusClass = paymentPercentage >= 100 ? "paid" :
-                        paymentPercentage >= 50 ? "partial" : "unpaid";
-                        var statusText = paymentPercentage >= 100 ? "Fully Paid" :
-                        paymentPercentage >= 50 ? "Partially Paid" : "Unpaid";
+                        var paymentPercentage = effectiveTotal > 0 ? (Model.AmountPaid / effectiveTotal) * 100 : 0;
                     }
-                    <span class="payment-status @statusClass">@statusText</span>
+                    <div class="mt-2">
+                        <span class="payment-status @(paymentPercentage >= 100 ? "paid" : paymentPercentage >= 50 ? "partial" : "unpaid")">
+                            @(paymentPercentage >= 100 ? "Fully Paid" : paymentPercentage >= 50 ? "Partially Paid" : "Unpaid")
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

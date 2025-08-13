@@ -42,7 +42,7 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 _context.Add(menuPackages);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Menus");
             }
             return View(menuPackages);
         }
