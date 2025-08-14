@@ -258,7 +258,7 @@
         <div class="deploy-card">
             <h5 class="fw-bold mb-3">Currently Assigned Waiters</h5>
             <div class="assigned-list">
-                <ul>
+                <ul class="list-unstyled">
                     @{
                         var assigned = ViewBag.AssignedWaiters as List<Capstone2.Models.Waiter>;
                     }
@@ -266,7 +266,16 @@
                     {
                         foreach (var w in assigned)
                         {
-                            <li>@w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]</li>
+                            <li class="d-flex align-items-center justify-content-between mb-2">
+                                <span>@w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]</span>
+                                <form asp-action="RemoveAssignedWaiter" asp-route-id="@Model.CustomerID" method="post" class="ms-3">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="waiterId" value="@w.WaiterId" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-x-circle"></i> Remove
+                                    </button>
+                                </form>
+                            </li>
                         }
                     }
                 </ul>

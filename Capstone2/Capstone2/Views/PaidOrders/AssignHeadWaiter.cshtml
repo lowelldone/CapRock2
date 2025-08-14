@@ -392,3 +392,20 @@
         }
     });
 </script>
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <script>
+        if (window.Swal) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: '@ViewBag.SuccessMessage',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            });
+        }
+    </script>
+}
