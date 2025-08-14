@@ -133,111 +133,115 @@
             <input type="hidden" name="CustomerId" value="@Model.CustomerId" />
             <input type="hidden" name="Pax" value="@Model.Pax" />
 
-            <h5 class="group-title mb-3">Non-Consumable Materials</h5>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <h5 class="group-title mb-3">Non-Consumable Materials</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Current Inventory</th>
+                                @if (Model.Materials.Any(m => !m.IsFirstPullOut))
+                                {
+                                    <th>Previously Pulled Out</th>
+                                    <th>Additional Pull-Out Quantity</th>
+                                }
+                                else
+                                {
+                                    <th>Pull-Out Quantity</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < nonConsumables.Count; i++)
+                            {
+                                var idx = Model.Materials.FindIndex(m => m.MaterialId == nonConsumables[i].MaterialId);
+                                var previouslyPulledOut = Model.Materials[idx].PullOutQuantity;
+                                var suggestedQuantity = Capstone2.Helpers.MaterialCalculator.GetSuggestedQuantity(Model.Materials[idx].Name, Model.Pax, Model.LechonCount);
+                                var isFirstPullOut = Model.Materials[idx].IsFirstPullOut;
+                                <tr>
+                                    <td>
+                                        @Model.Materials[idx].Name
+                                        <input type="hidden" name="Materials[@idx].MaterialId" value="@Model.Materials[idx].MaterialId" />
+                                        <input type="hidden" name="Materials[@idx].Name" value="@Model.Materials[idx].Name" />
+                                        <input type="hidden" name="Materials[@idx].CurrentQuantity" value="@Model.Materials[idx].CurrentQuantity" />
+                                    </td>
+                                    <td>@Model.Materials[idx].CurrentQuantity</td>
+                                    @if (!isFirstPullOut)
+                                    {
+                                        <td>
+                                            <span class="text-primary fw-bold">@previouslyPulledOut</span>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="Materials[@idx].PullOutQuantity" value="0" min="0" max="@Model.Materials[idx].CurrentQuantity" class="form-control" placeholder="Add more quantity" />
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input type="number" name="Materials[@idx].PullOutQuantity" value="@suggestedQuantity" min="0" max="@Model.Materials[idx].CurrentQuantity" class="form-control" />
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-6">
+                    <h5 class="group-title mb-3">Consumable Materials</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Material</th>
+                                <th>Current Inventory</th>
+                                @if (Model.Materials.Any(m => !m.IsFirstPullOut))
+                                {
+                                    <th>Previously Pulled Out</th>
+                                    <th>Additional Pull-Out Quantity</th>
+                                }
+                                else
+                                {
+                                    <th>Pull-Out Quantity</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < consumables.Count; i++)
+                            {
+                                    var idx = Model.Materials.FindIndex(m => m.MaterialId == consumables[i].MaterialId);
+                                    var previouslyPulledOut = Model.Materials[idx].PullOutQuantity;
+                                    var suggestedQuantity = Capstone2.Helpers.MaterialCalculator.GetSuggestedQuantity(Model.Materials[idx].Name, Model.Pax, Model.LechonCount);
+                                    var isFirstPullOut = Model.Materials[idx].IsFirstPullOut;
 
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Material</th>
-                        <th>Current Inventory</th>
-                        @if (Model.Materials.Any(m => !m.IsFirstPullOut))
-                        {
-                            <th>Previously Pulled Out</th>
-                            <th>Additional Pull-Out Quantity</th>
-                        }
-                        else
-                        {
-                            <th>Pull-Out Quantity</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = 0; i < nonConsumables.Count; i++)
-                    {
-                        var idx = Model.Materials.FindIndex(m => m.MaterialId == nonConsumables[i].MaterialId);
-                        var previouslyPulledOut = Model.Materials[idx].PullOutQuantity;
-                        var suggestedQuantity = Capstone2.Helpers.MaterialCalculator.GetSuggestedQuantity(Model.Materials[idx].Name, Model.Pax);
-                        var isFirstPullOut = Model.Materials[idx].IsFirstPullOut;
-                        <tr>
-                            <td>
-                                @Model.Materials[idx].Name
-                                <input type="hidden" name="Materials[@idx].MaterialId" value="@Model.Materials[idx].MaterialId" />
-                                <input type="hidden" name="Materials[@idx].Name" value="@Model.Materials[idx].Name" />
-                                <input type="hidden" name="Materials[@idx].CurrentQuantity" value="@Model.Materials[idx].CurrentQuantity" />
-                            </td>
-                            <td>@Model.Materials[idx].CurrentQuantity</td>
-                            @if (!isFirstPullOut)
-                            {
+                            <tr>
                                 <td>
-                                    <span class="text-primary fw-bold">@previouslyPulledOut</span>
+                                    @Model.Materials[idx].Name
+                                    <input type="hidden" name="Materials[@idx].MaterialId" value="@Model.Materials[idx].MaterialId" />
+                                    <input type="hidden" name="Materials[@idx].Name" value="@Model.Materials[idx].Name" />
+                                    <input type="hidden" name="Materials[@idx].CurrentQuantity" value="@Model.Materials[idx].CurrentQuantity" />
                                 </td>
-                                <td>
-                                    <input type="number" name="Materials[@idx].PullOutQuantity" value="0" min="0" max="@Model.Materials[idx].CurrentQuantity" class="form-control" placeholder="Add more quantity" />
-                                </td>
+                                <td>@Model.Materials[idx].CurrentQuantity</td>
+                                @if (!isFirstPullOut)
+                                {
+                                    <td>
+                                        <span class="text-primary fw-bold">@previouslyPulledOut</span>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="Materials[@idx].PullOutQuantity" value="0" min="0" max="@Model.Materials[idx].CurrentQuantity" class="form-control" placeholder="Add more quantity" />
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="number" name="Materials[@idx].PullOutQuantity" value="@suggestedQuantity" min="0" max="@Model.Materials[idx].CurrentQuantity" class="form-control" />
+                                    </td>
+                                }
+                            </tr>
                             }
-                            else
-                            {
-                                <td>
-                                    <input type="number" name="Materials[@idx].PullOutQuantity" value="@suggestedQuantity" min="0" max="@Model.Materials[idx].CurrentQuantity" class="form-control" />
-                                </td>
-                            }
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
-            <h5 class="group-title mb-3 mt-4">Consumable Materials</h5>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Material</th>
-                        <th>Current Inventory</th>
-                        @if (Model.Materials.Any(m => !m.IsFirstPullOut))
-                        {
-                            <th>Previously Pulled Out</th>
-                            <th>Additional Pull-Out Quantity</th>
-                        }
-                        else
-                        {
-                            <th>Pull-Out Quantity</th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = 0; i < consumables.Count; i++)
-                    {
-                        var idx = Model.Materials.FindIndex(m => m.MaterialId == consumables[i].MaterialId);
-                        var previouslyPulledOut = Model.Materials[idx].PullOutQuantity;
-                        var suggestedQuantity = Capstone2.Helpers.MaterialCalculator.GetSuggestedQuantity(Model.Materials[idx].Name, Model.Pax);
-                        var isFirstPullOut = Model.Materials[idx].IsFirstPullOut;
-
-                        <tr>
-                            <td>
-                                @Model.Materials[idx].Name
-                                <input type="hidden" name="Materials[@idx].MaterialId" value="@Model.Materials[idx].MaterialId" />
-                                <input type="hidden" name="Materials[@idx].Name" value="@Model.Materials[idx].Name" />
-                                <input type="hidden" name="Materials[@idx].CurrentQuantity" value="@Model.Materials[idx].CurrentQuantity" />
-                            </td>
-                            <td>@Model.Materials[idx].CurrentQuantity</td>
-                            @if (!isFirstPullOut)
-                            {
-                                <td>
-                                    <span class="text-primary fw-bold">@previouslyPulledOut</span>
-                                </td>
-                                <td>
-                                    <input type="number" name="Materials[@idx].PullOutQuantity" value="0" min="0" max="@Model.Materials[idx].CurrentQuantity" class="form-control" placeholder="Add more quantity" />
-                                </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="number" name="Materials[@idx].PullOutQuantity" value="@suggestedQuantity" min="0" max="@Model.Materials[idx].CurrentQuantity" class="form-control" />
-                                </td>
-                            }
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
             <div class="d-flex gap-3 mt-4">
                 <button type="submit" class="btn btn-primary btn-confirm">
                     <i class="bi bi-check-lg me-2"></i>Confirm Pull Out

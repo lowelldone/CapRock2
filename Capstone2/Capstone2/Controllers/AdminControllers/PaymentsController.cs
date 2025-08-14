@@ -90,6 +90,7 @@ namespace Capstone2.Controllers.AdminControllers
             if (id == null)
                 return NotFound();
 
+            var role = HttpContext.Session.GetString("Role");
             var order = await _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
@@ -129,6 +130,7 @@ namespace Capstone2.Controllers.AdminControllers
 
             ViewBag.ExistingPayments = existingPayments;
             ViewBag.RemainingBalance = remainingBalance;
+            ViewBag.IsHeadWaiter = role == "HEADWAITER";
 
             return View(order);
         }

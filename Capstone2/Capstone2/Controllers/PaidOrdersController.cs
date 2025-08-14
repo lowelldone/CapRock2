@@ -28,7 +28,8 @@ namespace Capstone2.Controllers
                 var acceptedOrders = _context.Customers
                     .Include(c => c.Order)
                         .ThenInclude(o => o.HeadWaiter)
-                    .Where(c => c.Order != null &&
+                    .Where(c => !c.isDeleted &&
+                               c.Order != null && !c.Order.isDeleted &&
                                c.Order.AmountPaid >= 0.5 * c.Order.TotalPayment &&
                                c.Order.Status == "Accepted");
 
@@ -42,6 +43,9 @@ namespace Capstone2.Controllers
                     .Include(h => h.User)
                     .Where(h => h.isActive)
                     .ToListAsync();
+
+                ViewBag.MaterialPullOuts = await _context.MaterialPullOuts.ToListAsync();
+                ViewBag.MaterialReturns = await _context.MaterialReturns.ToListAsync();
 
                 return View("AdminIndex", await acceptedOrders.ToListAsync());
             }
@@ -59,7 +63,8 @@ namespace Capstone2.Controllers
                 var paidOrders = _context.Customers
                     .Include(c => c.Order)
                         .ThenInclude(o => o.HeadWaiter)
-                    .Where(c => c.Order != null &&
+                    .Where(c => !c.isDeleted &&
+                               c.Order != null && !c.Order.isDeleted &&
                                c.Order.AmountPaid >= 0.5 * c.Order.TotalPayment &&
                                c.Order.HeadWaiterId == headWaiterId);
 
@@ -70,6 +75,7 @@ namespace Capstone2.Controllers
 
                 ViewBag.IsAdmin = false;
                 ViewBag.MaterialPullOuts = await _context.MaterialPullOuts.ToListAsync();
+                ViewBag.MaterialReturns = await _context.MaterialReturns.ToListAsync();
 
                 return View(await paidOrders.ToListAsync());
             }
@@ -93,7 +99,7 @@ namespace Capstone2.Controllers
                     .ThenInclude(od => od.Menu)
                 .Include(o => o.HeadWaiter)
                     .ThenInclude(h => h.User)
-                .FirstOrDefaultAsync(o => o.CustomerID == id.Value);
+                .FirstOrDefaultAsync(o => o.CustomerID == id.Value && !o.isDeleted && !o.Customer.isDeleted);
 
             if (order == null)
                 return NotFound();
@@ -134,7 +140,7 @@ namespace Capstone2.Controllers
 
             var customer = await _context.Customers
                 .Include(c => c.Order)
-                .FirstOrDefaultAsync(c => c.CustomerID == id);
+                .FirstOrDefaultAsync(c => c.CustomerID == id && !c.isDeleted && c.Order != null && !c.Order.isDeleted);
 
             if (customer == null || customer.Order == null)
                 return NotFound();
@@ -195,7 +201,9 @@ namespace Capstone2.Controllers
             if (role != "ADMIN")
                 return Forbid();
 
-            var customer = _context.Customers.Include(c => c.Order).FirstOrDefault(c => c.CustomerID == id);
+            var customer = _context.Customers
+                .Include(c => c.Order)
+                .FirstOrDefault(c => c.CustomerID == id && !c.isDeleted && c.Order != null && !c.Order.isDeleted);
             if (customer == null || customer.Order == null)
                 return NotFound();
 
@@ -222,11 +230,62 @@ namespace Capstone2.Controllers
             return View("DeployWaiter", order);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RemoveAssignedWaiter(int id, int waiterId, int? headWaiterId)
+        {
+            var role = HttpContext.Session.GetString("Role");
+
+            var order = _context.Orders.FirstOrDefault(o => o.CustomerID == id);
+            if (order == null)
+                return NotFound();
+
+            // Check if user has access to this order
+            if (role == "HEADWAITER")
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId.Value && h.isActive);
+                if (headWaiter == null || order.HeadWaiterId != headWaiter.HeadWaiterId)
+                {
+                    return Forbid();
+                }
+            }
+
+            // Remove the waiter from this order
+            var links = _context.OrderWaiters
+                .Where(ow => ow.OrderId == order.OrderId && ow.WaiterId == waiterId)
+                .ToList();
+            if (links.Any())
+            {
+                _context.OrderWaiters.RemoveRange(links);
+            }
+
+            // Set the waiter back to Available
+            var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == waiterId);
+            if (waiter != null)
+            {
+                waiter.Availability = "Available";
+                _context.Waiters.Update(waiter);
+            }
+
+            _context.SaveChanges();
+
+            // Redirect back to the appropriate page so the updated lists are shown
+            if (role == "ADMIN")
+                return RedirectToAction(nameof(AssignWaiter), new { id });
+            else if (headWaiterId.HasValue)
+                return RedirectToAction(nameof(DeployWaiter), new { id, headWaiterId = headWaiterId.Value });
+            else
+                return RedirectToAction(nameof(DeployWaiter), new { id });
+        }
+
         // GET: PaidOrders/DeployWaiter/5
         public IActionResult DeployWaiter(int id)
         {
             var role = HttpContext.Session.GetString("Role");
-            var customer = _context.Customers.Include(c => c.Order).FirstOrDefault(c => c.CustomerID == id);
+            var customer = _context.Customers
+                .Include(c => c.Order)
+                .FirstOrDefault(c => c.CustomerID == id && !c.isDeleted && c.Order != null && !c.Order.isDeleted);
             if (customer == null || customer.Order == null)
                 return NotFound();
 
@@ -345,7 +404,7 @@ namespace Capstone2.Controllers
         public async Task<IActionResult> PullOutMaterials(int id)
         {
             var role = HttpContext.Session.GetString("Role");
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id);
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id && !o.isDeleted);
             if (order == null) return NotFound();
 
             // Check if user has access to this order
@@ -360,6 +419,11 @@ namespace Capstone2.Controllers
             }
 
             int pax = order.NoOfPax;
+            // Count ordered lechon items for this order
+            var lechonCount = await _context.OrderDetails
+                .Include(od => od.Menu)
+                .Where(od => od.OrderId == order.OrderId && od.Menu != null && od.Menu.Name.ToLower().Contains("lechon"))
+                .SumAsync(od => (int?)od.Quantity) ?? 0;
 
             // Get existing pull-out for this order
             var existingPullOut = await _context.MaterialPullOuts
@@ -369,7 +433,7 @@ namespace Capstone2.Controllers
             var allMaterials = await _context.Materials.ToListAsync();
             var materialsVm = allMaterials.Select(m => {
                 var existingItem = existingPullOut?.Items?.FirstOrDefault(i => i.MaterialName == m.Name);
-                var suggestedQuantity = Capstone2.Helpers.MaterialCalculator.GetSuggestedQuantity(m.Name, pax);
+                var suggestedQuantity = Capstone2.Helpers.MaterialCalculator.GetSuggestedQuantity(m.Name, pax, lechonCount);
 
                 return new PullOutMaterialItemViewModel
                 {
@@ -385,6 +449,7 @@ namespace Capstone2.Controllers
             {
                 CustomerId = id,
                 Pax = pax,
+                LechonCount = lechonCount,
                 Materials = materialsVm
             };
             ViewBag.IsAdmin = role == "ADMIN";
@@ -396,7 +461,7 @@ namespace Capstone2.Controllers
         public async Task<IActionResult> PullOutMaterials(PullOutMaterialsViewModel model)
         {
             var role = HttpContext.Session.GetString("Role");
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == model.CustomerId);
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == model.CustomerId && !o.isDeleted);
             if (order == null) return NotFound();
 
             // Check if user has access to this order
@@ -487,7 +552,7 @@ namespace Capstone2.Controllers
         public async Task<IActionResult> PullOutSummary(int id)
         {
             // id = CustomerId
-            var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id);
+            var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id && !o.isDeleted && !o.Customer.isDeleted);
             if (order == null) return NotFound();
             var pullOut = await _context.MaterialPullOuts.Include(p => p.Items).FirstOrDefaultAsync(p => p.OrderId == order.OrderId);
             if (pullOut == null) return RedirectToAction(nameof(Index));
@@ -500,7 +565,7 @@ namespace Capstone2.Controllers
         {
             var role = HttpContext.Session.GetString("Role");
             // id = CustomerId
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id);
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.CustomerID == id && !o.isDeleted);
             if (order == null) return NotFound();
 
             // Check if user has access to this order
@@ -578,18 +643,24 @@ namespace Capstone2.Controllers
                     _context.Add(materialReturn);
                 }
             }
-            // Set order status to Completed
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == model.OrderId);
+            // Update order status based on payments vs effective total (base + all additional charges)
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == model.OrderId && !o.isDeleted);
             if (order != null)
             {
-                // Only complete if fully paid
-                if (order.AmountPaid >= order.TotalPayment)
+                // Sum of existing additional charges (before this batch)
+                var previousCharges = await _context.MaterialReturns
+                    .Where(r => r.OrderId == order.OrderId)
+                    .SumAsync(r => (decimal)((r.Lost + r.Damaged) * r.ChargePerItem));
+                var effectiveTotal = (decimal)order.TotalPayment + previousCharges + totalCharge;
+
+                // Only complete if fully paid; otherwise set to Settling Balance
+                if ((decimal)order.AmountPaid >= effectiveTotal)
                 {
                     order.Status = "Completed";
                 }
                 else
                 {
-                    order.Status = "Ongoing"; // Still ongoing if balance remains
+                    order.Status = "Settling Balance";
                 }
                 _context.Orders.Update(order);
 
@@ -619,7 +690,7 @@ namespace Capstone2.Controllers
         public async Task<IActionResult> ReturnSummary(int id)
         {
             // id = CustomerId
-            var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id);
+            var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id && !o.isDeleted && !o.Customer.isDeleted);
             if (order == null) return NotFound();
             var returns = await _context.MaterialReturns.Where(r => r.OrderId == order.OrderId).ToListAsync();
             ViewBag.CustomerName = order.Customer?.Name ?? "";

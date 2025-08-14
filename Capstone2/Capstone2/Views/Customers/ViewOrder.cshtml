@@ -372,10 +372,16 @@
                 }
 
                 <hr />
-                <h5 class="fw-bold text-primary">Updated Total: ₱@(((decimal)ViewBag.EffectiveTotal).ToString("F2"))</h5>
-                <p class="fw-bold @(ViewBag.RemainingBalance > 0 ? "text-warning" : "text-success")">
-                    Remaining Balance: ₱@(((decimal)ViewBag.RemainingBalance).ToString("F2"))
-                </p>
+                @if (Model.Status != "Pending")
+                {
+                    <h5 class="fw-bold text-primary">Updated Total: ₱@(((decimal)ViewBag.EffectiveTotal).ToString("F2"))</h5>
+                    @if (Model.Status != "Completed")
+                    {
+                        <p class="fw-bold @(ViewBag.RemainingBalance > 0 ? "text-warning" : "text-success")">
+                            Remaining Balance: ₱@(((decimal)ViewBag.RemainingBalance).ToString("F2"))
+                        </p>
+                    }
+                }
             </div>
         </div>
     }
@@ -445,7 +451,7 @@
     }
 
     <div class="d-flex gap-3 mt-4">
-        @if (Model.Status != "Completed" && Model.Status != "Ongoing" && Model.Status != "Accepted")
+        @if (Model.Status != "Completed" && Model.Status != "Ongoing" && Model.Status != "Accepted" && Model.Status != "Settling Balance")
         {
             <a asp-controller="Orders" asp-action="Edit" asp-route-id="@Model.OrderId" class="btn btn-primary btn-action">
                 <i class="bi bi-pencil-square me-2"></i>Edit Information
@@ -457,7 +463,7 @@
         <a asp-action="Index" class="btn btn-outline-secondary btn-action">
             <i class="bi bi-arrow-left me-2"></i>Back to Customers
         </a>
-        @if (Model.Status != "Accepted" && Model.Status != "Ongoing" && Model.Status != "Completed")
+        @if (Model.Status != "Accepted" && Model.Status != "Ongoing" && Model.Status != "Completed" && Model.Status != "Settling Balance")
         {
             <a asp-action="PaymentDetails" asp-route-id="@Model.Customer.CustomerID" class="btn btn-success btn-action ms-auto">
                 <i class="bi bi-check-circle me-2"></i>Confirm Order

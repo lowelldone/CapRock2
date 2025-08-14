@@ -6,6 +6,7 @@ namespace Capstone2.Models
     {
         public int CustomerId { get; set; }
         public int Pax { get; set; }
+        public int LechonCount { get; set; }
         public List<PullOutMaterialItemViewModel> Materials { get; set; }
     }
 

@@ -271,6 +271,10 @@
                                 <form asp-action="RemoveAssignedWaiter" asp-route-id="@Model.CustomerID" method="post" class="ms-3">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="waiterId" value="@w.WaiterId" />
+                                    @if (headWaiterId != null)
+                                    {
+                                        <input type="hidden" name="headWaiterId" value="@headWaiterId" />
+                                    }
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                         <i class="bi bi-x-circle"></i> Remove
                                     </button>

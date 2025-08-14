@@ -137,7 +137,7 @@ namespace Capstone2.Controllers
                 .Include(ow => ow.Order)
                     .ThenInclude(o => o.HeadWaiter)
                         .ThenInclude(hw => hw.User)
-                .Where(ow => ow.WaiterId == id && ow.Order.Status != "Completed")
+                .Where(ow => ow.WaiterId == id && !ow.Order.isDeleted && ow.Order.Status != "Completed")
                 .Select(ow => ow.Order)
                 .FirstOrDefaultAsync();
 

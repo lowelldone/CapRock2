@@ -5,6 +5,7 @@
     var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
     var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
     var updatedTotal = (decimal)Model.TotalPayment + additionalCharges; // used to compute balance when there are additional charges
+    var balance = updatedTotal - (decimal)Model.AmountPaid;
 }
 
 <style>
@@ -237,6 +238,22 @@
         </div>
     }
 
+    @if (additionalCharges <= 0)
+    {
+        <div class="details-card">
+            <div class="details-row">
+                <div class="row">
+                    <div class="col-md-4">
+                        <span class="details-label">Balance:</span>
+                    </div>
+                    <div class="col-md-8">
+                        <span class="fw-bold mb-0">@(balance <= 0 ? "Paid" : ("₱" + balance.ToString("0.00")))</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
     @if (additionalCharges > 0)
     {
         <div class="details-card">
@@ -263,7 +280,7 @@
                         <span class="details-label">Balance:</span>
                     </div>
                     <div class="col-md-8">
-                        <span class="fw-bold mb-0">₱@(updatedTotal - (decimal)Model.AmountPaid).ToString("0.00")</span>
+                        <span class="fw-bold mb-0">@(balance <= 0 ? "Paid" : ("₱" + balance.ToString("0.00")))</span>
                     </div>
                 </div>
             </div>

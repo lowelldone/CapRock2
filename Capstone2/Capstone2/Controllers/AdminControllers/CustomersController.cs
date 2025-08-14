@@ -28,7 +28,7 @@ namespace Capstone2.Controllers.AdminControllers
                                     .Include(c => c.Order)
                                         .ThenInclude(o => o.HeadWaiter)
                                             .ThenInclude(hw => hw.User)
-                                    .Where(c => !c.isDeleted) // Filter out soft-deleted customers
+                                    .Where(c => !c.isDeleted && (c.Order == null || !c.Order.isDeleted)) // Filter out soft-deleted customers and orders
                                     .AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
@@ -271,11 +271,19 @@ namespace Capstone2.Controllers.AdminControllers
                 _context.Orders.Update(customer.Order);
             }
 
-            // Mark as paid if fully paid
-            if (customer.Order.AmountPaid >= customer.Order.TotalPayment)
+            // Determine effective total including all additional charges
+            var additionalCharges = await _context.MaterialReturns
+                .Where(r => r.OrderId == customer.Order.OrderId)
+                .SumAsync(r => (double)((r.Lost + r.Damaged) * r.ChargePerItem));
+            var effectiveTotal = customer.Order.TotalPayment + additionalCharges;
+
+            // Mark as paid and complete if fully paid; otherwise keep or set status accordingly
+            if (customer.Order.AmountPaid >= effectiveTotal)
             {
                 customer.IsPaid = true;
+                customer.Order.Status = "Completed";
                 _context.Customers.Update(customer);
+                _context.Orders.Update(customer.Order);
             }
 
             await _context.SaveChangesAsync();
@@ -504,6 +512,24 @@ namespace Capstone2.Controllers.AdminControllers
                         customer.Order.isDeleted = false;
                         _context.Orders.Update(customer.Order);
                         orderRestoredCount++;
+
+                        // If order is not completed, re-mark assigned waiters as Busy so it reappears in their views
+                        if (customer.Order.Status != "Completed")
+                        {
+                            var orderWaiters = await _context.OrderWaiters
+                                .Include(ow => ow.Waiter)
+                                .Where(ow => ow.OrderId == customer.Order.OrderId)
+                                .ToListAsync();
+
+                            foreach (var orderWaiter in orderWaiters)
+                            {
+                                if (orderWaiter.Waiter != null)
+                                {
+                                    orderWaiter.Waiter.Availability = "Busy";
+                                    _context.Waiters.Update(orderWaiter.Waiter);
+                                }
+                            }
+                        }
                     }
                 }
 

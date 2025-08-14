@@ -169,17 +169,9 @@
             <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
                 <thead class="table-light rounded-4">
                     <tr>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Order Number</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Customer</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Total Amount</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Amount Paid</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Balance</th>
-                        @if (hasAdditionalCharges)
-                        {
-                            <th class="fw-bold" style="font-size: 1.2rem;">Updated Total Amount</th>
-                        }
-                        @* <th class="fw-bold" style="font-size: 1.2rem;">Payment Progress</th> *@
                         <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
                     </tr>
                 </thead>
@@ -194,43 +186,14 @@
                         balance > effectiveTotal * 0.25 ? "medium" : "low";
 
                         <tr>
-                            <td style="font-size: 1.1rem;">
-                                <span class="fw-bold text-primary">@item.OrderNumber</span>
-                            </td>
                             <td style="font-size: 1.1rem;">@item.Customer.Name</td>
                             <td style="font-size: 1.1rem;">@item.CateringDate.ToShortDateString()</td>
-                            <td style="font-size: 1.1rem;">₱@item.TotalPayment.ToString("F2")</td>
-                            <td style="font-size: 1.1rem;">₱@item.AmountPaid.ToString("F2")</td>
                             <td>
                                 <span class="balance-badge @balanceClass">₱@balance.ToString("F2")</span>
-                                @if (extra > 0)
-                                {
-                                    <div class="extra-note">incl. ₱@extra.ToString("F2") additional charges</div>
-                                }
                             </td>
-                            @if (hasAdditionalCharges)
-                            {
-                                if (extra > 0)
-                                {
-                                    <td style="font-size: 1.1rem;">₱@effectiveTotal.ToString("F2")</td>
-                                }
-                                else
-                                {
-                                    <td></td> <!-- empty cell to keep alignment -->
-                                }
-                            }
-                            @* <td style="width: 200px;">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: @paymentPercentage%"></div>
-                                </div>
-                                <small class="text-muted">@paymentPercentage.ToString("F1")%</small>
-                            </td> *@
                             <td class="text-end">
                                 <a asp-action="ProcessPayment" asp-route-id="@item.OrderId" class="btn btn-outline-success action-btn" style="border: 2px solid;">
                                     <i class="bi bi-credit-card"></i> Process Payment
-                                </a>
-                                <a asp-action="PaymentHistory" asp-route-id="@item.OrderId" class="btn btn-outline-info action-btn" style="border: 2px solid;">
-                                    <i class="bi bi-clock-history"></i> History
                                 </a>
                             </td>
                         </tr>
