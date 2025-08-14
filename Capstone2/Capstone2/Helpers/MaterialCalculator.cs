@@ -22,11 +22,11 @@ namespace Capstone2.Helpers
                 case "Small Soup Bowl":
                 case "Big Salad Bowl":
                 case "Drinking Straw":
-                case "Toothpicks":
                 case "Table napkins":
                     return pax;
                 case "Tissue":
                     return pax * 2;
+                case "Toothpicks":
                 case "Tables":
                 case "Pitcher":
                 case "Round Bar Tray or Oval Tray":

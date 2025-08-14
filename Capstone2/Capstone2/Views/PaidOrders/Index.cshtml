@@ -245,7 +245,10 @@
                     <tr>
                         <th class="fw-bold" style="font-size: 1.2rem;">Name</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Phone</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Address</th>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Venue</th>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Occasion</th>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Time of Food Serving</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
                         <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
                     </tr>
@@ -258,7 +261,10 @@
                         <tr>
                             <td style="font-size: 1.1rem;">@item.Name</td>
                             <td style="font-size: 1.1rem;">@item.ContactNo</td>
-                            <td style="font-size: 1.1rem;">@item.Address</td>
+                            <td style="font-size: 1.1rem;">@item.Order.Venue</td>
+                            <td style="font-size: 1.1rem;">@item.Order.CateringDate</td>
+                            <td style="font-size: 1.1rem;">@item.Order.Occasion</td>
+                            <td style="font-size: 1.1rem;">@item.Order.timeOfFoodServing</td>
                             <td style="font-size: 1.1rem;">@item.Order.Status</td>
                             <td class="text-end">
                                 @if (item.Order?.Status == "Ongoing")
