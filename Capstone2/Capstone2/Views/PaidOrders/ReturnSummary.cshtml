@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Capstone2.Models.MaterialReturn>
+@{
+    ViewData["Title"] = "Return Summary";
+    var customerName = ViewBag.CustomerName as string ?? "";
+    decimal total = ViewBag.TotalCharge != null ? (decimal)ViewBag.TotalCharge : 0;
+}
+
+<div class="container mt-4">
+    <h3 class="mb-3">Return Summary - @customerName</h3>
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Returned</th>
+                        <th>Lost</th>
+                        <th>Damaged</th>
+                        <th>Charge/Item</th>
+                        <th>Total Charge</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.MaterialName</td>
+                            <td>@item.Returned</td>
+                            <td>@item.Lost</td>
+                            <td>@item.Damaged</td>
+                            <td>₱@item.ChargePerItem.ToString("N2")</td>
+                            <td>₱@(((item.Lost + item.Damaged) * item.ChargePerItem)).ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="5" class="text-end">Total Additional Charges:</th>
+                        <th>₱@total.ToString("N2")</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <a asp-action="Index" class="btn btn-primary">Back to Paid Orders</a>
+        </div>
+    </div>
+</div>

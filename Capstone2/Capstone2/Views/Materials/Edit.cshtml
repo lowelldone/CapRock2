@@ -90,6 +90,25 @@
                     <span asp-validation-for="Quantity" class="text-danger"></span>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="ChargePerItem" class="form-label fw-semibold">Default Charge Per Item</label>
+                    <input asp-for="ChargePerItem" class="form-control" placeholder="0.00" />
+                    <span asp-validation-for="ChargePerItem" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Price" class="form-label fw-semibold">Price</label>
+                    <input asp-for="Price" class="form-control" placeholder="0.00" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="IsConsumable" class="form-label fw-semibold">Is Consumable?</label>
+                    <select asp-for="IsConsumable" class="form-select">
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                    </select>
+                </div>
+            </div>
             <div class="mb-4">
                 <label asp-for="Description" class="form-label fw-semibold">Description</label>
                 <input asp-for="Description" class="form-control" placeholder="Enter material description" />

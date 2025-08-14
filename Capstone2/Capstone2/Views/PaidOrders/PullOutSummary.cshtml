@@ -1,0 +1,32 @@
+﻿@model Capstone2.Models.MaterialPullOut
+@{
+    ViewData["Title"] = "Pull-Out Summary";
+    var customerName = ViewBag.CustomerName as string ?? "";
+}
+
+<div class="container mt-4">
+    <h3 class="mb-3">Pull-Out Summary - @customerName</h3>
+    <div class="card">
+        <div class="card-body">
+            <p class="text-muted mb-3">Date: @Model.Date.ToString("MMM dd, yyyy HH:mm")</p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>@item.MaterialName</td>
+                            <td>@item.Quantity</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <a asp-action="Index" class="btn btn-primary">Back to Paid Orders</a>
+        </div>
+    </div>
+</div>

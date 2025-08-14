@@ -16,5 +16,6 @@ namespace Capstone2.Models
 
         public decimal ChargePerItem { get; set; }
         public bool IsConsumable { get; set; } // true for consumables, false for non-consumables
+        public decimal Price { get; set; } // Price per item, can be used for both consumables and non-consumables
     }
 }

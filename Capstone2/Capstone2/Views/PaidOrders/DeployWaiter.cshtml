@@ -230,8 +230,8 @@
                     <select id="waiterIds" name="waiterIds" class="form-select waiter-select" multiple size="6" required>
                         @foreach (var w in waiters)
                         {
-                            var isAssigned = ((List<int>)ViewBag.AssignedWaiterIds).Contains(w.WaiterId);
-                            <option value="@w.WaiterId" selected="@(isAssigned ? "selected" : null)" class="waiter-option">
+                            // only available waiters go in the select list
+                            <option value="@w.WaiterId" class="waiter-option">
                                 @w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]
                             </option>
                         }
@@ -259,9 +259,15 @@
             <h5 class="fw-bold mb-3">Currently Assigned Waiters</h5>
             <div class="assigned-list">
                 <ul>
-                    @foreach (var w in waiters.Where(w => ((List<int>)ViewBag.AssignedWaiterIds).Contains(w.WaiterId)))
+                    @{
+                        var assigned = ViewBag.AssignedWaiters as List<Capstone2.Models.Waiter>;
+                    }
+                    @if (assigned != null)
                     {
-                        <li>@w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]</li>
+                        foreach (var w in assigned)
+                        {
+                            <li>@w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]</li>
+                        }
                     }
                 </ul>
             </div>

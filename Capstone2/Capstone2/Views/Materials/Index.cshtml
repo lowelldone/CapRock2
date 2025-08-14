@@ -137,6 +137,8 @@
                         <th>@Html.DisplayNameFor(model => model.First().Name)</th>
                         <th>@Html.DisplayNameFor(model => model.First().Description)</th>
                         <th>@Html.DisplayNameFor(model => model.First().Quantity)</th>
+                        <th>Price</th>
+                        <th>Is Consumable</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -147,6 +149,8 @@
                             <td style="font-size:1.08rem;">@Html.DisplayFor(modelItem => item.Name)</td>
                             <td style="font-size:1.08rem;">@Html.DisplayFor(modelItem => item.Description)</td>
                             <td style="font-size:1.08rem;">@Html.DisplayFor(modelItem => item.Quantity)</td>
+                            <td style="font-size:1.08rem;">₱@item.Price.ToString("N2")</td>
+                            <td style="font-size:1.08rem;">@(item.IsConsumable ? "Yes" : "No")</td>
                             <td class="text-end">
                                 <a asp-action="Edit" asp-route-id="@item.MaterialId" class="btn btn-outline-primary btn-sm action-btn"><i class="bi bi-pencil-square"></i> Edit</a>
                                 <a asp-action="Delete" asp-route-id="@item.MaterialId" class="btn btn-outline-danger action-btn"><i class="bi bi-trash"></i> Delete</a>

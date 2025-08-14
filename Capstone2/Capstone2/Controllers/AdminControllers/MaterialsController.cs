@@ -44,7 +44,7 @@ namespace Capstone2.Controllers.AdminControllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaterialId,Name,Description,Quantity")] Material material)
+        public async Task<IActionResult> Create([Bind("MaterialId,Name,Description,Quantity,ChargePerItem,IsConsumable,Price")] Material material)
         {
             if (ModelState.IsValid)
             {
@@ -76,7 +76,7 @@ namespace Capstone2.Controllers.AdminControllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaterialId,Name,Description,Quantity")] Material material)
+        public async Task<IActionResult> Edit(int id, [Bind("MaterialId,Name,Description,Quantity,ChargePerItem,IsConsumable,Price")] Material material)
         {
             if (id != material.MaterialId)
             {
