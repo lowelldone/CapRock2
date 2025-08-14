@@ -193,9 +193,14 @@
             </div>
             <div class="assign-subtitle">Assign a headwaiter to manage this order.</div>
         </div>
-        <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Orders
-        </a>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Orders
+            </a>
+            <a asp-action="AssignWaiter" asp-route-id="@Model.CustomerID" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Assign Waiters
+            </a>
+        </div>
     </div>
 
     <div class="row">

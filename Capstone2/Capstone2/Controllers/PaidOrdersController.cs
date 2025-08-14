@@ -179,6 +179,33 @@ namespace Capstone2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: PaidOrders/AssignWaiter/5 (ADMIN)
+        public IActionResult AssignWaiter(int id)
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role != "ADMIN")
+                return Forbid();
+
+            var customer = _context.Customers.Include(c => c.Order).FirstOrDefault(c => c.CustomerID == id);
+            if (customer == null || customer.Order == null)
+                return NotFound();
+
+            var order = customer.Order;
+
+            // Get IDs of waiters already assigned to this order
+            var assignedWaiterIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
+            // Only show available waiters, but keep already-assigned ones visible
+            var waiters = _context.Waiters
+                .Include(w => w.User)
+                .Where(w => !w.isDeleted && (w.Availability == "Available" || assignedWaiterIds.Contains(w.WaiterId)))
+                .ToList();
+
+            ViewBag.Waiters = waiters;
+            ViewBag.AssignedWaiterIds = assignedWaiterIds;
+            ViewBag.IsAdmin = true;
+            return View("DeployWaiter", order);
+        }
+
         // GET: PaidOrders/DeployWaiter/5
         public IActionResult DeployWaiter(int id)
         {
@@ -200,13 +227,21 @@ namespace Capstone2.Controllers
                 }
             }
 
-            // Get all waiters that are not deleted
-            var waiters = _context.Waiters.Include(w => w.User).Where(w => !w.isDeleted).ToList();
             // Get IDs of waiters already assigned to this order
-            var assignedWaiterIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
+            var assignedIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
+            // Only show available waiters in the selection; fetch assigned separately for display
+            var availableWaiters = _context.Waiters
+                .Include(w => w.User)
+                .Where(w => !w.isDeleted && w.Availability == "Available")
+                .ToList();
+            var assignedWaiters = _context.Waiters
+                .Include(w => w.User)
+                .Where(w => assignedIds.Contains(w.WaiterId))
+                .ToList();
 
-            ViewBag.Waiters = waiters;
-            ViewBag.AssignedWaiterIds = assignedWaiterIds;
+            ViewBag.Waiters = availableWaiters;
+            ViewBag.AssignedWaiters = assignedWaiters;
+            ViewBag.AssignedWaiterIds = assignedIds;
             ViewBag.IsAdmin = role == "ADMIN";
             return View(order);
         }
@@ -247,8 +282,10 @@ namespace Capstone2.Controllers
                 ModelState.AddModelError("", $"Selected waiter(s) already deployed to other orders: {names}. Please select again.");
 
                 // Repopulate view data
-                var waiters = _context.Waiters.Include(w => w.User).Where(w => !w.isDeleted).ToList();
                 assignedWaiterIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
+                var waiters = _context.Waiters.Include(w => w.User)
+                    .Where(w => !w.isDeleted && (w.Availability == "Available" || assignedWaiterIds.Contains(w.WaiterId)))
+                    .ToList();
                 ViewBag.Waiters = waiters;
                 ViewBag.AssignedWaiterIds = assignedWaiterIds;
                 ViewBag.IsAdmin = role == "ADMIN";
@@ -422,10 +459,20 @@ namespace Capstone2.Controllers
             await _context.SaveChangesAsync();
             TempData["PullOutSuccess"] = "Materials pulled out successfully!";
 
-            if (role == "ADMIN")
-                return RedirectToAction(nameof(Index));
-            else
-                return RedirectToAction(nameof(Index));
+            // Show pull-out summary page
+            return RedirectToAction(nameof(PullOutSummary), new { id = model.CustomerId });
+        }
+
+        // GET: PaidOrders/PullOutSummary/5
+        public async Task<IActionResult> PullOutSummary(int id)
+        {
+            // id = CustomerId
+            var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id);
+            if (order == null) return NotFound();
+            var pullOut = await _context.MaterialPullOuts.Include(p => p.Items).FirstOrDefaultAsync(p => p.OrderId == order.OrderId);
+            if (pullOut == null) return RedirectToAction(nameof(Index));
+            ViewBag.CustomerName = order.Customer?.Name ?? "";
+            return View(pullOut);
         }
 
         // GET: PaidOrders/ReturnMaterials/5
@@ -454,18 +501,18 @@ namespace Capstone2.Controllers
             var materials = await _context.Materials.Where(m => !m.IsConsumable).ToListAsync();
 
             var pulledOutItems = pullOut?.Items
-                .Where(i => materials.Any(m => m.Name == i.MaterialName))
+                .Where(i => materials.Any(m => string.Equals(m.Name, i.MaterialName, StringComparison.OrdinalIgnoreCase)))
                 .Select(i => {
-                    var mat = materials.First(m => m.Name == i.MaterialName);
+                    var mat = materials.First(m => string.Equals(m.Name, i.MaterialName, StringComparison.OrdinalIgnoreCase));
                     return new ReturnMaterialItem
                     {
                         MaterialId = mat.MaterialId,
-                        MaterialName = i.MaterialName,
+                        MaterialName = mat.Name,
                         PulledOut = i.Quantity,
                         Returned = i.Quantity,
                         Lost = 0,
                         Damaged = 0,
-                        ChargePerItem = mat.ChargePerItem
+                        ChargePerItem = mat.Price
                     };
                 }).ToList() ?? new List<ReturnMaterialItem>();
 
@@ -494,9 +541,10 @@ namespace Capstone2.Controllers
                     material.Quantity += item.Returned;
                     _context.Materials.Update(material);
 
-                    // Always use the name from the database
-                    totalCharge += (item.Lost + item.Damaged) * item.ChargePerItem;
-                    // Store charge per item in MaterialReturn
+                    // Use current price from DB; fallback to stored default charge if price is not set
+                    var chargePerItem = material.Price > 0 ? material.Price : material.ChargePerItem;
+                    totalCharge += (item.Lost + item.Damaged) * chargePerItem;
+                    // Store the price used at the time of return
                     var materialReturn = new MaterialReturn
                     {
                         OrderId = model.OrderId,
@@ -505,7 +553,7 @@ namespace Capstone2.Controllers
                         Returned = item.Returned,
                         Lost = item.Lost,
                         Damaged = item.Damaged,
-                        ChargePerItem = item.ChargePerItem
+                        ChargePerItem = chargePerItem
                     };
                     _context.Add(materialReturn);
                 }
@@ -543,10 +591,20 @@ namespace Capstone2.Controllers
             await _context.SaveChangesAsync();
             TempData["ReturnSuccess"] = $"Materials returned successfully! Additional charge for lost/damaged: ₱{totalCharge}.";
 
-            if (role == "ADMIN")
-                return RedirectToAction(nameof(Index));
-            else
-                return RedirectToAction(nameof(Index));
+            // Show return summary page
+            return RedirectToAction(nameof(ReturnSummary), new { id = model.CustomerId });
+        }
+
+        // GET: PaidOrders/ReturnSummary/5
+        public async Task<IActionResult> ReturnSummary(int id)
+        {
+            // id = CustomerId
+            var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id);
+            if (order == null) return NotFound();
+            var returns = await _context.MaterialReturns.Where(r => r.OrderId == order.OrderId).ToListAsync();
+            ViewBag.CustomerName = order.Customer?.Name ?? "";
+            ViewBag.TotalCharge = returns.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem);
+            return View(returns);
         }
 
         // POST: PaidOrders/UpdateProfile

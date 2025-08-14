@@ -4,7 +4,7 @@
     ViewData["Title"] = "View Order";
     var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
     var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
-    var updatedTotal = (decimal)Model.TotalPayment + additionalCharges;
+    var updatedTotal = (decimal)Model.TotalPayment + additionalCharges; // used to compute balance when there are additional charges
 }
 
 <style>
@@ -260,10 +260,10 @@
             <div class="details-row">
                 <div class="row">
                     <div class="col-md-4">
-                        <span class="details-label">Updated Total Payment:</span>
+                        <span class="details-label">Balance:</span>
                     </div>
                     <div class="col-md-8">
-                        <span class="fw-bold mb-0">₱@updatedTotal.ToString("0.00")</span>
+                        <span class="fw-bold mb-0">₱@(updatedTotal - (decimal)Model.AmountPaid).ToString("0.00")</span>
                     </div>
                 </div>
             </div>
