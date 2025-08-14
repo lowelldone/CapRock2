@@ -209,17 +209,17 @@
                             <td>
                                 @if (head.isTemporary)
                                 {
-                                    <span class="badge bg-secondary fs-5 px-3 py-2">Temporary</span>
+                                    <span class="badge bg-secondary px-3 py-2">Temporary</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-warning text-dark fs-5 px-3 py-2">Regular</span>
+                                    <span class="badge bg-warning text-dark px-3 py-2">Regular</span>
                                 }
                             </td>
                             <td>
                                 @if (head.Availability == "Busy")
                                 {
-                                    <span class="badge bg-danger fs-5 px-3 py-2">Busy</span>
+                                    <span class="badge bg-danger px-3 py-2">Busy</span>
                                 }
                                 else
                                 {
@@ -228,10 +228,10 @@
                             </td>
                             <td class="text-end">
                                 <a asp-action="UpSert" asp-route-id="@head.WaiterId" class="btn btn-outline-primary action-btn" style="border: 2px solid;"><i class="bi bi-pencil-square"></i> Edit</a>
-                                @if (head.Availability == "Busy")
+@*                                 @if (head.Availability == "Busy")
                                 {
                                     <a asp-action="AssignedOrder" asp-route-id="@head.WaiterId" class="btn btn-outline-info action-btn" style="border: 2px solid;"><i class="bi bi-eye"></i> View Order</a>
-                                }
+                                } *@
                                 <a asp-action="Delete" asp-route-id="@head.WaiterId" class="btn btn-outline-danger action-btn" style="border: 2px solid;"><i class="bi bi-trash"></i> Delete</a>
                             </td>
                         </tr>

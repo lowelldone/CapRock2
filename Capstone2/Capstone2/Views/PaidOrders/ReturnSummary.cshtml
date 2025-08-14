@@ -29,7 +29,7 @@
                             <td>@item.Lost</td>
                             <td>@item.Damaged</td>
                             <td>₱@item.ChargePerItem.ToString("N2")</td>
-                            <td>₱@(((item.Lost + item.Damaged) * item.ChargePerItem)).ToString("N2")</td>
+                            <td>₱@(((item.Lost + item.Damaged) * item.ChargePerItem).ToString("N2"))</td>
                         </tr>
                     }
                 </tbody>

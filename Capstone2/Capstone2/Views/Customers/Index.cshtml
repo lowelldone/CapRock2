@@ -180,9 +180,6 @@
             <a asp-action="DeletedHistory" class="btn btn-outline-danger add-customer-btn">
                 <i class="bi bi-trash"></i> Deleted History
             </a>
-@*             <a asp-controller="DashboardDateSummary" asp-action="Index" class="btn btn-outline-info add-customer-btn">
-                <i class="bi bi-calendar-range"></i> Orders Summary
-            </a> *@
             <a asp-action="Create" class="btn btn-primary add-customer-btn">
                 <i class="bi bi-plus-lg"></i> Add New Customer
             </a>
@@ -319,11 +316,6 @@
 
                             <td class="text-end">
                                 <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-outline-secondary action-btn" style="border: 2px solid;"><i class="bi bi-eye"></i> View Order</a>
-                                @* <a asp-action="PaymentDetails" asp-route-id="@item.CustomerID" class="btn btn-outline-success action-btn" style="border: 2px solid;"><i class="bi bi-credit-card"></i> Payment Details</a> *@
-                                @* @if (order != null && order.Status != "Completed" && order.AmountPaid >= 0.5 * order.TotalPayment)
-                                {
-                                    <a asp-action="AssignHeadWaiter" asp-route-id="@item.CustomerID" class="btn btn-outline-primary action-btn" style="border: 2px solid;"><i class="bi bi-person-plus"></i> Assign Head Waiter</a>
-                                } *@
                                 @if (order != null && order.Status == "Completed")
                                 {
                                     <a asp-action="InventoryReport" asp-route-id="@item.CustomerID" class="btn btn-outline-info action-btn" style="border: 2px solid;"><i class="bi bi-clipboard-data"></i> Inventory Report</a>

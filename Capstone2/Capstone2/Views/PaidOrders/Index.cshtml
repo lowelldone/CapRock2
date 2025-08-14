@@ -257,7 +257,9 @@
                     @foreach (var item in Model)
                     {
                         var hasPullOut = item.Order != null && item.Order.OrderId != 0 &&
-                        (ViewBag.MaterialPullOuts != null && ((IEnumerable<dynamic>)ViewBag.MaterialPullOuts).Any(p => p.OrderId == item.Order.OrderId));
+                            (ViewBag.MaterialPullOuts != null && ((IEnumerable<dynamic>)ViewBag.MaterialPullOuts).Any(p => p.OrderId == item.Order.OrderId));
+                        var hasReturn = item.Order != null && item.Order.OrderId != 0 &&
+                            (ViewBag.MaterialReturns != null && ((IEnumerable<dynamic>)ViewBag.MaterialReturns).Any(r => r.OrderId == item.Order.OrderId));
                         <tr>
                             <td style="font-size: 1.1rem;">@item.Name</td>
                             <td style="font-size: 1.1rem;">@item.ContactNo</td>
@@ -267,7 +269,7 @@
                             <td style="font-size: 1.1rem;">@item.Order.timeOfFoodServing</td>
                             <td style="font-size: 1.1rem;">@item.Order.Status</td>
                             <td class="text-end">
-                                @if (item.Order?.Status == "Ongoing")
+                                @if (item.Order?.Status == "Ongoing" && !hasReturn)
                                 {
                                     @if (headWaiterId != null)
                                     {
@@ -280,7 +282,7 @@
                                            class="btn btn-warning action-btn mb-1"><i class="bi bi-person-plus"></i> Deploy Waiter</a>
                                     }
                                 }
-                                else if (item.Order?.Status == "Accepted")
+                                else if (item.Order?.Status == "Accepted" && !hasReturn)
                                 {
                                     @if (headWaiterId != null)
                                     {
@@ -303,10 +305,10 @@
                                     <a asp-action="Details" asp-route-id="@item.CustomerID"
                                        class="btn btn-info action-btn mb-1"><i class="bi bi-info-circle"></i> Details</a>
                                 }
-                                @if (item.Order?.Status != "Completed")
+                                @if (item.Order?.Status != "Completed" && !hasReturn)
                                 {
                                     <a asp-action="PullOutMaterials" asp-route-id="@item.CustomerID" class="btn btn-outline-primary action-btn mb-1" style="border: 2px solid;"><i class="bi bi-box-arrow-up"></i> Pull Out Materials</a>
-                                    @if (hasPullOut)
+                                    @if (hasPullOut && !hasReturn)
                                     {
                                         <a asp-action="ReturnMaterials" asp-route-id="@item.CustomerID" class="btn btn-outline-warning action-btn mb-1" style="border: 2px solid;"><i class="bi bi-arrow-counterclockwise"></i> Return Materials</a>
                                     }
