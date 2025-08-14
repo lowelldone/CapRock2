@@ -354,7 +354,7 @@ namespace Capstone2.Controllers.AdminControllers
             _context.Orders.Update(customer.Order);
             await _context.SaveChangesAsync();
             TempData["HeadWaiterAssigned"] = "Head Waiter assigned successfully.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("AssignWaiter", "PaidOrders", new { id = id, headWaiterId = headWaiterId });
         }
 
         // GET: Customers/InventoryReport/5

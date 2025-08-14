@@ -166,6 +166,7 @@ namespace Capstone2.Controllers
                 return NotFound();
 
             var headWaiter = await _context.HeadWaiters
+                .Include(h => h.User)
                 .FirstOrDefaultAsync(h => h.HeadWaiterId == headWaiterId && h.isActive);
 
             if (headWaiter == null)
@@ -175,8 +176,16 @@ namespace Capstone2.Controllers
             _context.Orders.Update(customer.Order);
             await _context.SaveChangesAsync();
 
-            TempData["Success"] = $"Order assigned to {headWaiter.User?.FirstName} {headWaiter.User?.LastName} successfully!";
-            return RedirectToAction(nameof(Index));
+            // Repopulate data for the view and show success toast without navigating away
+            var headWaiters = await _context.HeadWaiters
+                .Include(h => h.User)
+                .Where(h => h.isActive)
+                .ToListAsync();
+            ViewBag.HeadWaiters = headWaiters;
+            ViewBag.CurrentHeadWaiterId = customer.Order.HeadWaiterId;
+            ViewBag.SuccessMessage = "Assigning head waiter success";
+
+            return View(customer);
         }
 
         // GET: PaidOrders/AssignWaiter/5 (ADMIN)
@@ -194,14 +203,21 @@ namespace Capstone2.Controllers
 
             // Get IDs of waiters already assigned to this order
             var assignedWaiterIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
-            // Only show available waiters, but keep already-assigned ones visible
+            // Only show available waiters in the selection
             var waiters = _context.Waiters
                 .Include(w => w.User)
-                .Where(w => !w.isDeleted && (w.Availability == "Available" || assignedWaiterIds.Contains(w.WaiterId)))
+                .Where(w => !w.isDeleted && w.Availability == "Available")
+                .ToList();
+
+            // Populate the list of currently assigned waiters for display
+            var assignedWaiters = _context.Waiters
+                .Include(w => w.User)
+                .Where(w => assignedWaiterIds.Contains(w.WaiterId))
                 .ToList();
 
             ViewBag.Waiters = waiters;
             ViewBag.AssignedWaiterIds = assignedWaiterIds;
+            ViewBag.AssignedWaiters = assignedWaiters;
             ViewBag.IsAdmin = true;
             return View("DeployWaiter", order);
         }
@@ -284,7 +300,11 @@ namespace Capstone2.Controllers
                 // Repopulate view data
                 assignedWaiterIds = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).Select(ow => ow.WaiterId).ToList();
                 var waiters = _context.Waiters.Include(w => w.User)
-                    .Where(w => !w.isDeleted && (w.Availability == "Available" || assignedWaiterIds.Contains(w.WaiterId)))
+                    .Where(w => !w.isDeleted && w.Availability == "Available")
+                    .ToList();
+                var assignedWaiters = _context.Waiters
+                    .Include(w => w.User)
+                    .Where(w => assignedWaiterIds.Contains(w.WaiterId))
                     .ToList();
                 ViewBag.Waiters = waiters;
                 ViewBag.AssignedWaiterIds = assignedWaiterIds;
