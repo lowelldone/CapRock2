@@ -63,10 +63,10 @@
         transition: all 0.3s ease;
     }
 
-    .card:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        transform: translateY(-2px);
-    }
+        .card:hover {
+            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
 
     .order-info {
         background: var(--purple-bg-light);
@@ -76,11 +76,11 @@
         margin-bottom: 20px;
     }
 
-    .order-info h5 {
-        color: var(--text-purple);
-        margin-bottom: 15px;
-        font-weight: 600;
-    }
+        .order-info h5 {
+            color: var(--text-purple);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
 
     .order-detail {
         display: flex;
@@ -90,19 +90,19 @@
         border-bottom: 1px solid rgba(124, 58, 237, 0.1);
     }
 
-    .order-detail:last-child {
-        border-bottom: none;
-    }
+        .order-detail:last-child {
+            border-bottom: none;
+        }
 
-    .order-detail .label {
-        font-weight: 600;
-        color: var(--text-purple);
-    }
+        .order-detail .label {
+            font-weight: 600;
+            color: var(--text-purple);
+        }
 
-    .order-detail .value {
-        color: var(--text-purple-light);
-        text-align: right;
-    }
+        .order-detail .value {
+            color: var(--text-purple-light);
+            text-align: right;
+        }
 
     .form-select {
         border-radius: 12px;
@@ -112,10 +112,10 @@
         transition: all 0.3s ease;
     }
 
-    .form-select:focus {
-        border-color: var(--primary-purple);
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-    }
+        .form-select:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
 
     .btn-primary {
         background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
@@ -128,11 +128,11 @@
         border: none;
     }
 
-    .btn-primary:hover {
-        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
-    }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+        }
 
     .btn-outline-secondary {
         border-color: var(--purple-border);
@@ -144,12 +144,12 @@
         transition: all 0.3s ease;
     }
 
-    .btn-outline-secondary:hover {
-        background: var(--purple-bg-light);
-        border-color: var(--primary-purple);
-        color: var(--primary-purple);
-        transform: translateY(-2px);
-    }
+        .btn-outline-secondary:hover {
+            background: var(--purple-bg-light);
+            border-color: var(--primary-purple);
+            color: var(--primary-purple);
+            transform: translateY(-2px);
+        }
 
     .current-assignment {
         background: var(--success-color);
@@ -171,17 +171,17 @@
         transition: all 0.3s ease;
     }
 
-    .headwaiter-option:hover {
-        background: var(--purple-bg-light);
-        border-color: var(--primary-purple);
-        transform: translateY(-1px);
-    }
+        .headwaiter-option:hover {
+            background: var(--purple-bg-light);
+            border-color: var(--primary-purple);
+            transform: translateY(-1px);
+        }
 
-    .headwaiter-option.selected {
-        background: var(--primary-purple);
-        color: white;
-        border-color: var(--primary-purple);
-    }
+        .headwaiter-option.selected {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+        }
 </style>
 
 <div class="container-fluid mt-4 px-4 assign-headwaiter-bg">
@@ -262,79 +262,6 @@
                             </a>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">
-                        <i class="bi bi-info-circle text-info"></i>
-                        Order Information
-                    </h5>
-
-                    <div class="order-info">
-                        <div class="order-detail">
-                            <span class="label">Customer:</span>
-                            <span class="value">@Model.Name</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Contact:</span>
-                            <span class="value">@Model.ContactNo</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Address:</span>
-                            <span class="value">@Model.Address</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Total Payment:</span>
-                            <span class="value">₱@Model.Order.TotalPayment.ToString("N2")</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Amount Paid:</span>
-                            <span class="value">₱@Model.Order.AmountPaid.ToString("N2")</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Balance:</span>
-                            <span class="value">₱@Model.Order.Balance.ToString("N2")</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">No. of Pax:</span>
-                            <span class="value">@Model.Order.NoOfPax</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Occasion:</span>
-                            <span class="value">@Model.Order.Occasion</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Venue:</span>
-                            <span class="value">@Model.Order.Venue</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Catering Date:</span>
-                            <span class="value">@Model.Order.CateringDate.ToString("MMM dd, yyyy")</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Serving Time:</span>
-                            <span class="value">@Model.Order.timeOfFoodServing.ToString("HH:mm")</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Motif:</span>
-                            <span class="value">@Model.Order.Motif</span>
-                        </div>
-                        <div class="order-detail">
-                            <span class="label">Status:</span>
-                            <span class="value">
-                                <span class="badge bg-@(Model.Order.Status == "Accepted" ? "warning" :
-                                                       Model.Order.Status == "Ongoing" ? "info" :
-                                                       Model.Order.Status == "Completed" ? "success" : "secondary")">
-                                    @Model.Order.Status
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-
                     @{
                         if (ViewBag.CurrentHeadWaiterId != null)
                         {

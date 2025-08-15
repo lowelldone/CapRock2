@@ -190,24 +190,6 @@
     </div>
 
     <div class="deploy-card">
-        <div class="order-info">
-            <div class="info-row">
-                <span class="info-label">Customer:</span>
-                <span class="info-value">@Model.Customer?.Name</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Venue:</span>
-                <span class="info-value">@Model.Venue</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Date:</span>
-                <span class="info-value">@Model.OrderDate.ToShortDateString()</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Status:</span>
-                <span class="info-value">@Model.Status</span>
-            </div>
-        </div>
 
         @if (!ViewData.ModelState.IsValid)
         {
