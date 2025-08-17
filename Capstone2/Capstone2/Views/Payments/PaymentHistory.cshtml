@@ -5,6 +5,8 @@
     var payments = ViewBag.Payments as List<Capstone2.Models.Payment>;
     var remainingBalance = ViewBag.RemainingBalance as double? ?? 0;
     var additionalCharges = ViewBag.AdditionalCharges as decimal? ?? 0m;
+    var totalPaid = ViewBag.TotalPaid as double? ?? Model.AmountPaid;
+    var appliedPaidToBase = ViewBag.AppliedPaidToBase as double? ?? Math.Min(totalPaid, Model.TotalPayment);
     var effectiveTotal = Model.TotalPayment + (double)additionalCharges;
 }
 
@@ -25,20 +27,24 @@
         --danger-color: #ef4444;
         --info-color: #3b82f6;
     }
+
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .paymenthistory-bg {
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
         border-radius: 24px;
         padding-bottom: 2rem;
     }
+
     .paymenthistory-header {
         display: flex;
         align-items: center;
         gap: 16px;
     }
+
     .paymenthistory-header-icon {
         font-size: 2.5rem;
         color: var(--primary-purple);
@@ -47,12 +53,14 @@
         padding: 8px 14px;
         box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
     }
+
     .paymenthistory-subtitle {
         color: var(--text-purple);
         font-size: 1.1rem;
         margin-top: -8px;
         margin-bottom: 18px;
     }
+
     .order-card {
         background: #fff;
         border-radius: 20px;
@@ -62,50 +70,60 @@
         margin-bottom: 1.5rem;
         transition: all 0.3s ease;
     }
-    .order-card:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        transform: translateY(-2px);
-    }
+
+        .order-card:hover {
+            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
+
     .table {
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
         border: 1px solid var(--purple-border);
     }
-    .table thead th {
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        border: none;
-        font-weight: 600;
-        color: white;
-        padding: 1rem;
-    }
-    .table tbody td {
-        padding: 1rem;
-        border: none;
-        border-bottom: 1px solid var(--purple-border);
-    }
-    .table tbody tr {
-        background: #fff;
-    }
-    .table tbody tr:hover {
-        background: var(--purple-bg-light);
-    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            border: none;
+            font-weight: 600;
+            color: white;
+            padding: 1rem;
+        }
+
+        .table tbody td {
+            padding: 1rem;
+            border: none;
+            border-bottom: 1px solid var(--purple-border);
+        }
+
+        .table tbody tr {
+            background: #fff;
+        }
+
+            .table tbody tr:hover {
+                background: var(--purple-bg-light);
+            }
+
     .btn-action {
         font-weight: 500;
         border-radius: 8px;
         padding: 0.5rem 1rem;
         transition: all 0.3s ease;
     }
+
     .btn-outline-secondary {
         border-color: var(--text-purple);
         color: var(--text-purple);
         background: transparent;
     }
-    .btn-outline-secondary:hover {
-        background: var(--text-purple);
-        color: white;
-        transform: translateY(-2px);
-    }
+
+        .btn-outline-secondary:hover {
+            background: var(--text-purple);
+            color: white;
+            transform: translateY(-2px);
+        }
+
     .total-section {
         background: var(--purple-bg-light);
         border-radius: 12px;
@@ -113,6 +131,7 @@
         margin-top: 1rem;
         border: 1px solid var(--purple-border);
     }
+
     .payment-summary {
         background: var(--purple-bg-light);
         border-radius: 12px;
@@ -120,24 +139,28 @@
         margin-bottom: 1rem;
         border: 1px solid var(--purple-border);
     }
+
     .payment-status {
         padding: 0.25rem 0.75rem;
         border-radius: 20px;
         font-size: 0.8rem;
         font-weight: 600;
     }
-    .payment-status.paid {
-        background: var(--success-color);
-        color: white;
-    }
-    .payment-status.partial {
-        background: var(--warning-color);
-        color: white;
-    }
-    .payment-status.unpaid {
-        background: var(--danger-color);
-        color: white;
-    }
+
+        .payment-status.paid {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .payment-status.partial {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .payment-status.unpaid {
+            background: var(--danger-color);
+            color: white;
+        }
 </style>
 
 <div class="container-fluid mt-4 px-4 paymenthistory-bg">

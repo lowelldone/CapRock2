@@ -218,22 +218,18 @@
                 {
                     <input type="hidden" name="headWaiterId" value="@headWaiterId.Value" />
                 }
-                @* <div class="col-md-4">
-                    <select name="statusFilter" class="form-select form-select-lg" onchange="this.form.submit()">
-                        <option value="">-- Filter by Status --</option>
-                        @for (int i = 0; i < status.Length; i++)
-                        {
-                            if (status[i] == selectedFilter)
-                            {
-                                <option value="@status[i]" selected>@status[i]</option>
-                            }
-                            else
-                            {
-                                <option value="@status[i]">@status[i]</option>
-                            }
-                        }
-                    </select>
-                </div> *@
+                @if (!isAdmin)
+                {
+                    <div class="col-md-8">
+                        <input type="text" name="searchString" class="form-control" placeholder="Search by Order Number or Customer Name..." value="@Context.Request.Query["searchString"]" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-outline-primary w-100">Search</button>
+                    </div>
+                    <div class="col-md-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100">Clear</a>
+                    </div>
+                }
             </form>
         </div>
     </div>
@@ -264,9 +260,9 @@
                             <td style="font-size: 1.1rem;">@item.Name</td>
                             <td style="font-size: 1.1rem;">@item.ContactNo</td>
                             <td style="font-size: 1.1rem;">@item.Order.Venue</td>
-                            <td style="font-size: 1.1rem;">@item.Order.CateringDate</td>
+                            <td style="font-size: 1.1rem;">@item.Order.CateringDate.ToShortDateString()</td>
                             <td style="font-size: 1.1rem;">@item.Order.Occasion</td>
-                            <td style="font-size: 1.1rem;">@item.Order.timeOfFoodServing</td>
+                            <td style="font-size: 1.1rem;">@item.Order.timeOfFoodServing.ToShortTimeString()</td>
                             <td style="font-size: 1.1rem;">@item.Order.Status</td>
                             <td class="text-end">
                                 @if (item.Order?.Status == "Ongoing" && !hasReturn)
@@ -295,7 +291,15 @@
                                            class="btn btn-warning action-btn mb-1"><i class="bi bi-person-plus"></i> Deploy Waiter</a>
                                     }
                                 }
-                                @if (headWaiterId != null)
+                                @if (item.Order?.Status != "Completed" && !hasReturn)
+                                {
+                                    <a asp-action="PullOutMaterials" asp-route-id="@item.CustomerID" class="btn btn-outline-primary action-btn mb-1" style="border: 2px solid;"><i class="bi bi-box-arrow-up"></i> Pull Out Materials</a>
+                                    @if (hasPullOut && !hasReturn)
+                                    {
+                                        <a asp-action="ReturnMaterials" asp-route-id="@item.CustomerID" class="btn btn-outline-warning action-btn mb-1" style="border: 2px solid;"><i class="bi bi-arrow-counterclockwise"></i> Return Materials</a>
+                                    }
+                                }
+                                                                @if (headWaiterId != null)
                                 {
                                     <a asp-action="Details" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
                                        class="btn btn-info action-btn mb-1"><i class="bi bi-info-circle"></i> Details</a>
@@ -304,14 +308,6 @@
                                 {
                                     <a asp-action="Details" asp-route-id="@item.CustomerID"
                                        class="btn btn-info action-btn mb-1"><i class="bi bi-info-circle"></i> Details</a>
-                                }
-                                @if (item.Order?.Status != "Completed" && !hasReturn)
-                                {
-                                    <a asp-action="PullOutMaterials" asp-route-id="@item.CustomerID" class="btn btn-outline-primary action-btn mb-1" style="border: 2px solid;"><i class="bi bi-box-arrow-up"></i> Pull Out Materials</a>
-                                    @if (hasPullOut && !hasReturn)
-                                    {
-                                        <a asp-action="ReturnMaterials" asp-route-id="@item.CustomerID" class="btn btn-outline-warning action-btn mb-1" style="border: 2px solid;"><i class="bi bi-arrow-counterclockwise"></i> Return Materials</a>
-                                    }
                                 }
                             </td>
                         </tr>

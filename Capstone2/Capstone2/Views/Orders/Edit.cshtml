@@ -84,6 +84,8 @@
 
     <div class="edit-card">
         <form asp-action="Edit" asp-route-id="@Model.OrderId" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="OrderId" />
             <input type="hidden" asp-for="Status" />
             <input type="hidden" asp-for="OrderDate" />
@@ -130,6 +132,14 @@
                     <label asp-for="Occasion" class="form-label fw-semibold">Occasion</label>
                     <input asp-for="Occasion" class="form-control" placeholder="Enter occasion" />
                     <span asp-validation-for="Occasion" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="NoOfPax" class="form-label fw-semibold">No. Of Pax</label>
+                    <input asp-for="NoOfPax" type="number" class="form-control" min="60" />
+                    <span asp-validation-for="NoOfPax" class="text-danger"></span>
                 </div>
             </div>
 

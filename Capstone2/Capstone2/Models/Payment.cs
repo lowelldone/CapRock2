@@ -11,6 +11,7 @@ namespace Capstone2.Models
 
         [Required]
         public int OrderId { get; set; }
+
         [ForeignKey("OrderId")]
         public Order Order { get; set; }
 
@@ -20,5 +21,8 @@ namespace Capstone2.Models
 
         [Required]
         public DateTime Date { get; set; } = DateTime.Now;
+
+        [NotMapped]
+        public bool IsForAdditionalCharges { get; set; } = false;
     }
 }

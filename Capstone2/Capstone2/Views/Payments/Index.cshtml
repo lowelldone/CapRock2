@@ -7,6 +7,7 @@
     // Show "Updated Total Amount" header only when any order in the Model has additional charges > 0
     var hasAdditionalCharges = Model != null
         && Model.Any(m => additionalChargesByOrder.ContainsKey(m.OrderId) && additionalChargesByOrder[m.OrderId] > 0m);
+    var remainingBalanceByOrder = ViewBag.RemainingBalanceByOrder as System.Collections.Generic.IDictionary<int, double> ?? new System.Collections.Generic.Dictionary<int, double>();
 }
 
 <style>
@@ -26,20 +27,24 @@
         --danger-color: #ef4444;
         --info-color: #3b82f6;
     }
+
     body, .container-fluid, .card, .table {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .payments-bg {
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
         border-radius: 24px;
         padding-bottom: 2rem;
     }
+
     .payments-header {
         display: flex;
         align-items: center;
         gap: 16px;
     }
+
     .payments-header-icon {
         font-size: 2.5rem;
         color: var(--primary-purple);
@@ -49,43 +54,51 @@
         box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
         border: 1px solid var(--purple-border);
     }
+
     .payments-subtitle {
         color: var(--text-purple-light);
         font-size: 1.1rem;
         margin-top: -8px;
         margin-bottom: 18px;
     }
+
     .card {
         border-radius: 20px !important;
         box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
         border: 1px solid var(--purple-border);
         transition: all 0.3s ease;
     }
-    .card:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        transform: translateY(-2px);
-    }
+
+        .card:hover {
+            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
+
     .table {
         border-radius: 16px;
         overflow: hidden;
         background: #fff;
         box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.1);
     }
-    .table thead th {
-        background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: var(--text-purple);
-        border-bottom: 2px solid var(--purple-border);
-    }
-    .table tbody tr:nth-child(even) {
-        background: var(--purple-bg);
-    }
-    .table tbody tr:hover {
-        background: var(--purple-bg-light);
-        transition: all 0.3s ease;
-        transform: scale(1.01);
-    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-purple);
+            border-bottom: 2px solid var(--purple-border);
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: var(--purple-bg);
+        }
+
+        .table tbody tr:hover {
+            background: var(--purple-bg-light);
+            transition: all 0.3s ease;
+            transform: scale(1.01);
+        }
+
     .action-btn {
         border-radius: 8px;
         font-size: 1rem;
@@ -95,42 +108,51 @@
         transition: all 0.3s ease;
         border: 2px solid transparent;
     }
-    .action-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-    }
-    .action-btn i {
-        margin-right: 4px;
-    }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
+        .action-btn i {
+            margin-right: 4px;
+        }
+
     .balance-badge {
         font-size: 0.9rem;
         padding: 0.5rem 1rem;
         border-radius: 20px;
         font-weight: 600;
     }
-    .balance-badge.high {
-        background: var(--danger-color);
-        color: white;
-    }
-    .balance-badge.medium {
-        background: var(--warning-color);
-        color: white;
-    }
-    .balance-badge.low {
-        background: var(--success-color);
-        color: white;
-    }
+
+        .balance-badge.high {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .balance-badge.medium {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .balance-badge.low {
+            background: var(--success-color);
+            color: white;
+        }
+
     .progress-bar {
         height: 8px;
         border-radius: 4px;
         background: var(--purple-bg-light);
         overflow: hidden;
     }
+
     .progress-fill {
         height: 100%;
         background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
         transition: width 0.3s ease;
     }
+
     .extra-note {
         color: #64748b;
         font-size: 0.85rem;
@@ -170,6 +192,10 @@
                 <thead class="table-light rounded-4">
                     <tr>
                         <th class="fw-bold" style="font-size: 1.2rem;">Customer</th>
+                        @if (ViewBag.IsAdmin == true)
+                        {
+                            <th class="fw-bold" style="font-size: 1.2rem;">Order Number</th>
+                        }
                         <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Balance</th>
                         <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
@@ -179,14 +205,21 @@
                     @foreach (var item in Model)
                     {
                         var extra = additionalChargesByOrder.ContainsKey(item.OrderId) ? (double)additionalChargesByOrder[item.OrderId] : 0d;
+                        var balance = remainingBalanceByOrder.ContainsKey(item.OrderId)
+                        ? remainingBalanceByOrder[item.OrderId]
+                        : (extra > 0 ? extra : Math.Max(0, item.TotalPayment - Math.Min(item.AmountPaid, item.TotalPayment)));
                         var effectiveTotal = item.TotalPayment + extra;
-                        var balance = effectiveTotal - item.AmountPaid;
-                        var paymentPercentage = effectiveTotal > 0 ? (item.AmountPaid / effectiveTotal) * 100 : 0;
+                        var paidForProgress = effectiveTotal - balance;
+                        var paymentPercentage = effectiveTotal > 0 ? (paidForProgress / effectiveTotal) * 100 : 0;
                         var balanceClass = balance > effectiveTotal * 0.5 ? "high" :
                         balance > effectiveTotal * 0.25 ? "medium" : "low";
 
                         <tr>
                             <td style="font-size: 1.1rem;">@item.Customer.Name</td>
+                            @if (ViewBag.IsAdmin == true)
+                            {
+                                <td style="font-size: 1.1rem;">@item.OrderNumber</td>
+                            }
                             <td style="font-size: 1.1rem;">@item.CateringDate.ToShortDateString()</td>
                             <td>
                                 <span class="balance-badge @balanceClass">₱@balance.ToString("F2")</span>
