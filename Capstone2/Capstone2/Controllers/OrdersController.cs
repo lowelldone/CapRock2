@@ -85,6 +85,7 @@ namespace Capstone2.Controllers
         public async Task<IActionResult> Edit(int id, Order model)
         {
             ModelState.Remove("Customer.Order");
+            ModelState.Remove("OrderNumber");
             if (!ModelState.IsValid) return View(model);
 
             var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.OrderId == id);
@@ -96,6 +97,7 @@ namespace Capstone2.Controllers
             order.timeOfFoodServing = model.timeOfFoodServing;
             order.Occasion = model.Occasion;
             order.Motif = model.Motif;
+            order.NoOfPax = model.NoOfPax;
 
             // Update customer fields
             order.Customer.Name = model.Customer.Name;

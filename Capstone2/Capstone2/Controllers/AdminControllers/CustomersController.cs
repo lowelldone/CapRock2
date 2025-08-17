@@ -165,13 +165,19 @@ namespace Capstone2.Controllers.AdminControllers
                 .ToList();
 
             var effectiveTotal = order.TotalPayment + (double)additionalCharges;
-            var remainingBalance = effectiveTotal - order.AmountPaid;
+            var remainingBalance = additionalCharges > 0
+                ? (double)additionalCharges
+                : Math.Max(0, order.TotalPayment - order.AmountPaid);
 
             // Pass to View
             ViewBag.AdditionalCharges = additionalCharges;
             ViewBag.ChargedItems = chargedItems;
             ViewBag.EffectiveTotal = effectiveTotal;
             ViewBag.RemainingBalance = remainingBalance;
+
+            // Role flag for view logic
+            var role = HttpContext.Session.GetString("Role");
+            ViewBag.IsAdmin = role == "ADMIN";
 
             // If order is completed, get assigned waiters
             if (order.Status == "Completed")
@@ -277,11 +283,26 @@ namespace Capstone2.Controllers.AdminControllers
                 .SumAsync(r => (double)((r.Lost + r.Damaged) * r.ChargePerItem));
             var effectiveTotal = customer.Order.TotalPayment + additionalCharges;
 
-            // Mark as paid and complete if fully paid; otherwise keep or set status accordingly
+            // If fully paid, mark customer as paid, but only mark Completed if returns exist
             if (customer.Order.AmountPaid >= effectiveTotal)
             {
                 customer.IsPaid = true;
-                customer.Order.Status = "Completed";
+                var returnsExist = await _context.MaterialReturns.AnyAsync(r => r.OrderId == customer.Order.OrderId);
+                if (returnsExist)
+                {
+                    customer.Order.Status = "Completed";
+                    // Set waiters back to Available when truly completed
+                    var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == customer.Order.OrderId).ToList();
+                    foreach (var ow in orderWaiters)
+                    {
+                        var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == ow.WaiterId);
+                        if (waiter != null)
+                        {
+                            waiter.Availability = "Available";
+                            _context.Waiters.Update(waiter);
+                        }
+                    }
+                }
                 _context.Customers.Update(customer);
                 _context.Orders.Update(customer.Order);
             }
@@ -308,6 +329,22 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 TempData["CateringStatusError"] = "At least 50% down payment is required to proceed with the order.";
                 return RedirectToAction(nameof(Index));
+            }
+
+            // Prevent marking as Completed unless materials have been returned and all charges are settled
+            if (cateringStatus == "Completed")
+            {
+                var orderId = customer.Order.OrderId;
+                var returnsExist = await _context.MaterialReturns.AnyAsync(r => r.OrderId == orderId);
+                var additionalCharges = await _context.MaterialReturns
+                    .Where(r => r.OrderId == orderId)
+                    .SumAsync(r => (decimal)((r.Lost + r.Damaged) * r.ChargePerItem));
+                var effectiveTotal = (decimal)customer.Order.TotalPayment + additionalCharges;
+                if (!returnsExist || (decimal)customer.Order.AmountPaid < effectiveTotal)
+                {
+                    TempData["CateringStatusError"] = "Cannot mark as Completed until materials are returned and all charges are fully paid.";
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
             customer.Order.Status = cateringStatus;

@@ -14,6 +14,7 @@ namespace Capstone2.Models
         [Required]
         public string Venue { get; set; }
         [Required]
+        [Range(60, int.MaxValue, ErrorMessage = "No. Of Pax must be at least 60.")]
         public int NoOfPax { get; set; }
         [Required]
         public DateTime timeOfFoodServing { get; set; }

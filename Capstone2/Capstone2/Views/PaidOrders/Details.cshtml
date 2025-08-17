@@ -4,8 +4,12 @@
     ViewData["Title"] = "View Order";
     var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
     var additionalCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0;
-    var updatedTotal = (decimal)Model.TotalPayment + additionalCharges; // used to compute balance when there are additional charges
-    var balance = updatedTotal - (decimal)Model.AmountPaid;
+    // Remaining balance as computed in controller (base-first allocation, change not applied to charges)
+    var balance = ViewBag.RemainingBalance != null
+        ? (decimal)ViewBag.RemainingBalance
+        : (additionalCharges > 0
+            ? additionalCharges
+            : Math.Max(0, (decimal)Model.TotalPayment - (decimal)Model.AmountPaid));
 }
 
 <style>
@@ -264,7 +268,7 @@
                         <span class="details-label">Additional Charges (Lost/Damaged):</span>
                     </div>
                     <div class="col-md-8">
-                        <span class="fw-bold mb-0">₱@additionalCharges</span>
+                        <span class="fw-bold mb-0">₱@additionalCharges.ToString("0.00")</span>
                         @if (chargedItems != null && chargedItems.Any())
                         {
                             <button type="button" class="btn btn-sm btn-info ms-2" data-bs-toggle="modal" data-bs-target="#chargedItemsModal">

@@ -4,10 +4,14 @@
     ViewData["Title"] = "Process Payment";
     var existingPayments = ViewBag.ExistingPayments as List<Capstone2.Models.Payment>;
     var remainingBalance = ViewBag.RemainingBalance as double? ?? 0;
+    var totalPaid = ViewBag.TotalPaid as double? ?? Model.AmountPaid;
+    var appliedPaidToBase = ViewBag.AppliedPaidToBase as double? ?? Math.Min(totalPaid, Model.TotalPayment);
     var additionalCharges = ViewBag.AdditionalCharges as decimal? ?? 0m;
     var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
     var isHeadWaiter = ViewBag.IsHeadWaiter as bool? ?? false;
     var effectiveTotal = Model.TotalPayment + (double)additionalCharges;
+    // Old balance refers to the base order balance only; excess over base is returned to the customer
+    var oldBalance = Math.Max(0, Model.TotalPayment - appliedPaidToBase);
 }
 
 <style>
@@ -227,9 +231,22 @@
                         <h6 class="fw-bold mb-2">@(isHeadWaiter ? "Balance Summary" : "Payment Summary")</h6>
                         @if (additionalCharges > 0)
                         {
-                            <p class="mb-1"><strong>Additional Charges:</strong> ₱@additionalCharges.ToString("F2")</p>
+                            <p class="mb-1"><strong>Old Balance:</strong> ₱@oldBalance.ToString("F2")</p>
+                            <p class="mb-1">
+                                <strong>Additional Charges:</strong> ₱@additionalCharges.ToString("F2")
+                                @if (chargedItems != null && chargedItems.Any())
+                                {
+                                    <button type="button" class="btn btn-sm btn-info ms-2" data-bs-toggle="modal" data-bs-target="#chargedItemsModal">
+                                        View Charged Items
+                                    </button>
+                                }
+                            </p>
+                            <p class="mb-1"><strong>New Balance:</strong> ₱@remainingBalance.ToString("F2")</p>
                         }
-                        <p class="mb-1"><strong>@(isHeadWaiter ? "Balance" : "Current Balance"):</strong> ₱@remainingBalance.ToString("F2")</p>
+                        else
+                        {
+                            <p class="mb-1"><strong>Balance:</strong> ₱@remainingBalance.ToString("F2")</p>
+                        }
                         @* <p class="mb-1"><strong>Payment Amount:</strong> <span id="displayAmount">₱@remainingBalance.ToString("F2")</span></p>
                         <p class="mb-0"><strong>Remaining After Payment:</strong> <span id="remainingAfter">₱0.00</span></p> *@
                     </div>
@@ -246,7 +263,7 @@
         </form>
     </div>
 
-    @if (existingPayments?.Any() == true)
+    @if (!isHeadWaiter && existingPayments?.Any() == true)
     {
         <div class="order-card">
             <h4 class="fw-bold mb-3">Payment History</h4>

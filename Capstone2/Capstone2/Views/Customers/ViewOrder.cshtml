@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "View Order";
     var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
+    bool isAdmin = ViewBag.IsAdmin ?? false;
 }
 
 <style>
@@ -223,7 +224,6 @@
                 <span class="vieworder-header-icon"><i class="bi bi-receipt"></i></span>
                 <h2 class="fw-bold mb-0">Order Details</h2>
             </div>
-            <div class="vieworder-subtitle">View order information for @Model.Customer.Name</div>
         </div>
     </div>
 
@@ -231,6 +231,15 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="order-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="order-label">Customer Name:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="order-value">@Model.Customer.Name</span>
+                        </div>
+                    </div>
+                </div><div class="order-row">
                     <div class="row">
                         <div class="col-md-4">
                             <span class="order-label">Contact:</span>
@@ -358,7 +367,7 @@
                 @if (ViewBag.AdditionalCharges != null && (decimal)ViewBag.AdditionalCharges > 0)
                 {
                     <div class="mt-2">
-                        <h6 class="fw-bold text-danger">Additional Charges</h6>
+                        <p class="fw-bold text-danger">Total Additional Charges: ₱@(((decimal)ViewBag.AdditionalCharges).ToString("F2"))</p>
                         @if (chargedItems != null && chargedItems.Any())
                         {
                             <div class="mt-2">
@@ -367,14 +376,17 @@
                                 </button>
                             </div>
                         }
-                        <p class="fw-bold text-danger">Total Additional Charges: ₱@(((decimal)ViewBag.AdditionalCharges).ToString("F2"))</p>
                     </div>
                 }
 
                 <hr />
                 @if (Model.Status != "Pending")
                 {
-                    <h5 class="fw-bold text-primary">Updated Total: ₱@(((decimal)ViewBag.EffectiveTotal).ToString("F2"))</h5>
+                    @* Show Updated Total only when there are additional charges, and hide for Admin when status is Ongoing *@
+                    @if ((ViewBag.AdditionalCharges != null && (decimal)ViewBag.AdditionalCharges > 0) && !(isAdmin && Model.Status == "Ongoing"))
+                    {
+                        <h5 class="fw-bold text-primary">Updated Total: ₱@(((decimal)ViewBag.EffectiveTotal).ToString("F2"))</h5>
+                    }
                     @if (Model.Status != "Completed")
                     {
                         <p class="fw-bold @(ViewBag.RemainingBalance > 0 ? "text-warning" : "text-success")">

@@ -18,7 +18,7 @@ namespace Capstone2.Controllers
         }
 
         // GET: PaidOrders
-        public async Task<IActionResult> Index(string statusFilter, int? headWaiterId)
+        public async Task<IActionResult> Index(string statusFilter, int? headWaiterId, string searchString)
         {
             var role = HttpContext.Session.GetString("Role");
 
@@ -73,7 +73,17 @@ namespace Capstone2.Controllers
                     paidOrders = paidOrders.Where(c => c.Order.Status == statusFilter);
                 }
 
+                if (!string.IsNullOrWhiteSpace(searchString))
+                {
+                    var term = searchString.Trim().ToLower();
+                    paidOrders = paidOrders.Where(c =>
+                        c.Name.ToLower().Contains(term) ||
+                        (c.ContactNo != null && c.ContactNo.ToLower().Contains(term)) ||
+                        (c.Address != null && c.Address.ToLower().Contains(term)));
+                }
+
                 ViewBag.IsAdmin = false;
+                ViewBag.SearchString = searchString;
                 ViewBag.MaterialPullOuts = await _context.MaterialPullOuts.ToListAsync();
                 ViewBag.MaterialReturns = await _context.MaterialReturns.ToListAsync();
 
@@ -119,6 +129,32 @@ namespace Capstone2.Controllers
             var materialReturns = await _context.Set<MaterialReturn>().Where(r => r.OrderId == order.OrderId).ToListAsync();
             var additionalCharges = materialReturns.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem);
             ViewBag.AdditionalCharges = additionalCharges;
+
+            // Compute remaining balance consistent with Payments page allocation rules
+            var payments = await _context.Payments
+                .Where(p => p.OrderId == order.OrderId)
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+
+            double baseAllocated = 0d;
+            double chargesAllocated = 0d;
+            foreach (var payment in payments)
+            {
+                if (baseAllocated < order.TotalPayment)
+                {
+                    var canAllocateToBase = Math.Min(payment.Amount, order.TotalPayment - baseAllocated);
+                    baseAllocated += canAllocateToBase;
+                    // Any remainder on the crossing payment is treated as change and not applied to charges
+                }
+                else
+                {
+                    chargesAllocated += payment.Amount;
+                }
+            }
+
+            var remainingBase = Math.Max(0d, order.TotalPayment - baseAllocated);
+            var remainingCharges = Math.Max(0d, (double)additionalCharges - chargesAllocated);
+            ViewBag.RemainingBalance = (decimal)(remainingBase + remainingCharges);
 
             // Prepare list of charged items for modal
             var chargedItems = materialReturns
@@ -657,10 +693,22 @@ namespace Capstone2.Controllers
                 if ((decimal)order.AmountPaid >= effectiveTotal)
                 {
                     order.Status = "Completed";
+                    var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerID == order.CustomerID);
+                    if (customer != null)
+                    {
+                        customer.IsPaid = true;
+                        _context.Customers.Update(customer);
+                    }
                 }
                 else
                 {
                     order.Status = "Settling Balance";
+                    var customer = await _context.Customers.FirstOrDefaultAsync(c => c.CustomerID == order.CustomerID);
+                    if (customer != null)
+                    {
+                        customer.IsPaid = false; // if generating new charges, not fully paid anymore
+                        _context.Customers.Update(customer);
+                    }
                 }
                 _context.Orders.Update(order);
 
