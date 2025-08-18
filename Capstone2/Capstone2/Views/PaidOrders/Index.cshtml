@@ -10,7 +10,7 @@
     {
         headWaiterId = Convert.ToInt32(Context.Request.Query["headWaiterId"]);
     }
-    
+
     bool isAdmin = ViewBag.IsAdmin ?? false;
 }
 
@@ -170,7 +170,7 @@
     {
         <div class="alert alert-success">@TempData["ReturnSuccess"]</div>
     }
-    
+
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
             <div class="paidorders-header mb-1">
@@ -253,9 +253,9 @@
                     @foreach (var item in Model)
                     {
                         var hasPullOut = item.Order != null && item.Order.OrderId != 0 &&
-                            (ViewBag.MaterialPullOuts != null && ((IEnumerable<dynamic>)ViewBag.MaterialPullOuts).Any(p => p.OrderId == item.Order.OrderId));
+                        (ViewBag.MaterialPullOuts != null && ((IEnumerable<dynamic>)ViewBag.MaterialPullOuts).Any(p => p.OrderId == item.Order.OrderId));
                         var hasReturn = item.Order != null && item.Order.OrderId != 0 &&
-                            (ViewBag.MaterialReturns != null && ((IEnumerable<dynamic>)ViewBag.MaterialReturns).Any(r => r.OrderId == item.Order.OrderId));
+                        (ViewBag.MaterialReturns != null && ((IEnumerable<dynamic>)ViewBag.MaterialReturns).Any(r => r.OrderId == item.Order.OrderId));
                         <tr>
                             <td style="font-size: 1.1rem;">@item.Name</td>
                             <td style="font-size: 1.1rem;">@item.ContactNo</td>
@@ -263,7 +263,33 @@
                             <td style="font-size: 1.1rem;">@item.Order.CateringDate.ToShortDateString()</td>
                             <td style="font-size: 1.1rem;">@item.Order.Occasion</td>
                             <td style="font-size: 1.1rem;">@item.Order.timeOfFoodServing.ToShortTimeString()</td>
-                            <td style="font-size: 1.1rem;">@item.Order.Status</td>
+                            <td style="font-size: 1.1rem;">
+                                @{
+                                    var order = item.Order;
+                                    var dynamicStatus = order?.Status ?? "";
+                                    if (order != null)
+                                    {
+                                        var remainingDict = ViewBag.RemainingBalanceByOrder as System.Collections.Generic.IDictionary<int, double>;
+                                        var returnsDict = ViewBag.ReturnsExistByOrder as System.Collections.Generic.IDictionary<int, bool>;
+                                        var remaining = remainingDict != null && remainingDict.ContainsKey(order.OrderId)
+                                        ? remainingDict[order.OrderId]
+                                        : 0d;
+                                        var hasReturns = returnsDict != null && returnsDict.ContainsKey(order.OrderId);
+                                        // If materials have been returned and there is remaining balance, show Settling Balance
+                                        if (remaining > 0 && hasReturns)
+                                        {
+                                            dynamicStatus = "Settling Balance";
+                                        }
+                                    }
+                                }
+                                <span class="badge @(dynamicStatus switch {
+                                    "Accepted" => "bg-info",
+                                    "Ongoing" => "bg-primary",
+                                    "Completed" => "bg-success",
+                                    "Settling Balance" => "bg-danger",
+                                    _ => "bg-secondary"
+                                })">@dynamicStatus</span>
+                            </td>
                             <td class="text-end">
                                 @if (item.Order?.Status == "Ongoing" && !hasReturn)
                                 {
@@ -299,7 +325,7 @@
                                         <a asp-action="ReturnMaterials" asp-route-id="@item.CustomerID" class="btn btn-outline-warning action-btn mb-1" style="border: 2px solid;"><i class="bi bi-arrow-counterclockwise"></i> Return Materials</a>
                                     }
                                 }
-                                                                @if (headWaiterId != null)
+                                @if (headWaiterId != null)
                                 {
                                     <a asp-action="Details" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
                                        class="btn btn-info action-btn mb-1"><i class="bi bi-info-circle"></i> Details</a>

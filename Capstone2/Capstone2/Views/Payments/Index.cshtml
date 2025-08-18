@@ -211,8 +211,7 @@
                         var effectiveTotal = item.TotalPayment + extra;
                         var paidForProgress = effectiveTotal - balance;
                         var paymentPercentage = effectiveTotal > 0 ? (paidForProgress / effectiveTotal) * 100 : 0;
-                        var balanceClass = balance > effectiveTotal * 0.5 ? "high" :
-                        balance > effectiveTotal * 0.25 ? "medium" : "low";
+                        var balanceClass = "high"; // Always show red badge for any remaining balance
 
                         <tr>
                             <td style="font-size: 1.1rem;">@item.Customer.Name</td>

@@ -21,20 +21,24 @@
         --danger-color: #ef4444;
         --info-color: #3b82f6;
     }
+
     body, .container-fluid, .card, .table {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .customers-bg {
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
         border-radius: 24px;
         padding-bottom: 2rem;
     }
+
     .customers-header {
         display: flex;
         align-items: center;
         gap: 16px;
     }
+
     .customers-header-icon {
         font-size: 2.5rem;
         color: var(--primary-purple);
@@ -44,12 +48,14 @@
         box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
         border: 1px solid var(--purple-border);
     }
+
     .customers-subtitle {
         color: var(--text-purple-light);
         font-size: 1.1rem;
         margin-top: -8px;
         margin-bottom: 18px;
     }
+
     .add-customer-btn {
         font-weight: 600;
         font-size: 1.1rem;
@@ -58,41 +64,49 @@
         box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
         transition: all 0.3s ease;
     }
-    .add-customer-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
-    }
+
+        .add-customer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
+        }
+
     .card {
         border-radius: 20px !important;
         box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
         border: 1px solid var(--purple-border);
         transition: all 0.3s ease;
     }
-    .card:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        transform: translateY(-2px);
-    }
+
+        .card:hover {
+            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
+
     .table {
         border-radius: 16px;
         overflow: hidden;
         background: #fff;
         box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.1);
     }
-    .table thead th {
-        background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: var(--text-purple);
-        border-bottom: 2px solid var(--purple-border);
-    }
-    .table tbody tr:nth-child(even) {
-        background: var(--purple-bg);
-    }
-    .table tbody tr:hover {
-        background: var(--purple-bg-light);
-        transition: all 0.3s ease;
-        transform: scale(1.01);
-    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-purple);
+            border-bottom: 2px solid var(--purple-border);
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: var(--purple-bg);
+        }
+
+        .table tbody tr:hover {
+            background: var(--purple-bg-light);
+            transition: all 0.3s ease;
+            transform: scale(1.01);
+        }
+
     .action-btn {
         border-radius: 8px;
         font-size: 1rem;
@@ -102,23 +116,28 @@
         transition: all 0.3s ease;
         border: 2px solid transparent;
     }
-    .action-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-    }
-    .action-btn i {
-        margin-right: 4px;
-    }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
+        .action-btn i {
+            margin-right: 4px;
+        }
     /* Status badge enhancements */
     .badge.bg-success {
         background: var(--success-color) !important;
     }
+
     .badge.bg-warning {
         background: var(--warning-color) !important;
     }
+
     .badge.bg-danger {
         background: var(--danger-color) !important;
     }
+
     .badge.bg-info {
         background: var(--info-color) !important;
     }
@@ -129,6 +148,7 @@
         color: #065f46;
         border-radius: 12px;
     }
+
     .alert-danger {
         background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
         border: 1px solid var(--danger-color);
@@ -286,16 +306,35 @@
                                 }
                             </td>
                             <td>
-                                 @if (order != null)
+                                @if (order != null)
                                 {
-                                    <span class="badge @(order.Status switch {
+                                    // Determine dynamic catering status: if there is still a remaining balance, show Settling Balance
+                                    var remainingDict = ViewBag.RemainingBalanceByOrder as System.Collections.Generic.IDictionary<int, double>;
+                                    var returnsDict = ViewBag.ReturnsExistByOrder as System.Collections.Generic.IDictionary<int, bool>;
+                                    var remaining = remainingDict != null && order != null && remainingDict.ContainsKey(order.OrderId)
+                                    ? remainingDict[order.OrderId]
+                                    : 0d;
+                                    var hasReturns = returnsDict != null && order != null && returnsDict.ContainsKey(order.OrderId);
+                                    var dynamicStatus = order.Status;
+                                    // Only show Settling Balance if there is remaining balance AND materials have been returned.
+                                    // Otherwise, while still unpaid but no returns yet, show Accepted.
+                                    if (remaining > 0 && hasReturns)
+                                    {
+                                        dynamicStatus = "Settling Balance";
+                                    }
+                                    else if (remaining > 0 && !hasReturns)
+                                    {
+                                        dynamicStatus = "Accepted";
+                                    }
+                                    <span class="badge @(dynamicStatus switch {
                                         "Pending" => "bg-warning",
-                                        "Accepted" => "bg-info", 
+                                        "Accepted" => "bg-info",
                                         "Ongoing" => "bg-primary",
                                         "Completed" => "bg-success",
+                                        "Settling Balance" => "bg-danger",
                                         _ => "bg-secondary"
                                     })">
-                                        @order.Status
+                                        @dynamicStatus
                                     </span>
                                 }
                                 else
@@ -346,7 +385,7 @@
         setSelectedCateringStatus();
 
         // Auto-submit form when catering status changes
-        $('#cateringStatusFilter').on('change', function() {
+        $('#cateringStatusFilter').on('change', function () {
             $(this).closest('form').submit();
         });
     });

@@ -87,7 +87,96 @@ namespace Capstone2.Controllers
                 ViewBag.MaterialPullOuts = await _context.MaterialPullOuts.ToListAsync();
                 ViewBag.MaterialReturns = await _context.MaterialReturns.ToListAsync();
 
-                return View(await paidOrders.ToListAsync());
+                // Build dynamic remaining balance and returns flags for status display
+                var customersList = await paidOrders.ToListAsync();
+                var orderIds = customersList
+                    .Where(c => c.Order != null)
+                    .Select(c => c.Order.OrderId)
+                    .ToList();
+
+                if (orderIds.Any())
+                {
+                    // Additional charges per order (lost + damaged)
+                    var additionalChargesByOrder = await _context.Set<MaterialReturn>()
+                        .Where(r => orderIds.Contains(r.OrderId))
+                        .GroupBy(r => r.OrderId)
+                        .Select(g => new { OrderId = g.Key, TotalCharge = g.Sum(r => (decimal)((r.Lost + r.Damaged) * r.ChargePerItem)) })
+                        .ToListAsync();
+                    var additionalChargesDict = additionalChargesByOrder.ToDictionary(x => x.OrderId, x => (double)x.TotalCharge);
+
+                    // Payments grouped by order (chronological) for allocation
+                    var payments = await _context.Payments
+                        .Where(p => orderIds.Contains(p.OrderId))
+                        .OrderBy(p => p.Date)
+                        .ToListAsync();
+                    var paymentsByOrder = payments.GroupBy(p => p.OrderId).ToDictionary(g => g.Key, g => g.ToList());
+
+                    // Returns existence per order
+                    var returnsOrderIds = await _context.Set<MaterialReturn>()
+                        .Where(r => orderIds.Contains(r.OrderId))
+                        .Select(r => r.OrderId)
+                        .Distinct()
+                        .ToListAsync();
+                    var returnsExistByOrder = new System.Collections.Generic.Dictionary<int, bool>();
+                    foreach (var id in returnsOrderIds)
+                    {
+                        returnsExistByOrder[id] = true;
+                    }
+
+                    // Compute remaining balance per order using strict base-then-charges allocation
+                    var remainingBalanceByOrder = new System.Collections.Generic.Dictionary<int, double>();
+                    foreach (var customer in customersList)
+                    {
+                        var order = customer.Order;
+                        if (order == null) continue;
+
+                        var orderId = order.OrderId;
+                        var totalPaymentBase = order.TotalPayment;
+                        var additionalCharges = additionalChargesDict.ContainsKey(orderId) ? additionalChargesDict[orderId] : 0d;
+
+                        double baseAllocated = 0d;
+                        double chargesAllocated = 0d;
+                        if (paymentsByOrder.TryGetValue(orderId, out var paymentList))
+                        {
+                            foreach (var payment in paymentList)
+                            {
+                                if (baseAllocated < totalPaymentBase)
+                                {
+                                    var amountNeededForBase = totalPaymentBase - baseAllocated;
+                                    var toBase = Math.Min(payment.Amount, amountNeededForBase);
+                                    baseAllocated += toBase;
+
+                                    var remainder = payment.Amount - toBase;
+                                    if (remainder > 0 && baseAllocated >= totalPaymentBase)
+                                    {
+                                        chargesAllocated += remainder;
+                                    }
+                                }
+                                else
+                                {
+                                    chargesAllocated += payment.Amount;
+                                }
+                            }
+                        }
+
+                        var remainingBase = Math.Max(0d, totalPaymentBase - baseAllocated);
+                        var remainingCharges = Math.Max(0d, additionalCharges - chargesAllocated);
+                        var remaining = remainingBase + remainingCharges;
+
+                        // If order is already marked Completed, treat remaining as zero for display
+                        if (order.Status == "Completed")
+                        {
+                            remaining = 0d;
+                        }
+
+                        remainingBalanceByOrder[orderId] = remaining;
+                    }
+
+                    ViewBag.RemainingBalanceByOrder = remainingBalanceByOrder;
+                    ViewBag.ReturnsExistByOrder = returnsExistByOrder;
+                }
+
+                return View(customersList);
             }
             else
             {
@@ -142,9 +231,16 @@ namespace Capstone2.Controllers
             {
                 if (baseAllocated < order.TotalPayment)
                 {
-                    var canAllocateToBase = Math.Min(payment.Amount, order.TotalPayment - baseAllocated);
-                    baseAllocated += canAllocateToBase;
-                    // Any remainder on the crossing payment is treated as change and not applied to charges
+                    var amountNeededForBase = order.TotalPayment - baseAllocated;
+                    var toBase = Math.Min(payment.Amount, amountNeededForBase);
+                    baseAllocated += toBase;
+
+                    var remainder = payment.Amount - toBase;
+                    if (remainder > 0 && baseAllocated >= order.TotalPayment)
+                    {
+                        // Base completed by this payment; apply remainder to charges
+                        chargesAllocated += remainder;
+                    }
                 }
                 else
                 {
@@ -154,7 +250,13 @@ namespace Capstone2.Controllers
 
             var remainingBase = Math.Max(0d, order.TotalPayment - baseAllocated);
             var remainingCharges = Math.Max(0d, (double)additionalCharges - chargesAllocated);
-            ViewBag.RemainingBalance = (decimal)(remainingBase + remainingCharges);
+            var remainingBalance = (decimal)(remainingBase + remainingCharges);
+            // If the order is completed, treat the balance as fully paid for display
+            if (order.Status == "Completed")
+            {
+                remainingBalance = 0m;
+            }
+            ViewBag.RemainingBalance = remainingBalance;
 
             // Prepare list of charged items for modal
             var chargedItems = materialReturns
