@@ -4,7 +4,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
             <h2 class="fw-bold mb-0">Supplier Transactions</h2>
-            <div class="text-muted">@ViewBag.SupplierName</div>
+            <div class="text-muted"><strong>@ViewBag.SupplierName</strong></div>
         </div>
         <div class="d-flex gap-2">
             <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
@@ -50,10 +50,10 @@
                             <td>@item.Status</td>
                             <td class="text-end">
                                 <div class="btn-group" role="group">
-                                    <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="po" class="btn btn-outline-primary btn-sm">
+                                    <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="po" asp-route-vtId="@item.ViewTransactionId" class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-box"></i> View Purchase Order
                                     </a>
-                                    <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="tx" class="btn btn-primary btn-sm">
+                                    <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="tx" asp-route-vtId="@item.ViewTransactionId" class="btn btn-primary btn-sm">
                                         <i class="bi bi-receipt"></i> View Transaction
                                     </a>
                                 </div>
@@ -67,12 +67,12 @@
 </div>
 
 <script>
-    (async function(){
+    (async function () {
         const supplierId = @ViewBag.SupplierId;
         const poMaterial = document.getElementById('poMaterial');
-        if (poMaterial){
+        if (poMaterial) {
             const res = await fetch(`/Suppliers/Prices/${supplierId}`);
-            if (res.ok){
+            if (res.ok) {
                 const data = await res.json();
                 poMaterial.innerHTML = '';
                 data.materials.forEach(m => {

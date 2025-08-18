@@ -128,6 +128,11 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
+                    <label asp-for="User.UserNumber" class="form-label fw-semibold">User Number (11 digits)</label>
+                    <input asp-for="User.UserNumber" class="form-control" maxlength="11" pattern="\d{11}" inputmode="numeric" title="Please enter exactly 11 digits." placeholder="e.g. 00000001234" />
+                    <span asp-validation-for="User.UserNumber" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
                     <label asp-for="User.Username" class="form-label fw-semibold">Username</label>
                     <input asp-for="User.Username" class="form-control" placeholder="Enter username" />
                     <span asp-validation-for="User.Username" class="text-danger"></span>
@@ -180,5 +185,34 @@
             passwordInput.type = isPassword ? "text" : "password";
             toggleBtn.textContent = isPassword ? "Hide" : "Show";
         });
+
+                // Enforce 11-digit numeric input for User Number (same behavior as Orders/Form contact number)
+                (function () {
+                    const userNumberInput = document.querySelector('input[name="User.UserNumber"]');
+                    if (!userNumberInput) return;
+
+                    // Only allow digits and limit to 11
+                    userNumberInput.addEventListener('input', function () {
+                        this.value = this.value.replace(/\D/g, '');
+                        if (this.value.length > 11) {
+                            this.value = this.value.slice(0, 11);
+                        }
+                    });
+
+                    // Prevent paste of non-numeric characters, cap at 11
+                    userNumberInput.addEventListener('paste', function (e) {
+                        e.preventDefault();
+                        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                        const numericOnly = pastedText.replace(/\D/g, '');
+                        const currentValue = this.value.replace(/\D/g, '');
+                        const newValue = (currentValue + numericOnly).slice(0, 11);
+                        this.value = newValue;
+                    });
+
+                    // Prevent drag and drop of non-numeric characters
+                    userNumberInput.addEventListener('drop', function (e) {
+                        e.preventDefault();
+                    });
+                })();
     </script>
 }

@@ -228,7 +228,8 @@
                             <td style="font-size: 1.1rem;">
                                 <span class="badge bg-@(item.Order.Status == "Accepted" ? "warning" :
                                                    item.Order.Status == "Ongoing" ? "info" :
-                                                   item.Order.Status == "Completed" ? "success" : "secondary")">
+                                                   item.Order.Status == "Completed" ? "success" :
+                                                   item.Order.Status == "Settling Balance" ? "danger" : "secondary")">
                                     @item.Order.Status
                                 </span>
                             </td>

@@ -32,6 +32,10 @@ namespace Capstone2.Models
 
         [Required]
         public string Status { get; set; } = "Pending"; // Pending, Ordered, Delivered, Cancelled
+
+        // Link to the ViewTransaction that groups related purchase orders/transactions
+        public int? ViewTransactionId { get; set; }
+        public ViewTransaction ViewTransaction { get; set; }
     }
 }
 
