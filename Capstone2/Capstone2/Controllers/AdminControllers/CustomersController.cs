@@ -21,9 +21,9 @@ namespace Capstone2.Controllers.AdminControllers
             _context = context;
         }
 
-        // Allocate payments strictly to the base total first. Any remainder in the crossing payment
-        // (the payment that reaches the base) is treated as change, not applied to additional charges.
-        // Only payments that occur after the base has been fully covered are counted toward charges.
+        // Allocate payments to the base total first. If a payment crosses the base boundary,
+        // allocate the remainder of that same payment to additional charges. After the base has
+        // been fully covered, subsequent payments are applied entirely to charges.
         private static (double baseAllocated, double chargesAllocated) AllocatePaymentsToBaseThenCharges(Order order, IEnumerable<Payment> payments)
         {
             double baseAllocated = 0d;
@@ -32,10 +32,16 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 if (baseAllocated < order.TotalPayment)
                 {
-                    var canAllocateToBase = Math.Min(payment.Amount, order.TotalPayment - baseAllocated);
-                    baseAllocated += canAllocateToBase;
-                    // Any remainder in this same payment is considered change (not applied to charges)
-                    // and therefore intentionally ignored here.
+                    var amountNeededForBase = order.TotalPayment - baseAllocated;
+                    var toBase = Math.Min(payment.Amount, amountNeededForBase);
+                    baseAllocated += toBase;
+
+                    var remainder = payment.Amount - toBase;
+                    if (remainder > 0 && baseAllocated >= order.TotalPayment)
+                    {
+                        // Base completed by this payment; apply remainder to charges
+                        chargesAllocated += remainder;
+                    }
                 }
                 else
                 {
@@ -72,7 +78,48 @@ namespace Capstone2.Controllers.AdminControllers
                 customers = customers.Where(s => s.Order != null && s.Order.Status == cateringStatus);
             }
 
-            return View(await customers.ToListAsync());
+            var customerList = await customers.ToListAsync();
+
+            // Compute remaining balance (base + additional charges minus payments) per order
+            var orderIds = customerList.Where(c => c.Order != null).Select(c => c.Order.OrderId).ToList();
+            var additionalChargesByOrder = await _context.Set<MaterialReturn>()
+                .Where(r => orderIds.Contains(r.OrderId))
+                .GroupBy(r => r.OrderId)
+                .Select(g => new { OrderId = g.Key, TotalCharge = g.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem) })
+                .ToListAsync();
+            var additionalChargesDict = additionalChargesByOrder.ToDictionary(x => x.OrderId, x => x.TotalCharge);
+
+            var paymentsAll = await _context.Payments
+                .Where(p => orderIds.Contains(p.OrderId))
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+            var paymentsListByOrder = paymentsAll.GroupBy(p => p.OrderId).ToDictionary(g => g.Key, g => g.ToList());
+
+            var remainingBalanceByOrder = new Dictionary<int, double>();
+            foreach (var c in customerList)
+            {
+                if (c.Order == null) continue;
+                var order = c.Order;
+                var extra = additionalChargesDict.TryGetValue(order.OrderId, out var total) ? (double)total : 0d;
+                var paymentsForOrder = paymentsListByOrder.TryGetValue(order.OrderId, out var plist) ? plist : new List<Payment>();
+                var allocation = AllocatePaymentsToBaseThenCharges(order, paymentsForOrder);
+                var remainingBase = Math.Max(0d, order.TotalPayment - allocation.baseAllocated);
+                var remainingCharges = Math.Max(0d, extra - allocation.chargesAllocated);
+                remainingBalanceByOrder[order.OrderId] = remainingBase + remainingCharges;
+            }
+
+            ViewBag.RemainingBalanceByOrder = remainingBalanceByOrder;
+
+            // Track which orders already have material returns recorded (used to label Settling Balance)
+            var orderIdsWithReturns = await _context.MaterialReturns
+                .Where(r => orderIds.Contains(r.OrderId))
+                .Select(r => r.OrderId)
+                .Distinct()
+                .ToListAsync();
+            var returnsExistDict = orderIdsWithReturns.ToDictionary(id => id, id => true);
+            ViewBag.ReturnsExistByOrder = returnsExistDict;
+
+            return View(customerList);
         }
 
         // GET: Customers/Create

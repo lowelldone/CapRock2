@@ -18,9 +18,9 @@ namespace Capstone2.Controllers.AdminControllers
             _context = context;
         }
 
-        // Allocate payments strictly to the base total first. Any remainder in the crossing payment
-        // (the payment that reaches the base) is treated as change, not applied to additional charges.
-        // Only payments that occur after the base has been fully covered are counted toward charges.
+        // Allocate payments to the base total first. If a single payment crosses the base boundary,
+        // allocate the remainder of that same payment to additional charges. After the base has been
+        // fully covered, subsequent payments are applied entirely to charges.
         private static (double baseAllocated, double chargesAllocated) AllocatePaymentsToBaseThenCharges(Order order, IEnumerable<Payment> payments)
         {
             double baseAllocated = 0d;
@@ -29,10 +29,16 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 if (baseAllocated < order.TotalPayment)
                 {
-                    var canAllocateToBase = Math.Min(payment.Amount, order.TotalPayment - baseAllocated);
-                    baseAllocated += canAllocateToBase;
-                    // Any remainder in this same payment is considered change (not applied to charges)
-                    // and therefore intentionally ignored here.
+                    var amountNeededForBase = order.TotalPayment - baseAllocated;
+                    var toBase = Math.Min(payment.Amount, amountNeededForBase);
+                    baseAllocated += toBase;
+
+                    var remainder = payment.Amount - toBase;
+                    if (remainder > 0 && baseAllocated >= order.TotalPayment)
+                    {
+                        // The base was completed by this payment; apply the remainder to charges
+                        chargesAllocated += remainder;
+                    }
                 }
                 else
                 {
@@ -159,7 +165,7 @@ namespace Capstone2.Controllers.AdminControllers
                 .OrderByDescending(p => p.Date)
                 .ToListAsync();
             var totalPaid = existingPayments.Sum(p => p.Amount);
-            // Allocate strictly: remainder of crossing payment is ignored for charges
+            // Allocate payments with remainder applied to charges when base is crossed
             var allocation = AllocatePaymentsToBaseThenCharges(order, existingPayments);
             var appliedPaidToBase = allocation.baseAllocated;
 
@@ -262,7 +268,7 @@ namespace Capstone2.Controllers.AdminControllers
                 order.Status = "Accepted";
             }
 
-            // Calculate effective total (including additional charges) and determine remaining balance using strict allocation
+            // Calculate effective total (including additional charges) and determine remaining balance using allocation
             var effectiveTotal = order.TotalPayment + (double)additionalCharges;
 
             // Build a payment list including the new payment (it's already tracked above)

@@ -99,20 +99,6 @@
     </div>
 
     <div class="assign-card">
-        <div class="customer-info">
-            <div class="info-row">
-                <span class="info-label">Customer:</span>
-                <span class="info-value">@Model.Name</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Order Venue:</span>
-                <span class="info-value">@Model.Order?.Venue</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Order Date:</span>
-                <span class="info-value">@Model.Order?.OrderDate.ToShortDateString()</span>
-            </div>
-        </div>
 
         <form asp-action="AssignHeadWaiter" asp-route-id="@Model.CustomerID" method="post">
             <div class="mb-4">
