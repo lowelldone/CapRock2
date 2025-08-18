@@ -262,14 +262,20 @@ namespace Capstone2.Controllers.AdminControllers
                 order.Status = "Accepted";
             }
 
-            // Calculate effective total (including additional charges)
+            // Calculate effective total (including additional charges) and determine remaining balance using strict allocation
             var effectiveTotal = order.TotalPayment + (double)additionalCharges;
 
-            // Mark customer as paid if fully paid including additional charges
-            if (order.AmountPaid >= effectiveTotal)
+            // Build a payment list including the new payment (it's already tracked above)
+            var paymentsIncludingNew = paymentsSoFar.Concat(new[] { payment }).OrderBy(p => p.Date).ToList();
+            var allocationAfter = AllocatePaymentsToBaseThenCharges(order, paymentsIncludingNew);
+            var remainingBaseAfter = Math.Max(0d, order.TotalPayment - allocationAfter.baseAllocated);
+            var remainingChargesAfter = Math.Max(0d, (double)additionalCharges - allocationAfter.chargesAllocated);
+            var remainingBalanceAfter = remainingBaseAfter + remainingChargesAfter;
+
+            // Mark customer as paid/completed only when strict remaining balance is zero
+            if (remainingBalanceAfter <= 0.000001)
             {
                 order.Customer.IsPaid = true;
-                // Only mark Completed when materials have been returned (i.e., returns exist)
                 var returnsExist = await _context.MaterialReturns.AnyAsync(r => r.OrderId == order.OrderId);
                 if (returnsExist)
                 {
@@ -291,7 +297,6 @@ namespace Capstone2.Controllers.AdminControllers
             else
             {
                 order.Customer.IsPaid = false;
-                // Not fully paid yet: set to Ongoing unless still Pending/Accepted
                 if (order.Status != "Pending" && order.Status != "Accepted")
                 {
                     order.Status = "Ongoing";

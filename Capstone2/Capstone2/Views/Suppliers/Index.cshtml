@@ -134,11 +134,40 @@
                             <td class="text-end">
                                 <a asp-action="Edit" asp-route-id="@item.SupplierId" class="btn btn-outline-primary btn-sm action-btn"><i class="bi bi-pencil-square"></i> Edit</a>
                                 <a asp-action="Delete" asp-route-id="@item.SupplierId" class="btn btn-outline-danger action-btn"><i class="bi bi-trash"></i> Delete</a>
+                                <a asp-action="ManagePrices" asp-route-id="@item.SupplierId" class="btn btn-outline-secondary action-btn"><i class="bi bi-currency-dollar"></i> Prices</a>
+                                <a asp-action="ViewTransactions" asp-route-id="@item.SupplierId" class="btn btn-outline-info action-btn"><i class="bi bi-receipt"></i> Transactions</a>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-body">
+            <form asp-controller="Suppliers" asp-action="AutoRestock" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <div class="col-md-3">
+                    <label class="form-label">Consumable Reorder Point</label>
+                    <input type="number" name="reorderPointConsumable" class="form-control" value="50" min="1" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Consumable Target Level</label>
+                    <input type="number" name="targetLevelConsumable" class="form-control" value="200" min="1" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Non-consumable Reorder Point</label>
+                    <input type="number" name="reorderPointNonConsumable" class="form-control" value="5" min="1" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Non-consumable Target Level</label>
+                    <input type="number" name="targetLevelNonConsumable" class="form-control" value="10" min="1" />
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success"><i class="bi bi-lightning-charge"></i> Auto Restock</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

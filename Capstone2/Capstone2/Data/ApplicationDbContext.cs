@@ -34,6 +34,11 @@ namespace Capstone2.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Material> Materials { get; set; }
+        public DbSet<SupplierMaterialPrice> SupplierMaterialPrices { get; set; }
+        public DbSet<SupplierTransaction> SupplierTransactions { get; set; }
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<ViewTransaction> ViewTransactions { get; set; }
+
 
         public DbSet<Order> Orders { get; set; }
         public DbSet<HeadWaiter> HeadWaiters { get; set; }

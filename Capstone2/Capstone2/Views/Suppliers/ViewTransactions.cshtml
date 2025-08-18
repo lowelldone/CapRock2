@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Capstone2.Models.ViewTransaction>
+
+<div class="container-fluid mt-4 px-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold mb-0">Supplier Transactions</h2>
+            <div class="text-muted">@ViewBag.SupplierName</div>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="CreatePurchaseOrder" method="post" class="row g-3 mb-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="supplierId" value="@ViewBag.SupplierId" />
+                <div class="col-md-4">
+                    <label class="form-label">Material</label>
+                    <select class="form-select" id="poMaterial" name="materialId"></select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Quantity</label>
+                    <input class="form-control" type="number" name="quantity" min="1" required />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Scheduled Delivery</label>
+                    <input class="form-control" type="date" name="scheduledDelivery" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button class="btn btn-primary w-100" type="submit"><i class="bi bi-cart-plus"></i> Create PO</button>
+                </div>
+            </form>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Ordered Date</th>
+                        <th>Expected Date</th>
+                        <th>Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.OrderDate.ToString("MM/dd/yyyy")</td>
+                            <td>@(item.ExpectedDate.HasValue ? item.ExpectedDate.Value.ToString("MM/dd/yyyy") : "-")</td>
+                            <td>@item.Status</td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group">
+                                    <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="po" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-box"></i> View Purchase Order
+                                    </a>
+                                    <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="tx" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-receipt"></i> View Transaction
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    (async function(){
+        const supplierId = @ViewBag.SupplierId;
+        const poMaterial = document.getElementById('poMaterial');
+        if (poMaterial){
+            const res = await fetch(`/Suppliers/Prices/${supplierId}`);
+            if (res.ok){
+                const data = await res.json();
+                poMaterial.innerHTML = '';
+                data.materials.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m.materialId;
+                    opt.textContent = m.name;
+                    poMaterial.appendChild(opt);
+                });
+            }
+        }
+    })();
+</script>

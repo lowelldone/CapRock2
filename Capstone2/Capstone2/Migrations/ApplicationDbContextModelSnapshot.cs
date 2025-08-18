@@ -390,6 +390,48 @@ namespace Capstone2.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("Capstone2.Models.PurchaseOrder", b =>
+                {
+                    b.Property<int>("PurchaseOrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PurchaseOrderId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MaterialId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReceivedQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ScheduledDelivery")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("PurchaseOrderId");
+
+                    b.HasIndex("MaterialId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("PurchaseOrders");
+                });
+
             modelBuilder.Entity("Capstone2.Models.Supplier", b =>
                 {
                     b.Property<int>("SupplierId")
@@ -413,6 +455,80 @@ namespace Capstone2.Migrations
                     b.HasKey("SupplierId");
 
                     b.ToTable("Suppliers");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.SupplierMaterialPrice", b =>
+                {
+                    b.Property<int>("SupplierMaterialPriceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SupplierMaterialPriceId"));
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MaterialId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("SupplierMaterialPriceId");
+
+                    b.HasIndex("MaterialId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("SupplierMaterialPrices");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.SupplierTransaction", b =>
+                {
+                    b.Property<int>("SupplierTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SupplierTransactionId"));
+
+                    b.Property<DateTime?>("DeliveredDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpectedDeliveryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MaterialId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ReceivedQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("SupplierTransactionId");
+
+                    b.HasIndex("MaterialId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("SupplierTransactions");
                 });
 
             modelBuilder.Entity("Capstone2.Models.User", b =>
@@ -446,6 +562,34 @@ namespace Capstone2.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.ViewTransaction", b =>
+                {
+                    b.Property<int>("ViewTransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ViewTransactionId"));
+
+                    b.Property<DateTime?>("ExpectedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ViewTransactionId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("ViewTransactions");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Waiter", b =>
@@ -561,6 +705,74 @@ namespace Capstone2.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.PurchaseOrder", b =>
+                {
+                    b.HasOne("Capstone2.Models.Material", "Material")
+                        .WithMany()
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Capstone2.Models.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Material");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.SupplierMaterialPrice", b =>
+                {
+                    b.HasOne("Capstone2.Models.Material", "Material")
+                        .WithMany()
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Capstone2.Models.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Material");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.SupplierTransaction", b =>
+                {
+                    b.HasOne("Capstone2.Models.Material", "Material")
+                        .WithMany()
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Capstone2.Models.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Material");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("Capstone2.Models.ViewTransaction", b =>
+                {
+                    b.HasOne("Capstone2.Models.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Capstone2.Models.Waiter", b =>
