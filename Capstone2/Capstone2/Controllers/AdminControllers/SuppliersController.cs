@@ -158,10 +158,11 @@ namespace Capstone2.Controllers.AdminControllers
 
         // GET: Suppliers/ManageTransactions/5 (view)
         [HttpGet]
-        public IActionResult ManageTransactions(int id, string view = "po")
+        public IActionResult ManageTransactions(int id, string view = "po", int? vtId = null)
         {
             ViewBag.SupplierId = id;
             ViewBag.ViewMode = (view ?? "po").ToLower();
+            ViewBag.ViewTransactionId = vtId;
             return View();
         }
 
@@ -254,14 +255,22 @@ namespace Capstone2.Controllers.AdminControllers
 
         // GET: Suppliers/Transactions/5
         [HttpGet]
-        public async Task<IActionResult> Transactions(int id)
+        public async Task<IActionResult> Transactions(int id, int? vtId)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null) return NotFound();
 
-            var transactions = await _context.SupplierTransactions
+            var txQuery = _context.SupplierTransactions
                 .Include(t => t.Material)
                 .Where(t => t.SupplierId == id)
+                .AsQueryable();
+
+            if (vtId.HasValue)
+            {
+                txQuery = txQuery.Where(t => t.ViewTransactionId == vtId.Value);
+            }
+
+            var transactions = await txQuery
                 .OrderByDescending(t => t.OrderDate)
                 .Select(t => new
                 {
@@ -283,28 +292,34 @@ namespace Capstone2.Controllers.AdminControllers
 
         // GET: Suppliers/PurchaseOrders/5
         [HttpGet]
-        public async Task<IActionResult> PurchaseOrders(int id)
+        public async Task<IActionResult> PurchaseOrders(int id, int? vtId)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null) return NotFound();
 
-            var pos = await _context.PurchaseOrders
+            var query = _context.PurchaseOrders
                 .Include(po => po.Material)
                 .Where(po => po.SupplierId == id)
                 .OrderByDescending(po => po.CreatedAt)
-                .Select(po => new
-                {
-                    po.PurchaseOrderId,
-                    po.MaterialId,
-                    MaterialName = po.Material.Name,
-                    po.Quantity,
-                    po.ReceivedQuantity,
-                    po.UnitPrice,
-                    po.CreatedAt,
-                    po.ScheduledDelivery,
-                    po.Status
-                })
-                .ToListAsync();
+                .AsQueryable();
+
+            if (vtId.HasValue)
+            {
+                query = query.Where(po => po.ViewTransactionId == vtId.Value);
+            }
+
+            var pos = await query.Select(po => new
+            {
+                po.PurchaseOrderId,
+                po.MaterialId,
+                MaterialName = po.Material.Name,
+                po.Quantity,
+                po.ReceivedQuantity,
+                po.UnitPrice,
+                po.CreatedAt,
+                po.ScheduledDelivery,
+                po.Status
+            }).ToListAsync();
 
             return Ok(new { Supplier = supplier, PurchaseOrders = pos });
         }
@@ -329,6 +344,16 @@ namespace Capstone2.Controllers.AdminControllers
                 .Select(p => (decimal?)p.UnitPrice)
                 .FirstOrDefaultAsync() ?? material.Price;
 
+            // Create a ViewTransaction for this purchase order
+            var viewTransaction = new ViewTransaction
+            {
+                SupplierId = supplierId,
+                OrderDate = DateTime.Now,
+                ExpectedDate = scheduledDelivery,
+                Status = "Ordered"
+            };
+            _context.ViewTransactions.Add(viewTransaction);
+
             var po = new PurchaseOrder
             {
                 SupplierId = supplierId,
@@ -336,7 +361,8 @@ namespace Capstone2.Controllers.AdminControllers
                 Quantity = quantity,
                 UnitPrice = price,
                 ScheduledDelivery = scheduledDelivery,
-                Status = "Ordered"
+                Status = "Ordered",
+                ViewTransaction = viewTransaction
             };
             _context.PurchaseOrders.Add(po);
 
@@ -349,13 +375,14 @@ namespace Capstone2.Controllers.AdminControllers
                 UnitPrice = price,
                 OrderDate = DateTime.Now,
                 ExpectedDeliveryDate = scheduledDelivery,
-                Status = "Ordered"
+                Status = "Ordered",
+                ViewTransaction = viewTransaction
             };
             _context.SupplierTransactions.Add(tx);
 
             await _context.SaveChangesAsync();
             TempData["SupplierSuccess"] = "Purchase order created.";
-            return RedirectToAction(nameof(ManageTransactions), new { id = supplierId });
+            return RedirectToAction(nameof(ManageTransactions), new { id = supplierId, vtId = viewTransaction.ViewTransactionId, view = "po" });
         }
 
         // POST: Suppliers/ReceivePurchaseOrder
@@ -389,6 +416,10 @@ namespace Capstone2.Controllers.AdminControllers
                 tx.DeliveredDate = DateTime.Now;
                 tx.Status = "Delivered";
                 tx.ReceivedQuantity = qty;
+                if (!tx.ViewTransactionId.HasValue && po.ViewTransactionId.HasValue)
+                {
+                    tx.ViewTransactionId = po.ViewTransactionId;
+                }
                 _context.SupplierTransactions.Update(tx);
             }
             else
@@ -402,11 +433,31 @@ namespace Capstone2.Controllers.AdminControllers
                     UnitPrice = po.UnitPrice,
                     OrderDate = po.CreatedAt,
                     DeliveredDate = DateTime.Now,
-                    Status = "Delivered"
+                    Status = "Delivered",
+                    ViewTransactionId = po.ViewTransactionId
                 });
             }
 
             await _context.SaveChangesAsync();
+
+            // After saving PO updates, only mark linked ViewTransaction as delivered
+            // when all POs under the same ViewTransaction are delivered
+            if (po.ViewTransactionId.HasValue)
+            {
+                int vtId = po.ViewTransactionId.Value;
+                bool anyOpen = await _context.PurchaseOrders
+                    .AnyAsync(x => x.ViewTransactionId == vtId && x.Status != "Delivered");
+                if (!anyOpen)
+                {
+                    var vt = await _context.ViewTransactions.FindAsync(vtId);
+                    if (vt != null && vt.Status != "Delivered")
+                    {
+                        vt.Status = "Delivered";
+                        _context.ViewTransactions.Update(vt);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
             // AJAX support
             if (string.Equals(Request?.Headers["X-Requested-With"].ToString(), "XMLHttpRequest", StringComparison.OrdinalIgnoreCase))
             {
@@ -429,6 +480,7 @@ namespace Capstone2.Controllers.AdminControllers
 
             var map = purchaseOrderIds.Zip(deliveredQuantities, (id, qty) => new { id, qty }).ToList();
 
+            var impactedViewTransactionIds = new HashSet<int>();
             foreach (var item in map)
             {
                 var po = await _context.PurchaseOrders.FirstOrDefaultAsync(x => x.PurchaseOrderId == item.id && x.SupplierId == supplierId && x.Status == "Ordered");
@@ -447,6 +499,11 @@ namespace Capstone2.Controllers.AdminControllers
                 po.ReceivedQuantity = qty;
                 _context.PurchaseOrders.Update(po);
 
+                if (po.ViewTransactionId.HasValue)
+                {
+                    impactedViewTransactionIds.Add(po.ViewTransactionId.Value);
+                }
+
                 var tx = await _context.SupplierTransactions
                     .Where(t => t.SupplierId == po.SupplierId && t.MaterialId == po.MaterialId && t.Status == "Ordered")
                     .OrderByDescending(t => t.OrderDate)
@@ -456,6 +513,10 @@ namespace Capstone2.Controllers.AdminControllers
                     tx.DeliveredDate = DateTime.Now;
                     tx.ReceivedQuantity = qty;
                     tx.Status = "Delivered";
+                    if (!tx.ViewTransactionId.HasValue && po.ViewTransactionId.HasValue)
+                    {
+                        tx.ViewTransactionId = po.ViewTransactionId;
+                    }
                     _context.SupplierTransactions.Update(tx);
                 }
                 else
@@ -469,12 +530,35 @@ namespace Capstone2.Controllers.AdminControllers
                         UnitPrice = po.UnitPrice,
                         OrderDate = po.CreatedAt,
                         DeliveredDate = DateTime.Now,
-                        Status = "Delivered"
+                        Status = "Delivered",
+                        ViewTransactionId = po.ViewTransactionId
                     });
                 }
+
             }
 
             await _context.SaveChangesAsync();
+
+            // After saving PO updates, only mark impacted ViewTransactions as delivered
+            // when all POs under the same ViewTransaction are delivered
+            foreach (var vtId in impactedViewTransactionIds)
+            {
+                bool anyOpen = await _context.PurchaseOrders
+                    .AnyAsync(x => x.ViewTransactionId == vtId && x.Status != "Delivered");
+                if (!anyOpen)
+                {
+                    var vt = await _context.ViewTransactions.FindAsync(vtId);
+                    if (vt != null && vt.Status != "Delivered")
+                    {
+                        vt.Status = "Delivered";
+                        _context.ViewTransactions.Update(vt);
+                    }
+                }
+            }
+            if (impactedViewTransactionIds.Count > 0)
+            {
+                await _context.SaveChangesAsync();
+            }
             // AJAX support
             if (string.Equals(Request?.Headers["X-Requested-With"].ToString(), "XMLHttpRequest", StringComparison.OrdinalIgnoreCase))
             {
@@ -493,6 +577,9 @@ namespace Capstone2.Controllers.AdminControllers
             var materials = await _context.Materials.ToListAsync();
             var created = new List<object>();
             var createdSupplierIds = new HashSet<int>();
+            var supplierViewTransactions = new Dictionary<int, ViewTransaction>();
+            var orderDate = DateTime.Now;
+            var expectedDate = DateTime.Now.AddDays(3);
 
             foreach (var mat in materials)
             {
@@ -511,14 +598,29 @@ namespace Capstone2.Controllers.AdminControllers
                     if (bestOffer == null)
                         continue; // No supplier price configured, skip
 
+                    // Create (or reuse) a single ViewTransaction per supplier for this auto-restock run
+                    if (!supplierViewTransactions.TryGetValue(bestOffer.SupplierId, out var viewTransaction))
+                    {
+                        viewTransaction = new ViewTransaction
+                        {
+                            SupplierId = bestOffer.SupplierId,
+                            OrderDate = orderDate,
+                            ExpectedDate = expectedDate,
+                            Status = "Ordered"
+                        };
+                        _context.ViewTransactions.Add(viewTransaction);
+                        supplierViewTransactions[bestOffer.SupplierId] = viewTransaction;
+                    }
+
                     var po = new PurchaseOrder
                     {
                         SupplierId = bestOffer.SupplierId,
                         MaterialId = mat.MaterialId,
                         Quantity = qtyToOrder,
                         UnitPrice = bestOffer.UnitPrice,
-                        ScheduledDelivery = DateTime.Now.AddDays(3),
-                        Status = "Ordered"
+                        ScheduledDelivery = expectedDate,
+                        Status = "Ordered",
+                        ViewTransaction = viewTransaction
                     };
                     _context.PurchaseOrders.Add(po);
 
@@ -528,26 +630,15 @@ namespace Capstone2.Controllers.AdminControllers
                         MaterialId = mat.MaterialId,
                         Quantity = qtyToOrder,
                         UnitPrice = bestOffer.UnitPrice,
-                        OrderDate = DateTime.Now,
-                        ExpectedDeliveryDate = DateTime.Now.AddDays(3),
-                        Status = "Ordered"
+                        OrderDate = orderDate,
+                        ExpectedDeliveryDate = expectedDate,
+                        Status = "Ordered",
+                        ViewTransaction = viewTransaction
                     });
 
                     created.Add(new { MaterialId = mat.MaterialId, MaterialName = mat.Name, Quantity = qtyToOrder, SupplierId = bestOffer.SupplierId, bestOffer.UnitPrice });
                     createdSupplierIds.Add(bestOffer.SupplierId);
                 }
-            }
-
-            // Create exactly one ViewTransaction summary per supplier for this auto-restock run
-            foreach (var supplierId in createdSupplierIds)
-            {
-                _context.ViewTransactions.Add(new ViewTransaction
-                {
-                    SupplierId = supplierId,
-                    OrderDate = DateTime.Now,
-                    ExpectedDate = DateTime.Now.AddDays(3),
-                    Status = "Ordered"
-                });
             }
 
             await _context.SaveChangesAsync();

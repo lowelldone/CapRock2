@@ -423,11 +423,16 @@ namespace Capstone2.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("ViewTransactionId")
+                        .HasColumnType("int");
+
                     b.HasKey("PurchaseOrderId");
 
                     b.HasIndex("MaterialId");
 
                     b.HasIndex("SupplierId");
+
+                    b.HasIndex("ViewTransactionId");
 
                     b.ToTable("PurchaseOrders");
                 });
@@ -522,11 +527,16 @@ namespace Capstone2.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("ViewTransactionId")
+                        .HasColumnType("int");
+
                     b.HasKey("SupplierTransactionId");
 
                     b.HasIndex("MaterialId");
 
                     b.HasIndex("SupplierId");
+
+                    b.HasIndex("ViewTransactionId");
 
                     b.ToTable("SupplierTransactions");
                 });
@@ -554,6 +564,11 @@ namespace Capstone2.Migrations
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserNumber")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -718,12 +733,19 @@ namespace Capstone2.Migrations
                     b.HasOne("Capstone2.Models.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Capstone2.Models.ViewTransaction", "ViewTransaction")
+                        .WithMany()
+                        .HasForeignKey("ViewTransactionId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Material");
 
                     b.Navigation("Supplier");
+
+                    b.Navigation("ViewTransaction");
                 });
 
             modelBuilder.Entity("Capstone2.Models.SupplierMaterialPrice", b =>
@@ -756,12 +778,19 @@ namespace Capstone2.Migrations
                     b.HasOne("Capstone2.Models.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("Capstone2.Models.ViewTransaction", "ViewTransaction")
+                        .WithMany()
+                        .HasForeignKey("ViewTransactionId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Material");
 
                     b.Navigation("Supplier");
+
+                    b.Navigation("ViewTransaction");
                 });
 
             modelBuilder.Entity("Capstone2.Models.ViewTransaction", b =>
@@ -769,7 +798,7 @@ namespace Capstone2.Migrations
                     b.HasOne("Capstone2.Models.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Supplier");

@@ -32,6 +32,25 @@ namespace Capstone2.Controllers.AdminControllers
         [HttpPost]
         public IActionResult UpSert(HeadWaiter headWaiter)
         {
+            // Sanitize UserNumber: keep digits only and cap to 11
+            if (headWaiter?.User != null)
+            {
+                var raw = headWaiter.User.UserNumber ?? string.Empty;
+                var digitsOnly = new string(raw.Where(char.IsDigit).ToArray());
+                if (digitsOnly.Length > 11)
+                {
+                    digitsOnly = digitsOnly.Substring(0, 11);
+                }
+                headWaiter.User.UserNumber = digitsOnly;
+            }
+
+            // Validate: must be exactly 11 digits
+            if (string.IsNullOrWhiteSpace(headWaiter.User?.UserNumber) || headWaiter.User.UserNumber.Length != 11)
+            {
+                ModelState.AddModelError("User.UserNumber", "User Number must be exactly 11 digits.");
+                return View(headWaiter);
+            }
+
             if (headWaiter.HeadWaiterId == 0)
             {
                 // Check if a user with the same username exists
@@ -43,6 +62,7 @@ namespace Capstone2.Controllers.AdminControllers
                     existingUser.FirstName = headWaiter.User.FirstName;
                     existingUser.LastName = headWaiter.User.LastName;
                     existingUser.Role = "HeadWaiter";
+                    existingUser.UserNumber = headWaiter.User.UserNumber;
                     _context.Users.Update(existingUser);
                     _context.SaveChanges();
                     headWaiter.UserId = existingUser.UserId;
@@ -79,6 +99,7 @@ namespace Capstone2.Controllers.AdminControllers
                         existingHeadWaiter.User.FirstName = headWaiter.User.FirstName;
                         existingHeadWaiter.User.LastName = headWaiter.User.LastName;
                         existingHeadWaiter.User.Role = "HeadWaiter";
+                        existingHeadWaiter.User.UserNumber = headWaiter.User.UserNumber;
                         _context.Users.Update(existingHeadWaiter.User);
                     }
                 }

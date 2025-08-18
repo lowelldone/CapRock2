@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Capstone2.Models
 {
@@ -29,6 +30,10 @@ namespace Capstone2.Models
 
         // Quantity actually received; populated upon receiving
         public int? ReceivedQuantity { get; set; }
+
+        // Link each purchase order to its own ViewTransaction record
+        public int? ViewTransactionId { get; set; }
+        public ViewTransaction ViewTransaction { get; set; }
     }
 }
 

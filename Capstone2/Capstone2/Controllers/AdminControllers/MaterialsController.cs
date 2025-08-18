@@ -30,7 +30,11 @@ namespace Capstone2.Controllers.AdminControllers
                 materials = materials.Where(s => s.Name.ToLower().Contains(searchString.ToLower()));
             }
 
-            return View(await materials.ToListAsync());
+            // Low stock threshold for alerts
+            ViewBag.LowStockThreshold = 1000;
+
+            var list = await materials.ToListAsync();
+            return View(list);
         }
 
         // GET: Materials/Create

@@ -191,6 +191,7 @@
             <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
                 <thead class="table-light rounded-4">
                     <tr>
+                        <th class="fw-bold" style="font-size: 1.2rem;">Number</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Username</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">First Name</th>
                         <th class="fw-bold" style="font-size: 1.2rem;">Last Name</th>
@@ -203,6 +204,7 @@
                     @foreach (var head in Model)
                     {
                         <tr>
+                            <td style="font-size: 1.1rem;">@head.User.UserNumber</td>
                             <td style="font-size: 1.1rem;">@head.User.Username</td>
                             <td style="font-size: 1.1rem;">@head.User.FirstName</td>
                             <td style="font-size: 1.1rem;">@head.User.LastName</td>
@@ -228,10 +230,10 @@
                             </td>
                             <td class="text-end">
                                 <a asp-action="UpSert" asp-route-id="@head.WaiterId" class="btn btn-outline-primary action-btn" style="border: 2px solid;"><i class="bi bi-pencil-square"></i> Edit</a>
-@*                                 @if (head.Availability == "Busy")
-                                {
-                                    <a asp-action="AssignedOrder" asp-route-id="@head.WaiterId" class="btn btn-outline-info action-btn" style="border: 2px solid;"><i class="bi bi-eye"></i> View Order</a>
-                                } *@
+                                @*                                 @if (head.Availability == "Busy")
+                            {
+                            <a asp-action="AssignedOrder" asp-route-id="@head.WaiterId" class="btn btn-outline-info action-btn" style="border: 2px solid;"><i class="bi bi-eye"></i> View Order</a>
+                            } *@
                                 <a asp-action="Delete" asp-route-id="@head.WaiterId" class="btn btn-outline-danger action-btn" style="border: 2px solid;"><i class="bi bi-trash"></i> Delete</a>
                             </td>
                         </tr>

@@ -26,6 +26,40 @@ namespace Capstone2.Data
                 .WithMany()
                 .HasForeignKey(o => o.HeadWaiterId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Each PurchaseOrder optionally has one ViewTransaction
+            modelBuilder.Entity<PurchaseOrder>()
+                .HasOne(po => po.ViewTransaction)
+                .WithMany()
+                .HasForeignKey(po => po.ViewTransactionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Prevent cascading deletes from Supplier to dependents to avoid multiple cascade paths
+            modelBuilder.Entity<PurchaseOrder>()
+                .HasOne(po => po.Supplier)
+                .WithMany()
+                .HasForeignKey(po => po.SupplierId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ViewTransaction>()
+                .HasOne(vt => vt.Supplier)
+                .WithMany()
+                .HasForeignKey(vt => vt.SupplierId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Each SupplierTransaction optionally has one ViewTransaction
+            modelBuilder.Entity<SupplierTransaction>()
+                .HasOne(st => st.ViewTransaction)
+                .WithMany()
+                .HasForeignKey(st => st.ViewTransactionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Prevent cascading deletes from Supplier to SupplierTransaction
+            modelBuilder.Entity<SupplierTransaction>()
+                .HasOne(st => st.Supplier)
+                .WithMany()
+                .HasForeignKey(st => st.SupplierId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

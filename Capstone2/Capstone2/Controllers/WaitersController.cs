@@ -46,6 +46,25 @@ namespace Capstone2.Controllers
         [HttpPost]
         public IActionResult UpSert(Waiter waiter)
         {
+            // Sanitize UserNumber: keep digits only and cap to 11
+            if (waiter?.User != null)
+            {
+                var raw = waiter.User.UserNumber ?? string.Empty;
+                var digitsOnly = new string(raw.Where(char.IsDigit).ToArray());
+                if (digitsOnly.Length > 11)
+                {
+                    digitsOnly = digitsOnly.Substring(0, 11);
+                }
+                waiter.User.UserNumber = digitsOnly;
+            }
+
+            // Validate: must be exactly 11 digits
+            if (string.IsNullOrWhiteSpace(waiter.User?.UserNumber) || waiter.User.UserNumber.Length != 11)
+            {
+                ModelState.AddModelError("User.UserNumber", "User Number must be exactly 11 digits.");
+                return View(waiter);
+            }
+
             if (waiter.WaiterId == 0)
             {
                 // ✅ Create User first
@@ -80,6 +99,7 @@ namespace Capstone2.Controllers
                         existingWaiter.User.FirstName = waiter.User.FirstName;
                         existingWaiter.User.LastName = waiter.User.LastName;
                         existingWaiter.User.Role = "Waiter";
+                        existingWaiter.User.UserNumber = waiter.User.UserNumber;
                         _context.Users.Update(existingWaiter.User);
                     }
                 }
