@@ -1,0 +1,109 @@
+﻿@{
+    ViewData["Title"] = "Manage Prices";
+    var supplierId = (int)ViewBag.SupplierId;
+}
+
+<div class="container-fluid mt-4 px-4">
+    @if (TempData["SupplierSuccess"] != null)
+    {
+        <div id="price-success-toast" class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SupplierSuccess"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <script>
+            setTimeout(function () {
+                var toast = document.getElementById('price-success-toast');
+                if (toast) {
+                    var bsAlert = bootstrap.Alert.getOrCreateInstance(toast);
+                    bsAlert.close();
+                }
+            }, 3000);
+        </script>
+    }
+    @if (TempData["SupplierError"] != null)
+    {
+        <div id="price-error-toast" class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["SupplierError"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Manage Prices</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <form id="setPriceForm" asp-action="SetPrice" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="supplierId" value="@supplierId" />
+                <div class="col-md-6">
+                    <label class="form-label">Material</label>
+                    <select class="form-select" id="materialSelect" name="materialId"></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Unit Price</label>
+                    <input class="form-control" type="number" name="unitPrice" id="unitPrice" step="0.01" min="0" required />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button class="btn btn-primary w-100" type="submit"><i class="bi bi-save"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="fw-bold">Current Prices</h5>
+            <div class="table-responsive">
+                <table class="table table-striped" id="pricesTable">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Unit Price</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const supplierId = @supplierId;
+        const materialSelect = document.getElementById('materialSelect');
+        const pricesTableBody = document.querySelector('#pricesTable tbody');
+
+        async function loadData() {
+            const res = await fetch(`/Suppliers/Prices/${supplierId}`);
+            if (!res.ok) return;
+            const data = await res.json();
+
+            // Populate materials
+            materialSelect.innerHTML = '';
+            data.materials.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.materialId;
+                opt.textContent = m.name;
+                materialSelect.appendChild(opt);
+            });
+
+            // Populate prices
+            pricesTableBody.innerHTML = '';
+            data.prices.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${p.materialName}</td>
+                                    <td>₱${Number(p.unitPrice).toFixed(2)}</td>
+                                    <td>${new Date(p.lastUpdated).toLocaleString()}</td>`;
+                pricesTableBody.appendChild(tr);
+            });
+        }
+
+        loadData();
+    })();
+</script>
+
+

@@ -1,0 +1,191 @@
+﻿@{
+    ViewData["Title"] = "Supplier Transactions";
+    var supplierId = (int)ViewBag.SupplierId;
+}
+
+<div class="container-fluid mt-4 px-4">
+    @if (TempData["SupplierSuccess"] != null)
+    {
+        <div id="tx-success-toast" class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SupplierSuccess"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <script>
+            setTimeout(function () {
+                var toast = document.getElementById('tx-success-toast');
+                if (toast) {
+                    var bsAlert = bootstrap.Alert.getOrCreateInstance(toast);
+                    bsAlert.close();
+                }
+            }, 3000);
+        </script>
+    }
+    @if (TempData["SupplierError"] != null)
+    {
+        <div id="tx-error-toast" class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["SupplierError"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Supplier Transactions</h2>
+        <div class="d-flex gap-2">
+            <a asp-action="ManageTransactions" asp-route-id="@supplierId" asp-route-view="po" class="btn @(ViewBag.ViewMode == "po" ? "btn-primary" : "btn-outline-primary")"><i class="bi bi-box"></i> Purchase Orders</a>
+            <a asp-action="ManageTransactions" asp-route-id="@supplierId" asp-route-view="tx" class="btn @(ViewBag.ViewMode == "tx" ? "btn-primary" : "btn-outline-primary")"><i class="bi bi-receipt"></i> Transactions</a>
+            <a asp-action="ViewTransactions" asp-route-id="@supplierId" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <form id="af-form" method="post" style="display:none;">@Html.AntiForgeryToken()</form>
+
+
+
+    <div class="row">
+        <div class="col-lg-12" style="display:@(ViewBag.ViewMode == "po" ? "block" : "none")">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">Purchase Orders</h5>
+                        <button type="button" id="btnReceiveAll" class="btn btn-success btn-sm ms-auto"><i class="bi bi-check2-all"></i> Receive All</button>
+                    </div>
+                    <div class="table-responsive">
+                        <form asp-action="ReceiveAllPurchaseOrders" method="post" id="batchReceiveForm">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="supplierId" value="@supplierId" />
+                            <table class="table table-striped" id="poTable">
+                                <thead>
+                                    <tr>
+                                        <th>Material</th>
+                                        <th>Qty</th>
+                                        <th>Unit Price</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12" style="display:@(ViewBag.ViewMode == "tx" ? "block" : "none")">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="fw-bold">Transactions</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="txTable">
+                            <thead>
+                                <tr>
+                                    <th>Material</th>
+                                    <th>Qty</th>
+                                    <th>Received</th>
+                                    <th>Unit Price</th>
+                                    <th>Total Payment</th>
+                                    <th>Ordered</th>
+                                    <th>Expected</th>
+                                    <th>Delivered</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const supplierId = @supplierId;
+        const poTableBody = document.querySelector('#poTable tbody');
+        const txTableBody = document.querySelector('#txTable tbody');
+        const afTokenEl = document.querySelector('#af-form input[name="__RequestVerificationToken"]');
+        const afToken = afTokenEl ? afTokenEl.value : '';
+
+        async function loadPOs() {
+            const res = await fetch(`/Suppliers/PurchaseOrders/${supplierId}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            poTableBody.innerHTML = '';
+            data.purchaseOrders.forEach(po => {
+                const tr = document.createElement('tr');
+                const rec = po.receivedQuantity ?? 0;
+                const total = (rec > 0 ? rec : 0) * Number(po.unitPrice);
+                tr.innerHTML = `<td>${po.materialName}</td>
+                                    <td>${po.quantity}</td>
+                                    <td>₱${Number(po.unitPrice).toFixed(2)}</td>
+                                    <td>${po.status}</td>
+                                    <td>
+                                        ${po.status === 'Ordered' ?
+                        `<form class=\"inline-receive-form\" data-action=\"/Suppliers/ReceivePurchaseOrder\">\n                                            <input type=\"hidden\" name=\"__RequestVerificationToken\" value=\"${afToken}\" />\n                                            <input type=\"hidden\" name=\"purchaseOrderId\" value=\"${po.purchaseOrderId}\" />\n                                            <input type=\"number\" name=\"deliveredQuantity\" min=\"1\" class=\"form-control form-control-sm d-inline-block row-delivered-qty\" data-po-id=\"${po.purchaseOrderId}\" style=\"width:100px\" value=\"${po.quantity}\" oninput=\"document.getElementById('batchqty-${po.purchaseOrderId}').value = this.value\" />\n                                            <button type=\"button\" class=\"btn btn-success btn-sm ms-1 btn-inline-receive\"><i class=\"bi bi-box-arrow-in-down\"></i> Receive</button>\n                                        </form>` : ''}
+                                        ${po.status === 'Ordered' ?
+                        `<input type=\"hidden\" name=\"purchaseOrderIds\" form=\"batchReceiveForm\" value=\"${po.purchaseOrderId}\" />\n                                         <input type=\"hidden\" id=\"batchqty-${po.purchaseOrderId}\" name=\"deliveredQuantities\" form=\"batchReceiveForm\" value=\"${po.quantity}\" />` : ''}
+                                    </td>`;
+                poTableBody.appendChild(tr);
+            });
+        }
+
+        async function loadTx() {
+            const res = await fetch(`/Suppliers/Transactions/${supplierId}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            txTableBody.innerHTML = '';
+            data.transactions.forEach(tx => {
+                const tr = document.createElement('tr');
+                const tRec = tx.receivedQuantity ?? 0;
+                const tTotal = tRec * Number(tx.unitPrice);
+                tr.innerHTML = `<td>${tx.materialName}</td>
+                                    <td>${tx.quantity}</td>
+                                    <td>${tRec}</td>
+                                    <td>₱${Number(tx.unitPrice).toFixed(2)}</td>
+                                    <td>₱${tTotal.toFixed(2)}</td>
+                                    <td>${new Date(tx.orderDate).toLocaleDateString()}</td>
+                                    <td>${tx.expectedDeliveryDate ? new Date(tx.expectedDeliveryDate).toLocaleDateString() : '-'}</td>
+                                    <td>${tx.deliveredDate ? new Date(tx.deliveredDate).toLocaleDateString() : '-'}</td>
+                                    <td>${tx.status}</td>`;
+                txTableBody.appendChild(tr);
+            });
+        }
+
+        Promise.all([loadPOs(), loadTx()]);
+
+        // Inline receive via AJAX
+        document.addEventListener('click', async function (e) {
+            const btn = e.target.closest('.btn-inline-receive');
+            if (!btn) return;
+            const form = btn.closest('.inline-receive-form');
+            if (!form) return;
+            const action = form.getAttribute('data-action');
+            const fd = new FormData(form);
+            const res = await fetch(action, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: fd
+            });
+            if (res.ok) {
+                await loadPOs();
+                await loadTx();
+            }
+        });
+
+        // Batch receive via AJAX
+        document.getElementById('btnReceiveAll').addEventListener('click', async function () {
+            const form = document.getElementById('batchReceiveForm');
+            const fd = new FormData(form);
+            const res = await fetch(form.getAttribute('action') || '/Suppliers/ReceiveAllPurchaseOrders', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: fd
+            });
+            if (res.ok) {
+                await loadPOs();
+                await loadTx();
+            }
+        });
+    })();
+</script>
+
+

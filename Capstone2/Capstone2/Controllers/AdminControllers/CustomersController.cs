@@ -21,6 +21,31 @@ namespace Capstone2.Controllers.AdminControllers
             _context = context;
         }
 
+        // Allocate payments strictly to the base total first. Any remainder in the crossing payment
+        // (the payment that reaches the base) is treated as change, not applied to additional charges.
+        // Only payments that occur after the base has been fully covered are counted toward charges.
+        private static (double baseAllocated, double chargesAllocated) AllocatePaymentsToBaseThenCharges(Order order, IEnumerable<Payment> payments)
+        {
+            double baseAllocated = 0d;
+            double chargesAllocated = 0d;
+            foreach (var payment in payments.OrderBy(p => p.Date))
+            {
+                if (baseAllocated < order.TotalPayment)
+                {
+                    var canAllocateToBase = Math.Min(payment.Amount, order.TotalPayment - baseAllocated);
+                    baseAllocated += canAllocateToBase;
+                    // Any remainder in this same payment is considered change (not applied to charges)
+                    // and therefore intentionally ignored here.
+                }
+                else
+                {
+                    // Base fully covered earlier; subsequent payments go to charges
+                    chargesAllocated += payment.Amount;
+                }
+            }
+            return (baseAllocated, chargesAllocated);
+        }
+
         // GET: Customers
         public async Task<IActionResult> Index(string searchString, string cateringStatus)
         {
@@ -153,7 +178,7 @@ namespace Capstone2.Controllers.AdminControllers
             if (order == null)
                 return NotFound();
 
-            // Compute additional charges
+            // Compute additional charges and remaining balance using strict allocation
             var materialReturns = await _context.Set<MaterialReturn>()
                 .Where(r => r.OrderId == order.OrderId)
                 .ToListAsync();
@@ -165,9 +190,15 @@ namespace Capstone2.Controllers.AdminControllers
                 .ToList();
 
             var effectiveTotal = order.TotalPayment + (double)additionalCharges;
-            var remainingBalance = additionalCharges > 0
-                ? (double)additionalCharges
-                : Math.Max(0, order.TotalPayment - order.AmountPaid);
+
+            var existingPayments = await _context.Payments
+                .Where(p => p.OrderId == order.OrderId)
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+            var allocation = AllocatePaymentsToBaseThenCharges(order, existingPayments);
+            var remainingBase = Math.Max(0d, order.TotalPayment - allocation.baseAllocated);
+            var remainingCharges = Math.Max(0d, (double)additionalCharges - allocation.chargesAllocated);
+            var remainingBalance = remainingBase + remainingCharges;
 
             // Pass to View
             ViewBag.AdditionalCharges = additionalCharges;
@@ -266,7 +297,7 @@ namespace Capstone2.Controllers.AdminControllers
             };
             _context.Payments.Add(payment);
 
-            // Update order's AmountPaid
+            // Update order's AmountPaid (raw sum for reference)
             customer.Order.AmountPaid += paymentAmount;
             _context.Orders.Update(customer.Order);
 
@@ -283,8 +314,19 @@ namespace Capstone2.Controllers.AdminControllers
                 .SumAsync(r => (double)((r.Lost + r.Damaged) * r.ChargePerItem));
             var effectiveTotal = customer.Order.TotalPayment + additionalCharges;
 
-            // If fully paid, mark customer as paid, but only mark Completed if returns exist
-            if (customer.Order.AmountPaid >= effectiveTotal)
+            // Allocate strictly using all payments including this one
+            var paymentsSoFar = await _context.Payments
+                .Where(p => p.OrderId == customer.Order.OrderId)
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+            // paymentsSoFar already includes the newly added payment because we added it to the context above
+            var allocation = AllocatePaymentsToBaseThenCharges(customer.Order, paymentsSoFar);
+            var remainingBase = Math.Max(0d, customer.Order.TotalPayment - allocation.baseAllocated);
+            var remainingCharges = Math.Max(0d, (double)additionalCharges - allocation.chargesAllocated);
+            var remainingBalance = remainingBase + remainingCharges;
+
+            // If fully paid per strict allocation, mark as paid; only mark Completed if returns exist
+            if (remainingBalance <= 0.000001)
             {
                 customer.IsPaid = true;
                 var returnsExist = await _context.MaterialReturns.AnyAsync(r => r.OrderId == customer.Order.OrderId);
@@ -339,8 +381,18 @@ namespace Capstone2.Controllers.AdminControllers
                 var additionalCharges = await _context.MaterialReturns
                     .Where(r => r.OrderId == orderId)
                     .SumAsync(r => (decimal)((r.Lost + r.Damaged) * r.ChargePerItem));
-                var effectiveTotal = (decimal)customer.Order.TotalPayment + additionalCharges;
-                if (!returnsExist || (decimal)customer.Order.AmountPaid < effectiveTotal)
+
+                // Compute remaining balance using strict allocation
+                var payments = await _context.Payments
+                    .Where(p => p.OrderId == orderId)
+                    .OrderBy(p => p.Date)
+                    .ToListAsync();
+                var allocation = AllocatePaymentsToBaseThenCharges(customer.Order, payments);
+                var remainingBase = Math.Max(0d, customer.Order.TotalPayment - allocation.baseAllocated);
+                var remainingCharges = Math.Max(0d, (double)additionalCharges - allocation.chargesAllocated);
+                var remainingBalance = remainingBase + remainingCharges;
+
+                if (!returnsExist || remainingBalance > 0.000001)
                 {
                     TempData["CateringStatusError"] = "Cannot mark as Completed until materials are returned and all charges are fully paid.";
                     return RedirectToAction(nameof(Index));
