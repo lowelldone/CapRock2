@@ -30,11 +30,13 @@
             --danger-color: #ef4444;
             --info-color: #3b82f6;
         }
+
         body {
             background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
             font-family: 'Segoe UI', sans-serif;
             min-height: 100vh;
         }
+
         .soft-sidebar {
             width: 60px;
             min-height: 100vh;
@@ -53,43 +55,48 @@
             transition: width 0.3s ease;
             overflow: hidden;
         }
-        .soft-sidebar:hover {
-            width: 280px;
-            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        }
-        .soft-sidebar .sidebar-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 40px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: var(--text-purple);
-            white-space: nowrap;
-            overflow: hidden;
-            width: 100%;
-            padding: 0 16px;
-        }
-        .soft-sidebar .sidebar-logo i {
-            font-size: 2rem;
-            margin-right: 10px;
-            min-width: 32px;
-            text-align: center;
-            color: var(--primary-purple);
-        }
-        .soft-sidebar .sidebar-logo-text {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            white-space: nowrap;
-            width: 0;
-            overflow: hidden;
-        }
-        .soft-sidebar:hover .sidebar-logo-text {
-            margin-right: 20px;
-            opacity: 1;
-            width: auto;
-        }
-        
+
+            .soft-sidebar:hover {
+                width: 280px;
+                box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+            }
+
+            .soft-sidebar .sidebar-logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 40px;
+                font-weight: 700;
+                font-size: 1.2rem;
+                color: var(--text-purple);
+                white-space: nowrap;
+                overflow: hidden;
+                width: 100%;
+                padding: 0 16px;
+            }
+
+                .soft-sidebar .sidebar-logo i {
+                    font-size: 2rem;
+                    margin-right: 10px;
+                    min-width: 32px;
+                    text-align: center;
+                    color: var(--primary-purple);
+                }
+
+            .soft-sidebar .sidebar-logo-text {
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                white-space: nowrap;
+                width: 0;
+                overflow: hidden;
+            }
+
+            .soft-sidebar:hover .sidebar-logo-text {
+                margin-right: 20px;
+                opacity: 1;
+                width: auto;
+            }
+
         /* Responsive GRUSH Logo Styling */
         .sidebar-logo-container {
             display: flex;
@@ -98,7 +105,7 @@
             width: 100%;
             padding: 0 8px;
         }
-        
+
         .grush-logo {
             max-width: 100%;
             height: auto;
@@ -106,46 +113,50 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Logo sizing for collapsed sidebar */
         .soft-sidebar .grush-logo {
             width: 40px;
             height: 40px;
             object-fit: cover;
         }
-        
+
         /* Logo sizing for expanded sidebar */
-.soft-sidebar:hover .grush-logo {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-}
-        
+        .soft-sidebar:hover .grush-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+
         /* Responsive breakpoints for logo */
         @@media (max-width: 768px) {
-    .soft-sidebar .grush-logo {
-        width: 35px;
-        height: 35px;
-    }
-    .soft-sidebar:hover .grush-logo {
-        width: 65px;
-        height: 65px;
-    }
-}
-        
+            .soft-sidebar .grush-logo {
+                width: 35px;
+                height: 35px;
+            }
+
+            .soft-sidebar:hover .grush-logo {
+                width: 65px;
+                height: 65px;
+            }
+        }
+
         @@media (max-width: 576px) {
-    .soft-sidebar .grush-logo {
-        width: 30px;
-        height: 30px;
-    }
-    .soft-sidebar:hover .grush-logo {
-        width: 55px;
-        height: 55px;
-    }
-}
+            .soft-sidebar .grush-logo {
+                width: 30px;
+                height: 30px;
+            }
+
+            .soft-sidebar:hover .grush-logo {
+                width: 55px;
+                height: 55px;
+            }
+        }
+
         .soft-sidebar .nav {
             width: 100%;
         }
+
         .soft-sidebar .nav-link {
             display: flex;
             align-items: center;
@@ -161,10 +172,12 @@
             min-height: 48px;
             border: 2px solid transparent;
         }
+
         .soft-sidebar:hover .nav-link {
             justify-content: flex-start;
             padding: 12px 12px;
         }
+
         .soft-sidebar .nav-link i {
             font-size: 1.3rem;
             margin-right: 0;
@@ -174,9 +187,11 @@
             align-items: center;
             justify-content: center;
         }
+
         .soft-sidebar:hover .nav-link i {
             margin-right: 16px;
         }
+
         .soft-sidebar .nav-link span {
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -184,10 +199,12 @@
             width: 0;
             overflow: hidden;
         }
+
         .soft-sidebar:hover .nav-link span {
             opacity: 1;
             width: auto;
         }
+
         .soft-sidebar .nav-link.active,
         .soft-sidebar .nav-link:focus,
         .soft-sidebar .nav-link:hover {
@@ -196,55 +213,55 @@
             box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
             transform: translateY(-2px);
         }
-        
+
         /* Dropdown toggle styles */
         .soft-sidebar .nav-link.dropdown-toggle {
             position: relative;
         }
-        
-        .soft-sidebar .nav-link.dropdown-toggle::after {
-            content: '';
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-left: 4px solid transparent;
-            border-right: 4px solid transparent;
-            border-top: 4px solid currentColor;
-            transition: transform 0.3s ease;
-        }
-        
-        .soft-sidebar .nav-link.dropdown-toggle[aria-expanded="true"]::after {
-            transform: translateY(-50%) rotate(180deg);
-        }
-        
+
+            .soft-sidebar .nav-link.dropdown-toggle::after {
+                content: '';
+                position: absolute;
+                right: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 0;
+                height: 0;
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+                border-top: 4px solid currentColor;
+                transition: transform 0.3s ease;
+            }
+
+            .soft-sidebar .nav-link.dropdown-toggle[aria-expanded="true"]::after {
+                transform: translateY(-50%) rotate(180deg);
+            }
+
         /* Submenu styles */
         .soft-sidebar .collapse {
             transition: all 0.3s ease;
         }
-        
-        .soft-sidebar .collapse .nav {
-            margin-top: 8px;
-            margin-left: 0;
-            padding-left: 0;
-        }
-        
-        .soft-sidebar .collapse .nav .nav-item {
-            margin-left: 0;
-            padding-left: 0;
-        }
-        
-        .soft-sidebar .collapse .nav .nav-item .nav-link {
-            margin-left: 0;
-            padding-left: 56px;
-        }
-        
-        .soft-sidebar .collapse .nav .nav-item .nav-link.sub-sub-nav-link {
-            padding-left: 72px;
-        }
-        
+
+            .soft-sidebar .collapse .nav {
+                margin-top: 8px;
+                margin-left: 0;
+                padding-left: 0;
+            }
+
+                .soft-sidebar .collapse .nav .nav-item {
+                    margin-left: 0;
+                    padding-left: 0;
+                }
+
+                    .soft-sidebar .collapse .nav .nav-item .nav-link {
+                        margin-left: 0;
+                        padding-left: 56px;
+                    }
+
+                        .soft-sidebar .collapse .nav .nav-item .nav-link.sub-sub-nav-link {
+                            padding-left: 72px;
+                        }
+
         .soft-sidebar .sub-nav-link {
             padding: 8px 12px;
             margin: 4px 8px 4px 8px;
@@ -254,20 +271,20 @@
             background: rgba(124, 58, 237, 0.05);
             border: 1px solid rgba(124, 58, 237, 0.1);
         }
-        
-        .soft-sidebar .sub-nav-link:hover,
-        .soft-sidebar .sub-nav-link.active {
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-            color: #fff !important;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-            transform: translateY(-1px);
-        }
-        
-        .soft-sidebar .sub-nav-link i {
-            font-size: 1rem;
-            margin-right: 12px;
-        }
-        
+
+            .soft-sidebar .sub-nav-link:hover,
+            .soft-sidebar .sub-nav-link.active {
+                background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+                color: #fff !important;
+                box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+                transform: translateY(-1px);
+            }
+
+            .soft-sidebar .sub-nav-link i {
+                font-size: 1rem;
+                margin-right: 12px;
+            }
+
         /* Third-level submenu styles */
         .soft-sidebar .sub-sub-nav-link {
             padding: 6px 12px;
@@ -278,33 +295,34 @@
             background: rgba(124, 58, 237, 0.03);
             border: 1px solid rgba(124, 58, 237, 0.08);
         }
-        
-        .soft-sidebar .sub-sub-nav-link:hover,
-        .soft-sidebar .sub-sub-nav-link.active {
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-            color: #fff !important;
-            box-shadow: 0 3px 12px rgba(124, 58, 237, 0.25);
-            transform: translateY(-1px);
-        }
-        
-        .soft-sidebar .sub-sub-nav-link i {
-            font-size: 0.9rem;
-            margin-right: 10px;
-        }
-        
+
+            .soft-sidebar .sub-sub-nav-link:hover,
+            .soft-sidebar .sub-sub-nav-link.active {
+                background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+                color: #fff !important;
+                box-shadow: 0 3px 12px rgba(124, 58, 237, 0.25);
+                transform: translateY(-1px);
+            }
+
+            .soft-sidebar .sub-sub-nav-link i {
+                font-size: 0.9rem;
+                margin-right: 10px;
+            }
+
         /* Hover state adjustments for submenus */
         .soft-sidebar:hover .sub-nav-link {
             padding: 8px 12px;
         }
-        
+
         .soft-sidebar:hover .sub-sub-nav-link {
             padding: 6px 12px;
         }
-        
+
         .main-content {
             margin-left: 80px;
             transition: margin-left 0.3s ease;
         }
+
         .soft-sidebar:hover ~ .main-content {
             margin-left: 300px;
         }
@@ -318,11 +336,13 @@
             padding: 0.75rem 1.5rem;
             transition: all 0.3s ease;
         }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
-        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+            }
+
         .btn-outline-primary {
             border-color: var(--primary-purple);
             color: var(--primary-purple);
@@ -332,16 +352,18 @@
             padding: 0.75rem 1.5rem;
             transition: all 0.3s ease;
         }
-        .btn-outline-primary:hover {
-            background: var(--primary-purple);
-            color: white;
-            transform: translateY(-2px);
-        }
+
+            .btn-outline-primary:hover {
+                background: var(--primary-purple);
+                color: white;
+                transform: translateY(-2px);
+            }
         /* Form controls enhancement */
         .form-control:focus {
             border-color: var(--primary-purple);
             box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
         }
+
         .form-select:focus {
             border-color: var(--primary-purple);
             box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
@@ -353,23 +375,28 @@
             box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
             transition: all 0.3s ease;
         }
-        .card:hover {
-            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-            transform: translateY(-2px);
-        }
+
+            .card:hover {
+                box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+                transform: translateY(-2px);
+            }
         /* Badge enhancements */
         .badge.bg-primary {
             background: var(--primary-purple) !important;
         }
+
         .badge.bg-success {
             background: var(--success-color) !important;
         }
+
         .badge.bg-warning {
             background: var(--warning-color) !important;
         }
+
         .badge.bg-danger {
             background: var(--danger-color) !important;
         }
+
         .badge.bg-info {
             background: var(--info-color) !important;
         }
@@ -377,15 +404,19 @@
         .text-primary {
             color: var(--primary-purple) !important;
         }
+
         .text-success {
             color: var(--success-color) !important;
         }
+
         .text-warning {
             color: var(--warning-color) !important;
         }
+
         .text-info {
             color: var(--info-color) !important;
         }
+
         @@media (max-width: 991.98px) {
             .soft-sidebar {
                 position: static;
@@ -397,21 +428,26 @@
                 padding: 0;
                 overflow: visible;
             }
-            .soft-sidebar:hover {
-                width: 100%;
-            }
-            .soft-sidebar .sidebar-logo-text,
-            .soft-sidebar .nav-link span {
-                opacity: 1;
-                width: auto;
-            }
-            .soft-sidebar .nav-link {
-                justify-content: flex-start;
-                padding: 12px 24px;
-            }
-            .soft-sidebar .nav-link i {
-                margin-right: 16px;
-            }
+
+                .soft-sidebar:hover {
+                    width: 100%;
+                }
+
+                .soft-sidebar .sidebar-logo-text,
+                .soft-sidebar .nav-link span {
+                    opacity: 1;
+                    width: auto;
+                }
+
+                .soft-sidebar .nav-link {
+                    justify-content: flex-start;
+                    padding: 12px 24px;
+                }
+
+                    .soft-sidebar .nav-link i {
+                        margin-right: 16px;
+                    }
+
             .main-content {
                 margin-left: 0;
             }
@@ -428,7 +464,7 @@
     {
         <nav class="soft-sidebar">
             <div class="sidebar-logo-container mb-4">
-                <img src="~/images/GRUSH logo-modified.png" alt="GRUSH Logo" class="grush-logo"/>
+                <img src="~/images/GRUSH logo-modified.png" alt="GRUSH Logo" class="grush-logo" />
             </div>
             <div class="sidebar-logo mb-4 ms-3">
                 <i class="bi bi-diagram-3"></i>
@@ -458,7 +494,7 @@
                                     <span>Dashboard</span>
                                 </a>
                             </li>
-                            
+
                             <!-- File Management Dropdown -->
                             <li class="nav-item mb-2">
                                 <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#fileManagementCollapse" role="button" aria-expanded="false" aria-controls="fileManagementCollapse">
@@ -510,7 +546,7 @@
                                     </ul>
                                 </div>
                             </li>
-                            
+
                             <!-- Transactions Dropdown -->
                             <li class="nav-item mb-2">
                                 <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#transactionsCollapse" role="button" aria-expanded="false" aria-controls="transactionsCollapse">
@@ -532,12 +568,6 @@
                                                             <span>Customer Orders</span>
                                                         </a>
                                                     </li>
-                                                    @* <li class="nav-item">
-                                                        <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Payments" ? "active" : "")" asp-controller="Payments" asp-action="Index">
-                                                            <i class="bi bi-credit-card"></i>
-                                                            <span>Payment Details</span>
-                                                        </a>
-                                                    </li> *@
                                                     <li class="nav-item">
                                                         <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "PaidOrders" ? "active" : "")" asp-controller="PaidOrders" asp-action="Index">
                                                             <i class="bi bi-person-check"></i>
@@ -553,10 +583,38 @@
                                                 <span>Payments</span>
                                             </a>
                                         </li>
+                                        
                                     </ul>
                                 </div>
                             </li>
-                            
+                            <li class="nav-item mb-2">
+                                <a class="nav-link sub-nav-link dropdown-toggle" data-bs-toggle="collapse" href="#reportsCollapse" role="button" aria-expanded="false" aria-controls="reportsCollapse">
+                                    <i class="bi bi-graph-up"></i>
+                                    <span>Reports</span>
+                                </a>
+                                <div class="collapse" id="reportsCollapse">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Sales" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Sales">
+                                                <i class="bi bi-cash-stack"></i>
+                                                <span>Sales</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Trends" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Trends">
+                                                <i class="bi bi-activity"></i>
+                                                <span>Trends</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Preferences" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Preferences">
+                                                <i class="bi bi-heart"></i>
+                                                <span>Preferences</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                             <li class="nav-item mb-2">
                                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-controller="Suppliers" asp-action="Index">
                                     <i class="bi bi-truck"></i>
@@ -650,10 +708,10 @@
                     }
                 });
             }
-            
+
             // Handle dropdown state persistence
             var dropdowns = document.querySelectorAll('.collapse');
-            dropdowns.forEach(function(dropdown) {
+            dropdowns.forEach(function (dropdown) {
                 // Check if this dropdown should be expanded based on active submenu
                 var activeSubmenu = dropdown.querySelector('.sub-nav-link.active, .sub-sub-nav-link.active');
                 if (activeSubmenu) {
@@ -663,21 +721,21 @@
                         toggleButton.setAttribute('aria-expanded', 'true');
                     }
                 }
-                
+
                 // Add smooth animation
-                dropdown.addEventListener('show.bs.collapse', function() {
+                dropdown.addEventListener('show.bs.collapse', function () {
                     this.style.transition = 'all 0.3s ease';
                 });
-                
-                dropdown.addEventListener('hide.bs.collapse', function() {
+
+                dropdown.addEventListener('hide.bs.collapse', function () {
                     this.style.transition = 'all 0.3s ease';
                 });
             });
-            
+
             // Auto-expand parent dropdowns when child items are active
             function expandParentDropdowns() {
                 var activeSubSubItems = document.querySelectorAll('.sub-sub-nav-link.active');
-                activeSubSubItems.forEach(function(activeItem) {
+                activeSubSubItems.forEach(function (activeItem) {
                     // Find and expand the orders dropdown if this is an active orders submenu
                     var ordersDropdown = activeItem.closest('#ordersCollapse');
                     if (ordersDropdown) {
@@ -687,7 +745,7 @@
                             ordersToggle.setAttribute('aria-expanded', 'true');
                         }
                     }
-                    
+
                     // Find and expand the personnel dropdown if this is an active personnel submenu
                     var personnelDropdown = activeItem.closest('#personnelCollapse');
                     if (personnelDropdown) {
@@ -699,18 +757,18 @@
                     }
                 });
             }
-            
+
             // Call the function to expand parent dropdowns
             expandParentDropdowns();
-            
+
             // Auto-expand dropdown when hovering over sidebar (for better UX)
             var sidebar = document.querySelector('.soft-sidebar');
             var sidebarTimeout;
-            
-            sidebar.addEventListener('mouseenter', function() {
+
+            sidebar.addEventListener('mouseenter', function () {
                 clearTimeout(sidebarTimeout);
                 // Auto-expand dropdowns that have active items when hovering
-                dropdowns.forEach(function(dropdown) {
+                dropdowns.forEach(function (dropdown) {
                     var activeSubmenu = dropdown.querySelector('.sub-nav-link.active, .sub-sub-nav-link.active');
                     if (activeSubmenu && !dropdown.classList.contains('show')) {
                         dropdown.classList.add('show');
@@ -721,10 +779,10 @@
                     }
                 });
             });
-            
-            sidebar.addEventListener('mouseleave', function() {
+
+            sidebar.addEventListener('mouseleave', function () {
                 // Keep dropdowns expanded if they have active items
-                dropdowns.forEach(function(dropdown) {
+                dropdowns.forEach(function (dropdown) {
                     var activeSubmenu = dropdown.querySelector('.sub-nav-link.active, .sub-sub-nav-link.active');
                     if (!activeSubmenu) {
                         dropdown.classList.remove('show');
