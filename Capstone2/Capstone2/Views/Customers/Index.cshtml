@@ -316,9 +316,18 @@
                                     : 0d;
                                     var hasReturns = returnsDict != null && order != null && returnsDict.ContainsKey(order.OrderId);
                                     var dynamicStatus = order.Status;
-                                    // Only show Settling Balance if there is remaining balance AND materials have been returned.
-                                    // Otherwise, while still unpaid but no returns yet, show Accepted.
-                                    if (remaining > 0 && hasReturns)
+                                    // If down payment (50% of TotalPayment) is not yet met, force status to Pending
+                                    var downPaymentMet = order.AmountPaid >= (order.TotalPayment * 0.5);
+                                    if (!downPaymentMet)
+                                    {
+                                        dynamicStatus = "Pending";
+                                    }
+                                    // If materials have been pulled out, keep it as Ongoing (do not override to Accepted)
+                                    else if (order.Status == "Ongoing")
+                                    {
+                                        dynamicStatus = "Ongoing";
+                                    }
+                                    else if (remaining > 0 && hasReturns)
                                     {
                                         dynamicStatus = "Settling Balance";
                                     }

@@ -385,6 +385,86 @@ namespace Capstone2.Controllers.AdminControllers
             return RedirectToAction(nameof(ManageTransactions), new { id = supplierId, vtId = viewTransaction.ViewTransactionId, view = "po" });
         }
 
+        // POST: Suppliers/CreatePurchaseOrderBatch
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePurchaseOrderBatch(int supplierId, List<int> materialIds, List<int> quantities, DateTime? scheduledDelivery)
+        {
+            if (materialIds == null || quantities == null || materialIds.Count == 0 || quantities.Count == 0 || materialIds.Count != quantities.Count)
+            {
+                TempData["SupplierError"] = "Please add at least one item with a valid quantity.";
+                return RedirectToAction(nameof(ManageTransactions), new { id = supplierId });
+            }
+
+            var supplier = await _context.Suppliers.FindAsync(supplierId);
+            if (supplier == null)
+                return NotFound();
+
+            // Build valid items list (materialId > 0 and quantity > 0)
+            var items = materialIds
+                .Select((matId, idx) => new { MaterialId = matId, Quantity = (quantities != null && quantities.Count > idx) ? quantities[idx] : 0 })
+                .Where(x => x.MaterialId > 0 && x.Quantity > 0)
+                .Select(x => new { x.MaterialId, x.Quantity })
+                .ToList();
+
+            if (!items.Any())
+            {
+                TempData["SupplierError"] = "No valid items to create a purchase order.";
+                return RedirectToAction(nameof(ManageTransactions), new { id = supplierId });
+            }
+
+            // Create a single ViewTransaction for this batch
+            var viewTransaction = new ViewTransaction
+            {
+                SupplierId = supplierId,
+                OrderDate = DateTime.Now,
+                ExpectedDate = scheduledDelivery,
+                Status = "Ordered"
+            };
+            _context.ViewTransactions.Add(viewTransaction);
+
+            foreach (var item in items)
+            {
+                var material = await _context.Materials.FindAsync(item.MaterialId);
+                if (material == null)
+                    continue;
+
+                var price = await _context.SupplierMaterialPrices
+                    .Where(p => p.SupplierId == supplierId && p.MaterialId == item.MaterialId)
+                    .Select(p => (decimal?)p.UnitPrice)
+                    .FirstOrDefaultAsync() ?? material.Price;
+
+                var po = new PurchaseOrder
+                {
+                    SupplierId = supplierId,
+                    MaterialId = item.MaterialId,
+                    Quantity = item.Quantity,
+                    UnitPrice = price,
+                    ScheduledDelivery = scheduledDelivery,
+                    Status = "Ordered",
+                    ViewTransaction = viewTransaction
+                };
+                _context.PurchaseOrders.Add(po);
+
+                var tx = new SupplierTransaction
+                {
+                    SupplierId = supplierId,
+                    MaterialId = item.MaterialId,
+                    Quantity = item.Quantity,
+                    UnitPrice = price,
+                    OrderDate = DateTime.Now,
+                    ExpectedDeliveryDate = scheduledDelivery,
+                    Status = "Ordered",
+                    ViewTransaction = viewTransaction
+                };
+                _context.SupplierTransactions.Add(tx);
+            }
+
+            await _context.SaveChangesAsync();
+            TempData["SupplierSuccess"] = "Purchase order(s) created.";
+            return RedirectToAction(nameof(ManageTransactions), new { id = supplierId, vtId = viewTransaction.ViewTransactionId, view = "po" });
+        }
+
         // POST: Suppliers/ReceivePurchaseOrder
         [HttpPost]
         [ValidateAntiForgeryToken]
