@@ -1,0 +1,149 @@
+﻿@model Capstone2.Models.PreferencesReportViewModel
+
+@{
+    ViewData["Title"] = "Customer Preferences";
+}
+
+<style>
+    .report-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e9d5ff;
+        box-shadow: 0 8px 24px rgba(124,58,237,.08);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Customer Preferences</h2>
+    </div>
+
+    <div class="report-card">
+        <form class="row g-3" method="get">
+            <div class="col-md-4">
+                <label class="form-label">Start Date</label>
+                <input class="form-control" type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">End Date</label>
+                <input class="form-control" type="date" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button class="btn btn-primary w-100" type="submit">Apply</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="grid">
+        <div class="report-card">
+            <h5 class="fw-bold mb-3">Top Menus (by Quantity)</h5>
+            <ol class="mb-0">
+                @foreach (var i in Model.TopMenusByQuantity)
+                {
+                    <li class="mb-1 d-flex justify-content-between">
+                        <span>@i.Name</span>
+                        <span class="text-muted">x @i.Quantity</span>
+                    </li>
+                }
+            </ol>
+        </div>
+        <div class="report-card">
+            <h5 class="fw-bold mb-3">Top Menus (by Revenue)</h5>
+            <ol class="mb-0">
+                @foreach (var i in Model.TopMenusByRevenue)
+                {
+                    <li class="mb-1 d-flex justify-content-between">
+                        <span>@i.Name</span>
+                        <span class="text-muted">₱@i.Revenue.ToString("N2")</span>
+                    </li>
+                }
+            </ol>
+        </div>
+        <div class="report-card">
+            <h5 class="fw-bold mb-3">Top Categories (by Quantity)</h5>
+            <ol class="mb-0">
+                @foreach (var i in Model.TopCategoriesByQuantity)
+                {
+                    <li class="mb-1 d-flex justify-content-between">
+                        <span>@i.Name</span>
+                        <span class="text-muted">x @i.Quantity</span>
+                    </li>
+                }
+            </ol>
+        </div>
+        <div class="report-card">
+            <h5 class="fw-bold mb-3">Top Categories (by Revenue)</h5>
+            <ol class="mb-0">
+                @foreach (var i in Model.TopCategoriesByRevenue)
+                {
+                    <li class="mb-1 d-flex justify-content-between">
+                        <span>@i.Name</span>
+                        <span class="text-muted">₱@i.Revenue.ToString("N2")</span>
+                    </li>
+                }
+            </ol>
+        </div>
+        <div class="report-card">
+            <h5 class="fw-bold mb-3">Average Pax by Occasion</h5>
+            <table class="table">
+                <thead><tr><th>Occasion</th><th>Avg. Pax</th></tr></thead>
+                <tbody>
+                    @foreach (var i in Model.AveragePaxByOccasion)
+                    {
+                        <tr>
+                            <td>@i.Name</td>
+                            <td>@i.AveragePax.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="report-card">
+            <h5 class="fw-bold mb-3">Average Pax by Venue</h5>
+            <table class="table">
+                <thead><tr><th>Venue</th><th>Avg. Pax</th></tr></thead>
+                <tbody>
+                    @foreach (var i in Model.AveragePaxByVenue)
+                    {
+                        <tr>
+                            <td>@i.Name</td>
+                            <td>@i.AveragePax.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="report-card">
+            <h5 class="fw-bold mb-3">Repeat Customers</h5>
+            @if (Model.RepeatCustomers.Any())
+            {
+                <table class="table">
+                    <thead><tr><th>Customer</th><th>Orders</th></tr></thead>
+                    <tbody>
+                        @foreach (var i in Model.RepeatCustomers)
+                        {
+                            <tr>
+                                <td>@i.CustomerName</td>
+                                <td>@i.OrdersCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="text-muted">No repeat customers in this date range.</div>
+            }
+        </div>
+    </div>
+</div>
+
+

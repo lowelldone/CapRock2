@@ -1,0 +1,129 @@
+﻿@model Capstone2.Models.SalesReportViewModel
+
+@{
+    ViewData["Title"] = "Sales Report";
+}
+
+<style>
+    .report-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e9d5ff;
+        box-shadow: 0 8px 24px rgba(124,58,237,.08);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .summary {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+        .summary .metric {
+            flex: 1;
+            min-width: 220px;
+            background: #faf5ff;
+            border: 1px solid #e9d5ff;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+    .table {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .actions {
+        display: flex;
+        gap: .5rem;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Sales Report</h2>
+        <div class="actions">
+            <a class="btn btn-outline-secondary" href="@Url.Action("SalesCsv", new { startDate = Model.StartDate.ToString("yyyy-MM-dd"), endDate = Model.EndDate.ToString("yyyy-MM-dd"), groupBy = Model.GroupBy })">
+                Export CSV
+            </a>
+            <button class="btn btn-outline-primary" onclick="window.print()">Print</button>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <form class="row g-3" method="get">
+            <div class="col-md-3">
+                <label class="form-label">Start Date</label>
+                <input class="form-control" type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">End Date</label>
+                <input class="form-control" type="date" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Group By</label>
+                <select class="form-select" id="sales-groupBy" name="groupBy" onchange="this.form.submit()">
+                    <option value="day">Day</option>
+                    <option value="week">Week</option>
+                    <option value="month">Month</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-primary w-100" type="submit">Apply</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var sel = document.getElementById('sales-groupBy');
+            if (sel) { sel.value = '@Model.GroupBy'; }
+        });
+    </script>
+
+    <div class="report-card">
+        <div class="summary">
+            <div class="metric">
+                <div class="text-muted">Base Paid</div>
+                <div class="fs-3 fw-bold">₱@Model.TotalBasePaid.ToString("N2")</div>
+            </div>
+            <div class="metric">
+                <div class="text-muted">Additional Charges Paid</div>
+                <div class="fs-3 fw-bold">₱@Model.TotalChargesPaid.ToString("N2")</div>
+            </div>
+            <div class="metric">
+                <div class="text-muted">Grand Total</div>
+                <div class="fs-3 fw-bold">₱@Model.GrandTotal.ToString("N2")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Base Paid</th>
+                        <th>Additional Charges Paid</th>
+                        <th>Total Paid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Periods)
+                    {
+                        <tr>
+                            <td>@p.Label</td>
+                            <td>₱@p.BasePaid.ToString("N2")</td>
+                            <td>₱@p.ChargesPaid.ToString("N2")</td>
+                            <td>₱@p.TotalPaid.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,170 @@
+﻿@model Capstone2.Models.TrendsReportViewModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Trends";
+}
+
+<style>
+    .report-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e9d5ff;
+        box-shadow: 0 8px 24px rgba(124,58,237,.08);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+
+    .kpi {
+        background: #faf5ff;
+        border: 1px solid #e9d5ff;
+        border-radius: 12px;
+        padding: 1rem;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Trends</h2>
+    </div>
+
+    <div class="report-card">
+        <form class="row g-3" method="get">
+            <div class="col-md-3">
+                <label class="form-label">Start Date</label>
+                <input class="form-control" type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">End Date</label>
+                <input class="form-control" type="date" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Group By</label>
+                <select class="form-select" id="trends-groupBy" name="groupBy" onchange="this.form.submit()">
+                    <option value="day">Day</option>
+                    <option value="week">Week</option>
+                    <option value="month">Month</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button class="btn btn-primary w-100" type="submit">Apply</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="report-card">
+        <div class="kpis">
+            <div class="kpi">
+                <div class="text-muted">Pending</div>
+                <div class="fs-4 fw-bold">@Model.PendingCount</div>
+            </div>
+            <div class="kpi">
+                <div class="text-muted">Accepted</div>
+                <div class="fs-4 fw-bold">@Model.AcceptedCount</div>
+            </div>
+            <div class="kpi">
+                <div class="text-muted">Ongoing</div>
+                <div class="fs-4 fw-bold">@Model.OngoingCount</div>
+            </div>
+            <div class="kpi">
+                <div class="text-muted">Completed</div>
+                <div class="fs-4 fw-bold">@Model.CompletedCount</div>
+            </div>
+            <div class="kpi">
+                <div class="text-muted">Cancelled</div>
+                <div class="fs-4 fw-bold">@Model.CancelledCount</div>
+            </div>
+            <div class="kpi">
+                <div class="text-muted">Acceptance Rate</div>
+                <div class="fs-4 fw-bold">@Model.AcceptanceRate.ToString("P0")</div>
+            </div>
+            <div class="kpi">
+                <div class="text-muted">Completion Rate</div>
+                <div class="fs-4 fw-bold">@Model.CompletionRate.ToString("P0")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <h5 class="fw-bold mb-3">Time Series</h5>
+        <div class="row g-3">
+            <div class="col-md-4"><canvas id="ordersChart" height="200"></canvas></div>
+            <div class="col-md-4"><canvas id="paxChart" height="200"></canvas></div>
+            <div class="col-md-4"><canvas id="revenueChart" height="200"></canvas></div>
+        </div>
+        <div class="table-responsive mt-3">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Orders</th>
+                        <th>Pax</th>
+                        <th>Revenue (payments)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Periods)
+                    {
+                        <tr>
+                            <td>@p.Label</td>
+                            <td>@p.OrdersCount</td>
+                            <td>@p.PaxTotal</td>
+                            <td>₱@p.RevenueTotal.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function () {
+            var sel = document.getElementById('trends-groupBy');
+            if (sel) { sel.value = '@Model.GroupBy'; }
+        })();
+        const labels = @Html.Raw(JsonSerializer.Serialize(Model.Periods.Select(p => p.Label)));
+        const orders = @Html.Raw(JsonSerializer.Serialize(Model.Periods.Select(p => p.OrdersCount)));
+        const pax = @Html.Raw(JsonSerializer.Serialize(Model.Periods.Select(p => p.PaxTotal)));
+        const revenue = @Html.Raw(JsonSerializer.Serialize(Model.Periods.Select(p => Math.Round(p.RevenueTotal, 2))));
+
+        function makeChart(ctxId, label, data, color) {
+            const ctx = document.getElementById(ctxId).getContext('2d');
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: color + '33',
+                        tension: 0.2,
+                        fill: true,
+                        pointRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: true } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        makeChart('ordersChart', 'Orders', orders, '#7c3aed');
+        makeChart('paxChart', 'Pax', pax, '#10b981');
+        makeChart('revenueChart', 'Revenue', revenue, '#f59e0b');
+    </script>
+}
+
+
