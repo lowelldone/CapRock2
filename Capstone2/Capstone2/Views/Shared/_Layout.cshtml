@@ -543,6 +543,12 @@
                                                 <span>Materials</span>
                                             </a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AuditLogs" ? "active" : "")" asp-controller="AuditLogs" asp-action="Index">
+                                                <i class="bi bi-clipboard-check"></i>
+                                                <span>Headwaiter Activities</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </li>
@@ -583,7 +589,7 @@
                                                 <span>Payments</span>
                                             </a>
                                         </li>
-                                        
+
                                     </ul>
                                 </div>
                             </li>

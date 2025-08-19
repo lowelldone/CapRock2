@@ -1,0 +1,73 @@
+﻿@model IEnumerable<Capstone2.Models.AuditLog>
+@{
+    ViewData["Title"] = "Headwaiter Activities";
+}
+
+<div class="container mt-3">
+    <h2>Headwaiter Activities</h2>
+
+    <form method="get" class="row g-2 mb-3">
+        <input type="hidden" name="role" value="HEADWAITER" />
+        <div class="col-auto">
+            <input class="form-control" name="username" placeholder="Username" value="@Context.Request.Query["username"].ToString()" />
+        </div>
+        <div class="col-auto">
+            <input class="form-control" name="actionName" placeholder="Action (e.g., ProcessPayment)" value="@Context.Request.Query["actionName"].ToString()" />
+        </div>
+        <div class="col-auto">
+            <input class="form-control" name="orderNumber" placeholder="Order Number" value="@Context.Request.Query["orderNumber"].ToString()" />
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Order #</th>
+                    <th>Waiter</th>
+                    <th>Succeeded</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td>@log.Timestamp.ToLocalTime()</td>
+                        <td>@log.Username (@log.Role)</td>
+                        <td>@log.Action</td>
+                        <td>@log.OrderNumber</td>
+                        <td>@log.WaiterId</td>
+                        <td>
+                            @if (log.Succeeded)
+                            {
+                                <span class="badge bg-success">Yes</span>
+                                ;
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">No</span>
+                                ;
+                            }
+                        </td>
+                        <td style="max-width:360px">@log.Details</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" href="?page=@(Math.Max(1, (int)ViewBag.Page - 1))&pageSize=@ViewBag.PageSize">Prev</a>
+        <a class="btn btn-outline-secondary" href="?page=@((int)ViewBag.Page + 1)&pageSize=@ViewBag.PageSize">Next</a>
+        <div class="ms-2 align-self-center">Total: @ViewBag.Total</div>
+    </div>
+</div>
+
+

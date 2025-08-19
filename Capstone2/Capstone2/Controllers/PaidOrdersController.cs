@@ -407,6 +407,28 @@ namespace Capstone2.Controllers
             }
 
             _context.SaveChanges();
+            // Audit: remove waiter from order
+            try
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var username = HttpContext.Session.GetString("Username");
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    UserId = userId,
+                    Username = username,
+                    Role = role,
+                    Action = nameof(RemoveAssignedWaiter),
+                    HttpMethod = "POST",
+                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    Succeeded = true,
+                    OrderNumber = order.OrderNumber,
+                    WaiterId = waiterId,
+                    Details = $"Removed waiter {waiterId} from order {order.OrderId}"
+                });
+                _context.SaveChanges();
+            }
+            catch { }
 
             // Redirect back to the appropriate page so the updated lists are shown
             if (role == "ADMIN")
@@ -529,6 +551,28 @@ namespace Capstone2.Controllers
                 }
             }
             _context.SaveChanges();
+            // Audit: deploy waiters to order
+            try
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var username = HttpContext.Session.GetString("Username");
+                var details = $"Deployed waiters: [{string.Join(",", waiterIds)}]";
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    UserId = userId,
+                    Username = username,
+                    Role = role,
+                    Action = nameof(DeployWaiter),
+                    HttpMethod = "POST",
+                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    Succeeded = true,
+                    OrderNumber = order.OrderNumber,
+                    Details = details
+                });
+                _context.SaveChanges();
+            }
+            catch { }
 
             if (role == "ADMIN")
                 return RedirectToAction(nameof(Index));
@@ -680,6 +724,30 @@ namespace Capstone2.Controllers
             }
 
             await _context.SaveChangesAsync();
+            // Audit: material pull-out
+            try
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var username = HttpContext.Session.GetString("Username");
+                var changedItems = model.Materials.Where(m => m.PullOutQuantity > 0)
+                    .Select(m => $"{m.Name}:{m.PullOutQuantity}");
+                var details = "PulledOut=" + string.Join(",", changedItems);
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    UserId = userId,
+                    Username = username,
+                    Role = role,
+                    Action = nameof(PullOutMaterials),
+                    HttpMethod = "POST",
+                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    Succeeded = true,
+                    OrderNumber = order.OrderNumber,
+                    Details = details
+                });
+                await _context.SaveChangesAsync();
+            }
+            catch { }
             TempData["PullOutSuccess"] = "Materials pulled out successfully!";
 
             // Show pull-out summary page
@@ -830,6 +898,31 @@ namespace Capstone2.Controllers
                 }
             }
             await _context.SaveChangesAsync();
+            // Audit: material return
+            try
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var username = HttpContext.Session.GetString("Username");
+                var lostDamaged = model.Items
+                    .Where(i => i.Lost > 0 || i.Damaged > 0)
+                    .Select(i => $"{i.MaterialName}:L{i.Lost} D{i.Damaged}");
+                var details = $"Returned items; Charges={totalCharge}; LostDamaged=[{string.Join(",", lostDamaged)}]";
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    UserId = userId,
+                    Username = username,
+                    Role = role,
+                    Action = nameof(ReturnMaterials),
+                    HttpMethod = "POST",
+                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    Succeeded = true,
+                    OrderNumber = order?.OrderNumber,
+                    Details = details
+                });
+                await _context.SaveChangesAsync();
+            }
+            catch { }
             TempData["ReturnSuccess"] = $"Materials returned successfully! Additional charge for lost/damaged: ₱{totalCharge}.";
 
             // Show return summary page

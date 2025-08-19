@@ -241,12 +241,56 @@ namespace Capstone2.Controllers.AdminControllers
                 if (Math.Round(paymentAmount, 2) != Math.Round(remainingBalance, 2))
                 {
                     TempData["PaymentError"] = $"Headwaiters must pay the exact balance of ₱{remainingBalance:F2}.";
+                    // Audit: failed attempt
+                    try
+                    {
+                        var userId = HttpContext.Session.GetInt32("UserId");
+                        var username = HttpContext.Session.GetString("Username");
+                        _context.AuditLogs.Add(new AuditLog
+                        {
+                            UserId = userId,
+                            Username = username,
+                            Role = role,
+                            Action = nameof(ProcessPayment),
+                            HttpMethod = "POST",
+                            Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                            UserAgent = Request.Headers["User-Agent"].ToString(),
+                            Succeeded = false,
+                            OrderNumber = order?.OrderNumber,
+                            Amount = paymentAmount,
+                            Details = $"Attempted non-exact payment; Required={remainingBalance:F2} Amount={paymentAmount:F2}"
+                        });
+                        await _context.SaveChangesAsync();
+                    }
+                    catch { }
                     return RedirectToAction("ProcessPayment", new { id = orderId });
                 }
             }
             else if (paymentAmount > remainingBalance)
             {
                 TempData["PaymentError"] = $"Payment amount cannot exceed the remaining balance of ₱{remainingBalance:F2}.";
+                // Audit: failed attempt (admin overpay)
+                try
+                {
+                    var userId = HttpContext.Session.GetInt32("UserId");
+                    var username = HttpContext.Session.GetString("Username");
+                    _context.AuditLogs.Add(new AuditLog
+                    {
+                        UserId = userId,
+                        Username = username,
+                        Role = role,
+                        Action = nameof(ProcessPayment),
+                        HttpMethod = "POST",
+                        Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                        UserAgent = Request.Headers["User-Agent"].ToString(),
+                        Succeeded = false,
+                        OrderNumber = order?.OrderNumber,
+                        Amount = paymentAmount,
+                        Details = $"Attempted overpayment; Remaining={remainingBalance:F2} Amount={paymentAmount:F2}"
+                    });
+                    await _context.SaveChangesAsync();
+                }
+                catch { }
                 return RedirectToAction("ProcessPayment", new { id = orderId });
             }
 
@@ -312,6 +356,30 @@ namespace Capstone2.Controllers.AdminControllers
             _context.Orders.Update(order);
 
             await _context.SaveChangesAsync();
+
+            // Audit: record payment attempts (especially by HeadWaiter)
+            try
+            {
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var username = HttpContext.Session.GetString("Username");
+                var log = new AuditLog
+                {
+                    UserId = userId,
+                    Username = username,
+                    Role = role,
+                    Action = nameof(ProcessPayment),
+                    HttpMethod = "POST",
+                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    Succeeded = true,
+                    OrderNumber = order?.OrderNumber,
+                    Amount = paymentAmount,
+                    Details = $"Processed payment amount ₱{paymentAmount:F2}"
+                };
+                _context.AuditLogs.Add(log);
+                await _context.SaveChangesAsync();
+            }
+            catch { }
 
             TempData["PaymentSuccess"] = $"Payment of ₱{paymentAmount:F2} has been recorded successfully.";
             return RedirectToAction("ProcessPayment", new { id = orderId });

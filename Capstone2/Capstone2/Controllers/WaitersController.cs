@@ -105,7 +105,31 @@ namespace Capstone2.Controllers
                 }
             }
 
+            bool isCreateAction = waiter.WaiterId == 0;
             _context.SaveChanges();
+
+            // Audit: waiter upsert (create/update)
+            try
+            {
+                var role = HttpContext.Session.GetString("Role");
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var username = HttpContext.Session.GetString("Username");
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    UserId = userId,
+                    Username = username,
+                    Role = role,
+                    Action = nameof(UpSert),
+                    HttpMethod = "POST",
+                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    Succeeded = true,
+                    WaiterId = waiter.WaiterId,
+                    Details = isCreateAction ? $"Created waiter {waiter.WaiterId}" : $"Updated waiter {waiter.WaiterId}"
+                });
+                _context.SaveChanges();
+            }
+            catch { }
 
             if (waiter.WaiterId == 0)
             {
@@ -129,6 +153,29 @@ namespace Capstone2.Controllers
             waiter.isDeleted = true;
             _context.Waiters.Update(waiter);
             _context.SaveChanges();
+
+            // Audit: waiter delete (soft)
+            try
+            {
+                var role = HttpContext.Session.GetString("Role");
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var username = HttpContext.Session.GetString("Username");
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    UserId = userId,
+                    Username = username,
+                    Role = role,
+                    Action = nameof(Delete),
+                    HttpMethod = "GET",
+                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    Succeeded = true,
+                    WaiterId = id,
+                    Details = $"Soft deleted waiter {id}"
+                });
+                _context.SaveChanges();
+            }
+            catch { }
 
             return RedirectToAction(nameof(Index));
         }
