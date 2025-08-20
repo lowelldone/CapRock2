@@ -8,17 +8,20 @@
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .create-bg {
         background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
         min-height: 100vh;
         border-radius: 24px;
         padding-bottom: 2rem;
     }
+
     .create-header {
         display: flex;
         align-items: center;
         gap: 16px;
     }
+
     .create-header-icon {
         font-size: 2.5rem;
         color: #0d6efd;
@@ -27,28 +30,33 @@
         padding: 8px 14px;
         box-shadow: 0 2px 8px rgba(13,110,253,0.08);
     }
+
     .create-subtitle {
         color: #6c757d;
         font-size: 1.1rem;
         margin-top: -8px;
         margin-bottom: 18px;
     }
+
     .form-card {
         background: #fff;
         border-radius: 20px;
         box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
         padding: 2rem;
     }
+
     .form-control {
         border-radius: 12px;
         border: 1px solid #e0e7ef;
         padding: 0.75rem 1rem;
         font-size: 1rem;
     }
-    .form-control:focus {
-        border-color: #6476f8;
-        box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
-    }
+
+        .form-control:focus {
+            border-color: #6476f8;
+            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
+        }
+
     .btn-create {
         font-weight: 600;
         font-size: 1.1rem;
@@ -56,6 +64,7 @@
         padding: 0.75rem 2rem;
         box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
     }
+
     .btn-back {
         font-weight: 500;
         border-radius: 8px;
@@ -90,17 +99,18 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label asp-for="ChargePerItem" class="form-label fw-semibold">Default Charge Per Item</label>
                     <input asp-for="ChargePerItem" class="form-control" placeholder="0.00" />
                     <span asp-validation-for="ChargePerItem" class="text-danger"></span>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-3 mb-3">
                     <label asp-for="Price" class="form-label fw-semibold">Price</label>
                     <input asp-for="Price" class="form-control" placeholder="0.00" />
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
-                <div class="col-md-4 mb-3">
+
+                <div class="col-md-3 mb-3">
                     <label asp-for="IsConsumable" class="form-label fw-semibold">Is Consumable?</label>
                     <select asp-for="IsConsumable" class="form-select">
                         <option value="false">No</option>

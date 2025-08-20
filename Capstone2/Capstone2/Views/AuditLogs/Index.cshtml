@@ -5,6 +5,34 @@
 
 <div class="container mt-3">
     <h2>Headwaiter Activities</h2>
+    <p class="text-muted small mb-3">Note: Logout activities are automatically filtered out from this view.</p>
+    <style>
+        .audit-table .main-row td {
+            vertical-align: middle;
+        }
+
+        .audit-table .main-row {
+            height: 56px;
+        }
+
+        .audit-table .toggle-btn .bi {
+            transition: transform .2s ease;
+        }
+
+        .audit-table .toggle-btn[aria-expanded="true"] .bi {
+            transform: rotate(180deg);
+        }
+
+        .details-card {
+            background: #fff;
+            border: 1px solid #e9d5ff;
+            border-radius: 8px;
+        }
+
+            .details-card .table {
+                margin-bottom: 0;
+            }
+    </style>
 
     <form method="get" class="row g-2 mb-3">
         <input type="hidden" name="role" value="HEADWAITER" />
@@ -12,18 +40,21 @@
             <input class="form-control" name="username" placeholder="Username" value="@Context.Request.Query["username"].ToString()" />
         </div>
         <div class="col-auto">
-            <input class="form-control" name="actionName" placeholder="Action (e.g., ProcessPayment)" value="@Context.Request.Query["actionName"].ToString()" />
+            <input class="form-control" name="orderNumber" placeholder="Order Number" value="@Context.Request.Query["orderNumber"].ToString()" />
         </div>
         <div class="col-auto">
-            <input class="form-control" name="orderNumber" placeholder="Order Number" value="@Context.Request.Query["orderNumber"].ToString()" />
+            <input type="date" class="form-control" name="filterDate" placeholder="Filter by Date" value="@(ViewBag.FilterDate?.ToString("yyyy-MM-dd"))" />
         </div>
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
+        <div class="col-auto">
+            <a href="?role=HEADWAITER" class="btn btn-outline-secondary">Clear Filters</a>
+        </div>
     </form>
 
     <div class="table-responsive">
-        <table class="table table-sm table-striped align-middle">
+        <table class="table table-sm table-striped align-middle audit-table">
             <thead>
                 <tr>
                     <th>Timestamp</th>
@@ -32,18 +63,35 @@
                     <th>Order #</th>
                     <th>Waiter</th>
                     <th>Succeeded</th>
-                    <th>Details</th>
+                    <th class="text-end">Details</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var log in Model)
                 {
-                    <tr>
+                    var rowId = $"details_{log.AuditLogId}";
+                    <tr class="main-row">
                         <td>@log.Timestamp.ToLocalTime()</td>
                         <td>@log.Username (@log.Role)</td>
                         <td>@log.Action</td>
                         <td>@log.OrderNumber</td>
-                        <td>@log.WaiterId</td>
+                        <td>
+                            @{
+                                var wn = (ViewBag.WaiterNames as System.Collections.Generic.IDictionary<int, string>);
+                            }
+                            @if (log.WaiterId.HasValue && wn != null && wn.ContainsKey(log.WaiterId.Value))
+                            {
+                                @wn[log.WaiterId.Value]
+                            }
+                            else if (log.WaiterId.HasValue)
+                            {
+                                @($"Waiter #{log.WaiterId.Value}")
+                            }
+                            else
+                            {
+                                @("-")
+                            }
+                        </td>
                         <td>
                             @if (log.Succeeded)
                             {
@@ -56,7 +104,160 @@
                                 ;
                             }
                         </td>
-                        <td style="max-width:360px">@log.Details</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-secondary toggle-btn" data-bs-toggle="collapse" data-bs-target="#@rowId" aria-expanded="false" aria-controls="@rowId">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="collapse" id="@rowId">
+                        <td colspan="7">
+                            <div class="p-3 details-card">
+                                @{
+                                    string details = log.Details ?? string.Empty;
+                                    bool rendered = false;
+
+                                    // Replace waiter IDs with names in plain-text details
+                                    var wnMap = ViewBag.WaiterNames as System.Collections.Generic.IDictionary<int, string>;
+                                    if (wnMap != null && wnMap.Count > 0 && details.IndexOf("waiter", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                                    {
+                                        foreach (var kv in wnMap)
+                                        {
+                                            details = details.Replace($"waiter {kv.Key}", $"waiter {kv.Value}")
+                                            .Replace($"Waiter {kv.Key}", $"Waiter {kv.Value}");
+                                        }
+                                    }
+                                    // Replace generic "order <id>" with known order number if available
+                                    if (!string.IsNullOrWhiteSpace(log.OrderNumber))
+                                    {
+                                        details = System.Text.RegularExpressions.Regex.Replace(
+                                        details,
+                                        @"(?i)\border\s+\d+\b",
+                                        $"order {log.OrderNumber}");
+                                    }
+
+                                    // Pulled-out materials: "PulledOut=ItemA:1,ItemB:2,..."
+                                    var pulledIdx = details.IndexOf("PulledOut=", StringComparison.OrdinalIgnoreCase);
+                                    if (pulledIdx >= 0)
+                                    {
+                                        var listStr = details.Substring(pulledIdx + "PulledOut=".Length).Trim();
+                                        var tokens = listStr.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(t => t.Trim())
+                                        .ToList();
+                                        var pairs = new System.Collections.Generic.List<(string name, string qty)>();
+                                        foreach (var t in tokens)
+                                        {
+                                            var colon = t.IndexOf(':');
+                                            if (colon > 0 && colon < t.Length - 1)
+                                            {
+                                                var name = t.Substring(0, colon).Trim();
+                                                var qty = t.Substring(colon + 1).Trim();
+                                                pairs.Add((name, qty));
+                                            }
+                                        }
+                                        if (pairs.Count > 0)
+                                        {
+                                            <div class="small">
+                                                <div class="fw-semibold mb-1">Pulled-out Materials</div>
+                                                <table class="table table-sm table-bordered mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Material</th>
+                                                            <th class="text-end">Qty</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var p in pairs)
+                                                        {
+                                                            <tr>
+                                                                <td>@p.name</td>
+                                                                <td class="text-end">@p.qty</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            rendered = true;
+                                        }
+                                    }
+
+                                    // Returned items; Charges=X; LostDamaged=[Name:Lx Dy, ...]
+                                    if (!rendered && details.StartsWith("Returned items", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        decimal chargesVal = 0m;
+                                        var chIdx = details.IndexOf("Charges=", StringComparison.OrdinalIgnoreCase);
+                                        if (chIdx >= 0)
+                                        {
+                                            var after = details.Substring(chIdx + "Charges=".Length);
+                                            var end = after.IndexOf(';');
+                                            var numStr = (end >= 0 ? after.Substring(0, end) : after).Trim();
+                                            decimal.TryParse(numStr, out chargesVal);
+                                        }
+
+                                        var ldStart = details.IndexOf("LostDamaged=[", StringComparison.OrdinalIgnoreCase);
+                                        var ldItems = new System.Collections.Generic.List<(string name, int L, int D)>();
+                                        if (ldStart >= 0)
+                                        {
+                                            var afterLd = details.Substring(ldStart + "LostDamaged=[".Length);
+                                            var closeIdx = afterLd.IndexOf(']');
+                                            var inner = closeIdx >= 0 ? afterLd.Substring(0, closeIdx) : afterLd;
+                                            var entries = inner.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                            foreach (var e in entries)
+                                            {
+                                                var entry = e.Trim();
+                                                var colon = entry.IndexOf(':');
+                                                if (colon > 0)
+                                                {
+                                                    var name = entry.Substring(0, colon).Trim();
+                                                    var rest = entry.Substring(colon + 1).Trim();
+                                                    int l = 0, d = 0;
+                                                    var parts = rest.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                                    foreach (var part in parts)
+                                                    {
+                                                        if (part.StartsWith("L")) int.TryParse(part.Substring(1), out l);
+                                                        if (part.StartsWith("D")) int.TryParse(part.Substring(1), out d);
+                                                    }
+                                                    ldItems.Add((name, l, d));
+                                                }
+                                            }
+                                        }
+
+                                        <div class="small">
+                                            <div class="fw-semibold mb-1">Returned Materials</div>
+                                            <div class="mb-2">Charges: ₱@chargesVal.ToString("N2")</div>
+                                            @if (ldItems.Count > 0)
+                                            {
+                                                <table class="table table-sm table-bordered mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Material</th>
+                                                            <th class="text-end">Lost</th>
+                                                            <th class="text-end">Damaged</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var it in ldItems)
+                                                        {
+                                                            <tr>
+                                                                <td>@it.name</td>
+                                                                <td class="text-end">@it.L</td>
+                                                                <td class="text-end">@it.D</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            }
+                                        </div>
+                                        rendered = true;
+                                    }
+
+                                    if (!rendered)
+                                    {
+                                        <div style="white-space: pre-line;">@details</div>
+                                    }
+                                }
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -64,8 +265,8 @@
     </div>
 
     <div class="d-flex gap-2">
-        <a class="btn btn-outline-secondary" href="?page=@(Math.Max(1, (int)ViewBag.Page - 1))&pageSize=@ViewBag.PageSize">Prev</a>
-        <a class="btn btn-outline-secondary" href="?page=@((int)ViewBag.Page + 1)&pageSize=@ViewBag.PageSize">Next</a>
+        <a class="btn btn-outline-secondary" href="?page=@(Math.Max(1, (int)ViewBag.Page - 1))&pageSize=@ViewBag.PageSize&username=@Context.Request.Query["username"]&orderNumber=@Context.Request.Query["orderNumber"]&filterDate=@Context.Request.Query["filterDate"]">Prev</a>
+        <a class="btn btn-outline-secondary" href="?page=@((int)ViewBag.Page + 1)&pageSize=@ViewBag.PageSize&username=@Context.Request.Query["username"]&orderNumber=@Context.Request.Query["orderNumber"]&filterDate=@Context.Request.Query["filterDate"]">Next</a>
         <div class="ms-2 align-self-center">Total: @ViewBag.Total</div>
     </div>
 </div>

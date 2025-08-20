@@ -197,6 +197,9 @@
             <a asp-action="OrdersByDate" class="btn btn-outline-primary add-customer-btn">
                 <i class="bi bi-calendar-day"></i> Daily Orders
             </a>
+            <a asp-action="PastOrders" class="btn btn-outline-success add-customer-btn">
+                <i class="bi bi-clock-history"></i> Past Orders
+            </a>
             <a asp-action="DeletedHistory" class="btn btn-outline-danger add-customer-btn">
                 <i class="bi bi-trash"></i> Deleted History
             </a>
@@ -227,15 +230,62 @@
                         <option value="Pending">Pending</option>
                         <option value="Accepted">Accepted</option>
                         <option value="Ongoing">Ongoing</option>
-                        <option value="Completed">Completed</option>
                     </select>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="card shadow-sm border-0 rounded-4">
+    @{
+        var remainingDict = ViewBag.RemainingBalanceByOrder as System.Collections.Generic.IDictionary<int, double>;
+        var returnsDict = ViewBag.ReturnsExistByOrder as System.Collections.Generic.IDictionary<int, bool>;
+
+        System.Func<Capstone2.Models.Customer, string> computeStatus = (item) =>
+        {
+            var order = item.Order;
+            if (order == null) return "";
+            var remaining = (remainingDict != null && remainingDict.ContainsKey(order.OrderId)) ? remainingDict[order.OrderId] : 0d;
+            var hasReturns = (returnsDict != null && returnsDict.ContainsKey(order.OrderId));
+            var dynamicStatus = order.Status;
+            var downPaymentMet = order.AmountPaid >= (order.TotalPayment * 0.5);
+            if (!downPaymentMet)
+            {
+                dynamicStatus = "Pending";
+            }
+            else if (order.Status == "Ongoing")
+            {
+                dynamicStatus = "Ongoing";
+            }
+            else if (remaining > 0 && hasReturns)
+            {
+                dynamicStatus = "Settling Balance";
+            }
+            else if (remaining > 0 && !hasReturns)
+            {
+                dynamicStatus = "Accepted";
+            }
+            return dynamicStatus;
+        };
+
+        var statusOrder = new System.Collections.Generic.List<string> { "Pending", "Accepted", "Ongoing", "Settling Balance" };
+        var withStatus = Model.Where(m => m.Order != null)
+        .Select(c => new { Customer = c, Status = computeStatus(c) })
+        .Where(x => x.Status != "Completed")
+        .ToList();
+        var allOrdered = withStatus
+        .Where(x => x.Status != "Completed")
+        .OrderBy(x => statusOrder.IndexOf(x.Status))
+        .ToList();
+        var pending = allOrdered.Where(x => x.Status == "Pending").ToList();
+        var accepted = allOrdered.Where(x => x.Status == "Accepted").ToList();
+        var settling = allOrdered.Where(x => x.Status == "Settling Balance").ToList();
+        var completed = new System.Collections.Generic.List<object>();
+    }
+
+    <!-- Table 1: All orders grouped by status order -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
         <div class="card-body p-0">
+            <div class="px-3 pt-3"><h5 class="fw-bold">All Orders (by Status)</h5></div>
             <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
                 <thead class="table-light rounded-4">
                     <tr>
@@ -250,9 +300,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var cs in allOrdered)
                     {
+                        var item = cs.Customer;
                         var order = item.Order;
+                        var dynamicStatus = cs.Status;
                         <tr>
                             <td style="font-size: 1.1rem;">
                                 @if (order?.OrderNumber != null)
@@ -264,92 +316,40 @@
                                     <span class="text-muted">-</span>
                                 }
                             </td>
-                            <td style="font-size: 1.1rem;">@Html.DisplayFor(modelItem => item.Name)</td>
-                            <td style="font-size: 1.1rem;">@Html.DisplayFor(modelItem => item.ContactNo)</td>
-                            <td style="font-size: 1.1rem;">@Html.DisplayFor(modelItem => item.Address)</td>
+                            <td style="font-size: 1.1rem;">@item.Name</td>
+                            <td style="font-size: 1.1rem;">@item.ContactNo</td>
+                            <td style="font-size: 1.1rem;">@item.Address</td>
                             <td>
-                                @if (order != null)
-                                {
+                                @{
                                     var downPayment = (decimal)order.TotalPayment * 0.5m;
                                     var downPaymentRemaining = downPayment - (decimal)order.AmountPaid;
                                     var balance = (decimal)order.TotalPayment - (decimal)order.AmountPaid;
                                     var isReadyToCater = downPaymentRemaining <= 0 && balance > 0;
-
-                                    <form asp-action="ToggleStatus"
-                                          asp-route-id="@item.CustomerID"
-                                          method="post"
-                                          class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit"
-                                                class="btn @(item.IsPaid ? "btn-outline-success" : "btn-outline-secondary") btn-sm payment-status-btn"
-                                        @(order.AmountPaid < order.TotalPayment ? "disabled" : "")>
-                                            <span style="font-size: 0.9rem; font-weight: 500;">
-                                                @if (item.IsPaid)
-                                                {
-                                                    @("Paid")
-                                                }
-                                                else if (isReadyToCater)
-                                                {
-                                                    @("Not Totally Paid")
-                                                }
-                                                else
-                                                {
-                                                    @("Not Paid")
-                                                }
-                                            </span>
-                                        </button>
-                                    </form>
                                 }
-                                else
-                                {
-                                    <span class="text-muted">No Order</span>
-                                }
+                                <form asp-action="ToggleStatus" asp-route-id="@item.CustomerID" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn @(item.IsPaid ? "btn-outline-success" : "btn-outline-secondary") btn-sm payment-status-btn" @(order.AmountPaid < order.TotalPayment ? "disabled" : "")>
+                                        <span style="font-size: 0.9rem; font-weight: 500;">
+                                            @if (item.IsPaid)
+                                            {
+                                                @("Paid")
+                                            }
+                                            else if (isReadyToCater)
+                                            {
+                                                @("Not Totally Paid")
+                                            }
+                                            else
+                                            {
+                                                @("Not Paid")
+                                            }
+                                        </span>
+                                    </button>
+                                </form>
                             </td>
                             <td>
-                                @if (order != null)
-                                {
-                                    // Determine dynamic catering status: if there is still a remaining balance, show Settling Balance
-                                    var remainingDict = ViewBag.RemainingBalanceByOrder as System.Collections.Generic.IDictionary<int, double>;
-                                    var returnsDict = ViewBag.ReturnsExistByOrder as System.Collections.Generic.IDictionary<int, bool>;
-                                    var remaining = remainingDict != null && order != null && remainingDict.ContainsKey(order.OrderId)
-                                    ? remainingDict[order.OrderId]
-                                    : 0d;
-                                    var hasReturns = returnsDict != null && order != null && returnsDict.ContainsKey(order.OrderId);
-                                    var dynamicStatus = order.Status;
-                                    // If down payment (50% of TotalPayment) is not yet met, force status to Pending
-                                    var downPaymentMet = order.AmountPaid >= (order.TotalPayment * 0.5);
-                                    if (!downPaymentMet)
-                                    {
-                                        dynamicStatus = "Pending";
-                                    }
-                                    // If materials have been pulled out, keep it as Ongoing (do not override to Accepted)
-                                    else if (order.Status == "Ongoing")
-                                    {
-                                        dynamicStatus = "Ongoing";
-                                    }
-                                    else if (remaining > 0 && hasReturns)
-                                    {
-                                        dynamicStatus = "Settling Balance";
-                                    }
-                                    else if (remaining > 0 && !hasReturns)
-                                    {
-                                        dynamicStatus = "Accepted";
-                                    }
-                                    <span class="badge @(dynamicStatus switch {
-                                        "Pending" => "bg-warning",
-                                        "Accepted" => "bg-info",
-                                        "Ongoing" => "bg-primary",
-                                        "Completed" => "bg-success",
-                                        "Settling Balance" => "bg-danger",
-                                        _ => "bg-secondary"
-                                    })">
-                                        @dynamicStatus
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">No Order</span>
-                                }
+                                <span class="badge @(dynamicStatus switch { "Pending" => "bg-warning", "Accepted" => "bg-info", "Ongoing" => "bg-primary", "Completed" => "bg-success", "Settling Balance" => "bg-danger", _ => "bg-secondary" })">
+                                    @dynamicStatus
+                                </span>
                             </td>
                             <td>
                                 @if (order?.HeadWaiter != null && order.HeadWaiter.User != null)
@@ -361,10 +361,9 @@
                                     <span class="text-muted">None</span>
                                 }
                             </td>
-
                             <td class="text-end">
                                 <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-outline-secondary action-btn" style="border: 2px solid;"><i class="bi bi-eye"></i> View Order</a>
-                                @if (order != null && order.Status == "Completed")
+                                @if (order.Status == "Completed")
                                 {
                                     <a asp-action="InventoryReport" asp-route-id="@item.CustomerID" class="btn btn-outline-info action-btn" style="border: 2px solid;"><i class="bi bi-clipboard-data"></i> Inventory Report</a>
                                 }
@@ -376,6 +375,116 @@
             </table>
         </div>
     </div>
+
+    <!-- Table 2: Pending -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body p-0">
+            <div class="px-3 pt-3"><h5 class="fw-bold">Pending Orders</h5></div>
+            <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.05rem;">
+                <thead class="table-light rounded-4">
+                    <tr>
+                        <th>Order Number</th>
+                        <th>Customer</th>
+                        <th>Contact</th>
+                        <th>Address</th>
+                        <th>Head Waiter</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cs in pending)
+                    {
+                        var item = cs.Customer; var order = item.Order;
+                        <tr>
+                            <td>@(order?.OrderNumber ?? "-")</td>
+                            <td>@item.Name</td>
+                            <td>@item.ContactNo</td>
+                            <td>@item.Address</td>
+                            <td>@(order?.HeadWaiter?.User != null ? $"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}" : "None")</td>
+                            <td class="text-end">
+                                <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-outline-secondary action-btn" style="border: 2px solid;">View</a>
+                                <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-outline-danger action-btn" style="border: 2px solid;">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Table 3: Accepted -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body p-0">
+            <div class="px-3 pt-3"><h5 class="fw-bold">Accepted Orders</h5></div>
+            <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.05rem;">
+                <thead class="table-light rounded-4">
+                    <tr>
+                        <th>Order Number</th>
+                        <th>Customer</th>
+                        <th>Contact</th>
+                        <th>Address</th>
+                        <th>Head Waiter</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cs in accepted)
+                    {
+                        var item = cs.Customer; var order = item.Order;
+                        <tr>
+                            <td>@(order?.OrderNumber ?? "-")</td>
+                            <td>@item.Name</td>
+                            <td>@item.ContactNo</td>
+                            <td>@item.Address</td>
+                            <td>@(order?.HeadWaiter?.User != null ? $"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}" : "None")</td>
+                            <td class="text-end">
+                                <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-outline-secondary action-btn" style="border: 2px solid;">View</a>
+                                <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-outline-danger action-btn" style="border: 2px solid;">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Table 4: Settling Balance -->
+    <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body p-0">
+            <div class="px-3 pt-3"><h5 class="fw-bold">Settling Balance Orders</h5></div>
+            <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.05rem;">
+                <thead class="table-light rounded-4">
+                    <tr>
+                        <th>Order Number</th>
+                        <th>Customer</th>
+                        <th>Contact</th>
+                        <th>Address</th>
+                        <th>Head Waiter</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cs in settling)
+                    {
+                        var item = cs.Customer; var order = item.Order;
+                        <tr>
+                            <td>@(order?.OrderNumber ?? "-")</td>
+                            <td>@item.Name</td>
+                            <td>@item.ContactNo</td>
+                            <td>@item.Address</td>
+                            <td>@(order?.HeadWaiter?.User != null ? $"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}" : "None")</td>
+                            <td class="text-end">
+                                <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="btn btn-outline-secondary action-btn" style="border: 2px solid;">View</a>
+                                <a asp-action="Delete" asp-route-id="@item.CustomerID" class="btn btn-outline-danger action-btn" style="border: 2px solid;">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
 </div>
 
 <script>

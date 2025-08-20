@@ -236,10 +236,27 @@
             });
         }
 
-        // Set minimum date for catering date input
+        // Set minimum date for catering date input (use Asia/Manila to avoid UTC off-by-one)
         const cateringDateInput = document.getElementById('cateringDate');
-        const today = new Date().toISOString().split('T')[0];
-        cateringDateInput.setAttribute('min', today);
+        function formatManilaDateYYYYMMDD(date) {
+            try {
+                const parts = new Intl.DateTimeFormat('en-CA', {
+                    timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit'
+                }).formatToParts(date);
+                const y = parts.find(p => p.type === 'year').value;
+                const m = parts.find(p => p.type === 'month').value;
+                const d = parts.find(p => p.type === 'day').value;
+                return `${y}-${m}-${d}`;
+            } catch (e) {
+                // Fallback to local if Intl/timeZone not supported
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+        }
+        const todayPH = formatManilaDateYYYYMMDD(new Date());
+        cateringDateInput.setAttribute('min', todayPH);
 
         // Set default time of food serving to current time (backup)
         setTimeout(() => {
@@ -292,23 +309,35 @@
             return `${h}:${m}`;
         }
 
+        function getManilaNowParts() {
+            try {
+                const parts = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', hour12: false
+                }).formatToParts(new Date());
+                const pick = (t) => parts.find(p => p.type === t).value;
+                return {
+                    y: pick('year'), m: pick('month'), d: pick('day'),
+                    h: parseInt(pick('hour'), 10), min: parseInt(pick('minute'), 10)
+                };
+            } catch (e) {
+                const now = new Date();
+                return { y: String(now.getFullYear()), m: String(now.getMonth() + 1).padStart(2, '0'), d: String(now.getDate()).padStart(2, '0'), h: now.getHours(), min: now.getMinutes() };
+            }
+        }
+
         function checkRushOrder() {
-            const cateringDate = new Date(cateringDateInput.value);
-            const today = new Date();
             const timeInput = document.getElementById('timeOfFoodServing');
             const submitBtn = document.querySelector('button[type="submit"]');
 
-            const isSameDay = (
-                cateringDateInput.value &&
-                cateringDate.getDate() === today.getDate() &&
-                cateringDate.getMonth() === today.getMonth() &&
-                cateringDate.getFullYear() === today.getFullYear()
-            );
+            const manilaNow = getManilaNowParts();
+            const todayPHStr = `${manilaNow.y}-${manilaNow.m}-${manilaNow.d}`;
+            const isSameDay = (cateringDateInput.value && cateringDateInput.value === todayPHStr);
 
             if (isSameDay) {
-                const isAM = today.getHours() < 12;
+                const isAM = manilaNow.h < 12;
 
-                // Rush order only allowed if current time is in AM
+                // Rush order only allowed if current time is in AM (Manila time)
                 if (!isAM) {
                     rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>Rush Order Restriction:</strong> Rush order is only available during AM. Please select a future date for your catering order.';
                     rushOrderAlert.className = 'alert alert-danger mb-4';
@@ -323,15 +352,10 @@
                     return;
                 }
 
-                const nowPlusTen = new Date(today.getTime());
-                nowPlusTen.setHours(nowPlusTen.getHours() + 10);
+                const hourPlusTen = manilaNow.h + 10;
 
-                // If the earliest possible time spills into the next day, block same-day selection
-                if (
-                    nowPlusTen.getFullYear() !== today.getFullYear() ||
-                    nowPlusTen.getMonth() !== today.getMonth() ||
-                    nowPlusTen.getDate() !== today.getDate()
-                ) {
+                // If adding 10 hours spills into next day in Manila, block same-day selection
+                if (hourPlusTen >= 24) {
                     rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation if rush order.</strong> No available time slots remain today. Please select a later date.';
                     rushOrderAlert.className = 'alert alert-danger mb-4';
                     rushOrderAlert.style.display = 'block';
@@ -345,7 +369,7 @@
                     return;
                 }
 
-                const minTime = formatTime(nowPlusTen);
+                const minTime = `${String(hourPlusTen).padStart(2, '0')}:${String(manilaNow.min).padStart(2, '0')}`;
                 if (timeInput) {
                     timeInput.setAttribute('min', minTime);
                     if (!timeInput.value || timeInput.value < minTime) {

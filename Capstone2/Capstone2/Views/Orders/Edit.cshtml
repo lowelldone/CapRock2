@@ -117,7 +117,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label asp-for="CateringDate" class="form-label fw-semibold">Catering Date</label>
-                    <input asp-for="CateringDate" type="date" class="form-control" />
+                    <input asp-for="CateringDate" type="date" class="form-control" id="cateringDate" />
                     <span asp-validation-for="CateringDate" class="text-danger"></span>
                 </div>
             </div>
@@ -125,7 +125,7 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="timeOfFoodServing" class="form-label fw-semibold">Time of Food Serving</label>
-                    <input asp-for="timeOfFoodServing" type="time" class="form-control" />
+                    <input asp-for="timeOfFoodServing" type="time" class="form-control" id="timeOfFoodServing" />
                     <span asp-validation-for="timeOfFoodServing" class="text-danger"></span>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -135,10 +135,16 @@
                 </div>
             </div>
 
+            <!-- Rush Order Fee Alert (hidden by default) -->
+            <div id="rushOrderAlert" class="alert alert-warning mb-4" style="display: none;">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Rush Order Fee:</strong> Since your catering date is the same as your order date, a <strong>10% rush order fee</strong> has been added to your total amount.
+            </div>
+
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="NoOfPax" class="form-label fw-semibold">No. Of Pax</label>
-                    <input asp-for="NoOfPax" type="number" class="form-control" min="60" />
+                    <input asp-for="NoOfPax" type="number" class="form-control" id="noOfPax" min="60" />
                     <span asp-validation-for="NoOfPax" class="text-danger"></span>
                 </div>
             </div>
@@ -165,4 +171,153 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Manila timezone helpers
+        function formatManilaDateYYYYMMDD(date) {
+            try {
+                const parts = new Intl.DateTimeFormat('en-CA', {
+                    timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit'
+                }).formatToParts(date);
+                const y = parts.find(p => p.type === 'year').value;
+                const m = parts.find(p => p.type === 'month').value;
+                const d = parts.find(p => p.type === 'day').value;
+                return `${y}-${m}-${d}`;
+            } catch (e) {
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+        }
+        function getManilaNowParts() {
+            try {
+                const parts = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', hour12: false
+                }).formatToParts(new Date());
+                const pick = (t) => parts.find(p => p.type === t).value;
+                return {
+                    y: pick('year'), m: pick('month'), d: pick('day'),
+                    h: parseInt(pick('hour'), 10), min: parseInt(pick('minute'), 10)
+                };
+            } catch (e) {
+                const now = new Date();
+                return { y: String(now.getFullYear()), m: String(now.getMonth() + 1).padStart(2, '0'), d: String(now.getDate()).padStart(2, '0'), h: now.getHours(), min: now.getMinutes() };
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const cateringDateInput = document.getElementById('cateringDate');
+            const timeOfFoodServingInput = document.getElementById('timeOfFoodServing');
+            const noOfPaxInput = document.getElementById('noOfPax');
+            const rushOrderAlert = document.getElementById('rushOrderAlert');
+            const submitBtn = document.querySelector('button[type="submit"]');
+
+            // Min date using Manila time
+            const todayPH = formatManilaDateYYYYMMDD(new Date());
+            cateringDateInput.setAttribute('min', todayPH);
+
+            // Ensure time has a sensible default (current Manila time) if blank
+            if (timeOfFoodServingInput && !timeOfFoodServingInput.value) {
+                const now = getManilaNowParts();
+                timeOfFoodServingInput.value = `${String(now.h).padStart(2, '0')}:${String(now.min).padStart(2, '0')}`;
+            }
+
+            // NoOfPax client validation matching create form
+            if (noOfPaxInput) {
+                noOfPaxInput.addEventListener('focus', function () {
+                    if (this.value === '0' || this.value === '') {
+                        this.value = '';
+                    }
+                });
+                noOfPaxInput.addEventListener('input', function () {
+                    if (this.value === '0') {
+                        this.value = '';
+                    }
+                });
+                noOfPaxInput.addEventListener('blur', function () {
+                    if (this.value === '' || this.value === '0' || parseInt(this.value) < 60) {
+                        this.setCustomValidity('Please enter a valid number of people (minimum 60)');
+                    }
+                    else if (this.value === '' || this.value === '0' || parseInt(this.value) > 1500) {
+                        this.setCustomValidity('Please enter a valid number of people (maximum 1500)');
+                    }
+                    else {
+                        this.setCustomValidity('');
+                    }
+                });
+            }
+
+            function formatTime(h, m) {
+                return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+            }
+
+            function applyRushOrderRules() {
+                const manilaNow = getManilaNowParts();
+                const todayPHStr = `${manilaNow.y}-${manilaNow.m}-${manilaNow.d}`;
+                const isSameDay = (cateringDateInput.value && cateringDateInput.value === todayPHStr);
+
+                if (isSameDay) {
+                    const isAM = manilaNow.h < 12;
+                    if (!isAM) {
+                        rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>Rush Order Restriction:</strong> Rush order is only available during AM. Please select a future date for your catering order.';
+                        rushOrderAlert.className = 'alert alert-danger mb-4';
+                        rushOrderAlert.style.display = 'block';
+                        if (submitBtn) {
+                            submitBtn.disabled = true;
+                            submitBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Order Restricted';
+                        }
+                        if (timeOfFoodServingInput) {
+                            timeOfFoodServingInput.removeAttribute('min');
+                        }
+                        return;
+                    }
+
+                    const hourPlusTen = manilaNow.h + 10;
+                    if (hourPlusTen >= 24) {
+                        rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation if rush order.</strong> No available time slots remain today. Please select a later date.';
+                        rushOrderAlert.className = 'alert alert-danger mb-4';
+                        rushOrderAlert.style.display = 'block';
+                        if (submitBtn) {
+                            submitBtn.disabled = true;
+                            submitBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Order Restricted';
+                        }
+                        if (timeOfFoodServingInput) {
+                            timeOfFoodServingInput.removeAttribute('min');
+                        }
+                        return;
+                    }
+
+                    const minTime = formatTime(hourPlusTen, manilaNow.min);
+                    if (timeOfFoodServingInput) {
+                        timeOfFoodServingInput.setAttribute('min', minTime);
+                        if (!timeOfFoodServingInput.value || timeOfFoodServingInput.value < minTime) {
+                            timeOfFoodServingInput.value = minTime;
+                        }
+                    }
+
+                    rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation if rush order.</strong> Since your catering date is the same as your order date, a <strong>10% rush order fee</strong> has been added to your total amount.';
+                    rushOrderAlert.className = 'alert alert-warning mb-4';
+                    rushOrderAlert.style.display = 'block';
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Save Changes';
+                    }
+                } else {
+                    rushOrderAlert.style.display = 'none';
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Save Changes';
+                    }
+                    if (timeOfFoodServingInput) {
+                        timeOfFoodServingInput.removeAttribute('min');
+                    }
+                }
+            }
+
+            // Initial and reactive checks
+            applyRushOrderRules();
+            cateringDateInput.addEventListener('change', applyRushOrderRules);
+        });
+    </script>
 } 

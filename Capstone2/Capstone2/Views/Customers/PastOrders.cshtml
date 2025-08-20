@@ -1,0 +1,198 @@
+﻿@model IEnumerable<Capstone2.Models.Order>
+
+@{
+	ViewData["Title"] = "Past Orders";
+	var addDict = ViewBag.AdditionalChargesByOrder as System.Collections.Generic.IDictionary<int, double>;
+	var effDict = ViewBag.EffectiveTotalByOrder as System.Collections.Generic.IDictionary<int, double>;
+	var payDict = ViewBag.PaymentsTotalByOrder as System.Collections.Generic.IDictionary<int, double>;
+	var remDict = ViewBag.RemainingBalanceByOrder as System.Collections.Generic.IDictionary<int, double>;
+	string searchString = ViewBag.SearchString as string ?? string.Empty;
+	DateTime? startDate = ViewBag.StartDate as DateTime?;
+	DateTime? endDate = ViewBag.EndDate as DateTime?;
+}
+
+<style>
+	:root {
+		--primary-purple: #7c3aed;
+		--primary-purple-dark: #6d28d9;
+		--primary-purple-light: #a78bfa;
+		--secondary-purple: #8b5cf6;
+		--accent-purple: #c084fc;
+		--purple-bg: #faf5ff;
+		--purple-bg-light: #f3e8ff;
+		--purple-border: #e9d5ff;
+		--text-purple: #581c87;
+		--text-purple-light: #7c3aed;
+		--success-color: #10b981;
+		--warning-color: #f59e0b;
+		--danger-color: #ef4444;
+		--info-color: #3b82f6;
+	}
+
+	.pastorders-bg {
+		background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
+		min-height: 100vh;
+		border-radius: 24px;
+		padding-bottom: 2rem;
+	}
+
+	.pastorders-header {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
+	.pastorders-header-icon {
+		font-size: 2.5rem;
+		color: var(--primary-purple);
+		background: var(--purple-bg-light);
+		border-radius: 12px;
+		padding: 8px 14px;
+		box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
+		border: 1px solid var(--purple-border);
+	}
+
+	.card {
+		border-radius: 20px !important;
+		box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
+		border: 1px solid var(--purple-border);
+		transition: all 0.3s ease;
+	}
+
+		.card:hover {
+			box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+			transform: translateY(-2px);
+		}
+
+	.table {
+		border-radius: 16px;
+		overflow: hidden;
+		background: #fff;
+		box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.1);
+	}
+
+		.table thead th {
+			background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
+			font-size: 1.05rem;
+			font-weight: 700;
+			color: var(--text-purple);
+			border-bottom: 2px solid var(--purple-border);
+		}
+
+		.table tbody tr:nth-child(even) {
+			background: var(--purple-bg);
+		}
+
+		.table tbody tr:hover {
+			background: var(--purple-bg-light);
+			transition: all 0.3s ease;
+			transform: scale(1.01);
+		}
+
+	.action-btn {
+		border-radius: 8px;
+		font-size: 0.95rem;
+		padding: 6px 14px;
+		margin-left: 2px;
+		margin-right: 2px;
+		transition: all 0.3s ease;
+		border: 2px solid transparent;
+	}
+</style>
+
+<div class="container-fluid mt-4 px-4 pastorders-bg">
+	<div class="d-flex justify-content-between align-items-center mb-2">
+		<div class="pastorders-header mb-1">
+			<span class="pastorders-header-icon"><i class="bi bi-clock-history"></i></span>
+			<h2 class="fw-bold mb-0">Past Orders</h2>
+		</div>
+		<div>
+			<a asp-action="Index" class="btn btn-outline-secondary">
+				<i class="bi bi-arrow-left"></i> Back to Customers
+			</a>
+		</div>
+	</div>
+
+	<div class="card mb-4 shadow-sm border-0 rounded-4">
+		<div class="card-body">
+			<form asp-action="PastOrders" method="get" class="row g-3">
+				<div class="col-md-4">
+					<input type="text" name="searchString" class="form-control" placeholder="Search by Order No., Customer, Venue..." value="@searchString" />
+				</div>
+				<div class="col-md-3">
+					<input type="date" name="startDate" class="form-control" value="@(startDate.HasValue ? startDate.Value.ToString("yyyy-MM-dd") : string.Empty)" />
+				</div>
+				<div class="col-md-3">
+					<input type="date" name="endDate" class="form-control" value="@(endDate.HasValue ? endDate.Value.ToString("yyyy-MM-dd") : string.Empty)" />
+				</div>
+				<div class="col-md-2 d-grid">
+					<button type="submit" class="btn btn-outline-primary">Search</button>
+				</div>
+				<div class="col-md-12">
+					<a asp-action="PastOrders" class="btn btn-outline-secondary">Clear</a>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div class="card shadow-sm border-0 rounded-4">
+		<div class="card-body p-0">
+			<table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden">
+				<thead class="table-light rounded-4">
+					<tr>
+						<th>Order No.</th>
+						<th>Customer</th>
+						<th>Catering Date</th>
+						<th>Venue</th>
+						<th class="text-end">Base Total</th>
+						<th class="text-end">Additional</th>
+						<th class="text-end">Invoice Total</th>
+						<th class="text-end">Payments</th>
+						<th class="text-end">Remaining</th>
+						<th class="text-end">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var o in Model)
+					{
+						var add = addDict != null && addDict.ContainsKey(o.OrderId) ? addDict[o.OrderId] : 0d;
+						var invoiceTotal = effDict != null && effDict.ContainsKey(o.OrderId) ? effDict[o.OrderId] : o.TotalPayment + add;
+						var payments = payDict != null && payDict.ContainsKey(o.OrderId) ? payDict[o.OrderId] : 0d;
+						var remaining = remDict != null && remDict.ContainsKey(o.OrderId) ? remDict[o.OrderId] : 0d;
+						var displayRemaining = o.Status == "Completed" ? 0d : remaining;
+						<tr>
+							<td>
+								@if (!string.IsNullOrWhiteSpace(o.OrderNumber))
+								{
+									<span class="fw-bold text-primary">@o.OrderNumber</span>
+								}
+								else
+								{
+									<span class="text-muted">-</span>
+								}
+							</td>
+							<td>@o.Customer?.Name</td>
+							<td>@o.CateringDate.ToString("yyyy-MM-dd")</td>
+							<td>@o.Venue</td>
+							<td class="text-end">₱@o.TotalPayment.ToString("N2")</td>
+							<td class="text-end">₱@add.ToString("N2")</td>
+							<td class="text-end">₱@invoiceTotal.ToString("N2")</td>
+							<td class="text-end">₱@payments.ToString("N2")</td>
+							<td class="text-end">₱@displayRemaining.ToString("N2")</td>
+							<td class="text-end">
+								<a asp-action="ViewOrder" asp-route-id="@o.CustomerID" asp-route-fromPastOrders="true" class="btn btn-outline-secondary action-btn" style="border: 2px solid;"><i class="bi bi-eye"></i> View</a>
+								<a asp-action="InventoryReport" asp-route-id="@o.CustomerID" asp-route-fromPastOrders="true" class="btn btn-outline-info action-btn" style="border: 2px solid;"><i class="bi bi-clipboard-data"></i> Inventory</a>
+								@if (o.Customer?.IsPaid == true)
+								{
+									<a asp-action="ViewOrder" asp-route-id="@o.CustomerID" asp-route-fromPastOrders="true" asp-route-showInvoiceModal="true" class="btn btn-outline-primary action-btn" style="border: 2px solid;"><i class="bi bi-file-earmark-pdf"></i> Invoice</a>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+

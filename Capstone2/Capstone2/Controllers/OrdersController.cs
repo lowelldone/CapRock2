@@ -88,7 +88,11 @@ namespace Capstone2.Controllers
             ModelState.Remove("OrderNumber");
             if (!ModelState.IsValid) return View(model);
 
-            var order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.OrderId == id);
+            var order = await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Menu)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
             if (order == null) return NotFound();
 
             // Update order fields
@@ -104,6 +108,22 @@ namespace Capstone2.Controllers
             order.Customer.ContactNo = model.Customer.ContactNo;
             order.Customer.Address = model.Customer.Address;
 
+            // Recalculate base total from current order details
+            double baseTotal = 0;
+            if (order.OrderDetails != null)
+            {
+                foreach (var od in order.OrderDetails)
+                {
+                    var unit = od.Menu?.Price ?? 0;
+                    baseTotal += unit * od.Quantity;
+                }
+            }
+
+            // Apply rush order fee when order date and catering date are the same calendar day
+            var isRush = order.OrderDate.Date == order.CateringDate.Date;
+            order.TotalPayment = isRush ? baseTotal + (baseTotal * 0.10) : baseTotal;
+
+            _context.Orders.Update(order);
             await _context.SaveChangesAsync();
             return RedirectToAction("ViewOrder", "Customers", new { id = order.CustomerID });
         }

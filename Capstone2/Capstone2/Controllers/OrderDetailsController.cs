@@ -94,6 +94,9 @@ namespace Capstone2.Controllers
         {
             var order = await _context.Orders
                 .Include(o => o.OrderDetails)
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Menu)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
                 return NotFound();
@@ -125,7 +128,9 @@ namespace Capstone2.Controllers
                     }
                 }
             }
-            order.TotalPayment = total;
+            // Apply rush order fee if OrderDate and CateringDate are the same day
+            var isRush = order.OrderDate.Date == order.CateringDate.Date;
+            order.TotalPayment = isRush ? total + (total * 0.10) : total;
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
 

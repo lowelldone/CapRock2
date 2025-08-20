@@ -39,7 +39,7 @@
 
         .soft-sidebar {
             width: 60px;
-            min-height: 100vh;
+            height: 100vh; /* lock height to viewport for independent scrolling */
             background-color: lightgray;
             border-radius: 20px;
             box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
@@ -53,7 +53,8 @@
             align-items: center;
             z-index: 1000;
             transition: width 0.3s ease;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto; /* enable vertical scroll when content overflows */
         }
 
             .soft-sidebar:hover {
@@ -321,6 +322,8 @@
         .main-content {
             margin-left: 80px;
             transition: margin-left 0.3s ease;
+            /* ensure page content can scroll independently of sidebar */
+            min-height: 100vh;
         }
 
         .soft-sidebar:hover ~ .main-content {
@@ -616,6 +619,12 @@
                                             <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Preferences" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Preferences">
                                                 <i class="bi bi-heart"></i>
                                                 <span>Preferences</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "InventoryTrends" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="InventoryTrends">
+                                                <i class="bi bi-box-seam"></i>
+                                                <span>Inventory Trends</span>
                                             </a>
                                         </li>
                                     </ul>
