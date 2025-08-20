@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Inventory Report";
+    bool fromPast = ViewBag.FromPastOrders ?? false;
 }
 
 <style>
@@ -127,8 +128,17 @@
     </div>
 
     <div class="mt-4">
-        <a asp-action="Index" class="btn btn-outline-secondary btn-back">
-            <i class="bi bi-arrow-left me-2"></i>Back to Customers
-        </a>
+        @if (fromPast)
+        {
+            <a asp-action="PastOrders" class="btn btn-outline-secondary btn-back">
+                <i class="bi bi-arrow-left me-2"></i>Back to Past Orders
+            </a>
+        }
+        else
+        {
+            <a asp-action="Index" class="btn btn-outline-secondary btn-back">
+                <i class="bi bi-arrow-left me-2"></i>Back to Customers
+            </a>
+        }
     </div>
 </div> 

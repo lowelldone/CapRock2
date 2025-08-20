@@ -9,6 +9,9 @@ using Capstone2.Data;
 using Capstone2.Models;
 using Newtonsoft.Json;
 using Capstone2.Helpers;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 namespace Capstone2.Controllers.AdminControllers
 {
@@ -209,7 +212,7 @@ namespace Capstone2.Controllers.AdminControllers
             return _context.Customers.Any(e => e.CustomerID == id && !e.isDeleted);
         }
 
-        public async Task<IActionResult> ViewOrder(int? id)
+        public async Task<IActionResult> ViewOrder(int? id, bool? fromPastOrders, bool? showInvoiceModal)
         {
             if (id == null)
                 return BadRequest();
@@ -253,6 +256,13 @@ namespace Capstone2.Controllers.AdminControllers
             ViewBag.EffectiveTotal = effectiveTotal;
             ViewBag.RemainingBalance = remainingBalance;
 
+            // Rush order breakdown (base and fee)
+            var baseTotal = order.OrderDetails.Sum(od => (od.Menu?.Price ?? 0) * od.Quantity);
+            var rushFee = order.IsRushOrder ? baseTotal * 0.10 : 0d;
+            ViewBag.RushBaseTotal = baseTotal;
+            ViewBag.RushOrderFee = rushFee;
+            ViewBag.RushTotal = baseTotal + rushFee;
+
             // Role flag for view logic
             var role = HttpContext.Session.GetString("Role");
             ViewBag.IsAdmin = role == "ADMIN";
@@ -269,9 +279,165 @@ namespace Capstone2.Controllers.AdminControllers
                 ViewBag.OrderWaiters = orderWaiters;
             }
 
+            ViewBag.FromPastOrders = fromPastOrders ?? false;
+            ViewBag.ShowInvoiceModal = showInvoiceModal ?? false;
             return View(order);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GenerateInvoice(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Menu)
+                .FirstOrDefaultAsync(o => o.CustomerID == id && !o.Customer.isDeleted && !o.isDeleted);
+
+            if (order == null)
+                return NotFound();
+
+            // Optional guard: only allow when paid and completed
+            if (!(order.Customer.IsPaid && order.Status == "Completed"))
+            {
+                return RedirectToAction(nameof(ViewOrder), new { id });
+            }
+
+            // Compute charges
+            var materialReturns = await _context.Set<MaterialReturn>()
+                .Where(r => r.OrderId == order.OrderId)
+                .ToListAsync();
+            var additionalCharges = materialReturns.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem);
+            var effectiveTotal = order.TotalPayment + (double)additionalCharges;
+
+            string Peso(double v) => $"₱{v:N2}";
+
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(40);
+                    page.DefaultTextStyle(x => x.FontSize(11));
+
+                    page.Header().Row(row =>
+                    {
+                        row.RelativeColumn().Stack(stack =>
+                        {
+                            stack.Item().Text("GRUSH Catering").FontSize(16).SemiBold();
+                            stack.Item().Text("Official Invoice").FontColor(Colors.Blue.Medium);
+                        });
+
+                        row.ConstantColumn(260).AlignRight().Stack(stack =>
+                        {
+                            stack.Item().Text(text =>
+                            {
+                                text.Span("Order No: ").SemiBold();
+                                text.Span(string.IsNullOrWhiteSpace(order.OrderNumber) ? $"ORD-{order.OrderDate:yyyyMMdd}-{order.OrderId:D3}" : order.OrderNumber);
+                            });
+                            stack.Item().Text(text =>
+                            {
+                                text.Span("Order Date: ").SemiBold();
+                                text.Span(order.OrderDate.ToString("dd/MM/yyyy"));
+                            });
+                            stack.Item().Text(text =>
+                            {
+                                text.Span("Catering Date: ").SemiBold();
+                                text.Span(order.CateringDate.ToString("dd/MM/yyyy"));
+                            });
+                        });
+                    });
+
+                    page.Content().Stack(stack =>
+                    {
+                        stack.Spacing(10);
+
+                        // Billed To
+                        stack.Item().Text("Billed To").SemiBold();
+                        stack.Item().Text(order.Customer.Name);
+                        if (!string.IsNullOrWhiteSpace(order.Customer.ContactNo))
+                            stack.Item().Text(order.Customer.ContactNo).FontColor(Colors.Blue.Medium);
+                        if (!string.IsNullOrWhiteSpace(order.Customer.Address))
+                            stack.Item().Text(order.Customer.Address);
+
+                        stack.Item().PaddingTop(10).Element(container =>
+                        {
+                            container.Table(table =>
+                            {
+                                table.ColumnsDefinition(columns =>
+                                {
+                                    columns.RelativeColumn(5);   // Menu
+                                    columns.RelativeColumn(2);   // Qty
+                                    columns.RelativeColumn(3);   // Unit Price
+                                    columns.RelativeColumn(3);   // Subtotal
+                                });
+
+                                table.Header(header =>
+                                {
+                                    header.Cell().Element(CellHeader).Text("Menu");
+                                    header.Cell().Element(CellHeader).AlignRight().Text("Quantity");
+                                    header.Cell().Element(CellHeader).AlignRight().Text("Unit Price");
+                                    header.Cell().Element(CellHeader).AlignRight().Text("Subtotal");
+
+                                    static IContainer CellHeader(IContainer container) =>
+                                        container.DefaultTextStyle(x => x.SemiBold())
+                                            .Background(Colors.Grey.Lighten3)
+                                            .PaddingVertical(6)
+                                            .PaddingHorizontal(8);
+                                });
+
+                                foreach (var item in order.OrderDetails)
+                                {
+                                    var unit = item.Menu?.Price ?? 0;
+                                    var subtotal = unit * item.Quantity;
+                                    table.Cell().Element(Cell).Text(item.Name);
+                                    table.Cell().Element(Cell).AlignRight().Text(item.Quantity.ToString());
+                                    table.Cell().Element(Cell).AlignRight().Text(Peso(unit));
+                                    table.Cell().Element(Cell).AlignRight().Text(Peso(subtotal));
+                                }
+
+                                static IContainer Cell(IContainer container) =>
+                                    container.BorderBottom(1).BorderColor(Colors.Grey.Lighten3)
+                                             .PaddingVertical(6).PaddingHorizontal(8);
+                            });
+                        });
+
+                        // Totals
+                        stack.Item().PaddingTop(10).AlignRight().Stack(totals =>
+                        {
+                            totals.Spacing(4);
+                            totals.Item().Text(text =>
+                            {
+                                text.Span("Base Total: ").SemiBold();
+                                text.Span(Peso(order.TotalPayment));
+                            });
+
+                            if (additionalCharges > 0)
+                            {
+                                totals.Item().Text(text =>
+                                {
+                                    text.Span("Additional Charges: ").SemiBold().FontColor(Colors.Red.Medium);
+                                    text.Span(Peso((double)additionalCharges)).FontColor(Colors.Red.Medium);
+                                });
+                            }
+
+                            totals.Item().Text(text =>
+                            {
+                                text.Span("Invoice Total: ").SemiBold().FontSize(13);
+                                text.Span(Peso(effectiveTotal)).SemiBold().FontSize(13);
+                            });
+                        });
+                    });
+
+                    page.Footer().AlignCenter().Text("Thank you for your business!");
+                });
+            });
+
+            var pdf = document.GeneratePdf();
+            var fileName = $"{order.Customer.Name} - Order Invoice.pdf";
+            return File(pdf, "application/pdf", fileName);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -502,7 +668,7 @@ namespace Capstone2.Controllers.AdminControllers
         }
 
         // GET: Customers/InventoryReport/5
-        public async Task<IActionResult> InventoryReport(int id)
+        public async Task<IActionResult> InventoryReport(int id, bool? fromPastOrders)
         {
             // id = CustomerId
             Order order = await _context.Orders.Include(o => o.Customer).FirstOrDefaultAsync(o => o.CustomerID == id && !o.Customer.isDeleted);
@@ -556,6 +722,7 @@ namespace Capstone2.Controllers.AdminControllers
                 CustomerId = id,
                 Items = reportItems
             };
+            ViewBag.FromPastOrders = fromPastOrders ?? false;
             return View(viewModel);
         }
 
@@ -579,6 +746,88 @@ namespace Capstone2.Controllers.AdminControllers
             ViewBag.MaxPax = 700;
 
             return View(ordersForDate);
+        }
+
+        // GET: Customers/PastOrders
+        public async Task<IActionResult> PastOrders(string searchString, DateTime? startDate, DateTime? endDate)
+        {
+            var ordersQuery = _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.HeadWaiter)
+                    .ThenInclude(hw => hw.User)
+                .Where(o => !o.isDeleted && o.Customer != null && !o.Customer.isDeleted && o.Status == "Completed")
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var term = searchString.Trim().ToLower();
+                ordersQuery = ordersQuery.Where(o =>
+                    (!string.IsNullOrEmpty(o.OrderNumber) && o.OrderNumber.ToLower().Contains(term)) ||
+                    (o.Customer != null && o.Customer.Name.ToLower().Contains(term)) ||
+                    (!string.IsNullOrEmpty(o.Venue) && o.Venue.ToLower().Contains(term))
+                );
+            }
+
+            if (startDate.HasValue)
+            {
+                var start = startDate.Value.Date;
+                ordersQuery = ordersQuery.Where(o => o.CateringDate.Date >= start);
+            }
+            if (endDate.HasValue)
+            {
+                var end = endDate.Value.Date;
+                ordersQuery = ordersQuery.Where(o => o.CateringDate.Date <= end);
+            }
+
+            var orders = await ordersQuery
+                .OrderByDescending(o => o.CateringDate)
+                .ThenByDescending(o => o.OrderDate)
+                .ToListAsync();
+
+            // Compute additional charges, payments, and remaining balances per order using strict allocation
+            var orderIds = orders.Select(o => o.OrderId).ToList();
+
+            var additionalChargesByOrder = await _context.MaterialReturns
+                .Where(r => orderIds.Contains(r.OrderId))
+                .GroupBy(r => r.OrderId)
+                .Select(g => new { OrderId = g.Key, TotalCharge = g.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem) })
+                .ToListAsync();
+            var additionalChargesDict = additionalChargesByOrder.ToDictionary(x => x.OrderId, x => (double)x.TotalCharge);
+
+            var paymentsAll = await _context.Payments
+                .Where(p => orderIds.Contains(p.OrderId))
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+            var paymentsByOrder = paymentsAll.GroupBy(p => p.OrderId).ToDictionary(g => g.Key, g => g.ToList());
+
+            var effectiveTotalByOrder = new Dictionary<int, double>();
+            var paymentsTotalByOrder = new Dictionary<int, double>();
+            var remainingBalanceByOrder = new Dictionary<int, double>();
+
+            foreach (var order in orders)
+            {
+                var extra = additionalChargesDict.TryGetValue(order.OrderId, out var total) ? total : 0d;
+                effectiveTotalByOrder[order.OrderId] = order.TotalPayment + extra;
+
+                var plist = paymentsByOrder.TryGetValue(order.OrderId, out var list) ? list : new List<Payment>();
+                paymentsTotalByOrder[order.OrderId] = plist.Sum(p => p.Amount);
+
+                var allocation = AllocatePaymentsToBaseThenCharges(order, plist);
+                var remainingBase = Math.Max(0d, order.TotalPayment - allocation.baseAllocated);
+                var remainingCharges = Math.Max(0d, extra - allocation.chargesAllocated);
+                remainingBalanceByOrder[order.OrderId] = remainingBase + remainingCharges;
+            }
+
+            ViewBag.AdditionalChargesByOrder = additionalChargesDict;
+            ViewBag.EffectiveTotalByOrder = effectiveTotalByOrder;
+            ViewBag.PaymentsTotalByOrder = paymentsTotalByOrder;
+            ViewBag.RemainingBalanceByOrder = remainingBalanceByOrder;
+
+            ViewBag.SearchString = searchString;
+            ViewBag.StartDate = startDate;
+            ViewBag.EndDate = endDate;
+
+            return View(orders);
         }
 
         // GET: Customers/DeletedHistory

@@ -341,6 +341,227 @@ namespace Capstone2.Controllers
 
             return View(model);
         }
+
+        // INVENTORY TRENDS ---------------------------------------------------
+        public async Task<IActionResult> InventoryTrends(DateTime? startDate = null, DateTime? endDate = null, string groupBy = "month")
+        {
+            var start = startDate?.Date ?? DateTime.Today.AddMonths(-11).Date;
+            var end = (endDate ?? DateTime.Today).Date;
+            if (end < start) (start, end) = (end, start);
+
+            // Helper functions for period grouping
+            DateTime Truncate(DateTime d)
+            {
+                return groupBy switch
+                {
+                    "day" => d.Date,
+                    "week" => d.Date.AddDays(-(int)d.DayOfWeek),
+                    "quarter" => new DateTime(d.Year, ((d.Month - 1) / 3) * 3 + 1, 1),
+                    "year" => new DateTime(d.Year, 1, 1),
+                    _ => new DateTime(d.Year, d.Month, 1) // month
+                };
+            }
+
+            string LabelFor(DateTime d)
+            {
+                return groupBy switch
+                {
+                    "day" => d.ToString("MMM dd, yyyy"),
+                    "week" => $"Week of {d:MMM dd, yyyy}",
+                    "quarter" => $"Q{(d.Month - 1) / 3 + 1} {d.Year}",
+                    "year" => d.Year.ToString(),
+                    _ => d.ToString("MMM yyyy") // month
+                };
+            }
+
+            // Get all materials
+            var materials = await _context.Materials.ToListAsync();
+            var materialsDict = materials.ToDictionary(m => m.MaterialId, m => m);
+
+            // Get all orders in the date range
+            var orders = await _context.Orders
+                .Where(o => !o.isDeleted && o.Status == "Completed")
+                .Where(o => o.CateringDate.Date >= start && o.CateringDate.Date <= end)
+                .ToListAsync();
+
+            // Get all material pull outs
+            var materialPullOuts = await _context.MaterialPullOuts
+                .Include(p => p.Items)
+                .Where(p => orders.Select(o => o.OrderId).Contains(p.OrderId))
+                .ToListAsync();
+
+            // Get all material returns - use Set<T>() approach as it seems to work in other controllers
+            var materialReturns = await _context.Set<MaterialReturn>()
+                .Where(r => orders.Select(o => o.OrderId).Contains(r.OrderId))
+                .ToListAsync();
+
+
+
+
+
+            // Create periods dictionary
+            var periodsDict = new Dictionary<DateTime, ConsumptionPeriod>();
+            var current = start;
+            while (current <= end)
+            {
+                var periodKey = Truncate(current);
+                if (!periodsDict.ContainsKey(periodKey))
+                {
+                    periodsDict[periodKey] = new ConsumptionPeriod
+                    {
+                        PeriodStart = periodKey,
+                        Label = LabelFor(periodKey)
+                    };
+                }
+                current = current.AddDays(1);
+            }
+
+            // Process material consumption by period
+            foreach (var order in orders)
+            {
+                var periodKey = Truncate(order.CateringDate);
+                if (periodsDict.ContainsKey(periodKey))
+                {
+                    periodsDict[periodKey].OrderCount++;
+                }
+
+                // Get pull out for this order
+                var pullOut = materialPullOuts.FirstOrDefault(p => p.OrderId == order.OrderId);
+                if (pullOut?.Items != null)
+                {
+                    foreach (var pullOutItem in pullOut.Items)
+                    {
+                        var material = materials.FirstOrDefault(m => m.Name == pullOutItem.MaterialName);
+                        if (material != null)
+                        {
+                            if (periodsDict.ContainsKey(periodKey))
+                            {
+                                var period = periodsDict[periodKey];
+                                period.Consumed += pullOutItem.Quantity;
+
+                                // Find corresponding return data for this specific material and order
+                                var returnData = materialReturns.FirstOrDefault(r =>
+                                    r.OrderId == order.OrderId && r.MaterialName == pullOutItem.MaterialName);
+
+                                if (returnData != null)
+                                {
+                                    // Add returned, lost, and damaged items
+                                    period.Returned += returnData.Returned;
+                                    period.Lost += returnData.Lost;
+                                    period.Damaged += returnData.Damaged;
+                                }
+                                else
+                                {
+                                    // If no return data exists, check if it's a consumable
+                                    if (material.IsConsumable)
+                                    {
+                                        // For consumables, everything pulled out is consumed
+                                        period.Returned = 0;
+                                        period.Lost = 0;
+                                        period.Damaged = 0;
+                                    }
+                                    // For non-consumables, if no return data, assume everything was returned
+                                    // (this might need adjustment based on your business logic)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Create material trends
+            var materialTrends = new List<MaterialConsumptionTrend>();
+            foreach (var material in materials)
+            {
+                var trend = new MaterialConsumptionTrend
+                {
+                    MaterialId = material.MaterialId,
+                    MaterialName = material.Name,
+                    IsConsumable = material.IsConsumable
+                };
+
+                // Calculate totals and populate consumption by period
+                foreach (var period in periodsDict.Values.OrderBy(p => p.PeriodStart))
+                {
+                    var materialPeriod = new ConsumptionPeriod
+                    {
+                        PeriodStart = period.PeriodStart,
+                        Label = period.Label,
+                        OrderCount = period.OrderCount
+                    };
+
+                    // Get material-specific data for this period
+                    var periodOrders = orders.Where(o => Truncate(o.CateringDate) == period.PeriodStart).ToList();
+
+                    foreach (var order in periodOrders)
+                    {
+                        var pullOut = materialPullOuts.FirstOrDefault(p => p.OrderId == order.OrderId);
+                        var pullOutItem = pullOut?.Items?.FirstOrDefault(i => i.MaterialName == material.Name);
+
+                        if (pullOutItem != null)
+                        {
+                            materialPeriod.Consumed += pullOutItem.Quantity;
+
+                            // Find return data for this material and order
+                            var returnData = materialReturns.FirstOrDefault(r =>
+                                r.OrderId == order.OrderId && r.MaterialName == material.Name);
+
+                            if (returnData != null)
+                            {
+                                materialPeriod.Returned += returnData.Returned;
+                                materialPeriod.Lost += returnData.Lost;
+                                materialPeriod.Damaged += returnData.Damaged;
+                            }
+                            else if (material.IsConsumable)
+                            {
+                                // For consumables with no return data, everything is consumed
+                                materialPeriod.Returned = 0;
+                                materialPeriod.Lost = 0;
+                                materialPeriod.Damaged = 0;
+                            }
+                            // For non-consumables with no return data, assume everything was returned
+                        }
+                    }
+
+                    trend.ConsumptionByPeriod.Add(materialPeriod);
+                }
+
+                // Calculate totals
+                trend.TotalConsumption = trend.ConsumptionByPeriod.Sum(p => p.Consumed);
+                trend.TotalLoss = trend.ConsumptionByPeriod.Sum(p => p.Lost);
+                trend.TotalDamage = trend.ConsumptionByPeriod.Sum(p => p.Damaged);
+                trend.OrderCount = trend.ConsumptionByPeriod.Sum(p => p.OrderCount);
+                trend.AverageConsumptionPerOrder = trend.OrderCount > 0 ? trend.TotalConsumption / trend.OrderCount : 0;
+
+                materialTrends.Add(trend);
+            }
+
+
+
+            // Create summary
+            var summary = new InventorySummary
+            {
+                TotalMaterials = materials.Count,
+                ConsumableMaterials = materials.Count(m => m.IsConsumable),
+                NonConsumableMaterials = materials.Count(m => !m.IsConsumable),
+                TotalConsumption = materialTrends.Sum(m => m.TotalConsumption),
+                TotalLoss = materialTrends.Sum(m => m.TotalLoss),
+                TotalDamage = materialTrends.Sum(m => m.TotalDamage),
+                TotalOrders = orders.Count
+            };
+
+            var model = new InventoryTrendsViewModel
+            {
+                StartDate = start,
+                EndDate = end,
+                GroupBy = groupBy,
+                MaterialTrends = materialTrends.OrderByDescending(m => m.TotalConsumption).ToList(),
+                Periods = periodsDict.Values.OrderBy(p => p.PeriodStart).ToList(),
+                Summary = summary
+            };
+
+            return View(model);
+        }
     }
 }
 

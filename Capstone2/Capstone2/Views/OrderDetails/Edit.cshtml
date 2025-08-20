@@ -231,24 +231,40 @@
         function addMenuItem() {
             var menuId = $('#menuSelect').val();
             var menuName = $('#menuSelect option:selected').data('name');
-            var quantity = $('#menuQuantity').val();
+            var quantity = parseInt($('#menuQuantity').val(), 10);
             if (!menuId || !quantity || quantity < 1) return;
+
+            // If the item already exists, merge by increasing its quantity
+            var existing = $('#orderDetailsBody input[name*=".MenuId"][value="' + menuId + '"]');
+            if (existing.length) {
+                var row = existing.closest('tr');
+                var qtyInput = row.find('input[name*=".Quantity"]');
+                var currentQty = parseInt(qtyInput.val(), 10) || 0;
+                qtyInput.val(currentQty + quantity);
+
+                // Reset controls and recalc
+                $('#menuSelect').val('');
+                $('#menuQuantity').val(1);
+                recalculateTotal();
+                return;
+            }
+
             var index = $('#orderDetailsBody tr').length;
             var row = `<tr>
-                                    <td><input type="hidden" name="orderDetails[${index}].MenuId" value="${menuId}" />
-                                        <input type="hidden" name="orderDetails[${index}].Name" value="${menuName}" />
-                                        ${menuName}</td>
-                                    <td><input type="number" name="orderDetails[${index}].Quantity" value="${quantity}" min="1" class="form-control" /></td>
-                                    <td><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
-                                        <i class="bi bi-trash me-1"></i>Remove
-                                    </button></td>
-                                </tr>`;
+                                            <td><input type="hidden" name="orderDetails[${index}].MenuId" value="${menuId}" />
+                                                <input type="hidden" name="orderDetails[${index}].Name" value="${menuName}" />
+                                                ${menuName}</td>
+                                            <td><input type="number" name="orderDetails[${index}].Quantity" value="${quantity}" min="1" class="form-control" /></td>
+                                            <td><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
+                                                <i class="bi bi-trash me-1"></i>Remove
+                                            </button></td>
+                                        </tr>`;
             $('#orderDetailsBody').append(row);
 
-            // Optionally reset the dropdown and quantity for user convenience
+            // Reset controls and recalc
             $('#menuSelect').val('');
             $('#menuQuantity').val(1);
-            recalculateTotal(); // Call recalculateTotal after adding a row
+            recalculateTotal();
         }
 
         // Create menu data object
