@@ -10,195 +10,62 @@
     var remainingBalanceByOrder = ViewBag.RemainingBalanceByOrder as System.Collections.Generic.IDictionary<int, double> ?? new System.Collections.Generic.Dictionary<int, double>();
 }
 
-<style>
-    :root {
-        --primary-purple: #7c3aed;
-        --primary-purple-dark: #6d28d9;
-        --primary-purple-light: #a78bfa;
-        --secondary-purple: #8b5cf6;
-        --accent-purple: #c084fc;
-        --purple-bg: #faf5ff;
-        --purple-bg-light: #f3e8ff;
-        --purple-border: #e9d5ff;
-        --text-purple: #581c87;
-        --text-purple-light: #7c3aed;
-        --success-color: #10b981;
-        --warning-color: #f59e0b;
-        --danger-color: #ef4444;
-        --info-color: #3b82f6;
-    }
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-    body, .container-fluid, .card, .table {
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .payments-bg {
-        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-
-    .payments-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .payments-header-icon {
-        font-size: 2.5rem;
-        color: var(--primary-purple);
-        background: var(--purple-bg-light);
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
-        border: 1px solid var(--purple-border);
-    }
-
-    .payments-subtitle {
-        color: var(--text-purple-light);
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-
-    .card {
-        border-radius: 20px !important;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-        transition: all 0.3s ease;
-    }
-
-        .card:hover {
-            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-            transform: translateY(-2px);
-        }
-
-    .table {
-        border-radius: 16px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.1);
-    }
-
-        .table thead th {
-            background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-purple);
-            border-bottom: 2px solid var(--purple-border);
-        }
-
-        .table tbody tr:nth-child(even) {
-            background: var(--purple-bg);
-        }
-
-        .table tbody tr:hover {
-            background: var(--purple-bg-light);
-            transition: all 0.3s ease;
-            transform: scale(1.01);
-        }
-
-    .action-btn {
-        border-radius: 8px;
-        font-size: 1rem;
-        padding: 6px 16px;
-        margin-left: 2px;
-        margin-right: 2px;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-        .action-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-        }
-
-        .action-btn i {
-            margin-right: 4px;
-        }
-
-    .balance-badge {
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 600;
-    }
-
-        .balance-badge.high {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .balance-badge.medium {
-            background: var(--warning-color);
-            color: white;
-        }
-
-        .balance-badge.low {
-            background: var(--success-color);
-            color: white;
-        }
-
-    .progress-bar {
-        height: 8px;
-        border-radius: 4px;
-        background: var(--purple-bg-light);
-        overflow: hidden;
-    }
-
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
-        transition: width 0.3s ease;
-    }
-
-    .extra-note {
-        color: #64748b;
-        font-size: 0.85rem;
-    }
-</style>
-
-<div class="container-fluid mt-4 px-4 payments-bg">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <div class="payments-header mb-1">
-                <span class="payments-header-icon"><i class="bi bi-credit-card"></i></span>
-                <h2 class="fw-bold mb-0">Payment Management</h2>
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-credit-card"></i>
             </div>
-            <div class="payments-subtitle">Track and process payments for orders with outstanding balances</div>
+            <div>
+                <h1 class="modern-title">Payment Management</h1>
+                <p class="modern-subtitle">Track and process payments for orders with outstanding balances</p>
+            </div>
         </div>
     </div>
 
-    <div class="card mb-4 shadow-sm border-0 rounded-4">
-        <div class="card-body">
-            <form asp-controller="Payments" asp-action="Index" method="get" class="row g-3">
-                <div class="col-md-8">
-                    <input type="text" name="searchString" class="form-control" placeholder="Search by Order Number or Customer Name..." value="@Context.Request.Query["searchString"]" />
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-outline-primary w-100">Search</button>
-                </div>
-                <div class="col-md-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary w-100">Clear</a>
-                </div>
-            </form>
-        </div>
+    <!-- Search Section -->
+    <div class="modern-search-card">
+        <form asp-controller="Payments" asp-action="Index" method="get" class="modern-search-form">
+            <div>
+                <label class="modern-form-label">Search Orders</label>
+                <input type="text" name="searchString" class="modern-form-control" placeholder="Search by Order Number or Customer Name..." value="@Context.Request.Query["searchString"]" />
+            </div>
+            <div>
+                <button type="submit" class="modern-btn-search w-100">
+                    <i class="bi bi-search me-2"></i>Search
+                </button>
+            </div>
+            <div>
+                <a asp-action="Index" class="modern-action-btn btn-outline-secondary w-100">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Clear
+                </a>
+            </div>
+        </form>
     </div>
 
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-0">
-            <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
-                <thead class="table-light rounded-4">
+    <!-- Payments Table -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-credit-card-2-front"></i>
+                Outstanding Payments (@Model.Count())
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="modern-table table-hover align-middle mb-0">
+                <thead>
                     <tr>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Customer</th>
+                        <th>Customer</th>
                         @if (ViewBag.IsAdmin == true)
                         {
-                            <th class="fw-bold" style="font-size: 1.2rem;">Order Number</th>
+                            <th>Order Number</th>
                         }
-                        <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Balance</th>
-                        <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
+                        <th>Catering Date</th>
+                        <th>Balance</th>
+                        <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -208,25 +75,33 @@
                         var balance = remainingBalanceByOrder.ContainsKey(item.OrderId)
                         ? remainingBalanceByOrder[item.OrderId]
                         : (extra > 0 ? extra : Math.Max(0, item.TotalPayment - Math.Min(item.AmountPaid, item.TotalPayment)));
-                        var effectiveTotal = item.TotalPayment + extra;
-                        var paidForProgress = effectiveTotal - balance;
-                        var paymentPercentage = effectiveTotal > 0 ? (paidForProgress / effectiveTotal) * 100 : 0;
-                        var balanceClass = "high"; // Always show red badge for any remaining balance
 
                         <tr>
-                            <td style="font-size: 1.1rem;">@item.Customer.Name</td>
+                            <td>
+                                <div class="modern-name">@item.Customer.Name</div>
+                            </td>
                             @if (ViewBag.IsAdmin == true)
                             {
-                                <td style="font-size: 1.1rem;">@item.OrderNumber</td>
+                                <td>
+                                    <span class="modern-badge">@item.OrderNumber</span>
+                                </td>
                             }
-                            <td style="font-size: 1.1rem;">@item.CateringDate.ToShortDateString()</td>
                             <td>
-                                <span class="balance-badge @balanceClass">₱@balance.ToString("F2")</span>
+                                <div class="modern-info">@item.CateringDate.ToShortDateString()</div>
+                            </td>
+                            <td>
+                                <span class="modern-status-badge settling">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    ₱@balance.ToString("F2")
+                                </span>
                             </td>
                             <td class="text-end">
-                                <a asp-action="ProcessPayment" asp-route-id="@item.OrderId" class="btn btn-outline-success action-btn" style="border: 2px solid;">
-                                    <i class="bi bi-credit-card"></i> Process Payment
-                                </a>
+                                <div class="modern-table-actions">
+                                    <a asp-action="ProcessPayment" asp-route-id="@item.OrderId" class="modern-table-action-btn btn-outline-success">
+                                        <i class="bi bi-credit-card"></i>
+                                        Payment
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -237,10 +112,12 @@
 
     @if (!Model.Any())
     {
-        <div class="text-center py-5">
-            <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
-            <h4 class="mt-3 text-muted">No Outstanding Balances</h4>
-            <p class="text-muted">All orders are fully paid!</p>
+        <div class="modern-status-card text-center">
+            <div class="modern-card-body">
+                <i class="bi bi-check-circle text-success" style="font-size: 4rem; color: var(--success-color);"></i>
+                <h4 class="modern-title mt-3" style="color: var(--gray-600);">No Outstanding Balances</h4>
+                <p class="modern-subtitle">All orders are fully paid!</p>
+            </div>
         </div>
     }
 </div>

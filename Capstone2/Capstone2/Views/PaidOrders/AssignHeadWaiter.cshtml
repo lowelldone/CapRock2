@@ -4,305 +4,132 @@
     ViewData["Title"] = "Assign HeadWaiter";
 }
 
-<style>
-    :root {
-        --primary-purple: #7c3aed;
-        --primary-purple-dark: #6d28d9;
-        --primary-purple-light: #a78bfa;
-        --secondary-purple: #8b5cf6;
-        --accent-purple: #c084fc;
-        --purple-bg: #faf5ff;
-        --purple-bg-light: #f3e8ff;
-        --purple-border: #e9d5ff;
-        --text-purple: #581c87;
-        --text-purple-light: #7c3aed;
-        --success-color: #10b981;
-        --warning-color: #f59e0b;
-        --danger-color: #ef4444;
-        --info-color: #3b82f6;
-    }
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-    body, .container-fluid, .card {
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .assign-headwaiter-bg {
-        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-
-    .assign-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .assign-header-icon {
-        font-size: 2.5rem;
-        color: var(--primary-purple);
-        background: var(--purple-bg-light);
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
-        border: 1px solid var(--purple-border);
-    }
-
-    .assign-subtitle {
-        color: var(--text-purple-light);
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-
-    .card {
-        border-radius: 20px !important;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-        transition: all 0.3s ease;
-    }
-
-        .card:hover {
-            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-            transform: translateY(-2px);
-        }
-
-    .order-info {
-        background: var(--purple-bg-light);
-        border: 1px solid var(--purple-border);
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
-        .order-info h5 {
-            color: var(--text-purple);
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-    .order-detail {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 8px;
-        padding: 8px 0;
-        border-bottom: 1px solid rgba(124, 58, 237, 0.1);
-    }
-
-        .order-detail:last-child {
-            border-bottom: none;
-        }
-
-        .order-detail .label {
-            font-weight: 600;
-            color: var(--text-purple);
-        }
-
-        .order-detail .value {
-            color: var(--text-purple-light);
-            text-align: right;
-        }
-
-    .form-select {
-        border-radius: 12px;
-        border: 2px solid var(--purple-border);
-        padding: 12px 16px;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-    }
-
-        .form-select:focus {
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-        }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        border-color: var(--primary-purple);
-        color: white;
-        border-radius: 12px;
-        font-weight: 600;
-        padding: 12px 24px;
-        transition: all 0.3s ease;
-        border: none;
-    }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
-        }
-
-    .btn-outline-secondary {
-        border-color: var(--purple-border);
-        color: var(--text-purple);
-        background: transparent;
-        border-radius: 12px;
-        font-weight: 600;
-        padding: 12px 24px;
-        transition: all 0.3s ease;
-    }
-
-        .btn-outline-secondary:hover {
-            background: var(--purple-bg-light);
-            border-color: var(--primary-purple);
-            color: var(--primary-purple);
-            transform: translateY(-2px);
-        }
-
-    .current-assignment {
-        background: var(--success-color);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        display: inline-block;
-        margin-bottom: 15px;
-    }
-
-    .headwaiter-option {
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 8px;
-        background: var(--purple-bg);
-        border: 1px solid var(--purple-border);
-        transition: all 0.3s ease;
-    }
-
-        .headwaiter-option:hover {
-            background: var(--purple-bg-light);
-            border-color: var(--primary-purple);
-            transform: translateY(-1px);
-        }
-
-        .headwaiter-option.selected {
-            background: var(--primary-purple);
-            color: white;
-            border-color: var(--primary-purple);
-        }
-</style>
-
-<div class="container-fluid mt-4 px-4 assign-headwaiter-bg">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <div class="assign-header mb-1">
-                <span class="assign-header-icon"><i class="bi bi-person-plus"></i></span>
-                <h2 class="fw-bold mb-0">Assign HeadWaiter</h2>
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-person-plus"></i>
             </div>
-            <div class="assign-subtitle">Assign a headwaiter to manage this order.</div>
+            <div>
+                <h1 class="modern-title">Assign HeadWaiter</h1>
+                <p class="modern-subtitle">Assign a headwaiter to manage this order.</p>
+            </div>
         </div>
-        <div class="d-flex gap-2">
-            <a asp-action="Index" class="btn btn-outline-secondary">
+        <div class="modern-action-buttons">
+            <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i> Back to Orders
             </a>
-            <a asp-action="AssignWaiter" asp-route-id="@Model.CustomerID" class="btn btn-primary">
+            <a asp-action="AssignWaiter" asp-route-id="@Model.CustomerID" class="modern-action-btn btn-primary">
                 <i class="bi bi-person-plus"></i> Assign Waiters
             </a>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mb-4">
-                        <i class="bi bi-receipt text-primary"></i>
-                        Order Assignment
-                    </h4>
+    <!-- Order Assignment Card -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-receipt"></i>
+                Order Assignment
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            <form asp-action="AssignHeadWaiter" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.CustomerID" />
 
-                    <form asp-action="AssignHeadWaiter" method="post">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@Model.CustomerID" />
-
-                        <div class="mb-4">
-                            <label for="headWaiterId" class="form-label fw-bold">
-                                <i class="bi bi-person-badge"></i>
-                                Select HeadWaiter
-                            </label>
-                            <select name="headWaiterId" id="headWaiterId" class="form-select" required>
-                                <option value="">-- Choose a HeadWaiter --</option>
-                                @{
-                                    var headWaiters = ViewBag.HeadWaiters as IEnumerable<HeadWaiter>;
-                                }
-                                @foreach (var headWaiter in headWaiters)
-                                {
-                                    var isSelected = ViewBag.CurrentHeadWaiterId != null &&
-                                    (int)ViewBag.CurrentHeadWaiterId == headWaiter.HeadWaiterId;
-
-                                    if (isSelected)
-                                    {
-                                        <option value="@headWaiter.HeadWaiterId" selected>
-                                            @headWaiter.User?.FirstName @headWaiter.User?.LastName
-                                        </option>
-                                    }
-                                    else
-                                    {
-                                        <option value="@headWaiter.HeadWaiterId">
-                                            @headWaiter.User?.FirstName @headWaiter.User?.LastName
-                                        </option>
-                                    }
-                                }
-                            </select>
-                            <div class="form-text">
-                                <i class="bi bi-info-circle"></i>
-                                Select a headwaiter to manage this order. The headwaiter will be responsible for deploying waiters and managing materials.
-                            </div>
-                        </div>
-
-                        <div class="d-flex gap-3">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i>
-                                @(ViewBag.CurrentHeadWaiterId != null ? "Reassign" : "Assign") HeadWaiter
-                            </button>
-                            <a asp-action="Index" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle"></i>
-                                Cancel
-                            </a>
-                        </div>
-                    </form>
-                    @{
-                        if (ViewBag.CurrentHeadWaiterId != null)
-                        {
+                <div class="modern-form-group">
+                    <label for="headWaiterId" class="modern-form-label">
+                        <i class="bi bi-person-badge"></i>
+                        Select HeadWaiter
+                    </label>
+                    <select name="headWaiterId" id="headWaiterId" class="modern-form-control" required>
+                        <option value="">-- Choose a HeadWaiter --</option>
+                        @{
                             var headWaiters = ViewBag.HeadWaiters as IEnumerable<HeadWaiter>;
-                            HeadWaiter currentHeadWaiter = null;
-
-                            if (headWaiters != null)
-                            {
-                                currentHeadWaiter = headWaiters
-                                .FirstOrDefault(h => h.HeadWaiterId == (int)ViewBag.CurrentHeadWaiterId);
-                            }
-
-                            if (currentHeadWaiter != null)
-                            {
-                                <div class="text-center">
-                                    <div class="current-assignment">
-                                        <i class="bi bi-person-check"></i>
-                                        Currently Assigned to: @currentHeadWaiter.User?.FirstName @currentHeadWaiter.User?.LastName
-                                    </div>
-                                </div>
-                            }
                         }
-                        else
+                        @foreach (var headWaiter in headWaiters)
                         {
-                            <div class="text-center">
-                                <div class="current-assignment" style="background: var(--warning-color);">
-                                    <i class="bi bi-exclamation-triangle"></i>
-                                    No HeadWaiter Assigned
-                                </div>
-                            </div>
+                            var isSelected = ViewBag.CurrentHeadWaiterId != null &&
+                            (int)ViewBag.CurrentHeadWaiterId == headWaiter.HeadWaiterId;
+
+                            if (isSelected)
+                            {
+                                <option value="@headWaiter.HeadWaiterId" selected>
+                                    @headWaiter.User?.FirstName @headWaiter.User?.LastName
+                                </option>
+                            }
+                            else
+                            {
+                                <option value="@headWaiter.HeadWaiterId">
+                                    @headWaiter.User?.FirstName @headWaiter.User?.LastName
+                                </option>
+                            }
                         }
-                    }
+                    </select>
+                    <div class="modern-form-group">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle"></i>
+                            Select a headwaiter to manage this order. The headwaiter will be responsible for deploying waiters and managing materials.
+                        </small>
+                    </div>
                 </div>
-            </div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="modern-action-btn btn-primary">
+                        <i class="bi bi-check-circle"></i>
+                        @(ViewBag.CurrentHeadWaiterId != null ? "Reassign" : "Assign") HeadWaiter
+                    </button>
+                    <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+
+            <!-- Current Assignment Status -->
+            @{
+                if (ViewBag.CurrentHeadWaiterId != null)
+                {
+                    var headWaiters = ViewBag.HeadWaiters as IEnumerable<HeadWaiter>;
+                    HeadWaiter currentHeadWaiter = null;
+
+                    if (headWaiters != null)
+                    {
+                        currentHeadWaiter = headWaiters
+                        .FirstOrDefault(h => h.HeadWaiterId == (int)ViewBag.CurrentHeadWaiterId);
+                    }
+
+                    if (currentHeadWaiter != null)
+                    {
+                        <div class="text-center mt-4">
+                            <div class="modern-status-badge accepted">
+                                <i class="bi bi-person-check"></i>
+                                Currently Assigned to: @currentHeadWaiter.User?.FirstName @currentHeadWaiter.User?.LastName
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-center mt-4">
+                        <div class="modern-status-badge pending">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            No HeadWaiter Assigned
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
 </div>
 
 <script>
     // Add visual feedback when selecting headwaiter
-    document.getElementById('headWaiterId').addEventListener('change', function() {
+    document.getElementById('headWaiterId').addEventListener('change', function () {
         const selectedOption = this.options[this.selectedIndex];
         if (selectedOption.value) {
             console.log('Selected HeadWaiter:', selectedOption.text);
@@ -310,7 +137,7 @@
     });
 
     // Form validation
-    document.querySelector('form').addEventListener('submit', function(e) {
+    document.querySelector('form').addEventListener('submit', function (e) {
         const headWaiterId = document.getElementById('headWaiterId').value;
         if (!headWaiterId) {
             e.preventDefault();

@@ -5,187 +5,49 @@
     ViewData["Title"] = "Schedules";
 }
 
-<style>
-    :root {
-        --primary-purple: #7c3aed;
-        --primary-purple-dark: #6d28d9;
-        --primary-purple-light: #a78bfa;
-        --secondary-purple: #8b5cf6;
-        --accent-purple: #c084fc;
-        --purple-bg: #faf5ff;
-        --purple-bg-light: #f3e8ff;
-        --purple-border: #e9d5ff;
-        --text-purple: #581c87;
-        --text-purple-light: #7c3aed;
-        --success-color: #10b981;
-        --warning-color: #f59e0b;
-        --danger-color: #ef4444;
-        --info-color: #3b82f6;
-    }
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-    body, .container-fluid, .card, .table {
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .schedules-bg {
-        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-
-    .schedules-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .schedules-header-icon {
-        font-size: 2.5rem;
-        color: var(--primary-purple);
-        background: var(--purple-bg-light);
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
-        border: 1px solid var(--purple-border);
-    }
-
-    .schedules-subtitle {
-        color: var(--text-purple-light);
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-
-    .header-icon {
-        font-size: 1.5rem;
-        color: #6b7280;
-        cursor: pointer;
-        padding: 0.5rem;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-        .header-icon:hover {
-            background: var(--purple-bg-light);
-            color: var(--primary-purple);
-        }
-
-    .card {
-        border-radius: 20px !important;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-        transition: all 0.3s ease;
-    }
-
-        .card:hover {
-            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-            transform: translateY(-2px);
-        }
-
-    .table {
-        border-radius: 16px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.1);
-    }
-
-        .table thead th {
-            background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-purple);
-            border-bottom: 2px solid var(--purple-border);
-        }
-
-        .table tbody tr:nth-child(even) {
-            background: var(--purple-bg);
-        }
-
-        .table tbody tr:hover {
-            background: var(--purple-bg-light);
-            transition: all 0.3s ease;
-            transform: scale(1.01);
-        }
-
-    .action-btn {
-        border-radius: 8px;
-        font-size: 1rem;
-        padding: 6px 16px;
-        margin-left: 2px;
-        margin-right: 2px;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-        .action-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-        }
-
-        .action-btn i {
-            margin-right: 4px;
-        }
-    /* Status badge enhancements */
-    .badge.bg-success {
-        background: var(--success-color) !important;
-    }
-
-    .badge.bg-warning {
-        background: var(--warning-color) !important;
-    }
-
-    .badge.bg-danger {
-        background: var(--danger-color) !important;
-    }
-
-    .badge.bg-info {
-        background: var(--info-color) !important;
-    }
-    /* Alert enhancements */
-    .alert-success {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        border: 1px solid var(--success-color);
-        color: #065f46;
-        border-radius: 12px;
-    }
-
-    .alert-danger {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        border: 1px solid var(--danger-color);
-        color: #991b1b;
-        border-radius: 12px;
-    }
-</style>
-
-<div class="container-fluid mt-4 px-4 schedules-bg">
+<div class="container-fluid modern-bg">
     @if (TempData["ProfileError"] != null)
     {
-        <div class="alert alert-danger">@TempData["ProfileError"]</div>
+        <div class="modern-alert modern-alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ProfileError"]
+        </div>
     }
     @if (TempData["ProfileSuccess"] != null)
     {
-        <div class="alert alert-success">@TempData["ProfileSuccess"]</div>
+        <div class="modern-alert modern-alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["ProfileSuccess"]
+        </div>
     }
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <div class="schedules-header mb-1">
-                <span class="schedules-header-icon"><i class="bi bi-calendar-event"></i></span>
-                <h2 class="fw-bold mb-0">Schedules</h2>
+
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-calendar-event"></i>
             </div>
-            @if ((ViewBag.Role as string) == "ADMIN")
-            {
-                <div class="schedules-subtitle">All head waiters' and waiters' assigned orders.</div>
-            }
-            else
-            {
-                <div class="schedules-subtitle">View your upcoming catering schedules and assignments.</div>
-            }
+            <div>
+                <h1 class="modern-title">Catering Schedules</h1>
+                @if ((ViewBag.Role as string) == "ADMIN")
+                {
+                    <p class="modern-subtitle">All head waiters' and waiters' assigned orders</p>
+                }
+                else
+                {
+                    <p class="modern-subtitle">View your upcoming catering schedules and assignments</p>
+                }
+            </div>
         </div>
         @if ((ViewBag.Role as string) != "ADMIN")
         {
-            <div class="d-flex gap-2">
-                <i class="bi bi-person-circle header-icon" onclick="openProfileModal()" style="cursor: pointer;"></i>
+            <div class="modern-action-buttons">
+                <button class="modern-action-btn btn-outline-primary" onclick="openProfileModal()">
+                    <i class="bi bi-person-circle"></i>
+                    Update Profile
+                </button>
             </div>
         }
     </div>
@@ -194,63 +56,88 @@
     {
         @if (Model.HeadWaiterAssignedOrders.Any())
         {
-            <div class="card shadow-sm border-0 rounded-4 mb-4">
-                <div class="card-body p-0">
-                    <div class="px-4 pt-3">
-                        <h4 class="fw-bold mb-3" style="color: var(--text-purple);">Head Waiter Assigned Orders</h4>
-                    </div>
-                    <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
-                        <thead class="table-light rounded-4">
+            <!-- Head Waiter Assigned Orders -->
+            <div class="modern-status-card">
+                <div class="modern-status-card-header">
+                    <h5 class="modern-status-card-title">
+                        <i class="bi bi-person-badge"></i>
+                        Head Waiter Assigned Orders (@Model.HeadWaiterAssignedOrders.Count())
+                    </h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="modern-table table-hover align-middle mb-0">
+                        <thead>
                             <tr>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Head Waiter</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Customer Name</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Venue</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Occasion</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Time of Food Serving</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Waiters</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
+                                <th>Head Waiter</th>
+                                <th>Customer Name</th>
+                                <th>Catering Date</th>
+                                <th>Venue</th>
+                                <th>Occasion</th>
+                                <th>Food Serving Time</th>
+                                <th>Waiters</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var order in Model.HeadWaiterAssignedOrders)
                             {
                                 <tr>
-                                    <td style="font-size: 1.1rem;">@order.HeadWaiter?.User?.FirstName</td>
-                                    
-                                    <td style="font-size: 1.1rem;">
-                                        <strong>@order.Customer.Name</strong><br>
+                                    <td>
+                                        <div class="modern-name">@order.HeadWaiter?.User?.FirstName</div>
                                     </td>
-                                    <td style="font-size: 1.1rem;">@order.CateringDate.ToString("MMM dd, yyyy")</td>
-                                    <td style="font-size: 1.1rem;">@order.Venue</td>
-                                    <td style="font-size: 1.1rem;">@order.Occasion</td>
-                                    <td style="font-size: 1.1rem;">@order.timeOfFoodServing.ToString("hh:mm tt")</td>
-                                    <td style="font-size: 1.1rem;">
+                                    <td>
+                                        <div class="modern-name">@order.Customer.Name</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">@order.CateringDate.ToString("MMM dd, yyyy")</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">@order.Venue</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">@order.Occasion</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">@order.timeOfFoodServing.ToString("hh:mm tt")</div>
+                                    </td>
+                                    <td>
                                         @if (order.OrderWaiters != null && order.OrderWaiters.Any())
                                         {
-                                            @string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))
+                                            <div class="modern-info">@string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))</div>
                                         }
                                         else
                                         {
-                                            <span>-</span>
+                                            <span class="modern-info text-muted">-</span>
                                         }
                                     </td>
                                     <td>
                                         @if (order.Status == "Pending")
                                         {
-                                            <span class="badge bg-warning text-dark fs-5 px-3 py-2">Pending</span>
+                                            <span class="modern-status-badge pending">
+                                                <i class="bi bi-clock"></i>
+                                                Pending
+                                            </span>
                                         }
                                         else if (order.Status == "Confirmed")
                                         {
-                                            <span class="badge bg-info fs-5 px-3 py-2">Confirmed</span>
+                                            <span class="modern-status-badge accepted">
+                                                <i class="bi bi-check-circle"></i>
+                                                Confirmed
+                                            </span>
                                         }
                                         else if (order.Status == "In Progress")
                                         {
-                                            <span class="badge bg-primary fs-5 px-3 py-2">In Progress</span>
+                                            <span class="modern-status-badge ongoing">
+                                                <i class="bi bi-play-circle"></i>
+                                                In Progress
+                                            </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-secondary fs-5 px-3 py-2">@order.Status</span>
+                                            <span class="modern-status-badge inactive">
+                                                <i class="bi bi-x-circle"></i>
+                                                @order.Status
+                                            </span>
                                         }
                                     </td>
                                 </tr>
@@ -260,64 +147,91 @@
                 </div>
             </div>
         }
+
         @if (Model.WaiterAssignedOrders.Any())
         {
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-body p-0">
-                    <div class="px-4 pt-3">
-                        <h4 class="fw-bold mb-3" style="color: var(--text-purple);">Waiter Assigned Orders</h4>
-                    </div>
-                    <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
-                        <thead class="table-light rounded-4">
+            <!-- Waiter Assigned Orders -->
+            <div class="modern-status-card">
+                <div class="modern-status-card-header">
+                    <h5 class="modern-status-card-title">
+                        <i class="bi bi-people"></i>
+                        Waiter Assigned Orders (@Model.WaiterAssignedOrders.Count())
+                    </h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="modern-table table-hover align-middle mb-0">
+                        <thead>
                             <tr>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Waiters</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Head Waiter</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Customer Name</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Venue</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Occasion</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Time of Food Serving</th>
-                                <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
+                                <th>Waiters</th>
+                                <th>Head Waiter</th>
+                                <th>Customer Name</th>
+                                <th>Catering Date</th>
+                                <th>Venue</th>
+                                <th>Occasion</th>
+                                <th>Food Serving Time</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var order in Model.WaiterAssignedOrders)
                             {
                                 <tr>
-                                    <td style="font-size: 1.1rem;">
+                                    <td>
                                         @if (order.OrderWaiters != null && order.OrderWaiters.Any())
                                         {
-                                            @string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))
+                                            <div class="modern-name">@string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))</div>
                                         }
                                         else
                                         {
-                                            <span>-</span>
+                                            <span class="modern-info text-muted">-</span>
                                         }
                                     </td>
-                                    <td style="font-size: 1.1rem;">@order.HeadWaiter?.User?.FirstName</td>
-                                    <td style="font-size: 1.1rem;">
-                                        <strong>@order.Customer.Name</strong><br>
+                                    <td>
+                                        <div class="modern-name">@order.HeadWaiter?.User?.FirstName</div>
                                     </td>
-                                    <td style="font-size: 1.1rem;">@order.CateringDate.ToString("MMM dd, yyyy")</td>
-                                    <td style="font-size: 1.1rem;">@order.Venue</td>
-                                    <td style="font-size: 1.1rem;">@order.Occasion</td>
-                                    <td style="font-size: 1.1rem;">@order.timeOfFoodServing.ToString("hh:mm tt")</td>
+                                    <td>
+                                        <div class="modern-name">@order.Customer.Name</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">@order.CateringDate.ToString("MMM dd, yyyy")</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">@order.Venue</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">@order.Occasion</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">@order.timeOfFoodServing.ToString("hh:mm tt")</div>
+                                    </td>
                                     <td>
                                         @if (order.Status == "Pending")
                                         {
-                                            <span class="badge bg-warning text-dark fs-5 px-3 py-2">Pending</span>
+                                            <span class="modern-status-badge pending">
+                                                <i class="bi bi-clock"></i>
+                                                Pending
+                                            </span>
                                         }
                                         else if (order.Status == "Confirmed")
                                         {
-                                            <span class="badge bg-info fs-5 px-3 py-2">Confirmed</span>
+                                            <span class="modern-status-badge accepted">
+                                                <i class="bi bi-check-circle"></i>
+                                                Confirmed
+                                            </span>
                                         }
                                         else if (order.Status == "In Progress")
                                         {
-                                            <span class="badge bg-primary fs-5 px-3 py-2">In Progress</span>
+                                            <span class="modern-status-badge ongoing">
+                                                <i class="bi bi-play-circle"></i>
+                                                In Progress
+                                            </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-secondary fs-5 px-3 py-2">@order.Status</span>
+                                            <span class="modern-status-badge inactive">
+                                                <i class="bi bi-x-circle"></i>
+                                                @order.Status
+                                            </span>
                                         }
                                     </td>
                                 </tr>
@@ -330,28 +244,20 @@
     }
     else
     {
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body text-center py-5">
-                <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+        <!-- No Schedules Message -->
+        <div class="modern-status-card text-center">
+            <div class="modern-card-body">
+                <i class="bi bi-calendar-x text-muted" style="font-size: 3rem; color: var(--gray-400);"></i>
                 @if ((ViewBag.Role as string) == "ADMIN")
                 {
-                    <h4 class="text-muted mt-3">No Assigned Orders</h4>
+                    <h4 class="modern-title mt-3" style="color: var(--gray-600);">No Assigned Orders</h4>
+                    <p class="modern-subtitle">There are currently no orders assigned to any head waiter or waiter.</p>
                 }
                 else
                 {
-                    <h4 class="text-muted mt-3">No Assigned Schedules</h4>
-                }
-                @if ((ViewBag.Role as string) == "ADMIN")
-                {
-                    <p class="text-muted">There are currently no orders assigned to any head waiter or waiter.</p>
-                }
-                else
-                {
-                    <p class="text-muted">You don't have any assigned catering schedules at the moment.</p>
-                }
-                @if ((ViewBag.Role as string) != "ADMIN")
-                {
-                    <p class="text-muted">Please check back later or contact your head waiter for assignments.</p>
+                    <h4 class="modern-title mt-3" style="color: var(--gray-600);">No Assigned Schedules</h4>
+                    <p class="modern-subtitle">You don't have any assigned catering schedules at the moment.</p>
+                    <p class="modern-subtitle">Please check back later or contact your head waiter for assignments.</p>
                 }
             </div>
         </div>
@@ -369,27 +275,27 @@
             <div class="modal-body">
                 <form id="profileForm" method="post" asp-controller="Schedules" asp-action="UpdateProfile">
                     @Html.AntiForgeryToken()
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                    <div class="modern-form-group">
+                        <label for="username" class="modern-form-label">Username</label>
+                        <input type="text" class="modern-form-control" id="username" name="username" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="currentPassword" class="form-label">Current Password</label>
-                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                    <div class="modern-form-group">
+                        <label for="currentPassword" class="modern-form-label">Current Password</label>
+                        <input type="password" class="modern-form-control" id="currentPassword" name="currentPassword" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    <div class="modern-form-group">
+                        <label for="newPassword" class="modern-form-label">New Password</label>
+                        <input type="password" class="modern-form-control" id="newPassword" name="newPassword" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                    <div class="modern-form-group">
+                        <label for="confirmPassword" class="modern-form-label">Confirm New Password</label>
+                        <input type="password" class="modern-form-control" id="confirmPassword" name="confirmPassword" required>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" form="profileForm" class="btn btn-primary">Update Profile</button>
+                <button type="button" class="modern-action-btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="profileForm" class="modern-action-btn btn-primary">Update Profile</button>
             </div>
         </div>
     </div>
@@ -402,10 +308,10 @@
     }
 
     // Form validation
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const profileForm = document.getElementById('profileForm');
         if (profileForm) {
-            profileForm.addEventListener('submit', function(e) {
+            profileForm.addEventListener('submit', function (e) {
                 const newPassword = document.getElementById('newPassword').value;
                 const confirmPassword = document.getElementById('confirmPassword').value;
 
