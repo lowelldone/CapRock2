@@ -1,33 +1,30 @@
 ﻿@model IEnumerable<Capstone2.Models.ViewTransaction>
 
-<div class="container-fluid mt-4 px-4">
-    <style>
-        /* Ensure long content is scrollable within the modal */
-        #manualPoModal .modal-body {
-            max-height: calc(100vh - 220px);
-            overflow-y: auto;
-        }
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-        #manualPoModal .table-responsive {
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-        /* Remove outer modal scroll; keep scrolling inside modal body only */
-        #manualPoModal.modal {
-            overflow-y: hidden !important;
-        }
-    </style>
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h2 class="fw-bold mb-0">Supplier Transactions</h2>
-            <div class="text-muted"><strong>@ViewBag.SupplierName</strong></div>
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-receipt"></i>
+            </div>
+            <div>
+                <h1 class="modern-title">Supplier Transactions</h1>
+                <p class="modern-subtitle"><strong>@ViewBag.SupplierName</strong></p>
+            </div>
         </div>
-        <div class="d-flex gap-2">
-            <button type="button" id="toggleManualPo" class="btn btn-primary"><i class="bi bi-cart-plus"></i> Create PO(s)</button>
-            <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+        <div class="modern-action-buttons">
+            <button type="button" id="toggleManualPo" class="modern-action-btn btn-primary">
+                <i class="bi bi-cart-plus"></i>Create PO(s)
+            </button>
+            <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>Back
+            </a>
         </div>
     </div>
 
+    <!-- Create PO Modal -->
     <div class="modal fade" id="manualPoModal" tabindex="-1" aria-labelledby="manualPoLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -35,18 +32,20 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="supplierId" value="@ViewBag.SupplierId" />
                     <div class="modal-header">
-                        <h5 class="modal-title" id="manualPoLabel"><i class="bi bi-cart-plus"></i> Create Purchase Order(s)</h5>
+                        <h5 class="modal-title" id="manualPoLabel">
+                            <i class="bi bi-cart-plus"></i> Create Purchase Order(s)
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row g-3 align-items-end">
                             <div class="col-md-4">
-                                <label class="form-label">Scheduled Delivery</label>
-                                <input class="form-control" type="date" name="scheduledDelivery" required />
+                                <label class="modern-form-label">Scheduled Delivery</label>
+                                <input class="modern-form-control" type="date" name="scheduledDelivery" required />
                             </div>
                         </div>
                         <div class="table-responsive mt-3">
-                            <table class="table table-striped">
+                            <table class="modern-table">
                                 <thead>
                                     <tr>
                                         <th>Material</th>
@@ -58,46 +57,67 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i> Cancel</button>
-                        <button class="btn btn-primary" type="submit"><i class="bi bi-cart-plus"></i> Create PO(s)</button>
+                        <button type="button" class="modern-action-btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg"></i>Cancel
+                        </button>
+                        <button class="modern-action-btn btn-primary" type="submit">
+                            <i class="bi bi-cart-plus"></i>Create PO(s)
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Ordered Date</th>
-                        <th>Expected Date</th>
-                        <th>Status</th>
-                        <th class="text-end">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+    <!-- Transactions Table -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-list-ul"></i>
+                Transaction History
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
                         <tr>
-                            <td>@item.OrderDate.ToString("MM/dd/yyyy")</td>
-                            <td>@(item.ExpectedDate.HasValue ? item.ExpectedDate.Value.ToString("MM/dd/yyyy") : "-")</td>
-                            <td>@item.Status</td>
-                            <td class="text-end">
-                                <div class="btn-group" role="group">
-                                    <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="po" asp-route-vtId="@item.ViewTransactionId" class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-box"></i> View Purchase Order
-                                    </a>
-                                    <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="tx" asp-route-vtId="@item.ViewTransactionId" class="btn btn-primary btn-sm">
-                                        <i class="bi bi-receipt"></i> View Transaction
-                                    </a>
-                                </div>
-                            </td>
+                            <th>Ordered Date</th>
+                            <th>Expected Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="modern-info">@item.OrderDate.ToString("MM/dd/yyyy")</div>
+                                </td>
+                                <td>
+                                    <div class="modern-info">@(item.ExpectedDate.HasValue ? item.ExpectedDate.Value.ToString("MM/dd/yyyy") : "-")</div>
+                                </td>
+                                <td>
+                                    <span class="modern-status-badge @(item.Status.ToLower())">
+                                        @item.Status
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="modern-table-actions">
+                                        <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="po" asp-route-vtId="@item.ViewTransactionId" class="modern-table-action-btn btn-outline-primary">
+                                            <i class="bi bi-box"></i>View PO
+                                        </a>
+                                        <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="tx" asp-route-vtId="@item.ViewTransactionId" class="modern-table-action-btn btn-primary">
+                                            <i class="bi bi-receipt"></i>View TX
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -120,10 +140,12 @@
                 const id = m.materialId ?? m.MaterialId;
                 const name = m.name ?? m.Name;
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${name}</td>
+                tr.innerHTML = `<td>
+                                        <div class="modern-name">${name}</div>
+                                    </td>
                                     <td>
                                         <input type="hidden" name="materialIds" value="${id}" />
-                                        <input class="form-control qty-input" type="number" name="quantities" min="0" step="1" value="0" />
+                                        <input class="modern-form-control qty-input" type="number" name="quantities" min="0" step="1" value="0" />
                                     </td>`;
                 tbody.appendChild(tr);
             });

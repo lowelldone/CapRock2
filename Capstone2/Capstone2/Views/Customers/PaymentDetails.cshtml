@@ -11,326 +11,211 @@
     var balance = orderTotal + additionalCharges - (decimal)order.AmountPaid;
 }
 
-<style>
-    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
-        font-family: 'Segoe UI', sans-serif;
-    }
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-    .payment-bg {
-        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-
-    .payment-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .payment-header-icon {
-        font-size: 2.5rem;
-        color: #0d6efd;
-        background: #e0f2fe;
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
-    }
-
-    .payment-subtitle {
-        color: #6c757d;
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-
-    .payment-card {
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
-        padding: 2rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .payment-row {
-        padding: 1rem 0;
-        border-bottom: 1px solid #f1f5f9;
-    }
-
-        .payment-row:last-child {
-            border-bottom: none;
-        }
-
-    .payment-label {
-        font-weight: 600;
-        color: #344767;
-        font-size: 1.1rem;
-    }
-
-    .payment-value {
-        color: #64748b;
-        font-size: 1.1rem;
-    }
-
-    .table {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-        .table thead th {
-            background: #f8fafc;
-            border: none;
-            font-weight: 600;
-            color: #344767;
-            padding: 1rem;
-        }
-
-        .table tbody td {
-            padding: 1rem;
-            border: none;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-        .table tbody tr:hover {
-            background: #e0f2fe;
-        }
-
-    .btn-action {
-        font-weight: 500;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-    }
-
-    .btn-record {
-        font-weight: 600;
-        font-size: 1.1rem;
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
-        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
-    }
-
-    .form-control {
-        border-radius: 12px;
-        border: 1px solid #e0e7ef;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-    }
-
-        .form-control:focus {
-            border-color: #6476f8;
-            box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
-        }
-
-    .alert {
-        border-radius: 12px;
-        border: none;
-    }
-
-    .alert-success {
-        background: #d1fae5;
-        color: #065f46;
-    }
-
-    .alert-danger {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .alert-info {
-        background: #dbeafe;
-        color: #1e40af;
-    }
-</style>
-
-<div class="container-fluid mt-4 px-4 payment-bg">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <div class="payment-header mb-1">
-                <span class="payment-header-icon"><i class="bi bi-credit-card"></i></span>
-                <h2 class="fw-bold mb-0">Payment Details</h2>
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-credit-card"></i>
             </div>
-            <div class="payment-subtitle">Payment information for @Model.Name</div>
+            <div>
+                <h1 class="modern-title">Payment Details</h1>
+                <p class="modern-subtitle">Payment information for @Model.Name</p>
+            </div>
         </div>
     </div>
 
-    <div class="payment-card">
-        <div class="payment-row">
-            <div class="row">
-                <div class="col-md-3">
-                    <span class="payment-label">Order Total</span>
-                </div>
-                <div class="col-md-9">
-                    <span class="payment-value">@orderTotal.ToString("C")</span>
-                </div>
-            </div>
+    <!-- Payment Summary Card -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-calculator"></i>
+                Payment Summary
+            </h5>
         </div>
-        <div class="payment-row">
+        <div class="modern-card-body">
             <div class="row">
-                <div class="col-md-3">
-                    <span class="payment-label">Down Payment (50%)</span>
-                </div>
-                <div class="col-md-9">
-                    @if (order != null)
-                    {
-                        if (downPaymentRemaining <= 0)
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Order Total</label>
+                        <div class="modern-name fs-4">@orderTotal.ToString("C")</div>
+                    </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Down Payment (50%)</label>
+                        @if (order != null)
                         {
-                            <span class="badge bg-success fs-6 px-1 py-1">Done</span>
+                            if (downPaymentRemaining <= 0)
+                            {
+                                <span class="modern-status-badge accepted">
+                                    <i class="bi bi-check-circle"></i>
+                                    Done
+                                </span>
+                            }
+                            else
+                            {
+                                <div class="modern-name text-warning">@downPaymentRemaining.ToString("C")</div>
+                            }
                         }
                         else
                         {
-                            <span class="payment-value">@downPaymentRemaining.ToString("C")</span>
+                            <div class="modern-info">None</div>
                         }
-                    }
-                    else
-                    {
-                        <span class="payment-value">None</span>
-                    }
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="payment-row">
-            <div class="row">
-                <div class="col-md-3">
-                    <span class="payment-label">Additional Charges (Lost/Damaged)</span>
-                </div>
-                <div class="col-md-9">
-                    <span class="payment-value">₱@additionalCharges</span>
-                    @if (chargedItems != null && chargedItems.Any())
-                    {
-                        <button type="button" class="btn btn-sm btn-info ms-2" data-bs-toggle="modal" data-bs-target="#chargedItemsModal">
-                            Items Charged
-                        </button>
-                    }
-                </div>
-            </div>
-        </div>
-        <div class="payment-row">
-            <div class="row">
-                <div class="col-md-3">
-                    <span class="payment-label">Amount Paid</span>
-                </div>
-                <div class="col-md-9">
-                    <span class="payment-value">@order.AmountPaid.ToString("C")</span>
-                </div>
-            </div>
-        </div>
-        <div class="payment-row">
-            <div class="row">
-                <div class="col-md-3">
-                    <span class="payment-label">Balance</span>
-                </div>
-                <div class="col-md-9">
-                    <span class="payment-value">@((balance > 0 ? balance.ToString("C") : "0.00"))</span>
-                </div>
-            </div>
-        </div>
-        <div class="payment-row">
-            <div class="row">
-                <div class="col-md-3">
-                    <span class="payment-label">Payment Status</span>
-                </div>
-                <div class="col-md-9">
-                    @if (order != null)
-                    {
-                        if (balance <= 0)
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Amount Paid</label>
+                        <div class="modern-name">@order.AmountPaid.ToString("C")</div>
+                    </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Balance</label>
+                        <div class="modern-name @(balance > 0 ? "text-warning" : "text-success")">
+                            @((balance > 0 ? balance.ToString("C") : "0.00"))
+                        </div>
+                    </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Payment Status</label>
+                        @if (order != null)
                         {
-                            <span class="badge bg-success fs-6 px-1 py-1">Payment Complete</span>
-                        }
-                        else if (downPaymentRemaining > 0)
-                        {
-                            <span class="badge bg-danger fs-6 px-1 py-1">Incomplete Payment</span>
+                            if (balance <= 0)
+                            {
+                                <span class="modern-status-badge accepted">
+                                    <i class="bi bi-check-circle"></i>
+                                    Payment Complete
+                                </span>
+                            }
+                            else if (downPaymentRemaining > 0)
+                            {
+                                <span class="modern-status-badge settling">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Incomplete Payment
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="modern-status-badge accepted">
+                                    <i class="bi bi-check-circle"></i>
+                                    Ready To Cater
+                                </span>
+                            }
                         }
                         else
                         {
-                            <span class="badge bg-success fs-6 px-1 py-1">Ready To Cater</span>
+                            <span class="modern-status-badge inactive">
+                                <i class="bi bi-x-circle"></i>
+                                No Order
+                            </span>
                         }
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">No Order</span>
-                    }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="payment-card">
-        <h4 class="fw-bold mb-3">Record New Payment</h4>
-        @if (TempData["PaymentError"] != null)
-        {
-            <div class="alert alert-danger">@TempData["PaymentError"]</div>
-        }
-        @if (TempData["PaymentSuccess"] != null)
-        {
-            <div id="payment-success-toast" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1055; min-width: 350px; max-width: 90vw;">
-                @TempData["PaymentSuccess"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <script>
-                setTimeout(function () {
-                    var toast = document.getElementById('payment-success-toast');
-                    if (toast) {
-                        var bsAlert = bootstrap.Alert.getOrCreateInstance(toast);
-                        bsAlert.close();
-                    }
-                }, 3500);
-            </script>
-        }
-        <form asp-action="AddPayment" method="post" class="row g-3">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="customerId" value="@Model.CustomerID" />
-            <div class="col-md-4">
-                <input type="number" name="paymentAmount" min="1" step="0.01" class="form-control" placeholder="Amount" required />
-            </div>
-            <div class="col-md-4">
-                <button type="submit" class="btn btn-success btn-record">
-                    <i class="bi bi-check-lg me-2"></i>Record Payment
-                </button>
-            </div>
-        </form>
+    <!-- Record New Payment Card -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-plus-circle"></i>
+                Record New Payment
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            @if (TempData["PaymentError"] != null)
+            {
+                <div class="modern-alert modern-alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    @TempData["PaymentError"]
+                </div>
+            }
+            @if (TempData["PaymentSuccess"] != null)
+            {
+                <div id="payment-success-toast" class="modern-alert modern-alert-success position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1055; min-width: 350px; max-width: 90vw;">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    @TempData["PaymentSuccess"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <script>
+                    setTimeout(function () {
+                        var toast = document.getElementById('payment-success-toast');
+                        if (toast) {
+                            var bsAlert = bootstrap.Alert.getOrCreateInstance(toast);
+                            bsAlert.close();
+                        }
+                    }, 3500);
+                </script>
+            }
+            <form asp-action="AddPayment" method="post" class="row g-3 align-items-end">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="customerId" value="@Model.CustomerID" />
+                <div class="col-md-6">
+                    <label class="modern-form-label">Payment Amount</label>
+                    <input type="number" name="paymentAmount" min="1" step="0.01" class="modern-form-control" placeholder="Amount" required />
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="modern-action-btn btn-success">
+                        <i class="bi bi-check-lg me-2"></i>Record Payment
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="payment-card">
-        <h4 class="fw-bold mb-3">Payment History</h4>
-        @if (payments != null && payments.Count > 0)
-        {
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var payment in payments)
-                    {
-                        <tr>
-                            <td>@payment.Date.ToString("MM/dd/yyyy")</td>
-                            <td>@payment.Amount.ToString("C")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <div class="alert alert-info">No payments recorded yet.</div>
-        }
+    <!-- Payment History Card -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-clock-history"></i>
+                Payment History
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            @if (payments != null && payments.Count > 0)
+            {
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var payment in payments)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="modern-info">@payment.Date.ToString("MM/dd/yyyy")</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-name">@payment.Amount.ToString("C")</div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="modern-alert modern-alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    No payments recorded yet.
+                </div>
+            }
+        </div>
     </div>
 
+    <!-- Action Buttons -->
     <div class="d-flex gap-3 mt-4">
-        <a asp-action="Index" class="btn btn-outline-secondary btn-action">
+        <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-2"></i>Back to Customers
         </a>
         @if (order != null && downPaymentRemaining <= 0 && order.HeadWaiterId == null)
         {
-            <a asp-action="AssignHeadWaiter" asp-route-id="@Model.CustomerID" class="btn btn-primary btn-action ms-auto">
+            <a asp-action="AssignHeadWaiter" asp-route-id="@Model.CustomerID" class="modern-action-btn btn-primary ms-auto">
                 <i class="bi bi-person-badge me-2"></i>Assign Head Waiter
             </a>
         }
@@ -348,29 +233,41 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Material</th>
-                                <th>Lost</th>
-                                <th>Damaged</th>
-                                <th>Charge Per Item</th>
-                                <th>Total Charge</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in chargedItems)
-                            {
+                    <div class="table-responsive">
+                        <table class="modern-table">
+                            <thead>
                                 <tr>
-                                    <td>@item.MaterialName</td>
-                                    <td>@item.Lost</td>
-                                    <td>@item.Damaged</td>
-                                    <td>₱@item.ChargePerItem</td>
-                                    <td>₱@((item.Lost + item.Damaged) * item.ChargePerItem)</td>
+                                    <th>Material</th>
+                                    <th>Lost</th>
+                                    <th>Damaged</th>
+                                    <th>Charge Per Item</th>
+                                    <th>Total Charge</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in chargedItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="modern-name">@item.MaterialName</div>
+                                        </td>
+                                        <td>
+                                            <div class="modern-info">@item.Lost</div>
+                                        </td>
+                                        <td>
+                                            <div class="modern-info">@item.Damaged</div>
+                                        </td>
+                                        <td>
+                                            <div class="modern-info">₱@item.ChargePerItem</div>
+                                        </td>
+                                        <td>
+                                            <div class="modern-name">₱@((item.Lost + item.Damaged) * item.ChargePerItem)</div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

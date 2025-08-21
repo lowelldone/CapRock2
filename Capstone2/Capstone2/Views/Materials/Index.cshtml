@@ -4,108 +4,9 @@
     ViewData["Title"] = "Materials";
 }
 
-<style>
-    :root {
-        --primary-purple: #7c3aed;
-        --primary-purple-dark: #6d28d9;
-        --primary-purple-light: #a78bfa;
-        --secondary-purple: #8b5cf6;
-        --accent-purple: #c084fc;
-        --purple-bg: #faf5ff;
-        --purple-bg-light: #f3e8ff;
-        --purple-border: #e9d5ff;
-        --text-purple: #581c87;
-        --text-purple-light: #7c3aed;
-        --success-color: #10b981;
-        --warning-color: #f59e0b;
-        --danger-color: #ef4444;
-        --info-color: #3b82f6;
-    }
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-    body, .container-fluid, .card, .table {
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .materials-bg {
-        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-
-    .materials-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .materials-header-icon {
-        font-size: 2.5rem;
-        color: #0d6efd;
-        background: #e0f2fe;
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
-    }
-
-    .materials-subtitle {
-        color: #6c757d;
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-
-    .add-material-btn {
-        font-weight: 600;
-        font-size: 1.1rem;
-        border-radius: 12px;
-        padding: 10px 22px;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
-    }
-
-    .card {
-        border-radius: 20px !important;
-        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
-    }
-
-    .table {
-        border-radius: 16px;
-        overflow: hidden;
-        background: #fff;
-    }
-
-        .table thead th {
-            background: #f1f5f9;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #344767;
-            border-bottom: 2px solid #e0e7ef;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-        .table tbody tr:hover {
-            background: #e0f2fe;
-            transition: background 0.2s;
-        }
-
-    .action-btn {
-        border-radius: 8px;
-        font-size: 1rem;
-        padding: 6px 16px;
-        margin-left: 2px;
-        margin-right: 2px;
-        transition: background 0.2s, color 0.2s;
-    }
-
-        .action-btn i {
-            margin-right: 4px;
-        }
-</style>
-
-<div class="container-fluid mt-4 px-4 materials-bg">
+<div class="container-fluid modern-bg">
     @{
         var lowThreshold = (int)(ViewBag.LowStockThreshold ?? 1000);
         var lowCount = 0;
@@ -117,49 +18,68 @@
             }
         }
     }
+
     @if (lowCount > 0)
     {
-        <div class="alert alert-warning d-flex align-items-center" role="alert">
+        <div class="modern-alert modern-alert-warning">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             <div>
                 @lowCount item(s) are at or below the low stock threshold (@lowThreshold). Consider restocking.
             </div>
         </div>
     }
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <div class="materials-header mb-1">
-                <span class="materials-header-icon"><i class="bi bi-box-seam"></i></span>
-                <h2 class="fw-bold mb-0">Materials Inventory</h2>
+
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-box-seam"></i>
             </div>
-            <div class="materials-subtitle">Manage your catering materials and supplies efficiently.</div>
+            <div>
+                <h1 class="modern-title">Materials Inventory</h1>
+                <p class="modern-subtitle">Manage your catering materials and supplies efficiently</p>
+            </div>
         </div>
-        <a asp-action="Create" class="btn btn-primary add-material-btn"><i class="bi bi-plus-lg"></i> Add New Material</a>
-    </div>
-
-    <div class="card mb-4 shadow-sm border-0 rounded-4">
-        <div class="card-body">
-            <form asp-controller="Materials" asp-action="Index" method="get" class="row g-3">
-                <div class="col-md-10">
-                    <input type="text" name="searchString" class="form-control" placeholder="Search materials by name..." />
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-outline-primary w-100">Search</button>
-                </div>
-            </form>
+        <div class="modern-action-buttons">
+            <a asp-action="Create" class="modern-action-btn btn-primary">
+                <i class="bi bi-plus-lg"></i>
+                Add New Material
+            </a>
         </div>
     </div>
 
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0 rounded-4 overflow-hidden">
-                <thead class="table-light rounded-4">
+    <!-- Search Section -->
+    <div class="modern-search-card">
+        <form asp-controller="Materials" asp-action="Index" method="get" class="modern-search-form">
+            <div>
+                <label class="modern-form-label">Search Materials</label>
+                <input type="text" name="searchString" class="modern-form-control" placeholder="Search materials by name..." />
+            </div>
+            <div>
+                <button type="submit" class="modern-btn-search w-100">
+                    <i class="bi bi-search me-2"></i>Search
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Materials Table -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-boxes"></i>
+                Materials List (@Model.Count())
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="modern-table table-hover align-middle mb-0">
+                <thead>
                     <tr>
-                        <th>@Html.DisplayNameFor(model => model.First().Name)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Description)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Quantity)</th>
+                        <th>Material Name</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
                         <th>Price</th>
-                        <th>Is Consumable</th>
+                        <th>Type</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -168,20 +88,52 @@
                     {
                         var isLow = item.Quantity <= lowThreshold;
                         <tr class="@(isLow ? "table-warning" : "")">
-                            <td style="font-size:1.08rem;">@Html.DisplayFor(modelItem => item.Name)</td>
-                            <td style="font-size:1.08rem;">@Html.DisplayFor(modelItem => item.Description)</td>
-                            <td style="font-size:1.08rem;">
-                                @Html.DisplayFor(modelItem => item.Quantity)
+                            <td>
+                                <div class="modern-name">@Html.DisplayFor(modelItem => item.Name)</div>
+                            </td>
+                            <td>
+                                <div class="modern-info">@Html.DisplayFor(modelItem => item.Description)</div>
+                            </td>
+                            <td>
+                                <div class="modern-name">@Html.DisplayFor(modelItem => item.Quantity)</div>
                                 @if (isLow)
                                 {
-                                    <span class="badge bg-warning text-dark ms-2">Low</span>
+                                    <span class="modern-status-badge pending ms-2">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        Low Stock
+                                    </span>
                                 }
                             </td>
-                            <td style="font-size:1.08rem;">₱@item.Price.ToString("N2")</td>
-                            <td style="font-size:1.08rem;">@(item.IsConsumable ? "Yes" : "No")</td>
+                            <td>
+                                <div class="modern-name">₱@item.Price.ToString("N2")</div>
+                            </td>
+                            <td>
+                                @if (item.IsConsumable)
+                                {
+                                    <span class="modern-status-badge accepted">
+                                        <i class="bi bi-check-circle"></i>
+                                        Consumable
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="modern-status-badge inactive">
+                                        <i class="bi bi-x-circle"></i>
+                                        Non-Consumable
+                                    </span>
+                                }
+                            </td>
                             <td class="text-end">
-                                <a asp-action="Edit" asp-route-id="@item.MaterialId" class="btn btn-outline-primary btn-sm action-btn"><i class="bi bi-pencil-square"></i> Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.MaterialId" class="btn btn-outline-danger action-btn"><i class="bi bi-trash"></i> Delete</a>
+                                <div class="modern-table-actions">
+                                    <a asp-action="Edit" asp-route-id="@item.MaterialId" class="modern-table-action-btn btn-outline-primary">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.MaterialId" class="modern-table-action-btn btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                        Delete
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }

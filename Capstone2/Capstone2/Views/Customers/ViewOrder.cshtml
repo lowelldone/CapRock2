@@ -7,337 +7,82 @@
     bool fromPast = ViewBag.FromPastOrders ?? false;
 }
 
-<style>
-    :root {
-        --primary-purple: #7c3aed;
-        --primary-purple-dark: #6d28d9;
-        --primary-purple-light: #a78bfa;
-        --secondary-purple: #8b5cf6;
-        --accent-purple: #c084fc;
-        --purple-bg: #faf5ff;
-        --purple-bg-light: #f3e8ff;
-        --purple-border: #e9d5ff;
-        --text-purple: #581c87;
-        --text-purple-light: #7c3aed;
-        --success-color: #10b981;
-        --warning-color: #f59e0b;
-        --danger-color: #ef4444;
-        --info-color: #3b82f6;
-    }
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .vieworder-bg {
-        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-
-    .vieworder-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .vieworder-header-icon {
-        font-size: 2.5rem;
-        color: var(--primary-purple);
-        background: var(--purple-bg-light);
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
-    }
-
-    .vieworder-subtitle {
-        color: var(--text-purple);
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-
-    .order-card {
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-        padding: 2rem;
-        margin-bottom: 1.5rem;
-        transition: all 0.3s ease;
-    }
-
-        .order-card:hover {
-            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-            transform: translateY(-2px);
-        }
-
-    .order-row {
-        padding: 0.75rem 0;
-        border-bottom: 1px solid var(--purple-border);
-    }
-
-        .order-row:last-child {
-            border-bottom: none;
-        }
-
-    .order-label {
-        font-weight: 600;
-        color: var(--text-purple);
-        font-size: 1rem;
-    }
-
-    .order-value {
-        color: var(--text-purple-light);
-        font-size: 1rem;
-    }
-
-    .table {
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-    }
-
-        .table thead th {
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-            border: none;
-            font-weight: 600;
-            color: white;
-            padding: 1rem;
-        }
-
-        .table tbody td {
-            padding: 1rem;
-            border: none;
-            border-bottom: 1px solid var(--purple-border);
-        }
-
-        .table tbody tr {
-            background: #fff;
-        }
-
-            .table tbody tr:hover {
-                background: var(--purple-bg-light);
-            }
-
-    .btn-action {
-        font-weight: 500;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        border-color: var(--primary-purple);
-        color: white;
-    }
-
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
-        }
-
-    .btn-warning {
-        background: linear-gradient(135deg, var(--warning-color) 0%, #fbbf24 100%);
-        border-color: var(--warning-color);
-        color: white;
-    }
-
-        .btn-warning:hover {
-            background: linear-gradient(135deg, #d97706 0%, var(--warning-color) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
-        }
-
-    .btn-outline-secondary {
-        border-color: var(--text-purple);
-        color: var(--text-purple);
-        background: transparent;
-    }
-
-        .btn-outline-secondary:hover {
-            background: var(--text-purple);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-    .total-section {
-        background: var(--purple-bg-light);
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-top: 1rem;
-        border: 1px solid var(--purple-border);
-    }
-
-    .staff-section {
-        background: var(--purple-bg-light);
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        border: 1px solid var(--purple-border);
-    }
-
-    .staff-info {
-        background: #fff;
-        border-radius: 8px;
-        padding: 1rem;
-        border: 1px solid var(--purple-border);
-        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
-    }
-
-    .table-sm {
-        font-size: 0.9rem;
-    }
-
-        .table-sm thead th {
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-            color: white;
-            font-weight: 600;
-            padding: 0.75rem;
-        }
-
-        .table-sm tbody td {
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--purple-border);
-        }
-
-    .text-primary {
-        color: var(--primary-purple) !important;
-    }
-
-    .text-success {
-        color: var(--success-color) !important;
-    }
-
-    .text-muted {
-        color: var(--text-purple) !important;
-    }
-</style>
-
-<div class="container-fluid mt-4 px-4 vieworder-bg">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <div class="vieworder-header mb-1">
-                <span class="vieworder-header-icon"><i class="bi bi-receipt"></i></span>
-                <h2 class="fw-bold mb-0">Order Details</h2>
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-receipt"></i>
+            </div>
+            <div>
+                <h1 class="modern-title">Order Details</h1>
+                <p class="modern-subtitle">View complete order information and details</p>
             </div>
         </div>
-        <div>
+        <div class="modern-action-buttons">
             @if (Model.Customer.IsPaid && Model.Status == "Completed")
             {
-                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#invoicePreviewModal">
+                <button type="button" class="modern-action-btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#invoicePreviewModal">
                     <i class="bi bi-file-earmark-pdf me-1"></i> Generate Invoice
                 </button>
             }
         </div>
     </div>
 
-    <div class="order-card">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">Customer Name:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.Customer.Name</span>
-                        </div>
+    <!-- Order Information Card -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-info-circle"></i>
+                Order Information
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Customer Name</label>
+                        <div class="modern-name">@Model.Customer.Name</div>
                     </div>
-                </div><div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">Contact:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.Customer.ContactNo</span>
-                        </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Contact</label>
+                        <div class="modern-info">@Model.Customer.ContactNo</div>
                     </div>
-                </div>
-                <div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">Address:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.Customer.Address</span>
-                        </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Address</label>
+                        <div class="modern-address">@Model.Customer.Address</div>
                     </div>
-                </div>
-                <div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">Venue:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.Venue</span>
-                        </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Venue</label>
+                        <div class="modern-info">@Model.Venue</div>
+                    </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">No. Of Pax</label>
+                        <div class="modern-info">@Model.NoOfPax</div>
                     </div>
                 </div>
-                <div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">No. Of Pax:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.NoOfPax</span>
-                        </div>
+                <div class="col-md-6">
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Order Date</label>
+                        <div class="modern-info">@Model.OrderDate.ToShortDateString()</div>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">Order Date:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.OrderDate.ToShortDateString()</span>
-                        </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Catering Date</label>
+                        <div class="modern-info">@Model.CateringDate.ToShortDateString()</div>
                     </div>
-                </div>
-                <div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">Catering Date:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.CateringDate.ToShortDateString()</span>
-                        </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Time of Food Serving</label>
+                        <div class="modern-info">@Model.timeOfFoodServing.ToShortTimeString()</div>
                     </div>
-                </div>
-                <div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">Time of Food Serving:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.timeOfFoodServing.ToShortTimeString()</span>
-                        </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Occasion</label>
+                        <div class="modern-info">@Model.Occasion</div>
                     </div>
-                </div>
-                <div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">Occasion:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.Occasion</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="order-row">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <span class="order-label">Motif:</span>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="order-value">@Model.Motif</span>
-                        </div>
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Motif</label>
+                        <div class="modern-info">@Model.Motif</div>
                     </div>
                 </div>
             </div>
@@ -346,71 +91,99 @@
 
     @if (Model.OrderDetails?.Any() == true)
     {
-        <div class="order-card">
-            <h4 class="fw-bold mb-3">Ordered Items</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Menu</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.OrderDetails)
-                    {
+        <!-- Ordered Items Card -->
+        <div class="modern-status-card">
+            <div class="modern-status-card-header">
+                <h5 class="modern-status-card-title">
+                    <i class="bi bi-list-ul"></i>
+                    Ordered Items
+                </h5>
+            </div>
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
                         <tr>
-                            <td>@item.Name</td>
-                            <td>@item.Quantity</td>
-                            <td>P@(item.Menu.Price.ToString("0.00"))</td>
-                            <td>P@((item.Menu.Price * item.Quantity).ToString("0.00"))</td>
+                            <th>Menu</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Subtotal</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderDetails)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="modern-name">@item.Name</div>
+                                </td>
+                                <td>
+                                    <div class="modern-info">@item.Quantity</div>
+                                </td>
+                                <td>
+                                    <div class="modern-info">₱@(item.Menu.Price.ToString("0.00"))</div>
+                                </td>
+                                <td>
+                                    <div class="modern-name">₱@((item.Menu.Price * item.Quantity).ToString("0.00"))</div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-            <div class="total-section">
-                <h5 class="fw-bold mb-2">Total Payment: P@(Model.TotalPayment.ToString("0.00"))</h5>
+            <!-- Total Section -->
+            <div class="modern-card-body">
+                <div class="modern-form-group">
+                    <label class="modern-form-label">Total Payment</label>
+                    <div class="modern-name fs-4">₱@(Model.TotalPayment.ToString("0.00"))</div>
+                </div>
 
                 @if (Model.IsRushOrder)
                 {
-                    <div class="mb-2 p-2" style="background:#fff;border:1px dashed var(--purple-border);border-radius:8px;">
-                        <div class="fw-bold text-warning mb-1"><i class="bi bi-lightning-fill me-1"></i>Rush Order</div>
-                        <div>Base Total: ₱@(((double)ViewBag.RushBaseTotal).ToString("N2"))</div>
-                        <div>Rush Order Fee (10%): ₱@(((double)ViewBag.RushOrderFee).ToString("N2"))</div>
-                        <div class="fw-semibold">Rush Total: ₱@(((double)ViewBag.RushTotal).ToString("N2"))</div>
+                    <div class="modern-alert modern-alert-warning">
+                        <i class="bi bi-lightning-fill me-2"></i>
+                        <div>
+                            <div class="fw-bold mb-1">Rush Order</div>
+                            <div>Base Total: ₱@(((double)ViewBag.RushBaseTotal).ToString("N2"))</div>
+                            <div>Rush Order Fee (10%): ₱@(((double)ViewBag.RushOrderFee).ToString("N2"))</div>
+                            <div class="fw-semibold">Rush Total: ₱@(((double)ViewBag.RushTotal).ToString("N2"))</div>
+                        </div>
                     </div>
                 }
 
                 @if (ViewBag.AdditionalCharges != null && (decimal)ViewBag.AdditionalCharges > 0)
                 {
-                    <div class="mt-2">
-                        <p class="fw-bold text-danger">Total Additional Charges: ₱@(((decimal)ViewBag.AdditionalCharges).ToString("F2"))</p>
-                        @if (chargedItems != null && chargedItems.Any())
-                        {
-                            <div class="mt-2">
-                                <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#chargedItemsModal">
+                    <div class="modern-alert modern-alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div>
+                            <div class="fw-bold">Total Additional Charges: ₱@(((decimal)ViewBag.AdditionalCharges).ToString("F2"))</div>
+                            @if (chargedItems != null && chargedItems.Any())
+                            {
+                                <button type="button" class="modern-action-btn btn-outline-info mt-2" data-bs-toggle="modal" data-bs-target="#chargedItemsModal">
                                     View Charged Items
                                 </button>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
                 }
 
-                <hr />
                 @if (Model.Status != "Pending")
                 {
-                    @* Show Updated Total only when there are additional charges, and hide for Admin when status is Ongoing *@
                     @if ((ViewBag.AdditionalCharges != null && (decimal)ViewBag.AdditionalCharges > 0) && !(isAdmin && Model.Status == "Ongoing"))
                     {
-                        <h5 class="fw-bold text-primary">Updated Total: ₱@(((decimal)ViewBag.EffectiveTotal).ToString("F2"))</h5>
+                        <div class="modern-form-group">
+                            <label class="modern-form-label">Updated Total</label>
+                            <div class="modern-name fs-4 text-primary">₱@(((decimal)ViewBag.EffectiveTotal).ToString("F2"))</div>
+                        </div>
                     }
                     @if (Model.Status != "Completed")
                     {
-                        <p class="fw-bold @(ViewBag.RemainingBalance > 0 ? "text-warning" : "text-success")">
-                            Remaining Balance: ₱@(((decimal)ViewBag.RemainingBalance).ToString("F2"))
-                        </p>
+                        <div class="modern-form-group">
+                            <label class="modern-form-label">Remaining Balance</label>
+                            <div class="modern-name @(ViewBag.RemainingBalance > 0 ? "text-warning" : "text-success")">
+                                ₱@(((decimal)ViewBag.RemainingBalance).ToString("F2"))
+                            </div>
+                        </div>
                     }
                 }
             </div>
@@ -418,8 +191,8 @@
     }
     else
     {
-        <div class="order-card">
-            <div class="text-center">
+        <div class="modern-status-card">
+            <div class="modern-card-body text-center">
                 <p class="text-muted"><em>No items in this order.</em></p>
             </div>
         </div>
@@ -427,85 +200,87 @@
 
     @if (Model.Status == "Completed")
     {
-        <div class="order-card">
-            <h4 class="fw-bold mb-3">Assigned Staff</h4>
-
-            @if (Model.HeadWaiter != null)
-            {
-                <div class="staff-section mb-4">
-                    <h5 class="fw-bold text-primary mb-2">
-                        <i class="bi bi-person-badge me-2"></i>Head Waiter
-                    </h5>
-                    <div class="staff-info">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <span class="order-label">Name:</span>
-                                <span class="order-value">@Model.HeadWaiter.User.FirstName @Model.HeadWaiter.User.LastName</span>
-                            </div>
+        <!-- Assigned Staff Card -->
+        <div class="modern-status-card">
+            <div class="modern-status-card-header">
+                <h5 class="modern-status-card-title">
+                    <i class="bi bi-people"></i>
+                    Assigned Staff
+                </h5>
+            </div>
+            <div class="modern-card-body">
+                @if (Model.HeadWaiter != null)
+                {
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Head Waiter</label>
+                        <div class="modern-info">
+                            <i class="bi bi-person-badge me-1"></i>
+                            @Model.HeadWaiter.User.FirstName @Model.HeadWaiter.User.LastName
                         </div>
                     </div>
-                </div>
-            }
+                }
 
-            @if (ViewBag.OrderWaiters != null && ((IEnumerable<dynamic>)ViewBag.OrderWaiters).Any())
-            {
-                <div class="staff-section">
-                    <h5 class="fw-bold text-success mb-2">
-                        <i class="bi bi-people me-2"></i>Waiters
-                    </h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var orderWaiter in (IEnumerable<dynamic>)ViewBag.OrderWaiters)
-                                {
+                @if (ViewBag.OrderWaiters != null && ((IEnumerable<dynamic>)ViewBag.OrderWaiters).Any())
+                {
+                    <div class="modern-form-group">
+                        <label class="modern-form-label">Waiters</label>
+                        <div class="table-responsive">
+                            <table class="modern-table">
+                                <thead>
                                     <tr>
-                                        <td>@orderWaiter.Waiter.User.FirstName @orderWaiter.Waiter.User.LastName</td>
+                                        <th>Name</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var orderWaiter in (IEnumerable<dynamic>)ViewBag.OrderWaiters)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="modern-info">@orderWaiter.Waiter.User.FirstName @orderWaiter.Waiter.User.LastName</div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-            }
-            else
-            {
-                <div class="text-center">
-                    <p class="text-muted"><em>No waiters were assigned to this order.</em></p>
-                </div>
-            }
+                }
+                else
+                {
+                    <div class="text-center">
+                        <p class="text-muted"><em>No waiters were assigned to this order.</em></p>
+                    </div>
+                }
+            </div>
         </div>
     }
 
+    <!-- Action Buttons -->
     <div class="d-flex gap-3 mt-4">
         @if (Model.Status != "Completed" && Model.Status != "Ongoing" && Model.Status != "Accepted" && Model.Status != "Settling Balance")
         {
-            <a asp-controller="Orders" asp-action="Edit" asp-route-id="@Model.OrderId" class="btn btn-primary btn-action">
+            <a asp-controller="Orders" asp-action="Edit" asp-route-id="@Model.OrderId" class="modern-action-btn btn-primary">
                 <i class="bi bi-pencil-square me-2"></i>Edit Information
             </a>
-            <a asp-controller="OrderDetails" asp-action="Edit" asp-route-orderId="@Model.OrderId" class="btn btn-warning btn-action">
+            <a asp-controller="OrderDetails" asp-action="Edit" asp-route-orderId="@Model.OrderId" class="modern-action-btn btn-outline-warning">
                 <i class="bi bi-list-ul me-2"></i>Edit Food Items
             </a>
         }
         @if (fromPast)
         {
-            <a asp-action="PastOrders" class="btn btn-outline-secondary btn-action">
+            <a asp-action="PastOrders" class="modern-action-btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-2"></i>Back to Past Orders
             </a>
         }
         else
         {
-            <a asp-action="Index" class="btn btn-outline-secondary btn-action">
+            <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-2"></i>Back to Customers
             </a>
         }
         @if (Model.Status != "Accepted" && Model.Status != "Ongoing" && Model.Status != "Completed" && Model.Status != "Settling Balance")
         {
-            <a asp-action="PaymentDetails" asp-route-id="@Model.Customer.CustomerID" class="btn btn-success btn-action ms-auto">
+            <a asp-action="PaymentDetails" asp-route-id="@Model.Customer.CustomerID" class="modern-action-btn btn-success ms-auto">
                 <i class="bi bi-check-circle me-2"></i>Confirm Order
             </a>
         }
@@ -514,6 +289,7 @@
 
 @if (chargedItems != null && chargedItems.Any())
 {
+    <!-- Charged Items Modal -->
     <div class="modal fade" id="chargedItemsModal" tabindex="-1" aria-labelledby="chargedItemsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -522,79 +298,48 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Material</th>
-                                <th>Lost</th>
-                                <th>Damaged</th>
-                                <th>Charge Per Item</th>
-                                <th>Total Charge</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in chargedItems)
-                            {
+                    <div class="table-responsive">
+                        <table class="modern-table">
+                            <thead>
                                 <tr>
-                                    <td>@item.MaterialName</td>
-                                    <td>@item.Lost</td>
-                                    <td>@item.Damaged</td>
-                                    <td>₱@item.ChargePerItem</td>
-                                    <td>₱@((item.Lost + item.Damaged) * item.ChargePerItem)</td>
+                                    <th>Material</th>
+                                    <th>Lost</th>
+                                    <th>Damaged</th>
+                                    <th>Charge Per Item</th>
+                                    <th>Total Charge</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in chargedItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="modern-name">@item.MaterialName</div>
+                                        </td>
+                                        <td>
+                                            <div class="modern-info">@item.Lost</div>
+                                        </td>
+                                        <td>
+                                            <div class="modern-info">@item.Damaged</div>
+                                        </td>
+                                        <td>
+                                            <div class="modern-info">₱@item.ChargePerItem</div>
+                                        </td>
+                                        <td>
+                                            <div class="modern-name">₱@((item.Lost + item.Damaged) * item.ChargePerItem)</div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 }
 
-<style>
-    .invoice-modal .modal-dialog {
-        max-width: 1000px;
-    }
-
-    .invoice-box {
-        background: #fff;
-        border: 1px solid var(--purple-border);
-        border-radius: 12px;
-        padding: 24px;
-    }
-
-    .invoice-header-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-    }
-
-    .invoice-subtitle {
-        color: var(--text-purple-light);
-        font-weight: 600;
-    }
-
-    @@media print {
-        body * {
-            visibility: hidden;
-        }
-
-        #invoicePrintSection, #invoicePrintSection * {
-            visibility: visible;
-        }
-
-        #invoicePrintSection {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-        }
-
-        .modal {
-            position: static !important;
-        }
-    }
-</style>
-
+<!-- Invoice Preview Modal -->
 @{
     var addCharges = ViewBag.AdditionalCharges != null ? (decimal)ViewBag.AdditionalCharges : 0m;
     var baseTotalDec = (decimal)Model.TotalPayment;
@@ -604,7 +349,7 @@
         : $"ORD-{Model.OrderDate:yyyyMMdd}-{Model.OrderId:D3}";
 }
 
-<div class="modal fade invoice-modal" id="invoicePreviewModal" tabindex="-1" aria-labelledby="invoicePreviewLabel" aria-hidden="true">
+<div class="modal fade" id="invoicePreviewModal" tabindex="-1" aria-labelledby="invoicePreviewLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -612,68 +357,80 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div id="invoicePrintSection" class="invoice-box">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <div class="invoice-header-title">GRUSH Catering</div>
-                            <div class="invoice-subtitle">Official Invoice</div>
+                <div id="invoicePrintSection" class="modern-status-card">
+                    <div class="modern-card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="modern-title">GRUSH Catering</div>
+                                <div class="modern-subtitle">Official Invoice</div>
+                            </div>
+                            <div class="text-end">
+                                <div><strong>Order No:</strong> @orderNo</div>
+                                <div><strong>Order Date:</strong> @Model.OrderDate.ToString("dd/MM/yyyy")</div>
+                                <div><strong>Catering Date:</strong> @Model.CateringDate.ToString("dd/MM/yyyy")</div>
+                            </div>
                         </div>
-                        <div class="text-end">
-                            <div><strong>Order No:</strong> @orderNo</div>
-                            <div><strong>Order Date:</strong> @Model.OrderDate.ToString("dd/MM/yyyy")</div>
-                            <div><strong>Catering Date:</strong> @Model.CateringDate.ToString("dd/MM/yyyy")</div>
+
+                        <div class="modern-form-group">
+                            <label class="modern-form-label">Billed To</label>
+                            <div class="modern-name">@Model.Customer.Name</div>
+                            <div class="modern-info">@Model.Customer.ContactNo</div>
+                            <div class="modern-address">@Model.Customer.Address</div>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <div class="fw-bold">Billed To</div>
-                        <div>@Model.Customer.Name</div>
-                        <div class="text-primary">@Model.Customer.ContactNo</div>
-                        <div>@Model.Customer.Address</div>
-                    </div>
-
-                    <div class="table-responsive mb-2">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Menu</th>
-                                    <th class="text-end">Quantity</th>
-                                    <th class="text-end">Unit Price</th>
-                                    <th class="text-end">Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.OrderDetails)
-                                {
-                                    var unit = item.Menu?.Price ?? 0;
-                                    var sub = unit * item.Quantity;
+                        <div class="table-responsive mb-2">
+                            <table class="modern-table">
+                                <thead>
                                     <tr>
-                                        <td>@item.Name</td>
-                                        <td class="text-end">@item.Quantity</td>
-                                        <td class="text-end">₱@unit.ToString("N2")</td>
-                                        <td class="text-end">₱@sub.ToString("N2")</td>
+                                        <th>Menu</th>
+                                        <th class="text-end">Quantity</th>
+                                        <th class="text-end">Unit Price</th>
+                                        <th class="text-end">Subtotal</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderDetails)
+                                    {
+                                        var unit = item.Menu?.Price ?? 0;
+                                        var sub = unit * item.Quantity;
+                                        <tr>
+                                            <td>
+                                                <div class="modern-name">@item.Name</div>
+                                            </td>
+                                            <td class="text-end">
+                                                <div class="modern-info">@item.Quantity</div>
+                                            </td>
+                                            <td class="text-end">
+                                                <div class="modern-info">₱@unit.ToString("N2")</div>
+                                            </td>
+                                            <td class="text-end">
+                                                <div class="modern-name">₱@sub.ToString("N2")</div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
 
-                    <div class="d-flex flex-column align-items-end">
-                        <div><span class="fw-bold">Base Total:</span> ₱@baseTotalDec.ToString("N2")</div>
-                        @if (addCharges > 0)
-                        {
-                            <div class="text-danger"><span class="fw-bold">Additional Charges:</span> ₱@addCharges.ToString("N2")</div>
-                        }
-                        <div class="fs-5"><span class="fw-bold">Invoice Total:</span> ₱@invoiceTotalDec.ToString("N2")</div>
+                        <div class="d-flex flex-column align-items-end">
+                            <div><span class="fw-bold">Base Total:</span> ₱@baseTotalDec.ToString("N2")</div>
+                            @if (addCharges > 0)
+                            {
+                                <div class="text-danger"><span class="fw-bold">Additional Charges:</span> ₱@addCharges.ToString("N2")</div>
+                            }
+                            <div class="fs-5"><span class="fw-bold">Invoice Total:</span> ₱@invoiceTotalDec.ToString("N2")</div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <a asp-controller="Customers" asp-action="GenerateInvoice" asp-route-id="@Model.Customer.CustomerID" class="btn btn-primary">
+                <a asp-controller="Customers" asp-action="GenerateInvoice" asp-route-id="@Model.Customer.CustomerID" class="modern-action-btn btn-primary">
                     <i class="bi bi-download me-1"></i> Download PDF
                 </a>
-                <button type="button" class="btn btn-success" id="printInvoiceBtn"><i class="bi bi-printer me-1"></i> Print</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="modern-action-btn btn-success" id="printInvoiceBtn">
+                    <i class="bi bi-printer me-1"></i> Print
+                </button>
+                <button type="button" class="modern-action-btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -697,3 +454,4 @@
         }
     });
 </script>
+ 

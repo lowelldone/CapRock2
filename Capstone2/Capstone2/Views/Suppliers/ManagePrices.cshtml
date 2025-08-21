@@ -3,12 +3,15 @@
     var supplierId = (int)ViewBag.SupplierId;
 }
 
-<div class="container-fluid mt-4 px-4">
+<link rel="stylesheet" href="~/css/modern-ui.css" />
+
+<div class="container-fluid modern-bg">
+    <!-- Alerts Section -->
     @if (TempData["SupplierSuccess"] != null)
     {
-        <div id="price-success-toast" class="alert alert-success alert-dismissible fade show" role="alert">
+        <div id="price-success-toast" class="modern-alert modern-alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>
             @TempData["SupplierSuccess"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <script>
             setTimeout(function () {
@@ -22,41 +25,70 @@
     }
     @if (TempData["SupplierError"] != null)
     {
-        <div id="price-error-toast" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div id="price-error-toast" class="modern-alert modern-alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
             @TempData["SupplierError"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold mb-0">Manage Prices</h2>
-        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+            <div>
+                <h1 class="modern-title">Manage Prices</h1>
+                <p class="modern-subtitle">Set and manage material prices for this supplier</p>
+            </div>
+        </div>
+        <div class="modern-action-buttons">
+            <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>Back
+            </a>
+        </div>
     </div>
 
-    <div class="card mb-3">
-        <div class="card-body">
-            <form id="setPriceForm" asp-action="SetPrice" method="post" class="row g-3">
+    <!-- Set Price Form -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-plus-circle"></i>
+                Set New Price
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            <form id="setPriceForm" asp-action="SetPrice" method="post" class="row g-3 align-items-end">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="supplierId" value="@supplierId" />
                 <div class="col-md-6">
-                    <label class="form-label">Material</label>
-                    <select class="form-select" id="materialSelect" name="materialId"></select>
+                    <label class="modern-form-label">Material</label>
+                    <select class="modern-form-control" id="materialSelect" name="materialId"></select>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Unit Price</label>
-                    <input class="form-control" type="number" name="unitPrice" id="unitPrice" step="0.01" min="0" required />
+                    <label class="modern-form-label">Unit Price</label>
+                    <input class="modern-form-control" type="number" name="unitPrice" id="unitPrice" step="0.01" min="0" required />
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button class="btn btn-primary w-100" type="submit"><i class="bi bi-save"></i> Save</button>
+                <div class="col-md-2">
+                    <button class="modern-action-btn btn-primary w-100" type="submit">
+                        <i class="bi bi-save"></i>Save
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <h5 class="fw-bold">Current Prices</h5>
+    <!-- Current Prices Table -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-list-ul"></i>
+                Current Prices
+            </h5>
+        </div>
+        <div class="modern-card-body">
             <div class="table-responsive">
-                <table class="table table-striped" id="pricesTable">
+                <table class="modern-table" id="pricesTable">
                     <thead>
                         <tr>
                             <th>Material</th>
@@ -95,9 +127,15 @@
             pricesTableBody.innerHTML = '';
             data.prices.forEach(p => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${p.materialName}</td>
-                                    <td>₱${Number(p.unitPrice).toFixed(2)}</td>
-                                    <td>${new Date(p.lastUpdated).toLocaleString()}</td>`;
+                tr.innerHTML = `<td>
+                                        <div class="modern-name">${p.materialName}</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-name">₱${Number(p.unitPrice).toFixed(2)}</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">${new Date(p.lastUpdated).toLocaleString()}</div>
+                                    </td>`;
                 pricesTableBody.appendChild(tr);
             });
         }

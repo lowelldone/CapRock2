@@ -5,121 +5,52 @@
     int? selectedHeadWaiterId = ViewBag.SelectedHeadWaiterId as int?;
 }
 
-<style>
-    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
-        font-family: 'Segoe UI', sans-serif;
-    }
-    .assign-bg {
-        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-    .assign-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-    .assign-header-icon {
-        font-size: 2.5rem;
-        color: #0d6efd;
-        background: #e0f2fe;
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
-    }
-    .assign-subtitle {
-        color: #6c757d;
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-    .assign-card {
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
-        padding: 2rem;
-    }
-    .customer-info {
-        background: #f8fafc;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-    .info-row {
-        display: flex;
-        align-items: center;
-        margin-bottom: 0.75rem;
-    }
-    .info-row:last-child {
-        margin-bottom: 0;
-    }
-    .info-label {
-        font-weight: 600;
-        color: #344767;
-        min-width: 120px;
-        margin-right: 1rem;
-    }
-    .info-value {
-        color: #64748b;
-    }
-    .form-select {
-        border-radius: 12px;
-        border: 1px solid #e0e7ef;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-    }
-    .form-select:focus {
-        border-color: #6476f8;
-        box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
-    }
-    .btn-assign {
-        font-weight: 600;
-        font-size: 1.1rem;
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
-        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
-    }
-    .btn-cancel {
-        font-weight: 500;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-    }
-</style>
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-<div class="container-fluid mt-4 px-4 assign-bg">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <div class="assign-header mb-1">
-                <span class="assign-header-icon"><i class="bi bi-person-badge"></i></span>
-                <h2 class="fw-bold mb-0">Assign Head Waiter</h2>
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-person-badge"></i>
             </div>
-            <div class="assign-subtitle">Assign a head waiter to manage this customer's order.</div>
+            <div>
+                <h1 class="modern-title">Assign Head Waiter</h1>
+                <p class="modern-subtitle">Assign a head waiter to manage this customer's order.</p>
+            </div>
         </div>
     </div>
 
-    <div class="assign-card">
-
-        <form asp-action="AssignHeadWaiter" asp-route-id="@Model.CustomerID" method="post">
-            <div class="mb-4">
-                <label for="headWaiterId" class="form-label fw-semibold">Select Head Waiter</label>
-                <select id="headWaiterId" name="headWaiterId" class="form-select" required>
-                    <option value="">-- Select Head Waiter --</option>
-                    @foreach (var hw in headWaiters)
-                    {
-                        var isSelected = selectedHeadWaiterId == hw.HeadWaiterId ? "selected=\"selected\"" : string.Empty;
-                        @:<option value="@hw.HeadWaiterId" @isSelected>@hw.User.FirstName @hw.User.LastName (@hw.User.Username)</option>
-                    }
-                </select>
-            </div>
-            <div class="d-flex gap-3">
-                <button type="submit" class="btn btn-primary btn-assign">
-                    <i class="bi bi-check-lg me-2"></i>Assign Head Waiter
-                </button>
-                <a asp-action="Index" class="btn btn-outline-secondary btn-cancel">
-                    <i class="bi bi-x-lg me-2"></i>Cancel
-                </a>
-            </div>
-        </form>
+    <!-- Assignment Form Card -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-person-plus"></i>
+                Head Waiter Assignment
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            <form asp-action="AssignHeadWaiter" asp-route-id="@Model.CustomerID" method="post">
+                <div class="modern-form-group">
+                    <label for="headWaiterId" class="modern-form-label">Select Head Waiter</label>
+                    <select id="headWaiterId" name="headWaiterId" class="modern-form-control" required>
+                        <option value="">-- Select Head Waiter --</option>
+                        @foreach (var hw in headWaiters)
+                        {
+                            var isSelected = selectedHeadWaiterId == hw.HeadWaiterId ? "selected=\"selected\"" : string.Empty;
+                            @:<option value="@hw.HeadWaiterId" @isSelected>@hw.User.FirstName @hw.User.LastName (@hw.User.Username)</option>
+                        }
+                    </select>
+                </div>
+                <div class="d-flex gap-3">
+                    <button type="submit" class="modern-action-btn btn-primary">
+                        <i class="bi bi-check-lg me-2"></i>Assign Head Waiter
+                    </button>
+                    <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
+                        <i class="bi bi-x-lg me-2"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div> 

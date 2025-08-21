@@ -3,238 +3,126 @@
     ViewData["Title"] = "Waiters Management";
 }
 
-<style>
-    :root {
-        --primary-purple: #7c3aed;
-        --primary-purple-dark: #6d28d9;
-        --primary-purple-light: #a78bfa;
-        --secondary-purple: #8b5cf6;
-        --accent-purple: #c084fc;
-        --purple-bg: #faf5ff;
-        --purple-bg-light: #f3e8ff;
-        --purple-border: #e9d5ff;
-        --text-purple: #581c87;
-        --text-purple-light: #7c3aed;
-        --success-color: #10b981;
-        --warning-color: #f59e0b;
-        --danger-color: #ef4444;
-        --info-color: #3b82f6;
-    }
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-    body, .container-fluid, .card, .table {
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .waiters-bg {
-        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-
-    .waiters-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .waiters-header-icon {
-        font-size: 2.5rem;
-        color: var(--primary-purple);
-        background: var(--purple-bg-light);
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
-        border: 1px solid var(--purple-border);
-    }
-
-    .waiters-subtitle {
-        color: var(--text-purple-light);
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-
-    .add-waiter-btn {
-        font-weight: 600;
-        font-size: 1.1rem;
-        border-radius: 12px;
-        padding: 10px 22px;
-        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
-        transition: all 0.3s ease;
-    }
-
-        .add-waiter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
-        }
-
-    .card {
-        border-radius: 20px !important;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-        transition: all 0.3s ease;
-    }
-
-        .card:hover {
-            box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-            transform: translateY(-2px);
-        }
-
-    .table {
-        border-radius: 16px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.1);
-    }
-
-        .table thead th {
-            background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-purple);
-            border-bottom: 2px solid var(--purple-border);
-        }
-
-        .table tbody tr:nth-child(even) {
-            background: var(--purple-bg);
-        }
-
-        .table tbody tr:hover {
-            background: var(--purple-bg-light);
-            transition: all 0.3s ease;
-            transform: scale(1.01);
-        }
-
-    .action-btn {
-        border-radius: 8px;
-        font-size: 1rem;
-        padding: 6px 16px;
-        margin-left: 2px;
-        margin-right: 2px;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-        .action-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-        }
-
-        .action-btn i {
-            margin-right: 4px;
-        }
-    /* Status badge enhancements */
-    .badge.bg-success {
-        background: var(--success-color) !important;
-    }
-
-    .badge.bg-warning {
-        background: var(--warning-color) !important;
-    }
-
-    .badge.bg-danger {
-        background: var(--danger-color) !important;
-    }
-
-    .badge.bg-info {
-        background: var(--info-color) !important;
-    }
-    /* Alert enhancements */
-    .alert-success {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        border: 1px solid var(--success-color);
-        color: #065f46;
-        border-radius: 12px;
-    }
-
-    .alert-danger {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        border: 1px solid var(--danger-color);
-        color: #991b1b;
-        border-radius: 12px;
-    }
-</style>
-
-<div class="container-fluid mt-4 px-4 waiters-bg">
+<div class="container-fluid modern-bg">
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle me-2"></i>
+        <div class="modern-alert modern-alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>
             @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
     @if (TempData["NoOrderAssigned"] != null)
     {
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            <i class="bi bi-info-circle me-2"></i>
+        <div class="modern-alert modern-alert-info">
+            <i class="bi bi-info-circle-fill me-2"></i>
             @TempData["NoOrderAssigned"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <div class="waiters-header mb-1">
-                <span class="waiters-header-icon"><i class="bi bi-people"></i></span>
-                <h2 class="fw-bold mb-0">Waiters</h2>
+
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-people"></i>
             </div>
-            <div class="waiters-subtitle">Manage your catering waiters here.</div>
+            <div>
+                <h1 class="modern-title">Waiters Management</h1>
+                <p class="modern-subtitle">Manage your catering waiters and their availability</p>
+            </div>
         </div>
-        <a asp-action="UpSert" class="btn btn-primary add-waiter-btn">
-            <i class="bi bi-plus-lg"></i> Add New Waiter
-        </a>
+        <div class="modern-action-buttons">
+            <a asp-action="UpSert" class="modern-action-btn btn-primary">
+                <i class="bi bi-plus-lg"></i>
+                Add New Waiter
+            </a>
+        </div>
     </div>
 
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-0">
-            <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
-                <thead class="table-light rounded-4">
+    <!-- Waiters Table -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-people-fill"></i>
+                Waiters List (@Model.Count)
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="modern-table table-hover align-middle mb-0">
+                <thead>
                     <tr>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Number</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Username</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">First Name</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Last Name</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Employee Status</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Availability</th>
-                        <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
+                        <th>Employee Number</th>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Employee Status</th>
+                        <th>Availability</th>
+                        <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var head in Model)
+                    @foreach (var waiter in Model)
                     {
                         <tr>
-                            <td style="font-size: 1.1rem;">@head.User.UserNumber</td>
-                            <td style="font-size: 1.1rem;">@head.User.Username</td>
-                            <td style="font-size: 1.1rem;">@head.User.FirstName</td>
-                            <td style="font-size: 1.1rem;">@head.User.LastName</td>
                             <td>
-                                @if (head.isTemporary)
+                                <span class="modern-badge">@waiter.User.UserNumber</span>
+                            </td>
+                            <td>
+                                <div class="modern-name">@waiter.User.Username</div>
+                            </td>
+                            <td>
+                                <div class="modern-name">@waiter.User.FirstName @waiter.User.LastName</div>
+                            </td>
+                            <td>
+                                @if (waiter.isTemporary)
                                 {
-                                    <span class="badge bg-secondary px-3 py-2">Temporary</span>
+                                    <span class="modern-status-badge inactive">
+                                        <i class="bi bi-clock"></i>
+                                        Temporary
+                                    </span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-warning text-dark px-3 py-2">Regular</span>
+                                    <span class="modern-status-badge active">
+                                        <i class="bi bi-check-circle"></i>
+                                        Regular
+                                    </span>
                                 }
                             </td>
                             <td>
-                                @if (head.Availability == "Busy")
+                                @if (waiter.Availability == "Busy")
                                 {
-                                    <span class="badge bg-danger px-3 py-2">Busy</span>
+                                    <span class="modern-status-badge settling">
+                                        <i class="bi bi-x-circle"></i>
+                                        Busy
+                                    </span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-success  px-3 py-2">Available</span>
+                                    <span class="modern-status-badge completed">
+                                        <i class="bi bi-check-circle"></i>
+                                        Available
+                                    </span>
                                 }
                             </td>
                             <td class="text-end">
-                                <a asp-action="UpSert" asp-route-id="@head.WaiterId" class="btn btn-outline-primary action-btn" style="border: 2px solid;"><i class="bi bi-pencil-square"></i> Edit</a>
-                                @*                                 @if (head.Availability == "Busy")
-                            {
-                            <a asp-action="AssignedOrder" asp-route-id="@head.WaiterId" class="btn btn-outline-info action-btn" style="border: 2px solid;"><i class="bi bi-eye"></i> View Order</a>
-                            } *@
-                                <a asp-action="Delete" asp-route-id="@head.WaiterId" class="btn btn-outline-danger action-btn" style="border: 2px solid;"><i class="bi bi-trash"></i> Delete</a>
+                                <div class="modern-table-actions">
+                                    <a asp-action="UpSert" asp-route-id="@waiter.WaiterId" class="modern-table-action-btn btn-outline-primary">
+                                        <i class="bi bi-pencil-square"></i>
+                                        Edit
+                                    </a>
+                                    @if (waiter.Availability == "Busy")
+                                    {
+                                        <a asp-action="AssignedOrder" asp-route-id="@waiter.WaiterId" class="modern-table-action-btn btn-outline-info">
+                                            <i class="bi bi-eye"></i>
+                                            View Order
+                                        </a>
+                                    }
+                                    <a asp-action="Delete" asp-route-id="@waiter.WaiterId" class="modern-table-action-btn btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                        Delete
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     }

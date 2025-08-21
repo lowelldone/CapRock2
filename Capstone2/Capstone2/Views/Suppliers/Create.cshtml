@@ -4,105 +4,64 @@
     ViewData["Title"] = "Create";
 }
 
-<style>
-    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
-        font-family: 'Segoe UI', sans-serif;
-    }
-    .create-bg {
-        background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-    .create-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-    .create-header-icon {
-        font-size: 2.5rem;
-        color: #0d6efd;
-        background: #e0f2fe;
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 2px 8px rgba(13,110,253,0.08);
-    }
-    .create-subtitle {
-        color: #6c757d;
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-    .form-card {
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.08);
-        padding: 2rem;
-    }
-    .form-control {
-        border-radius: 12px;
-        border: 1px solid #e0e7ef;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-    }
-    .form-control:focus {
-        border-color: #6476f8;
-        box-shadow: 0 0 0 0.2rem rgba(100, 118, 248, 0.25);
-    }
-    .btn-create {
-        font-weight: 600;
-        font-size: 1.1rem;
-        border-radius: 12px;
-        padding: 0.75rem 2rem;
-        box-shadow: 0 2px 8px 0 rgba(100, 118, 248, 0.10);
-    }
-    .btn-back {
-        font-weight: 500;
-        border-radius: 8px;
-        padding: 0.5rem 1rem;
-    }
-</style>
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-<div class="container-fluid mt-4 px-4 create-bg">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <div class="create-header mb-1">
-                <span class="create-header-icon"><i class="bi bi-truck"></i></span>
-                <h2 class="fw-bold mb-0">Create Supplier</h2>
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-truck"></i>
             </div>
-            <div class="create-subtitle">Add a new supplier to the system.</div>
+            <div>
+                <h1 class="modern-title">Create Supplier</h1>
+                <p class="modern-subtitle">Add a new supplier to the system</p>
+            </div>
         </div>
     </div>
 
-    <div class="form-card">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="CompanyName" class="form-label fw-semibold">Company Name</label>
-                    <input asp-for="CompanyName" class="form-control" placeholder="Enter company name" />
-                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+    <!-- Form Card -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-plus-circle"></i>
+                Supplier Information
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="modern-form-group">
+                            <label asp-for="CompanyName" class="modern-form-label">Company Name</label>
+                            <input asp-for="CompanyName" class="modern-form-control" placeholder="Enter company name" />
+                            <span asp-validation-for="CompanyName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="modern-form-group">
+                            <label asp-for="ContactPerson" class="modern-form-label">Contact Person</label>
+                            <input asp-for="ContactPerson" class="modern-form-control" placeholder="Enter contact person" />
+                            <span asp-validation-for="ContactPerson" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label asp-for="ContactPerson" class="form-label fw-semibold">Contact Person</label>
-                    <input asp-for="ContactPerson" class="form-control" placeholder="Enter contact person" />
-                    <span asp-validation-for="ContactPerson" class="text-danger"></span>
+                <div class="modern-form-group">
+                    <label asp-for="ContactNo" class="modern-form-label">Contact Number</label>
+                    <input asp-for="ContactNo" class="modern-form-control" placeholder="Enter contact number" />
+                    <span asp-validation-for="ContactNo" class="text-danger"></span>
                 </div>
-            </div>
-            <div class="mb-4">
-                <label asp-for="ContactNo" class="form-label fw-semibold">Contact Number</label>
-                <input asp-for="ContactNo" class="form-control" placeholder="Enter contact number" />
-                <span asp-validation-for="ContactNo" class="text-danger"></span>
-            </div>
-            <div class="d-flex gap-3">
-                <button type="submit" class="btn btn-primary btn-create">
-                    <i class="bi bi-check-lg me-2"></i>Create Supplier
-                </button>
-                <a asp-action="Index" class="btn btn-outline-secondary btn-back">
-                    <i class="bi bi-arrow-left me-2"></i>Back to List
-                </a>
-            </div>
-        </form>
+                <div class="d-flex gap-3 mt-4">
+                    <button type="submit" class="modern-action-btn btn-primary">
+                        <i class="bi bi-check-lg me-2"></i>Create Supplier
+                    </button>
+                    <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 

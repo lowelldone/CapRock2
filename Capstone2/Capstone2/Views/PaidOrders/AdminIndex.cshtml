@@ -6,263 +6,143 @@
     string[] status = ["Accepted", "Ongoing", "Completed"];
 }
 
-<style>
-    :root {
-        --primary-purple: #7c3aed;
-        --primary-purple-dark: #6d28d9;
-        --primary-purple-light: #a78bfa;
-        --secondary-purple: #8b5cf6;
-        --accent-purple: #c084fc;
-        --purple-bg: #faf5ff;
-        --purple-bg-light: #f3e8ff;
-        --purple-border: #e9d5ff;
-        --text-purple: #581c87;
-        --text-purple-light: #7c3aed;
-        --success-color: #10b981;
-        --warning-color: #f59e0b;
-        --danger-color: #ef4444;
-        --info-color: #3b82f6;
-    }
+<link rel="stylesheet" href="~/css/modern-ui.css" />
 
-    body, .container-fluid, .card, .table {
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .admin-orders-bg {
-        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
-        min-height: 100vh;
-        border-radius: 24px;
-        padding-bottom: 2rem;
-    }
-
-    .admin-orders-header {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .admin-orders-header-icon {
-        font-size: 2.5rem;
-        color: var(--primary-purple);
-        background: var(--purple-bg-light);
-        border-radius: 12px;
-        padding: 8px 14px;
-        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
-        border: 1px solid var(--purple-border);
-    }
-
-    .admin-orders-subtitle {
-        color: var(--text-purple-light);
-        font-size: 1.1rem;
-        margin-top: -8px;
-        margin-bottom: 18px;
-    }
-
-    .card {
-        border-radius: 20px !important;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-        transition: all 0.3s ease;
-    }
-
-    .card:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        transform: translateY(-2px);
-    }
-
-    .table {
-        border-radius: 16px;
-        overflow: hidden;
-        background: #fff;
-        box-shadow: 0 4px 16px 0 rgba(124, 58, 237, 0.1);
-    }
-
-    .table thead th {
-        background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: var(--text-purple);
-        border-bottom: 2px solid var(--purple-border);
-    }
-
-    .table tbody tr:nth-child(even) {
-        background: var(--purple-bg);
-    }
-
-    .table tbody tr:hover {
-        background: var(--purple-bg-light);
-        transition: all 0.3s ease;
-        transform: scale(1.01);
-    }
-
-    .action-btn {
-        border-radius: 8px;
-        font-size: 1rem;
-        padding: 6px 16px;
-        margin-left: 2px;
-        margin-right: 2px;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .action-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-    }
-
-    .action-btn i {
-        margin-right: 4px;
-    }
-
-    /* Status badge enhancements */
-    .badge.bg-success {
-        background: var(--success-color) !important;
-    }
-
-    .badge.bg-warning {
-        background: var(--warning-color) !important;
-    }
-
-    .badge.bg-danger {
-        background: var(--danger-color) !important;
-    }
-
-    .badge.bg-info {
-        background: var(--info-color) !important;
-    }
-
-    /* Alert enhancements */
-    .alert-success {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        border: 1px solid var(--success-color);
-        color: #065f46;
-        border-radius: 12px;
-    }
-
-    .alert-danger {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        border: 1px solid var(--danger-color);
-        color: #991b1b;
-        border-radius: 12px;
-    }
-
-    .headwaiter-info {
-        background: var(--purple-bg-light);
-        border: 1px solid var(--purple-border);
-        border-radius: 8px;
-        padding: 8px 12px;
-        margin: 4px 0;
-        font-size: 0.9rem;
-        color: var(--text-purple);
-    }
-
-    .unassigned-badge {
-        background: var(--warning-color);
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.8rem;
-        font-weight: 600;
-    }
-</style>
-
-<div class="container-fluid mt-4 px-4 admin-orders-bg">
+<div class="container-fluid modern-bg">
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">@TempData["Success"]</div>
+        <div class="modern-alert modern-alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["Success"]
+        </div>
     }
     @if (TempData["ProfileError"] != null)
     {
-        <div class="alert alert-danger">@TempData["ProfileError"]</div>
+        <div class="modern-alert modern-alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ProfileError"]
+        </div>
     }
     @if (TempData["ProfileSuccess"] != null)
     {
-        <div class="alert alert-success">@TempData["ProfileSuccess"]</div>
+        <div class="modern-alert modern-alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["ProfileSuccess"]
+        </div>
     }
 
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <div>
-            <div class="admin-orders-header mb-1">
-                <span class="admin-orders-header-icon"><i class="bi bi-person-check"></i></span>
-                <h2 class="fw-bold mb-0">Assign Staffs</h2>
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-person-check"></i>
             </div>
-            <div class="admin-orders-subtitle">View accepted orders and assign headwaiters to manage them.</div>
-        </div>
-        <div class="d-flex gap-2">
-            <i class="bi bi-person-circle header-icon" onclick="openProfileModal()" style="cursor: pointer; font-size: 1.5rem; color: #6b7280; padding: 0.5rem; border-radius: 8px; transition: all 0.3s ease;" onmouseover="this.style.background='var(--purple-bg-light)'; this.style.color='var(--primary-purple)'" onmouseout="this.style.background='transparent'; this.style.color='#6b7280'"></i>
+            <div>
+                <h1 class="modern-title">Assign Staffs</h1>
+                <p class="modern-subtitle">View accepted orders and assign headwaiters to manage them.</p>
+            </div>
         </div>
     </div>
 
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-0">
-            <table class="table table-hover align-middle mb-0 rounded-4 overflow-hidden" style="font-size: 1.15rem;">
-                <thead class="table-light rounded-4">
+    <!-- Orders Table -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-list-task"></i>
+                Staff Assignment Orders (@Model.Count())
+            </h5>
+        </div>
+        <div class="table-responsive">
+            <table class="modern-table table-hover align-middle mb-0">
+                <thead>
                     <tr>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Customer Name</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Venue</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Catering Date</th>
-                        @* <th class="fw-bold" style="font-size: 1.2rem;">Order Details</th> *@
-                        <th class="fw-bold" style="font-size: 1.2rem;">Status</th>
-                        <th class="fw-bold" style="font-size: 1.2rem;">Assigned HeadWaiter</th>
-                        <th class="text-end fw-bold" style="font-size: 1.2rem;">Actions</th>
+                        <th class="col-customer">Customer Name</th>
+                        <th class="col-venue">Venue</th>
+                        <th class="col-date">Catering Date</th>
+                        <th class="col-status">Status</th>
+                        <th class="col-headwaiter">Assigned HeadWaiter</th>
+                        <th class="col-actions text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td style="font-size: 1.1rem;">
-                                <strong>@item.Name</strong>
+                            <td>
+                                <div class="modern-name">@item.Name</div>
                             </td>
-                            <td style="font-size: 1.1rem;">
-                                @item.Order.Venue
-                            </td
-                            ><td style="font-size: 1.1rem;">
-                                @item.Order.CateringDate.ToShortDateString()
+                            <td>
+                                <div class="modern-info">@item.Order.Venue</div>
                             </td>
-                            @* <td style="font-size: 1.1rem;">
-                                <strong>₱@item.Order.TotalPayment.ToString("N2")</strong><br>
-                                <small class="text-muted">@item.Order.NoOfPax pax • @item.Order.Occasion</small><br>
-                                <small class="text-muted">@item.Order.CateringDate.ToString("MMM dd, yyyy") at @item.Order.timeOfFoodServing.ToString("HH:mm")</small>
-                            </td> *@
-                            <td style="font-size: 1.1rem;">
-                                <span class="badge bg-@(item.Order.Status == "Accepted" ? "warning" :
-                                                   item.Order.Status == "Ongoing" ? "info" :
-                                                   item.Order.Status == "Completed" ? "success" :
-                                                   item.Order.Status == "Settling Balance" ? "danger" : "secondary")">
+                            <td>
+                                <div class="modern-info">@item.Order.CateringDate.ToShortDateString()</div>
+                            </td>
+                            <td>
+                                <span class="modern-status-badge @(item.Order.Status switch {
+                                    "Accepted" => "pending",
+                                    "Ongoing" => "ongoing",
+                                    "Completed" => "accepted",
+                                    "Settling Balance" => "settling",
+                                    _ => "inactive"
+                                })">
+                                    @if (item.Order.Status == "Accepted")
+                                    {
+                                        <i class="bi bi-clock"></i>
+                                    }
+                                    else if (item.Order.Status == "Ongoing")
+                                    {
+                                        <i class="bi bi-play-circle"></i>
+                                    }
+                                    else if (item.Order.Status == "Completed")
+                                    {
+                                        <i class="bi bi-check-circle"></i>
+                                    }
+                                    else if (item.Order.Status == "Settling Balance")
+                                    {
+                                        <i class="bi bi-calculator"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-x-circle"></i>
+                                    }
                                     @item.Order.Status
                                 </span>
                             </td>
-                            <td style="font-size: 1.1rem;">
+                            <td>
                                 @if (item.Order.HeadWaiter != null)
                                 {
-                                    <div class="headwaiter-info">
-                                        <i class="bi bi-person-badge"></i>
+                                    <div class="modern-info">
+                                        <i class="bi bi-person-badge me-1"></i>
                                         <strong>@item.Order.HeadWaiter.User?.FirstName @item.Order.HeadWaiter.User?.LastName</strong>
                                     </div>
                                 }
                                 else
                                 {
-                                    <span class="unassigned-badge">
-                                        <i class="bi bi-exclamation-triangle"></i> Unassigned
+                                    <span class="modern-status-badge pending">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        Unassigned
                                     </span>
                                 }
                             </td>
                             <td class="text-end">
-                                @if (item.Order.HeadWaiterId == null)
-                                {
-                                    <a asp-controller="PaidOrders" asp-action="AssignHeadWaiter" asp-route-id="@item.CustomerID"
-                                       class="btn btn-primary action-btn mb-1">
-                                        <i class="bi bi-person-plus"></i> Assign HeadWaiter
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a asp-controller="PaidOrders" asp-action="AssignHeadWaiter" asp-route-id="@item.CustomerID"
-                                       class="btn btn-outline-primary action-btn mb-1">
-                                        <i class="bi bi-person-gear"></i> Reassign
-                                    </a>
-                                }
+                                <div class="modern-table-actions">
+                                    @if (item.Order.HeadWaiterId == null)
+                                    {
+                                        <a asp-controller="PaidOrders" asp-action="AssignHeadWaiter" asp-route-id="@item.CustomerID"
+                                           class="modern-table-action-btn btn-outline-primary">
+                                            <i class="bi bi-person-plus"></i>
+                                            Assign
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="PaidOrders" asp-action="AssignHeadWaiter" asp-route-id="@item.CustomerID"
+                                           class="modern-table-action-btn btn-outline-primary">
+                                            <i class="bi bi-person-gear"></i>
+                                            Reassign
+                                        </a>
+                                    }
+                                </div>
                             </td>
                         </tr>
                     }
@@ -283,27 +163,27 @@
             <div class="modal-body">
                 <form id="profileForm" method="post" asp-controller="PaidOrders" asp-action="UpdateProfile">
                     @Html.AntiForgeryToken()
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                    <div class="modern-form-group">
+                        <label for="username" class="modern-form-label">Username</label>
+                        <input type="text" class="modern-form-control" id="username" name="username" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="currentPassword" class="form-label">Current Password</label>
-                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                    <div class="modern-form-group">
+                        <label for="currentPassword" class="modern-form-label">Current Password</label>
+                        <input type="password" class="modern-form-control" id="currentPassword" name="currentPassword" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                    <div class="modern-form-group">
+                        <label for="newPassword" class="modern-form-label">New Password</label>
+                        <input type="password" class="modern-form-control" id="newPassword" name="newPassword" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                    <div class="modern-form-group">
+                        <label for="confirmPassword" class="modern-form-label">Confirm New Password</label>
+                        <input type="password" class="modern-form-control" id="confirmPassword" name="confirmPassword" required>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" form="profileForm" class="btn btn-primary">Update Profile</button>
+                <button type="button" class="modern-action-btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="profileForm" class="modern-action-btn btn-primary">Update Profile</button>
             </div>
         </div>
     </div>
