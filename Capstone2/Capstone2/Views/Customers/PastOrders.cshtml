@@ -145,6 +145,13 @@
 											Invoice
 										</a>
 									}
+									<form asp-action="Delete" asp-route-id="@o.CustomerID" method="post" style="display: inline;">
+										<input type="hidden" name="fromPastOrders" value="true" />
+										<button type="submit" class="modern-table-action-btn btn-outline-danger" onclick="return confirm('Are you sure you want to delete this order? This action cannot be undone.')">
+											<i class="bi bi-trash"></i>
+											Delete
+										</button>
+									</form>
 								</div>
 							</td>
 						</tr>

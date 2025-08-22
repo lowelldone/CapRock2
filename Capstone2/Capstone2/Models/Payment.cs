@@ -22,6 +22,10 @@ namespace Capstone2.Models
         [Required]
         public DateTime Date { get; set; } = DateTime.Now;
 
+        [Required]
+        [Display(Name = "Payment Type")]
+        public string PaymentType { get; set; } = "Cash";
+
         [NotMapped]
         public bool IsForAdditionalCharges { get; set; } = false;
     }

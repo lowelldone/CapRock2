@@ -119,29 +119,29 @@ namespace Capstone2.Controllers.AdminControllers
         }
 
         // GET: HeadWaiters/ViewOrders/5
-        public async Task<IActionResult> ViewOrders(int id)
-        {
-            var headWaiter = await _context.HeadWaiters
-                .Include(h => h.User)
-                .FirstOrDefaultAsync(h => h.HeadWaiterId == id);
+        //public async Task<IActionResult> ViewOrders(int id)
+        //{
+        //    var headWaiter = await _context.HeadWaiters
+        //        .Include(h => h.User)
+        //        .FirstOrDefaultAsync(h => h.HeadWaiterId == id);
 
-            if (headWaiter == null)
-                return NotFound();
+        //    if (headWaiter == null)
+        //        return NotFound();
 
-            // Get all orders assigned to this head waiter
-            var assignedOrders = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.OrderWaiters)
-                    .ThenInclude(ow => ow.Waiter)
-                        .ThenInclude(w => w.User)
-                .Where(o => o.HeadWaiterId == id && !o.isDeleted)
-                .OrderByDescending(o => o.CateringDate)
-                .ThenByDescending(o => o.OrderDate)
-                .ToListAsync();
+        //    // Get all orders assigned to this head waiter
+        //    var assignedOrders = await _context.Orders
+        //        .Include(o => o.Customer)
+        //        .Include(o => o.OrderWaiters)
+        //            .ThenInclude(ow => ow.Waiter)
+        //                .ThenInclude(w => w.User)
+        //        .Where(o => o.HeadWaiterId == id && !o.isDeleted)
+        //        .OrderByDescending(o => o.CateringDate)
+        //        .ThenByDescending(o => o.OrderDate)
+        //        .ToListAsync();
 
-            ViewBag.HeadWaiter = headWaiter;
-            return View(assignedOrders);
-        }
+        //    ViewBag.HeadWaiter = headWaiter;
+        //    return View(assignedOrders);
+        //}
 
         // GET: HeadWaiters/Delete/5
         public IActionResult Delete(int id)
