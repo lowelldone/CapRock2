@@ -181,41 +181,41 @@ namespace Capstone2.Controllers
         }
 
         // GET: Waiters/AssignedOrder/5
-        public async Task<IActionResult> AssignedOrder(int id)
-        {
-            var waiter = await _context.Waiters
-                .Include(w => w.User)
-                .FirstOrDefaultAsync(w => w.WaiterId == id);
+        //public async Task<IActionResult> AssignedOrder(int id)
+        //{
+        //    var waiter = await _context.Waiters
+        //        .Include(w => w.User)
+        //        .FirstOrDefaultAsync(w => w.WaiterId == id);
 
-            if (waiter == null)
-                return NotFound();
+        //    if (waiter == null)
+        //        return NotFound();
 
-            // Check if waiter is actually busy
-            if (waiter.Availability != "Busy")
-            {
-                TempData["NoOrderAssigned"] = "This waiter is not currently assigned to any order.";
-                return RedirectToAction(nameof(Index));
-            }
+        //    // Check if waiter is actually busy
+        //    if (waiter.Availability != "Busy")
+        //    {
+        //        TempData["NoOrderAssigned"] = "This waiter is not currently assigned to any order.";
+        //        return RedirectToAction(nameof(Index));
+        //    }
 
-            // Get the current active order for this waiter
-            var assignedOrder = await _context.OrderWaiters
-                .Include(ow => ow.Order)
-                    .ThenInclude(o => o.Customer)
-                .Include(ow => ow.Order)
-                    .ThenInclude(o => o.HeadWaiter)
-                        .ThenInclude(hw => hw.User)
-                .Where(ow => ow.WaiterId == id && !ow.Order.isDeleted && ow.Order.Status != "Completed")
-                .Select(ow => ow.Order)
-                .FirstOrDefaultAsync();
+        //    // Get the current active order for this waiter
+        //    var assignedOrder = await _context.OrderWaiters
+        //        .Include(ow => ow.Order)
+        //            .ThenInclude(o => o.Customer)
+        //        .Include(ow => ow.Order)
+        //            .ThenInclude(o => o.HeadWaiter)
+        //                .ThenInclude(hw => hw.User)
+        //        .Where(ow => ow.WaiterId == id && !ow.Order.isDeleted && ow.Order.Status != "Completed")
+        //        .Select(ow => ow.Order)
+        //        .FirstOrDefaultAsync();
 
-            if (assignedOrder == null)
-            {
-                TempData["NoOrderAssigned"] = "This waiter is not currently assigned to any active order.";
-                return RedirectToAction(nameof(Index));
-            }
+        //    if (assignedOrder == null)
+        //    {
+        //        TempData["NoOrderAssigned"] = "This waiter is not currently assigned to any active order.";
+        //        return RedirectToAction(nameof(Index));
+        //    }
 
-            return View(assignedOrder);
-        }
+        //    return View(assignedOrder);
+        //}
 
     }
 }

@@ -93,7 +93,7 @@ namespace Capstone2.Controllers.AdminControllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Menus");
             }
             return View(menuPackages);
         }
@@ -128,7 +128,7 @@ namespace Capstone2.Controllers.AdminControllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Menus");
         }
 
         private bool MenuPackagesExists(int id)

@@ -250,6 +250,7 @@
                     <tr>
                         <th>Date & Time</th>
                         <th>Amount</th>
+                        <th>Payment Type</th>
                         <th>Running Total</th>
                     </tr>
                 </thead>
@@ -263,6 +264,9 @@
                         <tr>
                             <td>@payment.Date.ToString("MMM dd, yyyy HH:mm")</td>
                             <td>₱@payment.Amount.ToString("F2")</td>
+                            <td>
+                                <span class="badge bg-primary">@payment.PaymentType</span>
+                            </td>
                             <td>₱@runningTotal.ToString("F2")</td>
                         </tr>
                     }

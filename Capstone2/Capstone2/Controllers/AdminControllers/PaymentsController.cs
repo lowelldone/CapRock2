@@ -200,7 +200,7 @@ namespace Capstone2.Controllers.AdminControllers
         // POST: Payments/ProcessPayment
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProcessPayment(int orderId, double paymentAmount)
+        public async Task<IActionResult> ProcessPayment(int orderId, double paymentAmount, string paymentType)
         {
             var role = HttpContext.Session.GetString("Role");
             var order = await _context.Orders
@@ -213,6 +213,12 @@ namespace Capstone2.Controllers.AdminControllers
             if (paymentAmount <= 0)
             {
                 TempData["PaymentError"] = "Payment amount must be greater than zero.";
+                return RedirectToAction("ProcessPayment", new { id = orderId });
+            }
+
+            if (string.IsNullOrEmpty(paymentType))
+            {
+                TempData["PaymentError"] = "Payment type is required.";
                 return RedirectToAction("ProcessPayment", new { id = orderId });
             }
 
@@ -299,7 +305,8 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 OrderId = order.OrderId,
                 Amount = paymentAmount,
-                Date = DateTime.Now
+                Date = DateTime.Now,
+                PaymentType = paymentType
             };
             _context.Payments.Add(payment);
 
