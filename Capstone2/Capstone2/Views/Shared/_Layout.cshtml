@@ -510,7 +510,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link sub-nav-link dropdown-toggle" data-bs-toggle="collapse" href="#personnelCollapse" role="button" aria-expanded="false" aria-controls="personnelCollapse">
                                                 <i class="bi bi-people"></i>
-                                                <span>Personnel</span>
+                                                <span>Personnels</span>
                                             </a>
                                             <div class="collapse" id="personnelCollapse">
                                                 <ul class="nav flex-column">
@@ -651,12 +651,6 @@
                                asp-controller="Payments" asp-action="Index">
                                 <i class="bi bi-cash-stack"></i>
                                 <span>Payments</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Waiters" ? "active" : "")" asp-controller="Waiters" asp-action="Index">
-                                <i class="bi bi-people"></i>
-                                <span>Waiters</span>
                             </a>
                         </li>
                         break;

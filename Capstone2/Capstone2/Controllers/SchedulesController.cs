@@ -112,6 +112,9 @@ namespace Capstone2.Controllers
                 HeadWaiterAssignedOrders = headWaiterOrders
             };
 
+            // Set the role in ViewBag for the view to use
+            ViewBag.Role = role;
+
             return View(viewModel);
         }
 

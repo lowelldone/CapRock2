@@ -80,6 +80,31 @@
         color: #6c757d;
         margin-left: 4px;
     }
+
+    /* Validation Styles */
+    .is-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #ffe6e6 0%, #ffcccc 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
 </style>
 
 <div class="container-fluid mt-4 px-4 edit-bg">
@@ -95,17 +120,21 @@
 
     <div class="form-card">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!-- Validation Summary -->
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Please correct the following errors:</strong>
+            </div>
             <input type="hidden" asp-for="MenuPackageId" />
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label asp-for="MenuPackageName" class="form-label fw-semibold">Package Name</label>
+                    <label asp-for="MenuPackageName" class="form-label fw-semibold">Package Name <span class="text-danger">*</span></label>
                     <input asp-for="MenuPackageName" class="form-control" placeholder="Enter package name" />
                     <span asp-validation-for="MenuPackageName" class="text-danger"></span>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label asp-for="NoOfMainDish" class="form-label fw-semibold">Number of Main Dishes</label>
-                    <input asp-for="NoOfMainDish" class="form-control" placeholder="Enter number" />
+                    <label asp-for="NoOfMainDish" class="form-label fw-semibold">Number of Main Dishes <span class="text-danger">*</span></label>
+                    <input asp-for="NoOfMainDish" class="form-control" placeholder="Enter number" type="number" min="0" />
                     <span asp-validation-for="NoOfMainDish" class="text-danger"></span>
                 </div>
             </div>
@@ -116,7 +145,7 @@
                         <input type="checkbox" id="NoOfSideDishcbx" class="toggle-input" data-target="#NoOfSideDish" />
                         <label for="NoOfSideDishcbx" class="optional-label">Optional</label>
                     </div>
-                    <input asp-for="NoOfSideDish" class="form-control input-res" value="1" id="NoOfSideDish" />
+                    <input asp-for="NoOfSideDish" class="form-control input-res" value="1" id="NoOfSideDish" type="number" min="0" />
                     <span asp-validation-for="NoOfSideDish" class="text-danger"></span>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -125,7 +154,7 @@
                         <input type="checkbox" id="NoOfDessertcbx" class="toggle-input" data-target="#NoOfDessert" />
                         <label for="NoOfDessertcbx" class="optional-label">Optional</label>
                     </div>
-                    <input asp-for="NoOfDessert" class="form-control input-res" value="1" id="NoOfDessert" />
+                    <input asp-for="NoOfDessert" class="form-control input-res" value="1" id="NoOfDessert" type="number" min="0" />
                     <span asp-validation-for="NoOfDessert" class="text-danger"></span>
                 </div>
             </div>
@@ -136,7 +165,7 @@
                         <input type="checkbox" id="NoOfRicecbx" class="toggle-input" data-target="#NoOfRice" />
                         <label for="NoOfRicecbx" class="optional-label">Optional</label>
                     </div>
-                    <input asp-for="NoOfRice" class="form-control input-res" value="1" id="NoOfRice" />
+                    <input asp-for="NoOfRice" class="form-control input-res" value="1" id="NoOfRice" type="number" min="0" />
                     <span asp-validation-for="NoOfRice" class="text-danger"></span>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -145,7 +174,7 @@
                         <input type="checkbox" id="NoOfSoftDrinkscbx" class="toggle-input" data-target="#NoOfSoftDrinks" />
                         <label for="NoOfSoftDrinkscbx" class="optional-label">Optional</label>
                     </div>
-                    <input asp-for="NoOfSoftDrinks" class="form-control input-res" value="1" id="NoOfSoftDrinks" />
+                    <input asp-for="NoOfSoftDrinks" class="form-control input-res" value="1" id="NoOfSoftDrinks" type="number" min="0" />
                     <span asp-validation-for="NoOfSoftDrinks" class="text-danger"></span>
                 </div>
             </div>
@@ -153,7 +182,7 @@
                 <button type="submit" class="btn btn-primary btn-save">
                     <i class="bi bi-check-lg me-2"></i>Save Changes
                 </button>
-                <a asp-controller = "Menus" asp-action="Index" class="btn btn-outline-secondary btn-back">
+                <a asp-controller="Menus" asp-action="Index" class="btn btn-outline-secondary btn-back">
                     <i class="bi bi-arrow-left me-2"></i>Back to List
                 </a>
             </div>
@@ -179,6 +208,74 @@
         $('.input-res').on('change', function () {
             if ($(this).val() < 1) {
                 $(this).val(1);
+            }
+        });
+
+        // Form validation
+        $('form').on('submit', function (e) {
+            var isValid = true;
+
+            // Clear previous error styling
+            $('.form-control').removeClass('is-invalid');
+            $('.text-danger').remove();
+
+            // Validate Package Name
+            if (!$('#MenuPackageName').val().trim()) {
+                $('#MenuPackageName').addClass('is-invalid');
+                $('#MenuPackageName').after('<span class="text-danger">Package name is required.</span>');
+                isValid = false;
+            }
+
+            // Validate Main Dish quantity
+            var mainDish = parseInt($('#NoOfMainDish').val());
+            if (isNaN(mainDish) || mainDish < 0) {
+                $('#NoOfMainDish').addClass('is-invalid');
+                $('#NoOfMainDish').after('<span class="text-danger">Number of main dishes must be 0 or greater.</span>');
+                isValid = false;
+            }
+
+            // Validate Side Dish quantity
+            var sideDish = parseInt($('#NoOfSideDish').val());
+            if (isNaN(sideDish) || sideDish < 0) {
+                $('#NoOfSideDish').addClass('is-invalid');
+                $('#NoOfSideDish').after('<span class="text-danger">Number of side dishes must be 0 or greater.</span>');
+                isValid = false;
+            }
+
+            // Validate Dessert quantity
+            var dessert = parseInt($('#NoOfDessert').val());
+            if (isNaN(dessert) || dessert < 0) {
+                $('#NoOfDessert').addClass('is-invalid');
+                $('#NoOfDessert').after('<span class="text-danger">Number of desserts must be 0 or greater.</span>');
+                isValid = false;
+            }
+
+            // Validate Rice quantity
+            var rice = parseInt($('#NoOfRice').val());
+            if (isNaN(rice) || rice < 0) {
+                $('#NoOfRice').addClass('is-invalid');
+                $('#NoOfRice').after('<span class="text-danger">Number of rice dishes must be 0 or greater.</span>');
+                isValid = false;
+            }
+
+            // Validate Soft Drinks quantity
+            var softDrinks = parseInt($('#NoOfSoftDrinks').val());
+            if (isNaN(softDrinks) || softDrinks < 0) {
+                $('#NoOfSoftDrinks').addClass('is-invalid');
+                $('#NoOfSoftDrinks').after('<span class="text-danger">Number of soft drinks must be 0 or greater.</span>');
+                isValid = false;
+            }
+
+            // At least one item must be selected
+            if (mainDish === 0 && sideDish === 0 && dessert === 0 && rice === 0 && softDrinks === 0) {
+                $('form').prepend('<div class="alert alert-danger" role="alert"><i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Error:</strong> At least one item type must be selected with quantity greater than 0.</div>');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                // Scroll to first error
+                $('.is-invalid').first().focus();
             }
         });
     });

@@ -7,5 +7,6 @@ namespace Capstone2.Models
     {
         public IEnumerable<Menu> Menus { get; set; } = new List<Menu>();
         public IEnumerable<MenuPackages> MenuPackagesList { get; set; } = new List<MenuPackages>();
+        public string? SearchString { get; set; }
     }
 }

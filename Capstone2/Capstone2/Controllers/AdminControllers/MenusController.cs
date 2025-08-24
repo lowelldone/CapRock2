@@ -21,12 +21,22 @@ namespace Capstone2.Controllers.AdminControllers
         }
 
         // GET: Menus
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
+            var menus = await _context.Menu.ToListAsync();
+            var menuPackages = await _context.MenuPackages.ToListAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                menus = menus.Where(m => m.Name.ToLower().Contains(searchString)).ToList();
+            }
+
             var viewModel = new Capstone2.Models.MenusManagementViewModel
             {
-                Menus = await _context.Menu.ToListAsync(),
-                MenuPackagesList = await _context.MenuPackages.ToListAsync()
+                Menus = menus,
+                MenuPackagesList = menuPackages,
+                SearchString = searchString
             };
             return View(viewModel);
         }
@@ -42,29 +52,66 @@ namespace Capstone2.Controllers.AdminControllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MenuId,Name,Category,Price, DishType")] Menu menu, IFormFile ImageFile)
+        public async Task<IActionResult> Create([Bind("MenuId,Name,Category,Price,DishType")] Menu menu, IFormFile ImageFile)
         {
+            // Check for blank inputs
+            if (string.IsNullOrWhiteSpace(menu.Name))
+            {
+                ModelState.AddModelError("Name", "Dish name is required.");
+            }
+            if (string.IsNullOrWhiteSpace(menu.Category))
+            {
+                ModelState.AddModelError("Category", "Category is required.");
+            }
+            if (string.IsNullOrWhiteSpace(menu.DishType))
+            {
+                ModelState.AddModelError("DishType", "Dish type is required.");
+            }
+            if (menu.Price <= 0)
+            {
+                ModelState.AddModelError("Price", "Price must be greater than zero.");
+            }
+
+            // Check for duplicate dish names
+            if (!string.IsNullOrWhiteSpace(menu.Name))
+            {
+                var existingDish = await _context.Menu
+                    .FirstOrDefaultAsync(m => m.Name.ToLower().Trim() == menu.Name.ToLower().Trim());
+                if (existingDish != null)
+                {
+                    ModelState.AddModelError("Name", "A dish with this name already exists.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
-                if (ImageFile != null && ImageFile.Length > 0)
+                try
                 {
-                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
-                    Directory.CreateDirectory(uploadsFolder); // ensures folder exists
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    if (ImageFile != null && ImageFile.Length > 0)
                     {
-                        await ImageFile.CopyToAsync(fileStream);
+                        string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+                        Directory.CreateDirectory(uploadsFolder); // ensures folder exists
+
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await ImageFile.CopyToAsync(fileStream);
+                        }
+
+                        menu.ImagePath = "/images/" + uniqueFileName;
                     }
 
-                    menu.ImagePath = "/images/" + uniqueFileName;
+                    _context.Add(menu);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Dish '{menu.Name}' successfully created!";
+                    return RedirectToAction(nameof(Index));
                 }
-
-                _context.Add(menu);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error creating dish: {ex.Message}");
+                }
             }
             return View(menu);
         }
@@ -91,11 +138,40 @@ namespace Capstone2.Controllers.AdminControllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MenuId,Name,Category,Price, ImagePath, DishType")] Menu menu, IFormFile ImageFile)
+        public async Task<IActionResult> Edit(int id, [Bind("MenuId,Name,Category,Price,ImagePath,DishType")] Menu menu, IFormFile ImageFile)
         {
             if (id != menu.MenuId)
             {
                 return NotFound();
+            }
+
+            // Check for blank inputs
+            if (string.IsNullOrWhiteSpace(menu.Name))
+            {
+                ModelState.AddModelError("Name", "Dish name is required.");
+            }
+            if (string.IsNullOrWhiteSpace(menu.Category))
+            {
+                ModelState.AddModelError("Category", "Category is required.");
+            }
+            if (string.IsNullOrWhiteSpace(menu.DishType))
+            {
+                ModelState.AddModelError("DishType", "Dish type is required.");
+            }
+            if (menu.Price <= 0)
+            {
+                ModelState.AddModelError("Price", "Price must be greater than zero.");
+            }
+
+            // Check for duplicate dish names (excluding current dish)
+            if (!string.IsNullOrWhiteSpace(menu.Name))
+            {
+                var existingDish = await _context.Menu
+                    .FirstOrDefaultAsync(m => m.Name.ToLower().Trim() == menu.Name.ToLower().Trim() && m.MenuId != menu.MenuId);
+                if (existingDish != null)
+                {
+                    ModelState.AddModelError("Name", "A dish with this name already exists.");
+                }
             }
 
             ModelState.Remove("ImageFile");
@@ -120,6 +196,8 @@ namespace Capstone2.Controllers.AdminControllers
                     }
                     _context.Update(menu);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Dish '{menu.Name}' successfully updated!";
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -129,10 +207,13 @@ namespace Capstone2.Controllers.AdminControllers
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError("", "The dish was modified by another user. Please refresh and try again.");
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error updating dish: {ex.Message}");
+                }
             }
             return View(menu);
         }
@@ -160,13 +241,26 @@ namespace Capstone2.Controllers.AdminControllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var menu = await _context.Menu.FindAsync(id);
-            if (menu != null)
+            try
             {
-                _context.Menu.Remove(menu);
+                var menu = await _context.Menu.FindAsync(id);
+                if (menu != null)
+                {
+                    var dishName = menu.Name;
+                    _context.Menu.Remove(menu);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Dish '{dishName}' successfully deleted!";
+                }
+                else
+                {
+                    TempData["Error"] = "Dish not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error deleting dish: {ex.Message}";
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -176,3 +270,4 @@ namespace Capstone2.Controllers.AdminControllers
         }
     }
 }
+

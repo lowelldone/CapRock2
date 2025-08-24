@@ -125,27 +125,27 @@ namespace Capstone2.Controllers.AdminControllers
 			return View(customerList);
 		}
 
-		// GET: Customers/Create
-		public IActionResult Create()
-		{
-			return View();
-		}
+		//// GET: Customers/Create
+		//public IActionResult Create()
+		//{
+		//	return View();
+		//}
 
-		// POST: Customers/Create
-		// To protect from overposting attacks, enable the specific properties you want to bind to.
-		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("CustomerID,Name,ContactNo,Address")] Customer customer)
-		{
-			if (ModelState.IsValid)
-			{
-				_context.Add(customer);
-				await _context.SaveChangesAsync();
-				return RedirectToAction(nameof(Index));
-			}
-			return View(customer);
-		}
+		//// POST: Customers/Create
+		//// To protect from overposting attacks, enable the specific properties you want to bind to.
+		//// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		//[HttpPost]
+		//[ValidateAntiForgeryToken]
+		//public async Task<IActionResult> Create([Bind("CustomerID,Name,ContactNo,Address")] Customer customer)
+		//{
+		//	if (ModelState.IsValid)
+		//	{
+		//		_context.Add(customer);
+		//		await _context.SaveChangesAsync();
+		//		return RedirectToAction(nameof(Index));
+		//	}
+		//	return View(customer);
+		//}
 
 		// To protect from overposting attacks, enable the specific properties you want to bind to.
 		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

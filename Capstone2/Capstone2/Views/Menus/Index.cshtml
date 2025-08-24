@@ -15,7 +15,59 @@
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
+<style>
+    /* Alert Styles */
+    .alert {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d1edff 0%, #b3d9ff 100%);
+        color: #0c5460;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #ffe6e6 0%, #ffcccc 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    .btn-close {
+        background: transparent;
+        border: none;
+        font-size: 1.25rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .btn-close:hover {
+        opacity: 1;
+    }
+</style>
+
 <div class="container-fluid modern-bg">
+    <!-- Success/Error Messages -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div class="modern-header">
@@ -40,7 +92,7 @@
         <form asp-controller="Menus" asp-action="Index" method="get" class="modern-search-form">
             <div>
                 <label class="modern-form-label">Search Dishes</label>
-                <input type="text" name="searchString" class="modern-form-control" placeholder="Search dishes by name..." />
+                <input type="text" name="searchString" class="modern-form-control" placeholder="Search dishes by name..." value="@Model.SearchString" />
             </div>
             <div>
                 <button type="submit" class="modern-btn-search w-100">
@@ -83,7 +135,8 @@
                         <tbody>
                             @foreach (var item in items)
                             {
-                                <tr>
+                                var isSearchResult = !string.IsNullOrEmpty(Model.SearchString) && item.Name.ToLower().Contains(Model.SearchString.ToLower());
+                                <tr id="menu-@item.MenuId" class="@(isSearchResult ? "search-highlight" : "")">
                                     <td>
                                         <div class="modern-name">@item.Name</div>
                                     </td>
@@ -150,7 +203,8 @@
                         <tbody>
                             @foreach (var item in items)
                             {
-                                <tr>
+                                var isSearchResult = !string.IsNullOrEmpty(Model.SearchString) && item.Name.ToLower().Contains(Model.SearchString.ToLower());
+                                <tr id="menu-@item.MenuId" class="@(isSearchResult ? "search-highlight" : "")">
                                     <td>
                                         <div class="modern-name">@item.Name</div>
                                     </td>
@@ -207,7 +261,8 @@
                     <tbody>
                         @foreach (var item in desserts)
                         {
-                            <tr>
+                            var isSearchResult = !string.IsNullOrEmpty(Model.SearchString) && item.Name.ToLower().Contains(Model.SearchString.ToLower());
+                            <tr id="menu-@item.MenuId" class="@(isSearchResult ? "search-highlight" : "")">
                                 <td>
                                     <div class="modern-name">@item.Name</div>
                                 </td>
@@ -263,7 +318,8 @@
                     <tbody>
                         @foreach (var item in softDrinks)
                         {
-                            <tr>
+                            var isSearchResult = !string.IsNullOrEmpty(Model.SearchString) && item.Name.ToLower().Contains(Model.SearchString.ToLower());
+                            <tr id="menu-@item.MenuId" class="@(isSearchResult ? "search-highlight" : "")">
                                 <td>
                                     <div class="modern-name">@item.Name</div>
                                 </td>
@@ -319,7 +375,8 @@
                     <tbody>
                         @foreach (var item in rice)
                         {
-                            <tr>
+                            var isSearchResult = !string.IsNullOrEmpty(Model.SearchString) && item.Name.ToLower().Contains(Model.SearchString.ToLower());
+                            <tr id="menu-@item.MenuId" class="@(isSearchResult ? "search-highlight" : "")">
                                 <td>
                                     <div class="modern-name">@item.Name</div>
                                 </td>
@@ -420,3 +477,42 @@
         </div>
     </div>
 </div>
+
+<style>
+    .search-highlight {
+        background-color: #fff3cd !important;
+        border-left: 4px solid #ffc107 !important;
+        animation: searchPulse 2s ease-in-out;
+    }
+
+    @@keyframes searchPulse {
+        0% { background-color: #fff3cd; }
+        50% { background-color: #ffeaa7; }
+        100% { background-color: #fff3cd; }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if there's a search term
+        const searchString = '@Model.SearchString';
+        
+        if (searchString && searchString.trim() !== '') {
+            // Find the first search result
+            const searchResults = document.querySelectorAll('.search-highlight');
+            
+            if (searchResults.length > 0) {
+                // Scroll to the first search result with smooth animation
+                setTimeout(function() {
+                    searchResults[0].scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    
+                    // Add a temporary flash effect
+                    searchResults[0].style.animation = 'searchPulse 1s ease-in-out';
+                }, 500);
+            }
+        }
+    });
+</script>

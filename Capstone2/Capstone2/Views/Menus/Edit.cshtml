@@ -75,6 +75,37 @@
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+
+    /* Validation Styles */
+    .is-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, #d1edff 0%, #b3d9ff 100%);
+        color: #0c5460;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #ffe6e6 0%, #ffcccc 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
 </style>
 
 <div class="container-fluid mt-4 px-4 edit-bg">
@@ -90,33 +121,42 @@
 
     <div class="form-card">
         <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!-- Validation Summary -->
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Please correct the following errors:</strong>
+            </div>
             <input type="hidden" asp-for="MenuId" />
             <input type="hidden" asp-for="ImagePath" />
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label asp-for="Name" class="form-label fw-semibold">Name</label>
+                    <label asp-for="Name" class="form-label fw-semibold">Name <span class="text-danger">*</span></label>
                     <input asp-for="Name" class="form-control" placeholder="Enter dish name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label asp-for="Price" class="form-label fw-semibold">Price</label>
-                    <input asp-for="Price" class="form-control" placeholder="Enter price" />
+                    <label asp-for="Price" class="form-label fw-semibold">Price <span class="text-danger">*</span></label>
+                    <input asp-for="Price" class="form-control" placeholder="Enter price" type="number" step="0.01" min="0" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label fw-semibold">Dish Type</label>
+                    <label class="form-label fw-semibold">Dish Type <span class="text-danger">*</span></label>
                     <select asp-for="DishType" id="DishType" class="form-select">
-                        <option selected value="MAINDISH">Main</option>
+                        <option value="">-- Select Dish Type --</option>
+                        <option value="MAINDISH">Main</option>
                         <option value="SIDEDISH">Side</option>
                         <option value="DESSERTS">Dessert</option>
                         <option value="SOFTDRINKS">Soft Drinks</option>
                         <option value="RICE">Rice</option>
                     </select>
+                    <span asp-validation-for="DishType" class="text-danger"></span>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label asp-for="Category" class="form-label fw-semibold">Category</label>
+                    <label asp-for="Category" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
                     <select asp-for="Category" class="form-select" id="CategoryType">
+                        <option value="">-- Select Category --</option>
                         <option value="Pork">Pork</option>
                         <option value="Beef">Beef</option>
                         <option value="Chicken">Chicken</option>
@@ -128,6 +168,7 @@
                         <option value="SoftDrinks">Soft Drinks</option>
                         <option value="Rice">Rice</option>
                     </select>
+                    <span asp-validation-for="Category" class="text-danger"></span>
                 </div>
             </div>
             <div class="mb-4">
@@ -160,3 +201,97 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<script>
+    $(function () {
+        var $dishType = $('#DishType'),
+            $category = $('#CategoryType');
+
+        // Cache all original options
+        var allOptions = $category.find('option').map(function () {
+            return {
+                value: this.value,
+                text: this.text
+            };
+        }).get();
+
+        // Mapping from DishType value → allowed Category values
+        var map = {
+            MAINDISH: ['Pork', 'Beef', 'Chicken', 'Seafood'],
+            SIDEDISH: ['Vegetables', 'Noodles & Pasta', 'Salad'],
+            DESSERTS: ['Dessert'],
+            SOFTDRINKS: ['SoftDrinks'],
+            RICE: ['Rice']
+        };
+
+        function filterCategories() {
+            var sel = $dishType.val(),
+                allowed = map[sel] || [];
+
+            $category.empty();               // remove current options
+            // Add default option first
+            $('<option>')
+                .val('')
+                .text('-- Select Category --')
+                .appendTo($category);
+
+            $.each(allOptions, function (_, opt) {
+                if (opt.value && $.inArray(opt.value, allowed) !== -1) {
+                    // rebuild only allowed ones
+                    $('<option>')
+                        .val(opt.value)
+                        .text(opt.text)
+                        .appendTo($category);
+                }
+            });
+        }
+
+        // initial filter + re-filter on change
+        filterCategories();
+        $dishType.on('change', filterCategories);
+
+        // Form validation
+        $('form').on('submit', function(e) {
+            var isValid = true;
+
+            // Clear previous error styling
+            $('.form-control, .form-select').removeClass('is-invalid');
+            $('.text-danger').remove();
+
+            // Validate Name
+            if (!$('#Name').val().trim()) {
+                $('#Name').addClass('is-invalid');
+                $('#Name').after('<span class="text-danger">Dish name is required.</span>');
+                isValid = false;
+            }
+
+            // Validate Price
+            var price = parseFloat($('#Price').val());
+            if (isNaN(price) || price <= 0) {
+                $('#Price').addClass('is-invalid');
+                $('#Price').after('<span class="text-danger">Price must be greater than zero.</span>');
+                isValid = false;
+            }
+
+            // Validate Dish Type
+            if (!$('#DishType').val()) {
+                $('#DishType').addClass('is-invalid');
+                $('#DishType').after('<span class="text-danger">Dish type is required.</span>');
+                isValid = false;
+            }
+
+            // Validate Category
+            if (!$('#CategoryType').val()) {
+                $('#CategoryType').addClass('is-invalid');
+                $('#CategoryType').after('<span class="text-danger">Category is required.</span>');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                // Scroll to first error
+                $('.is-invalid').first().focus();
+            }
+        });
+    });
+</script>

@@ -38,11 +38,65 @@ namespace Capstone2.Controllers.AdminControllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MenuPackageId,MenuPackageName,NoOfMainDish,NoOfSideDish,NoOfDessert,NoOfRice,NoOfSoftDrinks")] MenuPackages menuPackages)
         {
+            // Check for blank inputs
+            if (string.IsNullOrWhiteSpace(menuPackages.MenuPackageName))
+            {
+                ModelState.AddModelError("MenuPackageName", "Package name is required.");
+            }
+
+            // Check for duplicate package names
+            if (!string.IsNullOrWhiteSpace(menuPackages.MenuPackageName))
+            {
+                var existingPackage = await _context.MenuPackages
+                    .FirstOrDefaultAsync(m => m.MenuPackageName.ToLower().Trim() == menuPackages.MenuPackageName.ToLower().Trim());
+                if (existingPackage != null)
+                {
+                    ModelState.AddModelError("MenuPackageName", "A package with this name already exists.");
+                }
+            }
+
+            // Validate quantities (must be non-negative)
+            if (menuPackages.NoOfMainDish < 0)
+            {
+                ModelState.AddModelError("NoOfMainDish", "Number of main dishes cannot be negative.");
+            }
+            if (menuPackages.NoOfSideDish < 0)
+            {
+                ModelState.AddModelError("NoOfSideDish", "Number of side dishes cannot be negative.");
+            }
+            if (menuPackages.NoOfDessert < 0)
+            {
+                ModelState.AddModelError("NoOfDessert", "Number of desserts cannot be negative.");
+            }
+            if (menuPackages.NoOfRice < 0)
+            {
+                ModelState.AddModelError("NoOfRice", "Number of rice dishes cannot be negative.");
+            }
+            if (menuPackages.NoOfSoftDrinks < 0)
+            {
+                ModelState.AddModelError("NoOfSoftDrinks", "Number of soft drinks cannot be negative.");
+            }
+
+            // At least one item must be selected
+            if (menuPackages.NoOfMainDish == 0 && menuPackages.NoOfSideDish == 0 &&
+                menuPackages.NoOfDessert == 0 && menuPackages.NoOfRice == 0 && menuPackages.NoOfSoftDrinks == 0)
+            {
+                ModelState.AddModelError("", "At least one item type must be selected with quantity greater than 0.");
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(menuPackages);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Menus");
+                try
+                {
+                    _context.Add(menuPackages);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Menu Package '{menuPackages.MenuPackageName}' successfully created!";
+                    return RedirectToAction("Index", "Menus");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error creating menu package: {ex.Message}");
+                }
             }
             return View(menuPackages);
         }
@@ -75,12 +129,60 @@ namespace Capstone2.Controllers.AdminControllers
                 return NotFound();
             }
 
+            // Check for blank inputs
+            if (string.IsNullOrWhiteSpace(menuPackages.MenuPackageName))
+            {
+                ModelState.AddModelError("MenuPackageName", "Package name is required.");
+            }
+
+            // Check for duplicate package names (excluding current package)
+            if (!string.IsNullOrWhiteSpace(menuPackages.MenuPackageName))
+            {
+                var existingPackage = await _context.MenuPackages
+                    .FirstOrDefaultAsync(m => m.MenuPackageName.ToLower().Trim() == menuPackages.MenuPackageName.ToLower().Trim() && m.MenuPackageId != menuPackages.MenuPackageId);
+                if (existingPackage != null)
+                {
+                    ModelState.AddModelError("MenuPackageName", "A package with this name already exists.");
+                }
+            }
+
+            // Validate quantities (must be non-negative)
+            if (menuPackages.NoOfMainDish < 0)
+            {
+                ModelState.AddModelError("NoOfMainDish", "Number of main dishes cannot be negative.");
+            }
+            if (menuPackages.NoOfSideDish < 0)
+            {
+                ModelState.AddModelError("NoOfSideDish", "Number of side dishes cannot be negative.");
+            }
+            if (menuPackages.NoOfDessert < 0)
+            {
+                ModelState.AddModelError("NoOfDessert", "Number of desserts cannot be negative.");
+            }
+            if (menuPackages.NoOfRice < 0)
+            {
+                ModelState.AddModelError("NoOfRice", "Number of rice dishes cannot be negative.");
+            }
+            if (menuPackages.NoOfSoftDrinks < 0)
+            {
+                ModelState.AddModelError("NoOfSoftDrinks", "Number of soft drinks cannot be negative.");
+            }
+
+            // At least one item must be selected
+            if (menuPackages.NoOfMainDish == 0 && menuPackages.NoOfSideDish == 0 &&
+                menuPackages.NoOfDessert == 0 && menuPackages.NoOfRice == 0 && menuPackages.NoOfSoftDrinks == 0)
+            {
+                ModelState.AddModelError("", "At least one item type must be selected with quantity greater than 0.");
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(menuPackages);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Menu Package '{menuPackages.MenuPackageName}' successfully updated!";
+                    return RedirectToAction("Index", "Menus");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -90,10 +192,13 @@ namespace Capstone2.Controllers.AdminControllers
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError("", "The package was modified by another user. Please refresh and try again.");
                     }
                 }
-                return RedirectToAction("Index", "Menus");
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error updating menu package: {ex.Message}");
+                }
             }
             return View(menuPackages);
         }
@@ -121,13 +226,26 @@ namespace Capstone2.Controllers.AdminControllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var menuPackages = await _context.MenuPackages.FindAsync(id);
-            if (menuPackages != null)
+            try
             {
-                _context.MenuPackages.Remove(menuPackages);
+                var menuPackages = await _context.MenuPackages.FindAsync(id);
+                if (menuPackages != null)
+                {
+                    var packageName = menuPackages.MenuPackageName;
+                    _context.MenuPackages.Remove(menuPackages);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Menu Package '{packageName}' successfully deleted!";
+                }
+                else
+                {
+                    TempData["Error"] = "Menu package not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error deleting menu package: {ex.Message}";
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction("Index", "Menus");
         }
 
@@ -137,3 +255,4 @@ namespace Capstone2.Controllers.AdminControllers
         }
     }
 }
+
