@@ -7,6 +7,37 @@
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
+<style>
+    /* Override status badge styles to ensure proper colors */
+    .modern-status-badge.accepted {
+        background: rgba(16, 185, 129, 0.15) !important;
+        color: #10b981 !important;
+        border: 2px solid rgba(16, 185, 129, 0.3) !important;
+        font-weight: 700 !important;
+    }
+
+    .modern-status-badge.pending {
+        background: rgba(245, 158, 11, 0.15) !important;
+        color: #f59e0b !important;
+        border: 2px solid rgba(245, 158, 11, 0.3) !important;
+        font-weight: 700 !important;
+    }
+
+    .modern-status-badge.ongoing {
+        background: rgba(59, 130, 246, 0.15) !important;
+        color: #3b82f6 !important;
+        border: 2px solid rgba(59, 130, 246, 0.3) !important;
+        font-weight: 700 !important;
+    }
+
+    .modern-status-badge.inactive {
+        background: rgba(107, 114, 128, 0.15) !important;
+        color: #6b7280 !important;
+        border: 2px solid rgba(107, 114, 128, 0.3) !important;
+        font-weight: 700 !important;
+    }
+</style>
+
 <div class="container-fluid modern-bg">
     @if (TempData["ProfileError"] != null)
     {
@@ -41,7 +72,7 @@
                 }
             </div>
         </div>
-        @if ((ViewBag.Role as string) != "ADMIN")
+        @if ((ViewBag.Role as string) == "WAITER")
         {
             <div class="modern-action-buttons">
                 <button class="modern-action-btn btn-outline-primary" onclick="openProfileModal()">
@@ -74,7 +105,10 @@
                                 <th>Venue</th>
                                 <th>Occasion</th>
                                 <th>Food Serving Time</th>
-                                <th>Waiters</th>
+                                @if ((ViewBag.Role as string) != "WAITER")
+                                {
+                                    <th>Waiters</th>
+                                }
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -100,36 +134,42 @@
                                     <td>
                                         <div class="modern-info">@order.timeOfFoodServing.ToString("hh:mm tt")</div>
                                     </td>
+                                    @if ((ViewBag.Role as string) != "WAITER")
+                                    {
+                                        <td>
+                                            @if (order.OrderWaiters != null && order.OrderWaiters.Any())
+                                            {
+                                                <div class="modern-info">@string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))</div>
+                                            }
+                                            else
+                                            {
+                                                <span class="modern-info text-muted">-</span>
+                                            }
+                                        </td>
+                                    }
                                     <td>
-                                        @if (order.OrderWaiters != null && order.OrderWaiters.Any())
-                                        {
-                                            <div class="modern-info">@string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))</div>
+                                        @{
+                                            var status = order.Status?.Trim()?.ToUpper();
                                         }
-                                        else
-                                        {
-                                            <span class="modern-info text-muted">-</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @if (order.Status == "Pending")
+                                        @if (status == "PENDING")
                                         {
                                             <span class="modern-status-badge pending">
                                                 <i class="bi bi-clock"></i>
-                                                Pending
+                                                @order.Status
                                             </span>
                                         }
-                                        else if (order.Status == "Confirmed")
+                                        else if (status == "CONFIRMED" || status == "ACCEPTED")
                                         {
                                             <span class="modern-status-badge accepted">
                                                 <i class="bi bi-check-circle"></i>
-                                                Confirmed
+                                                @order.Status
                                             </span>
                                         }
-                                        else if (order.Status == "In Progress")
+                                        else if (status == "IN PROGRESS")
                                         {
                                             <span class="modern-status-badge ongoing">
                                                 <i class="bi bi-play-circle"></i>
-                                                In Progress
+                                                @order.Status
                                             </span>
                                         }
                                         else
@@ -162,7 +202,10 @@
                     <table class="modern-table table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>Waiters</th>
+                                @if ((ViewBag.Role as string) != "WAITER")
+                                {
+                                    <th>Waiters</th>
+                                }
                                 <th>Head Waiter</th>
                                 <th>Customer Name</th>
                                 <th>Catering Date</th>
@@ -176,16 +219,19 @@
                             @foreach (var order in Model.WaiterAssignedOrders)
                             {
                                 <tr>
-                                    <td>
-                                        @if (order.OrderWaiters != null && order.OrderWaiters.Any())
-                                        {
-                                            <div class="modern-name">@string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))</div>
-                                        }
-                                        else
-                                        {
-                                            <span class="modern-info text-muted">-</span>
-                                        }
-                                    </td>
+                                    @if ((ViewBag.Role as string) != "WAITER")
+                                    {
+                                        <td>
+                                            @if (order.OrderWaiters != null && order.OrderWaiters.Any())
+                                            {
+                                                <div class="modern-name">@string.Join(", ", order.OrderWaiters.Select(ow => ow.Waiter?.User?.FirstName))</div>
+                                            }
+                                            else
+                                            {
+                                                <span class="modern-info text-muted">-</span>
+                                            }
+                                        </td>
+                                    }
                                     <td>
                                         <div class="modern-name">@order.HeadWaiter?.User?.FirstName</div>
                                     </td>
@@ -205,25 +251,28 @@
                                         <div class="modern-info">@order.timeOfFoodServing.ToString("hh:mm tt")</div>
                                     </td>
                                     <td>
-                                        @if (order.Status == "Pending")
+                                        @{
+                                            var status = order.Status?.Trim()?.ToUpper();
+                                        }
+                                        @if (status == "PENDING")
                                         {
                                             <span class="modern-status-badge pending">
                                                 <i class="bi bi-clock"></i>
-                                                Pending
+                                                @order.Status
                                             </span>
                                         }
-                                        else if (order.Status == "Confirmed")
+                                        else if (status == "CONFIRMED" || status == "ACCEPTED")
                                         {
                                             <span class="modern-status-badge accepted">
                                                 <i class="bi bi-check-circle"></i>
-                                                Confirmed
+                                                @order.Status
                                             </span>
                                         }
-                                        else if (order.Status == "In Progress")
+                                        else if (status == "IN PROGRESS")
                                         {
                                             <span class="modern-status-badge ongoing">
                                                 <i class="bi bi-play-circle"></i>
-                                                In Progress
+                                                @order.Status
                                             </span>
                                         }
                                         else
@@ -264,72 +313,75 @@
     }
 </div>
 
-<!-- Profile Modal -->
-<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="profileModalLabel">Update Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="profileForm" method="post" asp-controller="Schedules" asp-action="UpdateProfile">
-                    @Html.AntiForgeryToken()
-                    <div class="modern-form-group">
-                        <label for="username" class="modern-form-label">Username</label>
-                        <input type="text" class="modern-form-control" id="username" name="username" required>
-                    </div>
-                    <div class="modern-form-group">
-                        <label for="currentPassword" class="modern-form-label">Current Password</label>
-                        <input type="password" class="modern-form-control" id="currentPassword" name="currentPassword" required>
-                    </div>
-                    <div class="modern-form-group">
-                        <label for="newPassword" class="modern-form-label">New Password</label>
-                        <input type="password" class="modern-form-control" id="newPassword" name="newPassword" required>
-                    </div>
-                    <div class="modern-form-group">
-                        <label for="confirmPassword" class="modern-form-label">Confirm New Password</label>
-                        <input type="password" class="modern-form-control" id="confirmPassword" name="confirmPassword" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="modern-action-btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" form="profileForm" class="modern-action-btn btn-primary">Update Profile</button>
+<!-- Profile Modal - Only show for waiters -->
+@if ((ViewBag.Role as string) == "WAITER")
+{
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileModalLabel">Update Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="profileForm" method="post" asp-controller="Schedules" asp-action="UpdateProfile">
+                        @Html.AntiForgeryToken()
+                        <div class="modern-form-group">
+                            <label for="username" class="modern-form-label">Username</label>
+                            <input type="text" class="modern-form-control" id="username" name="username" required>
+                        </div>
+                        <div class="modern-form-group">
+                            <label for="currentPassword" class="modern-form-label">Current Password</label>
+                            <input type="password" class="modern-form-control" id="currentPassword" name="currentPassword" required>
+                        </div>
+                        <div class="modern-form-group">
+                            <label for="newPassword" class="modern-form-label">New Password</label>
+                            <input type="password" class="modern-form-control" id="newPassword" name="newPassword" required>
+                        </div>
+                        <div class="modern-form-group">
+                            <label for="confirmPassword" class="modern-form-label">Confirm New Password</label>
+                            <input type="password" class="modern-form-control" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modern-action-btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="profileForm" class="modern-action-btn btn-primary">Update Profile</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    function openProfileModal() {
-        const modal = new bootstrap.Modal(document.getElementById('profileModal'));
-        modal.show();
-    }
-
-    // Form validation
-    document.addEventListener('DOMContentLoaded', function () {
-        const profileForm = document.getElementById('profileForm');
-        if (profileForm) {
-            profileForm.addEventListener('submit', function (e) {
-                const newPassword = document.getElementById('newPassword').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-
-                if (newPassword !== confirmPassword) {
-                    e.preventDefault();
-                    alert('New password and confirm password do not match!');
-                    return false;
-                }
-
-                if (newPassword.length < 6) {
-                    e.preventDefault();
-                    alert('Password must be at least 6 characters long!');
-                    return false;
-                }
-            });
+    <script>
+        function openProfileModal() {
+            const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+            modal.show();
         }
-    });
-</script>
+
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileForm = document.getElementById('profileForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function (e) {
+                    const newPassword = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+
+                    if (newPassword !== confirmPassword) {
+                        e.preventDefault();
+                        alert('New password and confirm password do not match!');
+                        return false;
+                    }
+
+                    if (newPassword.length < 6) {
+                        e.preventDefault();
+                        alert('Password must be at least 6 characters long!');
+                        return false;
+                    }
+                });
+            }
+        });
+    </script>
+}
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

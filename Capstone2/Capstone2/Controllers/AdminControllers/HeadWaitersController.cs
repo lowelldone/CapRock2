@@ -146,6 +146,21 @@ namespace Capstone2.Controllers.AdminControllers
         // GET: HeadWaiters/Delete/5
         public IActionResult Delete(int id)
         {
+            var headWaiter = _context.HeadWaiters
+                .Include(h => h.User)
+                .FirstOrDefault(h => h.HeadWaiterId == id);
+
+            if (headWaiter == null)
+                return NotFound();
+
+            return View(headWaiter);
+        }
+
+        // POST: HeadWaiters/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
             var headWaiter = _context.HeadWaiters.Find(id);
             if (headWaiter == null)
                 return NotFound();
@@ -155,6 +170,8 @@ namespace Capstone2.Controllers.AdminControllers
 
             // Only perform a soft delete; do not delete the User entity
             _context.SaveChanges();
+
+            TempData["Success"] = "Head Waiter deactivated successfully!";
             return RedirectToAction(nameof(Index));
         }
     }

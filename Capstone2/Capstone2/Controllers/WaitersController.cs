@@ -146,6 +146,21 @@ namespace Capstone2.Controllers
         // GET: Waiters/Delete/5
         public IActionResult Delete(int id)
         {
+            var waiter = _context.Waiters
+                .Include(w => w.User)
+                .FirstOrDefault(w => w.WaiterId == id);
+
+            if (waiter == null)
+                return NotFound();
+
+            return View(waiter);
+        }
+
+        // POST: Waiters/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
             var waiter = _context.Waiters.Find(id);
             if (waiter == null)
                 return NotFound();
@@ -166,7 +181,7 @@ namespace Capstone2.Controllers
                     Username = username,
                     Role = role,
                     Action = nameof(Delete),
-                    HttpMethod = "GET",
+                    HttpMethod = "POST",
                     Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
                     UserAgent = Request.Headers["User-Agent"].ToString(),
                     Succeeded = true,
@@ -177,6 +192,7 @@ namespace Capstone2.Controllers
             }
             catch { }
 
+            TempData["Success"] = "Waiter deactivated successfully!";
             return RedirectToAction(nameof(Index));
         }
 

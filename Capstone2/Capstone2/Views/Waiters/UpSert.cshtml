@@ -128,11 +128,6 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label asp-for="User.UserNumber" class="form-label fw-semibold">User Number (11 digits)</label>
-                    <input asp-for="User.UserNumber" class="form-control" maxlength="11" pattern="\d{11}" inputmode="numeric" title="Please enter exactly 11 digits." placeholder="e.g. 00000001234" />
-                    <span asp-validation-for="User.UserNumber" class="text-danger"></span>
-                </div>
-                <div class="col-md-6 mb-3">
                     <label asp-for="User.Username" class="form-label fw-semibold">Username</label>
                     <input asp-for="User.Username" class="form-control" placeholder="Enter username" />
                     <span asp-validation-for="User.Username" class="text-danger"></span>
@@ -147,7 +142,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="User.FirstName" class="form-label fw-semibold">First Name</label>
@@ -158,6 +152,13 @@
                     <label asp-for="User.LastName" class="form-label fw-semibold">Last Name</label>
                     <input asp-for="User.LastName" class="form-control" placeholder="Enter last name" />
                     <span asp-validation-for="User.LastName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="User.UserNumber" class="form-label fw-semibold">User Number (11 digits)</label>
+                    <input asp-for="User.UserNumber" class="form-control" maxlength="11" pattern="\d{11}" inputmode="numeric" title="Please enter exactly 11 digits." placeholder="e.g. 00000001234" />
+                    <span asp-validation-for="User.UserNumber" class="text-danger"></span>
                 </div>
             </div>
 
