@@ -946,6 +946,7 @@ namespace Capstone2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateProfile(string username, string currentPassword, string newPassword)
         {
+            var role = HttpContext.Session.GetString("Role");
             try
             {
                 // Get current user from session
@@ -953,7 +954,16 @@ namespace Capstone2.Controllers
                 if (!userId.HasValue)
                 {
                     TempData["ProfileError"] = "User session not found. Please log in again.";
-                    return RedirectToAction("Index");
+
+                    // Redirect based on user role
+                    if (role == "ADMIN")
+                    {
+                        return RedirectToAction("Index", "DashboardDateSummary");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 // Find the current user
@@ -961,14 +971,32 @@ namespace Capstone2.Controllers
                 if (currentUser == null)
                 {
                     TempData["ProfileError"] = "User not found.";
-                    return RedirectToAction("Index");
+
+                    // Redirect based on user role
+                    if (role == "ADMIN")
+                    {
+                        return RedirectToAction("Index", "DashboardDateSummary");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 // Verify current password
                 if (currentUser.Password != currentPassword)
                 {
                     TempData["ProfileError"] = "Current password is incorrect.";
-                    return RedirectToAction("Index");
+
+                    // Redirect based on user role
+                    if (role == "ADMIN")
+                    {
+                        return RedirectToAction("Index", "DashboardDateSummary");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 // Check if new username already exists (if username is being changed)
@@ -978,9 +1006,25 @@ namespace Capstone2.Controllers
                     if (existingUser != null)
                     {
                         TempData["ProfileError"] = "Username already exists. Please choose a different username.";
-                        return RedirectToAction("Index");
+
+                        // Redirect based on user role
+                        if (role == "ADMIN")
+                        {
+                            return RedirectToAction("Index", "DashboardDateSummary");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index");
+                        }
                     }
                 }
+
+                // Track changes for audit logging
+                var changes = new List<string>();
+                if (currentUser.Username != username)
+                    changes.Add($"username: '{currentUser.Username}' to '{username}'");
+                if (currentUser.Password != newPassword)
+                    changes.Add("password changed");
 
                 // Update user information
                 currentUser.Username = username;
@@ -988,13 +1032,64 @@ namespace Capstone2.Controllers
                 _context.Users.Update(currentUser);
                 await _context.SaveChangesAsync();
 
+                // Audit: profile update
+                try
+                {
+                    var sessionUsername = HttpContext.Session.GetString("Username");
+
+                    // Determine if this is a waiter
+                    int? waiterId = null;
+
+                    if (role == "WAITER")
+                    {
+                        var waiter = await _context.Waiters.FirstOrDefaultAsync(w => w.UserId == userId.Value);
+                        waiterId = waiter?.WaiterId;
+                    }
+
+                    _context.AuditLogs.Add(new AuditLog
+                    {
+                        UserId = userId,
+                        Username = sessionUsername,
+                        Role = role,
+                        Action = "UpdateProfile",
+                        HttpMethod = "POST",
+                        Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                        UserAgent = Request.Headers["User-Agent"].ToString(),
+                        Succeeded = true,
+                        WaiterId = waiterId,
+                        Details = changes.Any() ?
+                            $"Profile updated ({string.Join(", ", changes)})" :
+                            "Profile updated (no changes detected)"
+                    });
+                    await _context.SaveChangesAsync();
+                }
+                catch { }
+
                 TempData["ProfileSuccess"] = "Profile updated successfully!";
-                return RedirectToAction("Index");
+
+                // Redirect based on user role
+                if (role == "ADMIN")
+                {
+                    return RedirectToAction("Index", "DashboardDateSummary");
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
             catch (Exception ex)
             {
                 TempData["ProfileError"] = $"Error updating profile: {ex.Message}";
-                return RedirectToAction("Index");
+
+                // Redirect based on user role
+                if (role == "ADMIN")
+                {
+                    return RedirectToAction("Index", "DashboardDateSummary");
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
         }
     }

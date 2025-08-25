@@ -204,11 +204,52 @@ namespace Capstone2.Controllers
                     }
                 }
 
+                // Track changes for audit logging
+                var changes = new List<string>();
+                if (currentUser.Username != username)
+                    changes.Add($"username: '{currentUser.Username}' to '{username}'");
+                if (currentUser.Password != newPassword)
+                    changes.Add("password changed");
+
                 // Update user information
                 currentUser.Username = username;
                 currentUser.Password = newPassword;
                 _context.Users.Update(currentUser);
                 await _context.SaveChangesAsync();
+
+                // Audit: profile update
+                try
+                {
+                    var role = HttpContext.Session.GetString("Role");
+                    var sessionUsername = HttpContext.Session.GetString("Username");
+
+                    // Determine if this is a waiter
+                    int? waiterId = null;
+
+                    if (role == "WAITER")
+                    {
+                        var waiter = await _context.Waiters.FirstOrDefaultAsync(w => w.UserId == userId.Value);
+                        waiterId = waiter?.WaiterId;
+                    }
+
+                    _context.AuditLogs.Add(new AuditLog
+                    {
+                        UserId = userId,
+                        Username = sessionUsername,
+                        Role = role,
+                        Action = "UpdateProfile",
+                        HttpMethod = "POST",
+                        Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                        UserAgent = Request.Headers["User-Agent"].ToString(),
+                        Succeeded = true,
+                        WaiterId = waiterId,
+                        Details = changes.Any() ?
+                            $"Profile updated ({string.Join(", ", changes)})" :
+                            "Profile updated (no changes detected)"
+                    });
+                    await _context.SaveChangesAsync();
+                }
+                catch { }
 
                 TempData["ProfileSuccess"] = "Profile updated successfully!";
                 return RedirectToAction("Index");

@@ -192,7 +192,6 @@ body, .container-fluid, .card, .table {
 
 .modern-form-group {
     margin-bottom: 1rem;
-    border-bottom: 1px solid gray;
 }
 
 .modern-form-label {
@@ -248,7 +247,6 @@ body, .container-fluid, .card, .table {
     border-radius: 20px;
     margin-bottom: 2rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
     overflow: hidden;
     transition: all 0.3s ease;
 }

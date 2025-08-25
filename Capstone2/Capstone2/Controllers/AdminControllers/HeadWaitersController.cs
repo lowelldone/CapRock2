@@ -47,34 +47,28 @@ namespace Capstone2.Controllers.AdminControllers
             // Validate: must be exactly 11 digits
             if (string.IsNullOrWhiteSpace(headWaiter.User?.UserNumber) || headWaiter.User.UserNumber.Length != 11)
             {
-                ModelState.AddModelError("User.UserNumber", "User Number must be exactly 11 digits.");
+                ModelState.AddModelError("User.UserNumber", "Phone Number must be exactly 11 digits.");
                 return View(headWaiter);
             }
 
-            if (headWaiter.HeadWaiterId == 0)
+            bool isCreateAction = headWaiter.HeadWaiterId == 0;
+
+            if (isCreateAction)
             {
                 // Check if a user with the same username exists
                 var existingUser = _context.Users.FirstOrDefault(u => u.Username == headWaiter.User.Username);
                 if (existingUser != null)
                 {
-                    // Update existing user details
-                    existingUser.Password = headWaiter.User.Password;
-                    existingUser.FirstName = headWaiter.User.FirstName;
-                    existingUser.LastName = headWaiter.User.LastName;
-                    existingUser.Role = "HeadWaiter";
-                    existingUser.UserNumber = headWaiter.User.UserNumber;
-                    _context.Users.Update(existingUser);
-                    _context.SaveChanges();
-                    headWaiter.UserId = existingUser.UserId;
-                    headWaiter.User = existingUser;
+                    // Prevent creating new account with existing username
+                    ModelState.AddModelError("User.Username", "Username already exists. Please choose a different username.");
+                    return View(headWaiter);
                 }
-                else
-                {
-                    headWaiter.User.Role = "HeadWaiter";
-                    _context.Users.Add(headWaiter.User);
-                    _context.SaveChanges();
-                    headWaiter.UserId = headWaiter.User.UserId;
-                }
+
+                // Create new user for new head waiter
+                headWaiter.User.Role = "HeadWaiter";
+                _context.Users.Add(headWaiter.User);
+                _context.SaveChanges();
+                headWaiter.UserId = headWaiter.User.UserId;
                 headWaiter.isActive = true;
                 _context.HeadWaiters.Add(headWaiter);
             }
@@ -87,6 +81,17 @@ namespace Capstone2.Controllers.AdminControllers
 
                 if (existingHeadWaiter != null)
                 {
+                    // Check if the new username conflicts with other users (excluding current user)
+                    var conflictingUser = _context.Users.FirstOrDefault(u =>
+                        u.Username == headWaiter.User.Username &&
+                        u.UserId != existingHeadWaiter.UserId);
+
+                    if (conflictingUser != null)
+                    {
+                        ModelState.AddModelError("User.Username", "Username already exists. Please choose a different username.");
+                        return View(headWaiter);
+                    }
+
                     // Update head waiter properties
                     existingHeadWaiter.isActive = headWaiter.isActive;
                     _context.HeadWaiters.Update(existingHeadWaiter);
@@ -106,7 +111,70 @@ namespace Capstone2.Controllers.AdminControllers
             }
             _context.SaveChanges();
 
-            if (headWaiter.HeadWaiterId == 0)
+            // Audit: head waiter upsert (create/update)
+            try
+            {
+                var role = HttpContext.Session.GetString("Role");
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var username = HttpContext.Session.GetString("Username");
+
+                string details;
+                if (isCreateAction)
+                {
+                    details = $"Created head waiter {headWaiter.HeadWaiterId} with username '{headWaiter.User?.Username}'";
+                }
+                else
+                {
+                    // For updates, provide more detailed information about what changed
+                    var existingHeadWaiter = _context.HeadWaiters
+                        .Include(h => h.User)
+                        .FirstOrDefault(h => h.HeadWaiterId == headWaiter.HeadWaiterId);
+
+                    if (existingHeadWaiter?.User != null)
+                    {
+                        var changes = new List<string>();
+
+                        if (existingHeadWaiter.User.Username != headWaiter.User.Username)
+                            changes.Add($"username: '{existingHeadWaiter.User.Username}' to '{headWaiter.User.Username}'");
+                        if (existingHeadWaiter.User.Password != headWaiter.User.Password)
+                            changes.Add("password changed");
+                        if (existingHeadWaiter.User.FirstName != headWaiter.User.FirstName)
+                            changes.Add($"first name: '{existingHeadWaiter.User.FirstName}' to '{headWaiter.User.FirstName}'");
+                        if (existingHeadWaiter.User.LastName != headWaiter.User.LastName)
+                            changes.Add($"last name: '{existingHeadWaiter.User.LastName}' to '{headWaiter.User.LastName}'");
+                        if (existingHeadWaiter.User.UserNumber != headWaiter.User.UserNumber)
+                            changes.Add($"user number: '{existingHeadWaiter.User.UserNumber}' to '{headWaiter.User.UserNumber}'");
+                        if (existingHeadWaiter.isActive != headWaiter.isActive)
+                            changes.Add($"active status: {existingHeadWaiter.isActive} to {headWaiter.isActive}");
+
+                        details = changes.Any() ?
+                            $"Updated head waiter {headWaiter.HeadWaiterId} ({string.Join(", ", changes)})" :
+                            $"Updated head waiter {headWaiter.HeadWaiterId} (Credentials Changed.)";
+                    }
+                    else
+                    {
+                        details = $"Updated head waiter {headWaiter.HeadWaiterId} credentials for username '{headWaiter.User?.Username}'";
+                    }
+                }
+
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    UserId = userId,
+                    Username = username,
+                    Role = role,
+                    Action = nameof(UpSert),
+                    HttpMethod = "POST",
+                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    Succeeded = true,
+                    WaiterId = null, // Head waiters don't have WaiterId
+                    Details = details
+                });
+                _context.SaveChanges();
+            }
+            catch { }
+
+            if (isCreateAction)
             {
                 TempData["Success"] = "Head Waiter created successfully!";
             }
@@ -117,31 +185,6 @@ namespace Capstone2.Controllers.AdminControllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: HeadWaiters/ViewOrders/5
-        //public async Task<IActionResult> ViewOrders(int id)
-        //{
-        //    var headWaiter = await _context.HeadWaiters
-        //        .Include(h => h.User)
-        //        .FirstOrDefaultAsync(h => h.HeadWaiterId == id);
-
-        //    if (headWaiter == null)
-        //        return NotFound();
-
-        //    // Get all orders assigned to this head waiter
-        //    var assignedOrders = await _context.Orders
-        //        .Include(o => o.Customer)
-        //        .Include(o => o.OrderWaiters)
-        //            .ThenInclude(ow => ow.Waiter)
-        //                .ThenInclude(w => w.User)
-        //        .Where(o => o.HeadWaiterId == id && !o.isDeleted)
-        //        .OrderByDescending(o => o.CateringDate)
-        //        .ThenByDescending(o => o.OrderDate)
-        //        .ToListAsync();
-
-        //    ViewBag.HeadWaiter = headWaiter;
-        //    return View(assignedOrders);
-        //}
 
         // GET: HeadWaiters/Delete/5
         public IActionResult Delete(int id)
@@ -161,7 +204,10 @@ namespace Capstone2.Controllers.AdminControllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var headWaiter = _context.HeadWaiters.Find(id);
+            var headWaiter = _context.HeadWaiters
+                .Include(h => h.User)
+                .FirstOrDefault(h => h.HeadWaiterId == id);
+
             if (headWaiter == null)
                 return NotFound();
 
@@ -170,6 +216,29 @@ namespace Capstone2.Controllers.AdminControllers
 
             // Only perform a soft delete; do not delete the User entity
             _context.SaveChanges();
+
+            // Audit: head waiter deactivation
+            try
+            {
+                var role = HttpContext.Session.GetString("Role");
+                var userId = HttpContext.Session.GetInt32("UserId");
+                var username = HttpContext.Session.GetString("Username");
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    UserId = userId,
+                    Username = username,
+                    Role = role,
+                    Action = nameof(Delete),
+                    HttpMethod = "POST",
+                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    Succeeded = true,
+                    WaiterId = null, // Head waiters don't have WaiterId
+                    Details = $"Deactivated head waiter {id} with username '{headWaiter.User?.Username}'"
+                });
+                _context.SaveChanges();
+            }
+            catch { }
 
             TempData["Success"] = "Head Waiter deactivated successfully!";
             return RedirectToAction(nameof(Index));

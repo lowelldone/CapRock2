@@ -62,8 +62,8 @@
                 Deleted History
             </a>
             @* <a asp-action="Create" class="modern-action-btn btn-primary">
-                <i class="bi bi-plus-lg"></i>
-                Add New Customer
+            <i class="bi bi-plus-lg"></i>
+            Add New Customer
             </a> *@
         </div>
     </div>
@@ -440,6 +440,77 @@
                     </thead>
                     <tbody>
                         @foreach (var cs in settling)
+                        {
+                            var item = cs.Customer;
+                            var order = item.Order;
+                            <tr>
+                                <td><span class="modern-badge">@(order?.OrderNumber ?? "-")</span></td>
+                                <td><div class="modern-name">@item.Name</div></td>
+                                <td><div class="modern-info">@item.ContactNo</div></td>
+                                <td><div class="modern-address">@item.Address</div></td>
+                                <td>
+                                    @if (order?.HeadWaiter?.User != null)
+                                    {
+                                        <span class="modern-info">
+                                            <i class="bi bi-person-badge me-1"></i>
+                                            @($"{order.HeadWaiter.User.FirstName} {order.HeadWaiter.User.LastName}")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="modern-info text-muted">
+                                            <i class="bi bi-person-x me-1"></i>
+                                            Not Assigned
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="modern-table-actions">
+                                        <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="modern-table-action-btn btn-outline-secondary">
+                                            <i class="bi bi-eye"></i>
+                                            View
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.CustomerID" class="modern-table-action-btn btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                            Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    <!-- Ongoing Orders Table -->
+    @{
+        var ongoing = allOrdered.Where(x => x.Status == "Ongoing").ToList();
+    }
+    @if (ongoing.Any())
+    {
+        <div class="modern-status-card">
+            <div class="modern-status-card-header">
+                <h5 class="modern-status-card-title">
+                    <i class="bi bi-play-circle text-success"></i>
+                    Ongoing Orders (@ongoing.Count)
+                </h5>
+            </div>
+            <div class="table-responsive">
+                <table class="modern-table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Order Number</th>
+                            <th>Customer</th>
+                            <th>Contact</th>
+                            <th>Address</th>
+                            <th>Head Waiter</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cs in ongoing)
                         {
                             var item = cs.Customer;
                             var order = item.Order;

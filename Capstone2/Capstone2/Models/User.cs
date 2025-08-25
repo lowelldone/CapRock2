@@ -27,8 +27,8 @@ namespace Capstone2.Models
         public string Role { get; set; }
 
         [Display(Name = "Number")]
-        [StringLength(11, MinimumLength = 11, ErrorMessage = "User Number must be exactly 11 digits.")]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "User Number must be exactly 11 digits.")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "Phone Number must be exactly 11 digits.")]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "Phone Number must be exactly 11 digits.")]
         public string UserNumber { get; set; }
     }
 }

@@ -39,13 +39,13 @@
         }
 
         .soft-sidebar {
-            width: 60px;
+            width: 70px;
             height: 100vh; /* lock height to viewport for independent scrolling */
             background-color: lightgray;
             border-radius: 20px;
             box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
             border: 1px solid var(--purple-border);
-            padding: 32px 0 16px 0;
+            padding: 20px 0 16px 0;
             position: fixed;
             left: 0;
             top: 0;
@@ -59,7 +59,7 @@
         }
 
             .soft-sidebar:hover {
-                width: 280px;
+                width: 300px;
                 box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
             }
 
@@ -67,14 +67,15 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-bottom: 40px;
+                margin-bottom: 30px;
                 font-weight: 700;
                 font-size: 1.2rem;
                 color: var(--text-purple);
                 white-space: nowrap;
                 overflow: hidden;
                 width: 100%;
-                padding: 0 16px;
+                padding: 0 20px;
+                min-height: 60px;
             }
 
                 .soft-sidebar .sidebar-logo i {
@@ -91,12 +92,14 @@
                 white-space: nowrap;
                 width: 0;
                 overflow: hidden;
+                font-size: 1.1rem;
             }
 
             .soft-sidebar:hover .sidebar-logo-text {
                 margin-right: 20px;
                 opacity: 1;
                 width: auto;
+                max-width: 200px;
             }
 
         /* Responsive GRUSH Logo Styling */
@@ -106,6 +109,7 @@
             justify-content: center;
             width: 100%;
             padding: 0 8px;
+            margin-bottom: 20px;
         }
 
         .grush-logo {
@@ -118,8 +122,8 @@
 
         /* Logo sizing for collapsed sidebar */
         .soft-sidebar .grush-logo {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             object-fit: cover;
         }
 
@@ -133,25 +137,25 @@
         /* Responsive breakpoints for logo */
         @@media (max-width: 768px) {
             .soft-sidebar .grush-logo {
-                width: 35px;
-                height: 35px;
+                width: 45px;
+                height: 45px;
             }
 
             .soft-sidebar:hover .grush-logo {
-                width: 65px;
-                height: 65px;
+                width: 70px;
+                height: 70px;
             }
         }
 
         @@media (max-width: 576px) {
             .soft-sidebar .grush-logo {
-                width: 30px;
-                height: 30px;
+                width: 40px;
+                height: 40px;
             }
 
             .soft-sidebar:hover .grush-logo {
-                width: 55px;
-                height: 55px;
+                width: 65px;
+                height: 65px;
             }
         }
 
@@ -321,14 +325,14 @@
         }
 
         .main-content {
-            margin-left: 80px;
+            margin-left: 90px;
             transition: margin-left 0.3s ease;
             /* ensure page content can scroll independently of sidebar */
             min-height: 100vh;
         }
 
         .soft-sidebar:hover ~ .main-content {
-            margin-left: 300px;
+            margin-left: 320px;
         }
         /* Enhanced button styles */
         .btn-primary {
@@ -550,7 +554,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AuditLogs" ? "active" : "")" asp-controller="AuditLogs" asp-action="Index">
                                                 <i class="bi bi-clipboard-check"></i>
-                                                <span>Headwaiter Activities</span>
+                                                <span>User Activities</span>
                                             </a>
                                         </li>
                                     </ul>

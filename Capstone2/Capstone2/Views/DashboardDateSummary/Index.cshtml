@@ -88,6 +88,71 @@
             transform: translateY(-2px);
         }
 
+    /* Modern Alert Styles */
+    .modern-alert {
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        animation: slideInDown 0.3s ease-out;
+    }
+
+    .modern-alert-success {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+        border-left: 4px solid #10b981;
+    }
+
+    .modern-alert-danger {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #991b1b;
+        border-left: 4px solid #ef4444;
+    }
+
+    .modern-alert i {
+        font-size: 1.25rem;
+        margin-right: 0.5rem;
+    }
+
+    .btn-close {
+        background: transparent;
+        border: none;
+        font-size: 1.25rem;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        color: inherit;
+    }
+
+    .btn-close:hover {
+        opacity: 1;
+    }
+
+    @@keyframes slideInDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideOutUp {
+        from {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+    }
+
     /* Main Content Grid */
     .content-grid {
         display: grid;
@@ -590,6 +655,24 @@
 </style>
 
 <div class="dashboard-container">
+    <!-- Success/Error Messages for Profile Updates -->
+    @if (TempData["ProfileSuccess"] != null)
+    {
+        <div class="modern-alert modern-alert-success" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["ProfileSuccess"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ProfileError"] != null)
+    {
+        <div class="modern-alert modern-alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["ProfileError"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <!-- Header Section -->
     <div class="header-section">
         <h1 class="brand-title">GRUSH Catering Services</h1>
@@ -891,5 +974,35 @@
                 }
             });
         }
+    });
+
+    // Make alert close buttons functional
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle alert close buttons
+        const closeButtons = document.querySelectorAll('.btn-close');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const alert = this.closest('.modern-alert');
+                if (alert) {
+                    alert.style.animation = 'slideOutUp 0.3s ease-out';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 300);
+                }
+            });
+        });
+
+        // Auto-hide success alerts after 5 seconds
+        const successAlerts = document.querySelectorAll('.modern-alert-success');
+        successAlerts.forEach(alert => {
+            setTimeout(() => {
+                if (alert && alert.parentNode) {
+                    alert.style.animation = 'slideOutUp 0.3s ease-out';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 300);
+                }
+            }, 5000);
+        });
     });
 </script> 
