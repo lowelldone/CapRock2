@@ -7,6 +7,14 @@
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
 <div class="container-fluid modern-bg">
+    @if (TempData["Success"] != null)
+    {
+        <div class="modern-alert modern-alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["Success"]
+        </div>
+    }
+
     @{
         var lowThreshold = (int)(ViewBag.LowStockThreshold ?? 1000);
         var lowCount = 0;

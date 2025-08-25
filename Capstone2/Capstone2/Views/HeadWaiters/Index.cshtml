@@ -66,7 +66,7 @@
                                 <div class="modern-name">@head.User.FirstName @head.User.LastName</div>
                             </td>
                             <td>
-                                <span class="modern-status-badge active">
+                                <span class="modern-status-badge accepted">
                                     <i class="bi bi-check-circle"></i>
                                     Active
                                 </span>
@@ -78,9 +78,9 @@
                                         Edit
                                     </a>
                                     @* <a asp-action="ViewOrders" asp-route-id="@head.HeadWaiterId" class="modern-table-action-btn btn-outline-info">
-                                        <i class="bi bi-eye"></i>
-                                        View Orders
-                                    </a> *@
+                                <i class="bi bi-eye"></i>
+                                View Orders
+                                </a> *@
                                     <a asp-action="Delete" asp-route-id="@head.HeadWaiterId" class="modern-table-action-btn btn-outline-danger">
                                         <i class="bi bi-trash"></i>
                                         Delete
