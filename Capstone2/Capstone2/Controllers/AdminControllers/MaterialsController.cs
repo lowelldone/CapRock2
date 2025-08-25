@@ -54,6 +54,7 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 _context.Add(material);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = $"Material '{material.Name}' has been successfully created.";
                 return RedirectToAction(nameof(Index));
             }
             return View(material);
@@ -93,6 +94,7 @@ namespace Capstone2.Controllers.AdminControllers
                 {
                     _context.Update(material);
                     await _context.SaveChangesAsync();
+                    TempData["Success"] = $"Material '{material.Name}' has been successfully updated.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -136,10 +138,12 @@ namespace Capstone2.Controllers.AdminControllers
             var material = await _context.Materials.FindAsync(id);
             if (material != null)
             {
+                var materialName = material.Name;
                 _context.Materials.Remove(material);
+                await _context.SaveChangesAsync();
+                TempData["Success"] = $"Material '{materialName}' has been successfully deleted.";
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

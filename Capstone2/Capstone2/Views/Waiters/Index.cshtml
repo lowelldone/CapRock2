@@ -83,7 +83,7 @@
                                 }
                                 else
                                 {
-                                    <span class="modern-status-badge active">
+                                    <span class="modern-status-badge accepted">
                                         <i class="bi bi-check-circle"></i>
                                         Regular
                                     </span>
@@ -99,7 +99,7 @@
                                 }
                                 else
                                 {
-                                    <span class="modern-status-badge completed">
+                                    <span class="modern-status-badge accepted">
                                         <i class="bi bi-check-circle"></i>
                                         Available
                                     </span>
@@ -112,12 +112,12 @@
                                         Edit
                                     </a>
                                     @* @if (waiter.Availability == "Busy")
-                                    {
-                                        <a asp-action="AssignedOrder" asp-route-id="@waiter.WaiterId" class="modern-table-action-btn btn-outline-info">
-                                            <i class="bi bi-eye"></i>
-                                            View Order
-                                        </a>
-                                    } *@
+                                {
+                                <a asp-action="AssignedOrder" asp-route-id="@waiter.WaiterId" class="modern-table-action-btn btn-outline-info">
+                                <i class="bi bi-eye"></i>
+                                View Order
+                                </a>
+                                } *@
                                     <a asp-action="Delete" asp-route-id="@waiter.WaiterId" class="modern-table-action-btn btn-outline-danger">
                                         <i class="bi bi-trash"></i>
                                         Delete

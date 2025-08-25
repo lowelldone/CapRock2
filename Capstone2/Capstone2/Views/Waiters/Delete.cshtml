@@ -38,29 +38,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="modern-info-group">
-                        <label class="modern-form-label">Waiter ID</label>
-                        <div class="modern-info">@Model.WaiterId</div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="modern-info-group">
-                        <label class="modern-form-label">Status</label>
-                        <div class="modern-info">
-                            @if (!Model.isDeleted)
-                            {
-                                <span class="modern-status-badge accepted">
-                                    <i class="bi bi-check-circle"></i>
-                                    Active
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="modern-status-badge inactive">
-                                    <i class="bi bi-x-circle"></i>
-                                    Deleted
-                                </span>
-                            }
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -149,6 +127,27 @@
                                 <span class="modern-status-badge accepted">
                                     <i class="bi bi-check-circle"></i>
                                     Permanent
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-info-group">
+                        <label class="modern-form-label">Status</label>
+                        <div class="modern-info">
+                            @if (!Model.isDeleted)
+                            {
+                                <span class="modern-status-badge accepted">
+                                    <i class="bi bi-check-circle"></i>
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="modern-status-badge inactive">
+                                    <i class="bi bi-x-circle"></i>
+                                    Deleted
                                 </span>
                             }
                         </div>

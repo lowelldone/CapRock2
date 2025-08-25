@@ -35,36 +35,6 @@
             </h5>
         </div>
         <div class="modern-card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="modern-info-group">
-                        <label class="modern-form-label">Head Waiter ID</label>
-                        <div class="modern-info">@Model.HeadWaiterId</div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="modern-info-group">
-                        <label class="modern-form-label">Status</label>
-                        <div class="modern-info">
-                            @if (Model.isActive)
-                            {
-                                <span class="modern-status-badge accepted">
-                                    <i class="bi bi-check-circle"></i>
-                                    Active
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="modern-status-badge inactive">
-                                    <i class="bi bi-x-circle"></i>
-                                    Inactive
-                                </span>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="row mt-3">
                 <div class="col-md-6">
                     <div class="modern-info-group">
@@ -100,6 +70,27 @@
                     <div class="modern-info-group">
                         <label class="modern-form-label">Role</label>
                         <div class="modern-info">@Model.User?.Role</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-info-group">
+                        <label class="modern-form-label">Status</label>
+                        <div class="modern-info">
+                            @if (Model.isActive)
+                            {
+                                <span class="modern-status-badge accepted">
+                                    <i class="bi bi-check-circle"></i>
+                                    Active
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="modern-status-badge inactive">
+                                    <i class="bi bi-x-circle"></i>
+                                    Inactive
+                                </span>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
