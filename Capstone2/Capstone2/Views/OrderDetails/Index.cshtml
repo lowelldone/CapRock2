@@ -10,17 +10,20 @@
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .confirm-bg {
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
         border-radius: 12px;
         padding-bottom: 1rem;
     }
+
     .confirm-header {
         display: flex;
         align-items: center;
         gap: 8px;
     }
+
     .confirm-header-icon {
         font-size: 1.5rem;
         color: var(--primary-purple);
@@ -29,12 +32,14 @@
         padding: 4px 8px;
         box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
     }
+
     .confirm-subtitle {
         color: #6c757d;
         font-size: 0.9rem;
         margin-top: -4px;
         margin-bottom: 10px;
     }
+
     .confirm-card {
         background: #fff;
         border-radius: 12px;
@@ -43,54 +48,65 @@
         margin-bottom: 1rem;
         border: 1px solid var(--purple-border);
     }
+
     .confirm-row {
         padding: 0.6rem 0;
         border-bottom: 1px solid #f1f5f9;
     }
-    .confirm-row:last-child {
-        border-bottom: none;
-    }
+
+        .confirm-row:last-child {
+            border-bottom: none;
+        }
+
     .confirm-label {
         font-weight: 600;
         color: var(--text-purple);
         font-size: 0.9rem;
     }
+
     .confirm-value {
         color: #64748b;
         font-size: 0.9rem;
     }
+
     .table {
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         border: 1px solid var(--purple-border);
     }
-    .table thead th {
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        border: none;
-        font-weight: 600;
-        color: #fff;
-        padding: 0.8rem;
-        border-bottom: 2px solid var(--primary-purple-dark);
-        text-align: center;
-    }
-    .table tbody td {
-        padding: 0.8rem;
-        border: none;
-        border-bottom: 1px solid var(--purple-border);
-        text-align: center;
-        vertical-align: middle;
-    }
-    .table tbody tr {
-        background: #fff;
-    }
-    .table tbody tr:hover {
-        background: var(--purple-bg);
-        transition: background-color 0.2s ease;
-    }
-    .table tbody tr:last-child td {
-        border-bottom: none;
-    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            border: none;
+            font-weight: 600;
+            color: #fff;
+            padding: 0.8rem;
+            border-bottom: 2px solid var(--primary-purple-dark);
+            text-align: center;
+        }
+
+        .table tbody td {
+            padding: 0.8rem;
+            border: none;
+            border-bottom: 1px solid var(--purple-border);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table tbody tr {
+            background: #fff;
+        }
+
+            .table tbody tr:hover {
+                background: var(--purple-bg);
+                transition: background-color 0.2s ease;
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
     .btn-back {
         font-weight: 500;
         border-radius: 6px;
@@ -101,6 +117,7 @@
         z-index: 1000;
         font-size: 0.9rem;
     }
+
     .btn-submit {
         font-weight: 600;
         font-size: 1rem;
@@ -110,10 +127,12 @@
         background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
         border: 1px solid var(--primary-purple);
     }
-    .btn-submit:hover {
-        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-    }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
     .total-section {
         background: var(--purple-bg-light);
         border-radius: 8px;
@@ -121,6 +140,7 @@
         margin-top: 0.8rem;
         border: 1px solid var(--purple-border);
     }
+
     .ordered-items-header {
         color: var(--text-purple);
         font-weight: 700;
@@ -344,7 +364,8 @@
                                     icon: "success",
                                     confirmButtonText: "OK"
                                 }).then(() => {
-                                    window.location.href = "/Home/Homepage";
+                                    // Show full invoice preview modal
+                                    showInvoicePreview(data.orderId, data.orderNumber);
                                 });
                             } else {
                                 Swal.fire({
@@ -365,5 +386,114 @@
                 }
             });
         });
+
+        function showInvoicePreview(orderId, orderNumber) {
+            // Get order data from the current page
+            var order = @Html.Raw(Json.Serialize(Model));
+
+            // Build invoice HTML
+            var invoiceHtml = `
+                    <div style="text-align: left; max-width: 800px; margin: 0 auto;">
+                        <!-- Header -->
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="color: #7c3aed; margin: 0; font-size: 24px;">GRUSH Catering</h2>
+                            <p style="color: #6b7280; margin: 5px 0;">Official Invoice</p>
+                        </div>
+
+                        <!-- Order Details -->
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="flex: 1;">
+                                <h4 style="color: #374151; margin: 0 0 10px 0;">Billed To</h4>
+                                <p style="margin: 5px 0; font-weight: 600;">${order.customer.name}</p>
+                                <p style="margin: 5px 0;">${order.customer.contactNo}</p>
+                                <p style="margin: 5px 0;">${order.customer.address}</p>
+                            </div>
+                            <div style="text-align: right; flex: 1;">
+                                <p style="margin: 5px 0;"><strong>Order No:</strong> ${orderNumber}</p>
+                                <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date(order.orderDate).toLocaleDateString('en-GB')}</p>
+                                <p style="margin: 5px 0;"><strong>Catering Date:</strong> ${new Date(order.cateringDate).toLocaleDateString('en-GB')}</p>
+                            </div>
+                        </div>
+
+                        <!-- Menu Items Table -->
+                        <div style="margin-bottom: 20px;">
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb;">
+                                <thead>
+                                    <tr style="background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); color: white;">
+                                        <th style="padding: 12px; text-align: left; border: 1px solid #e5e7eb;">Menu</th>
+                                        <th style="padding: 12px; text-align: center; border: 1px solid #e5e7eb;">Quantity</th>
+                                        <th style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">Unit Price</th>
+                                        <th style="padding: 12px; text-align: right; border: 1px solid #e5e7eb;">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+            // Add menu items
+            order.orderDetails.forEach(function (item) {
+                var unitPrice = item.menu ? item.menu.price : 0;
+                var subtotal = unitPrice * item.quantity;
+                invoiceHtml += `
+                        <tr style="background: white;">
+                            <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">${item.name}</td>
+                            <td style="padding: 12px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #7c3aed;">${item.quantity}</td>
+                            <td style="padding: 12px; border: 1px solid #e5e7eb; text-align: right; color: #7c3aed;">₱${unitPrice.toFixed(2)}</td>
+                            <td style="padding: 12px; border: 1px solid #e5e7eb; text-align: right; font-weight: 700; color: #7c3aed;">₱${subtotal.toFixed(2)}</td>
+                        </tr>`;
+            });
+
+            // Add totals
+            var baseTotal = order.orderDetails.reduce(function (sum, item) {
+                return sum + (item.menu ? item.menu.price * item.quantity : 0);
+            }, 0);
+
+            invoiceHtml += `
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Totals -->
+                        <div style="text-align: right; margin-bottom: 20px;">`;
+
+            if (order.isRushOrder) {
+                invoiceHtml += `
+                            <p style="margin: 5px 0;"><strong>Base Total:</strong> ₱${order.baseAmount.toFixed(2)}</p>
+                            <p style="margin: 5px 0; color: #dc2626;"><strong>Rush Order Fee (10%):</strong> ₱${order.rushOrderFee.toFixed(2)}</p>`;
+            }
+
+            invoiceHtml += `
+                            <p style="margin: 5px 0; font-size: 18px;"><strong>Total Payment:</strong> ₱${order.totalPayment.toFixed(2)}</p>
+                            <p style="margin: 5px 0; color: #3b82f6;"><strong>50% Downpayment Required:</strong> ₱${(order.totalPayment * 0.5).toFixed(2)}</p>
+                        </div>
+
+                        <!-- Footer -->
+                        <div style="text-align: center; color: #6b7280; font-style: italic;">
+                            Thank you for your business!
+                        </div>
+                    </div>`;
+
+            Swal.fire({
+                title: "Invoice Preview",
+                html: invoiceHtml,
+                width: '900px',
+                showCloseButton: true,
+                showCancelButton: false,
+                confirmButtonColor: "#7c3aed",
+                confirmButtonText: '<i class="bi bi-download me-2"></i>Download PDF',
+                showDenyButton: true,
+                denyButtonColor: "#10b981",
+                denyButtonText: '<i class="bi bi-printer me-2"></i>Print',
+                allowOutsideClick: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Download PDF
+                    window.open(`/OrderDetails/GenerateInvoice/${orderId}`, '_blank');
+                } else if (result.isDenied) {
+                    // Print
+                    window.print();
+                }
+                // Redirect to homepage
+                window.location.href = "/Home/Homepage";
+            });
+        }
     });
 </script>
