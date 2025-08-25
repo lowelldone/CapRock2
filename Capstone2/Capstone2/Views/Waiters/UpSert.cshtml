@@ -156,7 +156,7 @@
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label asp-for="User.UserNumber" class="form-label fw-semibold">User Number (11 digits)</label>
+                    <label asp-for="User.UserNumber" class="form-label fw-semibold">Phone Number (11 digits)</label>
                     <input asp-for="User.UserNumber" class="form-control" maxlength="11" pattern="\d{11}" inputmode="numeric" title="Please enter exactly 11 digits." placeholder="e.g. 00000001234" />
                     <span asp-validation-for="User.UserNumber" class="text-danger"></span>
                 </div>

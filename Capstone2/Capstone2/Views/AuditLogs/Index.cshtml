@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<Capstone2.Models.AuditLog>
 @{
-    ViewData["Title"] = "Headwaiter Activities";
+    ViewData["Title"] = "Audit Logs - All User Activities";
 }
 
 <div class="container mt-3">
-    <h2>Headwaiter Activities</h2>
+    <h2>Audit Logs - All User Activities</h2>
     <p class="text-muted small mb-3">Note: Logout activities are automatically filtered out from this view.</p>
     <style>
         .audit-table .main-row td {
@@ -35,7 +35,35 @@
     </style>
 
     <form method="get" class="row g-2 mb-3">
-        <input type="hidden" name="role" value="HEADWAITER" />
+        <div class="col-auto">
+            <select class="form-select" name="role">
+                <option value="">All Roles</option>
+                @if (ViewBag.SelectedRole == "ADMIN")
+                {
+                    <option value="ADMIN" selected>Admin</option>
+                }
+                else
+                {
+                    <option value="ADMIN">Admin</option>
+                }
+                @if (ViewBag.SelectedRole == "HEADWAITER")
+                {
+                    <option value="HEADWAITER" selected>Head Waiter</option>
+                }
+                else
+                {
+                    <option value="HEADWAITER">Head Waiter</option>
+                }
+                @if (ViewBag.SelectedRole == "WAITER")
+                {
+                    <option value="WAITER" selected>Waiter</option>
+                }
+                else
+                {
+                    <option value="WAITER">Waiter</option>
+                }
+            </select>
+        </div>
         <div class="col-auto">
             <input class="form-control" name="username" placeholder="Username" value="@Context.Request.Query["username"].ToString()" />
         </div>
@@ -49,7 +77,7 @@
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
         <div class="col-auto">
-            <a href="?role=HEADWAITER" class="btn btn-outline-secondary">Clear Filters</a>
+            <a href="?" class="btn btn-outline-secondary">Clear Filters</a>
         </div>
     </form>
 
@@ -96,12 +124,10 @@
                             @if (log.Succeeded)
                             {
                                 <span class="badge bg-success">Yes</span>
-                                ;
                             }
                             else
                             {
                                 <span class="badge bg-danger">No</span>
-                                ;
                             }
                         </td>
                         <td class="text-end">
@@ -127,6 +153,7 @@
                                             .Replace($"Waiter {kv.Key}", $"Waiter {kv.Value}");
                                         }
                                     }
+
                                     // Replace generic "order <id>" with known order number if available
                                     if (!string.IsNullOrWhiteSpace(log.OrderNumber))
                                     {

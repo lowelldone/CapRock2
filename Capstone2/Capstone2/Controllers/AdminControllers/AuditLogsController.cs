@@ -18,7 +18,7 @@ namespace Capstone2.Controllers.AdminControllers
         }
 
         // GET: /Admin/AuditLogs
-        public async Task<IActionResult> Index(string? role = "HEADWAITER", string? orderNumber = null, string? username = null,
+        public async Task<IActionResult> Index(string? role = null, string? orderNumber = null, string? username = null,
             DateTime? filterDate = null, int page = 1, int pageSize = 50)
         {
             var currentRole = HttpContext.Session.GetString("Role");
@@ -30,6 +30,7 @@ namespace Capstone2.Controllers.AdminControllers
             // Filter out logout logs
             query = query.Where(l => l.Action != "Logout");
 
+            // Only apply role filter if a specific role is selected
             if (!string.IsNullOrWhiteSpace(role))
                 query = query.Where(l => l.Role == role);
             if (!string.IsNullOrWhiteSpace(orderNumber))
@@ -73,7 +74,7 @@ namespace Capstone2.Controllers.AdminControllers
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
             ViewBag.FilterDate = filterDate;
-
+            ViewBag.SelectedRole = role; // Pass selected role to view for filter display
 
             return View(items);
         }

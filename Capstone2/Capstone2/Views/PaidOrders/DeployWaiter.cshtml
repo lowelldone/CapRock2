@@ -11,6 +11,181 @@
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
+<style>
+    /* Enhanced Waiter Selection Design */
+    .waiter-selection-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 2px solid var(--purple-border);
+        box-shadow: 0 8px 32px rgba(124, 58, 237, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .waiter-selection-container:hover {
+        border-color: var(--primary-purple);
+        box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15);
+    }
+
+    .waiter-select {
+        border: 2px solid var(--purple-border);
+        border-radius: 12px;
+        background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+        font-family: 'Inter', sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        min-height: 200px;
+        transition: all 0.3s ease;
+    }
+
+    .waiter-select:focus {
+        border-color: var(--primary-purple);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        background: white;
+    }
+
+    .waiter-option {
+        padding: 0.75rem 1rem;
+        margin: 0.25rem 0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        background: rgba(255, 255, 255, 0.7);
+    }
+
+    .waiter-option:hover {
+        background: rgba(124, 58, 237, 0.1);
+        border-color: var(--purple-border);
+        transform: translateX(4px);
+    }
+
+    .waiter-option:checked {
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-dark) 100%);
+        color: white;
+        border-color: var(--primary-purple);
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+
+    .waiter-option:checked:hover {
+        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--text-purple) 100%);
+        transform: translateX(4px) scale(1.02);
+    }
+
+    /* Waiter Selection Info Section */
+    .waiter-selection-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        padding: 1.25rem;
+        background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
+        border-radius: 12px;
+        border: 1px solid var(--purple-border);
+    }
+
+    .info-icon {
+        font-size: 1.5rem;
+        color: var(--primary-purple);
+        background: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+    }
+
+    .info-text {
+        flex: 1;
+        color: var(--text-purple);
+    }
+
+    .info-text strong {
+        display: block;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        color: var(--text-purple);
+    }
+
+    .info-list {
+        margin: 0;
+        padding-left: 1.25rem;
+        list-style: none;
+    }
+
+    .info-list li {
+        margin-bottom: 0.5rem;
+        position: relative;
+        padding-left: 0.5rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .info-list li:before {
+        content: "•";
+        color: var(--primary-purple);
+        font-weight: bold;
+        position: absolute;
+        left: -0.75rem;
+    }
+
+    .info-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-list kbd {
+        background: rgba(124, 58, 237, 0.1);
+        border: 1px solid var(--purple-border);
+        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+        font-family: 'Courier New', monospace;
+        color: var(--primary-purple);
+        font-weight: 600;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .waiter-selection-container {
+            padding: 1rem;
+        }
+        
+        .waiter-selection-info {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .info-icon {
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    .modern-form-label {
+        display: block;
+        font-weight: 700;
+        color: var(--text-purple);
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-dark) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);
+    }
+
+    .modern-form-label i {
+        margin-right: 0.5rem;
+        color: var(--primary-purple);
+        -webkit-text-fill-color: var(--primary-purple);
+    }
+</style>
+
 <div class="container-fluid modern-bg">
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-start mb-4">
@@ -50,21 +225,35 @@
                     <input type="hidden" name="headWaiterId" value="@headWaiterId" />
                 }
                 <div class="modern-form-group">
-                    <label for="waiterIds" class="modern-form-label">Select Waiters</label>
-                    <select id="waiterIds" name="waiterIds" class="modern-form-control" multiple size="6" required>
-                        @foreach (var w in waiters)
-                        {
-                            // only available waiters go in the select list
-                            <option value="@w.WaiterId">
-                                @w.User.FirstName @w.User.LastName (@w.User.Username) - [@w.Availability]
-                            </option>
-                        }
-                    </select>
-                    <div class="modern-form-group">
-                        <small class="text-muted">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Hold Ctrl (Windows) or Command (Mac) to select multiple waiters.
-                        </small>
+                    <label for="waiterIds" class="modern-form-label">
+                        <i class="bi bi-people-fill me-2"></i>
+                        SELECT WAITERS
+                    </label>
+                    <div class="waiter-selection-container">
+                        <select id="waiterIds" name="waiterIds" class="modern-form-control waiter-select" multiple size="6" required>
+                            @foreach (var w in waiters)
+                            {
+                                // only available waiters go in the select list
+                                <option value="@w.WaiterId" class="waiter-option">
+                                    <span class="waiter-name">@w.User.FirstName @w.User.LastName</span>
+                                    <span class="waiter-username">(@w.User.Username)</span>
+                                    <span class="waiter-status">[@w.Availability]</span>
+                                </option>
+                            }
+                        </select>
+                        <div class="waiter-selection-info">
+                            <div class="info-icon">
+                                <i class="bi bi-info-circle"></i>
+                            </div>
+                            <div class="info-text">
+                                <strong>Selection Tips:</strong>
+                                <ul class="info-list">
+                                    <li>Hold <kbd>Ctrl</kbd> (Windows) or <kbd>Cmd</kbd> (Mac) to select multiple waiters</li>
+                                    <li>Click on a waiter to select/deselect them</li>
+                                    <li>Selected waiters will be highlighted</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="d-flex gap-3">
@@ -100,7 +289,6 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Username</th>
                                     <th>Availability</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
@@ -113,10 +301,7 @@
                                             <div class="modern-name">@w.User.FirstName @w.User.LastName</div>
                                         </td>
                                         <td>
-                                            <div class="modern-info">@w.User.Username</div>
-                                        </td>
-                                        <td>
-                                            <span class="modern-status-badge @(w.Availability == "Available" ? "accepted" : "pending")">
+                                            <span class="modern-status-badge @(w.Availability == "Available" ? "accepted" : w.Availability == "Busy" ? "settling" : "pending")">
                                                 @w.Availability
                                             </span>
                                         </td>

@@ -61,12 +61,21 @@ namespace Capstone2.Controllers
             // Validate: must be exactly 11 digits
             if (string.IsNullOrWhiteSpace(waiter.User?.UserNumber) || waiter.User.UserNumber.Length != 11)
             {
-                ModelState.AddModelError("User.UserNumber", "User Number must be exactly 11 digits.");
+                ModelState.AddModelError("User.UserNumber", "Phone Number must be exactly 11 digits.");
                 return View(waiter);
             }
 
             if (waiter.WaiterId == 0)
             {
+                // Check if a user with the same username exists
+                var existingUser = _context.Users.FirstOrDefault(u => u.Username == waiter.User.Username);
+                if (existingUser != null)
+                {
+                    // Prevent creating new account with existing username
+                    ModelState.AddModelError("User.Username", "Username already exists. Please choose a different username.");
+                    return View(waiter);
+                }
+
                 // ✅ Create User first
                 waiter.User.Role = "Waiter";
                 _context.Users.Add(waiter.User);
@@ -86,6 +95,17 @@ namespace Capstone2.Controllers
 
                 if (existingWaiter != null)
                 {
+                    // Check if the new username conflicts with other users (excluding current user)
+                    var conflictingUser = _context.Users.FirstOrDefault(u =>
+                        u.Username == waiter.User.Username &&
+                        u.UserId != existingWaiter.UserId);
+
+                    if (conflictingUser != null)
+                    {
+                        ModelState.AddModelError("User.Username", "Username already exists. Please choose a different username.");
+                        return View(waiter);
+                    }
+
                     // Update waiter properties
                     existingWaiter.isTemporary = waiter.isTemporary;
                     existingWaiter.Availability = waiter.Availability;
@@ -114,6 +134,48 @@ namespace Capstone2.Controllers
                 var role = HttpContext.Session.GetString("Role");
                 var userId = HttpContext.Session.GetInt32("UserId");
                 var username = HttpContext.Session.GetString("Username");
+
+                string details;
+                if (isCreateAction)
+                {
+                    details = $"Created waiter {waiter.WaiterId} with username '{waiter.User?.Username}'";
+                }
+                else
+                {
+                    // For updates, provide more detailed information about what changed
+                    var existingWaiter = _context.Waiters
+                        .Include(w => w.User)
+                        .FirstOrDefault(w => w.WaiterId == waiter.WaiterId);
+
+                    if (existingWaiter?.User != null)
+                    {
+                        var changes = new List<string>();
+
+                        if (existingWaiter.User.Username != waiter.User.Username)
+                            changes.Add($"username: '{existingWaiter.User.Username}' to '{waiter.User.Username}'");
+                        if (existingWaiter.User.Password != waiter.User.Password)
+                            changes.Add("password changed");
+                        if (existingWaiter.User.FirstName != waiter.User.FirstName)
+                            changes.Add($"first name: '{existingWaiter.User.FirstName}' to '{waiter.User.FirstName}'");
+                        if (existingWaiter.User.LastName != waiter.User.LastName)
+                            changes.Add($"last name: '{existingWaiter.User.LastName}' to '{waiter.User.LastName}'");
+                        if (existingWaiter.User.UserNumber != waiter.User.UserNumber)
+                            changes.Add($"user number: '{existingWaiter.User.UserNumber}' to '{waiter.User.UserNumber}'");
+                        if (existingWaiter.isTemporary != waiter.isTemporary)
+                            changes.Add($"temporary status: {existingWaiter.isTemporary} to {waiter.isTemporary}");
+                        if (existingWaiter.Availability != waiter.Availability)
+                            changes.Add($"availability: '{existingWaiter.Availability}' to '{waiter.Availability}'");
+
+                        details = changes.Any() ?
+                            $"Updated waiter {waiter.WaiterId} ({string.Join(", ", changes)})" :
+                            $"Updated waiter {waiter.WaiterId} (Credentials Changed.)";
+                    }
+                    else
+                    {
+                        details = $"Updated waiter {waiter.WaiterId} credentials for username '{waiter.User?.Username}'";
+                    }
+                }
+
                 _context.AuditLogs.Add(new AuditLog
                 {
                     UserId = userId,
@@ -125,7 +187,7 @@ namespace Capstone2.Controllers
                     UserAgent = Request.Headers["User-Agent"].ToString(),
                     Succeeded = true,
                     WaiterId = waiter.WaiterId,
-                    Details = isCreateAction ? $"Created waiter {waiter.WaiterId}" : $"Updated waiter {waiter.WaiterId}"
+                    Details = details
                 });
                 _context.SaveChanges();
             }
@@ -161,7 +223,10 @@ namespace Capstone2.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var waiter = _context.Waiters.Find(id);
+            var waiter = _context.Waiters
+                .Include(w => w.User)
+                .FirstOrDefault(w => w.WaiterId == id);
+
             if (waiter == null)
                 return NotFound();
 
@@ -186,7 +251,7 @@ namespace Capstone2.Controllers
                     UserAgent = Request.Headers["User-Agent"].ToString(),
                     Succeeded = true,
                     WaiterId = id,
-                    Details = $"Soft deleted waiter {id}"
+                    Details = $"Deactivated waiter {id} with username '{waiter.User?.Username}' (Name: {waiter.User?.FirstName} {waiter.User?.LastName})"
                 });
                 _context.SaveChanges();
             }
@@ -195,43 +260,5 @@ namespace Capstone2.Controllers
             TempData["Success"] = "Waiter deactivated successfully!";
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: Waiters/AssignedOrder/5
-        //public async Task<IActionResult> AssignedOrder(int id)
-        //{
-        //    var waiter = await _context.Waiters
-        //        .Include(w => w.User)
-        //        .FirstOrDefaultAsync(w => w.WaiterId == id);
-
-        //    if (waiter == null)
-        //        return NotFound();
-
-        //    // Check if waiter is actually busy
-        //    if (waiter.Availability != "Busy")
-        //    {
-        //        TempData["NoOrderAssigned"] = "This waiter is not currently assigned to any order.";
-        //        return RedirectToAction(nameof(Index));
-        //    }
-
-        //    // Get the current active order for this waiter
-        //    var assignedOrder = await _context.OrderWaiters
-        //        .Include(ow => ow.Order)
-        //            .ThenInclude(o => o.Customer)
-        //        .Include(ow => ow.Order)
-        //            .ThenInclude(o => o.HeadWaiter)
-        //                .ThenInclude(hw => hw.User)
-        //        .Where(ow => ow.WaiterId == id && !ow.Order.isDeleted && ow.Order.Status != "Completed")
-        //        .Select(ow => ow.Order)
-        //        .FirstOrDefaultAsync();
-
-        //    if (assignedOrder == null)
-        //    {
-        //        TempData["NoOrderAssigned"] = "This waiter is not currently assigned to any active order.";
-        //        return RedirectToAction(nameof(Index));
-        //    }
-
-        //    return View(assignedOrder);
-        //}
-
     }
 }
