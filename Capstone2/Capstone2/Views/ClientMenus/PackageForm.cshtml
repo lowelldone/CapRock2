@@ -1,0 +1,707 @@
+﻿@model Capstone2.Models.Order
+
+@{
+    ViewData["Title"] = "Package Order Form";
+}
+
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-bg {
+        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
+        min-height: 100vh;
+        border-radius: 12px;
+        padding-bottom: 1rem;
+    }
+
+    .form-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-header-icon {
+        font-size: 1.5rem;
+        color: var(--primary-purple);
+        background: var(--purple-bg-light);
+        border-radius: 8px;
+        padding: 4px 8px;
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+    }
+
+    .form-subtitle {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: -4px;
+        margin-bottom: 10px;
+    }
+
+    .form-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 3px 16px 0 rgba(124, 58, 237, 0.08);
+        padding: 1rem;
+        border: 1px solid var(--purple-border);
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid var(--purple-border);
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25);
+        }
+
+    .btn-back {
+        font-weight: 500;
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        position: absolute;
+        left: 1rem;
+        top: 4rem;
+        z-index: 1000;
+        font-size: 0.9rem;
+    }
+
+    .btn-submit {
+        font-weight: 600;
+        font-size: 1rem;
+        border-radius: 8px;
+        padding: 0.6rem 1.5rem;
+        box-shadow: 0 2px 6px 0 rgba(124, 58, 237, 0.10);
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        border: 1px solid var(--primary-purple);
+    }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
+    .alert {
+        border-radius: 8px;
+        border: none;
+    }
+
+    .alert-info {
+        background: var(--purple-bg-light);
+        color: var(--text-purple);
+        border: 1px solid var(--purple-border);
+    }
+
+    .alert-warning {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #f59e0b;
+    }
+
+    .alert-danger {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #ef4444;
+    }
+
+    /* Purple theme variables */
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+    }
+
+</style>
+
+<div class="container-fluid mt-2 px-2 form-bg">
+    <button type="button" class="btn btn-outline-secondary mt-3 btn-back" onclick="goBack()">
+        <i class="bi bi-arrow-left me-2"></i>Back
+    </button>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="form-header mb-1">
+                <span class="form-header-icon"><i class="bi bi-box-seam"></i></span>
+                <h2 class="fw-bold mb-0" style="font-size: 1.5rem;">Package Order Form</h2>
+            </div>
+            <div class="form-subtitle">Complete your package catering order details.</div>
+        </div>
+    </div>
+
+
+
+    <div class="form-card">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <form asp-action="PackageForm" asp-controller="ClientMenus" method="post" id="packageOrderForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="OrderItemsJson" id="OrderItemsJson" />
+            <input type="hidden" name="PackageData" id="PackageData" />
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.Name" class="form-label fw-semibold">Customer Name</label>
+                    <input asp-for="Customer.Name" class="form-control" placeholder="Enter customer name" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.ContactNo" class="form-label fw-semibold">Contact No.</label>
+                    <input asp-for="Customer.ContactNo" class="form-control" placeholder="Enter contact number" required />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Customer.Address" class="form-label fw-semibold">Address</label>
+                <input asp-for="Customer.Address" class="form-control" placeholder="Enter address" required />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="CateringDate" class="form-label fw-semibold">Catering Date</label>
+                    <input asp-for="CateringDate" type="date" class="form-control" id="cateringDate" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Venue" class="form-label fw-semibold">Venue</label>
+                    <input asp-for="Venue" class="form-control" placeholder="Enter venue" required />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="NoOfPax" class="form-label fw-semibold">Number of PAX</label>
+                    <input asp-for="NoOfPax" type="number" class="form-control" id="noOfPax" placeholder="Enter number of people" min="1" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="timeOfFoodServing" class="form-label fw-semibold">Time of Food Serving</label>
+                    <input asp-for="timeOfFoodServing" type="time" class="form-control" id="timeOfFoodServing" required />
+                </div>
+            </div>
+
+            <!-- Total Price Display -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="bi bi-calculator me-2"></i>
+                        <strong>Total Package Price: <span id="totalPriceDisplay">₱0.00</span></strong>
+                        <small class="d-block mt-1">Price updates automatically when you change the number of PAX</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Occasion" class="form-label fw-semibold">Occasion</label>
+                    <input asp-for="Occasion" class="form-control" placeholder="Enter occasion" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Motif" class="form-label fw-semibold">Motif</label>
+                    <input asp-for="Motif" class="form-control" placeholder="Enter motif" required />
+                </div>
+            </div>
+
+            <!-- Rush Order Fee Alert (hidden by default) -->
+            <div id="rushOrderAlert" class="alert alert-warning mb-4" style="display: none;">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Rush Order Fee:</strong> Since your catering date is the same as your order date, a <strong>10% rush order fee</strong> has been added to your total amount.
+            </div>
+
+            <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Reminder:</strong> You need to pay at least a <strong>50% down payment</strong> for your catering order to proceed.
+            </div>
+
+            <div class="d-flex justify-content-center gap-3">
+                <!-- Test button for debugging -->
+                <button type="button" class="btn btn-outline-warning" onclick="setTestPackageData()">
+                    <i class="bi bi-bug me-2"></i>Test Package Data
+                </button>
+
+                <button type="submit" class="btn btn-primary btn-submit">
+                    <i class="bi bi-check-lg me-2"></i>Place Package Order
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = 'packageOrderFormData';
+
+    // Get package data from localStorage
+    function getPackageData() {
+        console.log('getPackageData called');
+
+        // Try different possible keys
+        const keys = ['selectedPackageData', 'packageData', 'selectedPackage'];
+        let packageData = null;
+
+        for (const key of keys) {
+            const rawData = localStorage.getItem(key);
+            console.log(`Checking localStorage key '${key}':`, rawData);
+
+            if (rawData) {
+                try {
+                    packageData = JSON.parse(rawData);
+                    console.log(`Found package data in '${key}':`, packageData);
+                    break;
+                } catch (e) {
+                    console.error(`Error parsing data from '${key}':`, e);
+                }
+            }
+        }
+
+        if (!packageData) {
+            console.log('No package data found in any localStorage keys');
+            console.log('Available localStorage keys:', Object.keys(localStorage));
+        }
+
+        return packageData;
+    }
+
+    // Initialize package data and set default PAX
+    function initializePackageData() {
+        console.log('initializePackageData called');
+
+        const packageData = getPackageData();
+        console.log('Retrieved package data:', packageData);
+
+        if (!packageData) {
+            console.error('No package data found');
+            alert('No package data found. Please select a package first.');
+            window.location.href = '/ClientMenus/Index';
+            return;
+        }
+
+        console.log('Package data structure:', {
+            paxQuantity: packageData.paxQuantity,
+            packagePrice: packageData.packagePrice,
+            packageName: packageData.packageName
+        });
+
+        // Set the package data in hidden fields
+        document.getElementById('PackageData').value = JSON.stringify(packageData);
+
+        // Set default PAX to match package
+        const paxInput = document.getElementById('noOfPax');
+        if (paxInput && packageData.paxQuantity) {
+            paxInput.value = packageData.paxQuantity;
+            paxInput.setAttribute('min', packageData.paxQuantity);
+            console.log('PAX input value set to:', paxInput.value);
+        } else {
+            console.error('PAX input not found or packageData.paxQuantity is missing');
+            console.error('PAX input element:', paxInput);
+            console.error('packageData.paxQuantity:', packageData.paxQuantity);
+        }
+
+        // Update total price display
+        updateTotalPrice();
+    }
+
+    // Update total price when PAX changes
+    function updateTotalPrice() {
+        const packageData = getPackageData();
+        if (!packageData) return;
+
+        const paxInput = document.getElementById('noOfPax');
+        const paxValue = parseInt(paxInput.value) || packageData.paxQuantity;
+
+        // Calculate new total price
+        const pricePerPerson = packageData.packagePrice || 0;
+        const newTotalPrice = pricePerPerson * paxValue;
+
+        // Update package data with new values
+        packageData.paxQuantity = paxValue;
+        packageData.totalPrice = newTotalPrice;
+
+        // Update hidden field
+        document.getElementById('PackageData').value = JSON.stringify(packageData);
+
+        // Update the display if there's a total price element
+        const totalPriceElement = document.getElementById('totalPriceDisplay');
+        if (totalPriceElement) {
+            totalPriceElement.textContent = `₱${newTotalPrice.toLocaleString()}`;
+        }
+
+        console.log('Total price updated:', { paxValue, pricePerPerson, newTotalPrice });
+    }
+
+    // Go back to package selection
+    function goBack() {
+        window.location.href = '/ClientMenus/SelectedPackageMenus';
+    }
+
+    // Immediate fallback to set current time
+    function setCurrentTime() {
+        const timeInput = document.getElementById('timeOfFoodServing');
+        if (timeInput) {
+            const now = new Date();
+            const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            console.log('Immediate fallback - Setting time to:', currentTime);
+            timeInput.value = currentTime;
+        }
+    }
+
+    // Try to set time immediately
+    setCurrentTime();
+
+    // Test function to manually set package data (for debugging)
+    function setTestPackageData() {
+        const testData = {
+            packageId: 1,
+            packageName: "Package A",
+            paxQuantity: 60,
+            packagePrice: 320,
+            totalPrice: 19200,
+            // Add some sample menu items
+            appetizers: [
+                { id: 1, name: "Lumpia", isLechon: false },
+                { id: 2, name: "Spring Rolls", isLechon: false }
+            ],
+            mainDishes: [
+                { id: 3, name: "Chicken Adobo", isLechon: false },
+                { id: 4, name: "Beef Caldereta", isLechon: false }
+            ]
+        };
+
+        localStorage.setItem('selectedPackageData', JSON.stringify(testData));
+        console.log('Test package data set:', testData);
+
+        // Reinitialize with test data
+        initializePackageData();
+    }
+
+    // On page load: restore if there is saved data
+    window.addEventListener('DOMContentLoaded', function () {
+        // Initialize package data first
+        initializePackageData();
+
+        const saved = sessionStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const data = JSON.parse(saved);
+            Object.keys(data).forEach(function (key) {
+                const el = document.querySelector('[name="' + key + '"]');
+                console.log(el);
+                // Don't override PAX value that was set by package data
+                if (el && key !== 'NoOfPax' && (!el.value || parseInt(el.value) == 0)) {
+                    el.value = data[key];
+                }
+            });
+        }
+
+        // Set minimum date for catering date input (use Asia/Manila to avoid UTC off-by-one)
+        const cateringDateInput = document.getElementById('cateringDate');
+        function formatManilaDateYYYYMMDD(date) {
+            try {
+                const parts = new Intl.DateTimeFormat('en-CA', {
+                    timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit'
+                }).formatToParts(date);
+                const y = parts.find(p => p.type === 'year').value;
+                const m = parts.find(p => p.type === 'month').value;
+                const d = parts.find(p => p.type === 'day').value;
+                return `${y}-${m}-${d}`;
+            } catch (e) {
+                // Fallback to local if Intl/timeZone not supported
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+        }
+        const todayPH = formatManilaDateYYYYMMDD(new Date());
+        cateringDateInput.setAttribute('min', todayPH);
+
+        // Set default time of food serving to current time (backup)
+        setTimeout(() => {
+            const timeOfFoodServingInput = document.getElementById('timeOfFoodServing');
+            console.log('DOMContentLoaded backup - Time input found:', timeOfFoodServingInput);
+            if (timeOfFoodServingInput) {
+                const now = new Date();
+                const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                console.log('DOMContentLoaded backup - Setting time to:', currentTime);
+                timeOfFoodServingInput.value = currentTime;
+            }
+        }, 100);
+
+        // Handle Number of PAX input - enforce package minimum
+        const noOfPaxInput = document.getElementById('noOfPax');
+        const packageData = getPackageData();
+        const minPax = packageData ? packageData.paxQuantity : 60;
+
+        // Prevent 0 as input
+        noOfPaxInput.addEventListener('input', function () {
+            if (this.value === '0') {
+                this.value = '';
+            }
+            // Update total price when PAX changes
+            updateTotalPrice();
+        });
+
+        // Validate on blur - if empty or 0, show error
+        noOfPaxInput.addEventListener('blur', function () {
+            if (this.value === '' || this.value === '0' || parseInt(this.value) < minPax) {
+                this.setCustomValidity(`Please enter a valid number of people (minimum ${minPax} for this package)`);
+            }
+            else if (this.value === '' || this.value === '0' || parseInt(this.value) > 1500) {
+                this.setCustomValidity('Please enter a valid number of people (maximum 1500)');
+            }
+            else {
+                this.setCustomValidity('');
+            }
+            // Update total price when PAX changes
+            updateTotalPrice();
+        });
+
+        // Handle rush order behavior (same-day catering): enforce 10 hours preparation
+        const rushOrderAlert = document.getElementById('rushOrderAlert');
+
+        function formatTime(date) {
+            const h = date.getHours().toString().padStart(2, '0');
+            const m = date.getMinutes().toString().padStart(2, '0');
+            return `${h}:${m}`;
+        }
+
+        function getManilaNowParts() {
+            try {
+                const parts = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', hour12: false
+                }).formatToParts(new Date());
+                const pick = (t) => parts.find(p => p.type === t).value;
+                return {
+                    y: pick('year'), m: pick('month'), d: pick('day'),
+                    h: parseInt(pick('hour'), 10), min: parseInt(pick('minute'), 10)
+                };
+            } catch (e) {
+                const now = new Date();
+                return { y: String(now.getFullYear()), m: String(now.getMonth() + 1).padStart(2, '0'), d: String(now.getDate()).padStart(2, '0'), h: now.getHours(), min: now.getMinutes() };
+            }
+        }
+
+        function checkRushOrder() {
+            const timeInput = document.getElementById('timeOfFoodServing');
+            const submitBtn = document.querySelector('button[type="submit"]');
+
+            const manilaNow = getManilaNowParts();
+            const todayPHStr = `${manilaNow.y}-${manilaNow.m}-${manilaNow.d}`;
+            const isSameDay = (cateringDateInput.value && cateringDateInput.value === todayPHStr);
+
+            if (isSameDay) {
+                const isAM = manilaNow.h < 12;
+
+                // Rush order only allowed if current time is in AM (Manila time)
+                if (!isAM) {
+                    rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>Rush Order Restriction:</strong> Rush order is only available during AM. Please select a future date for your catering order.';
+                    rushOrderAlert.className = 'alert alert-danger mb-4';
+                    rushOrderAlert.style.display = 'block';
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Order Restricted';
+                    }
+                    if (timeInput) {
+                        timeInput.removeAttribute('min');
+                    }
+                    return;
+                }
+
+                const hourPlusTen = manilaNow.h + 10;
+
+                // If adding 10 hours spills into next day in Manila, block same-day selection
+                if (hourPlusTen >= 24) {
+                    rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation if rush order.</strong> No available time slots remain today. Please select a later date.';
+                    rushOrderAlert.className = 'alert alert-danger mb-4';
+                    rushOrderAlert.style.display = 'block';
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Order Restricted';
+                    }
+                    if (timeInput) {
+                        timeInput.removeAttribute('min');
+                    }
+                    return;
+                }
+
+                const minTime = `${String(hourPlusTen).padStart(2, '0')}:${String(manilaNow.min).padStart(2, '0')}`;
+                if (timeInput) {
+                    timeInput.setAttribute('min', minTime);
+                    if (!timeInput.value || timeInput.value < minTime) {
+                        timeInput.value = minTime;
+                    }
+                }
+
+                rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation if rush order.</strong> Since your catering date is the same as your order date, a <strong>10% rush order fee</strong> has been added to your total amount.';
+                rushOrderAlert.className = 'alert alert-warning mb-4';
+                rushOrderAlert.style.display = 'block';
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Place Package Order';
+                }
+            } else {
+                rushOrderAlert.style.display = 'none';
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Place Package Order';
+                }
+                if (timeInput) {
+                    timeInput.removeAttribute('min');
+                }
+            }
+        }
+
+        // Check on page load
+        checkRushOrder();
+
+        // Check when catering date changes
+        cateringDateInput.addEventListener('change', checkRushOrder);
+
+        // Update total price when PAX changes (when user finishes editing)
+        noOfPaxInput.addEventListener('change', updateTotalPrice);
+
+        // Handle Contact Number validation
+        const contactNoInput = document.querySelector('input[name="Customer.ContactNo"]');
+
+        // Only allow numbers and limit to 11 digits
+        contactNoInput.addEventListener('input', function () {
+            // Remove any non-digit characters
+            this.value = this.value.replace(/\D/g, '');
+
+            // Limit to 11 digits
+            if (this.value.length > 11) {
+                this.value = this.value.slice(0, 11);
+            }
+        });
+
+        // Prevent paste of non-numeric characters
+        contactNoInput.addEventListener('paste', function (e) {
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            const numericOnly = pastedText.replace(/\D/g, '');
+            const currentValue = this.value.replace(/\D/g, '');
+            const newValue = currentValue + numericOnly;
+
+            if (newValue.length <= 11) {
+                this.value = newValue;
+            } else {
+                this.value = newValue.slice(0, 11);
+            }
+        });
+
+        // Prevent drag and drop of non-numeric characters
+        contactNoInput.addEventListener('drop', function (e) {
+            e.preventDefault();
+        });
+    });
+
+    // On submit: only save if it's new or changed
+    document.getElementById('packageOrderForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const form = this;
+        const formData = {};
+        Array.from(form.elements).forEach(el => {
+            if (el.name && el.type !== 'submit' && el.type !== 'button') {
+                formData[el.name] = el.value;
+            }
+        });
+
+        const newJson = JSON.stringify(formData);
+        const oldJson = sessionStorage.getItem(STORAGE_KEY);
+
+        if (!oldJson || oldJson !== newJson) {
+            // only write if it's missing or has changed
+            sessionStorage.setItem(STORAGE_KEY, newJson);
+        }
+
+        // Prepare order items JSON for submission
+        const packageData = getPackageData();
+        if (packageData) {
+            // Get current PAX value and update package data
+            const currentPax = parseInt(document.getElementById('noOfPax').value) || packageData.paxQuantity;
+            const currentTotalPrice = (packageData.packagePrice || 0) * currentPax;
+
+            // Update package data with current values
+            packageData.paxQuantity = currentPax;
+            packageData.totalPrice = currentTotalPrice;
+
+            const orderItems = [];
+
+            // Add package items
+            Object.keys(packageData).forEach(category => {
+                if (Array.isArray(packageData[category]) && packageData[category].length > 0) {
+                    packageData[category].forEach(item => {
+                        if (!item.isLechon) { // Skip lechon as it's handled separately
+                            orderItems.push({
+                                MenuId: item.id,
+                                Name: item.name,
+                                Price: 0, // Price is per-pax, not per item
+                                Quantity: 1, // Each food item counts as 1
+                                Type: 'Package Item',
+                                packageId: packageData.packageId,
+                                packageName: packageData.packageName,
+                                packagePrice: packageData.packagePrice,
+                                totalPrice: currentTotalPrice
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Add free lechon for Package B (check current PAX input value)
+            if (currentPax >= 120) {
+                orderItems.push({
+                    MenuId: 0, // Special ID for free lechon
+                    Name: "1 Whole Lechon (Package B Bonus)",
+                    Price: 0,
+                    Quantity: 1,
+                    Type: 'Package Bonus',
+                    packageId: packageData.packageId,
+                    packageName: packageData.packageName,
+                    packagePrice: packageData.packagePrice,
+                    totalPrice: currentTotalPrice,
+                    IsFreeLechon: true
+                });
+            }
+
+            document.getElementById('OrderItemsJson').value = JSON.stringify(orderItems);
+
+            // Store complete order data in session storage via AJAX
+            const completeOrderData = {
+                ...formData,
+                OrderItemsJson: JSON.stringify(orderItems),
+                PackageData: JSON.stringify(packageData) // This now contains updated paxQuantity and totalPrice
+            };
+
+            // Send data to server to store in session
+            fetch('/ClientMenus/StorePackageOrderData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(completeOrderData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Redirect to PackageOrderDetail
+                        window.location.href = '/ClientMenus/PackageOrderDetail';
+                    } else {
+                        console.error('Failed to store order data');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error storing order data:', error);
+                });
+        }
+    });
+
+    // Clear sessionStorage after successful submit (optional, if you redirect on success)
+    // You may want to clear it on the OrderDetails page after confirmation as well.
+</script>

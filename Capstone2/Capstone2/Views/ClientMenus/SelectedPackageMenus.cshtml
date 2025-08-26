@@ -1,0 +1,546 @@
+﻿@{
+    ViewData["Title"] = "Selected Package Menus";
+}
+
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <h2 class="display-6 fw-bold text-primary">
+                    <i class="bi bi-box-seam me-3"></i>Your Selected Package
+                </h2>
+                <p class="lead text-muted">Review your package selection before proceeding</p>
+            </div>
+
+            <!-- Package Summary Card -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Package Details
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3">Package Information</h5>
+                            <div class="mb-3">
+                                <strong>Package Name:</strong>
+                                <span id="packageName" class="ms-2 badge bg-primary fs-6"></span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Number of People:</strong>
+                                <span id="paxQuantity" class="ms-2 badge bg-success fs-6"></span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Price per Person:</strong>
+                                <span id="pricePerPerson" class="ms-2 text-success fw-bold"></span>
+                            </div>
+                            <div class="mb-3">
+                                <strong>Total Package Price:</strong>
+                                <span id="totalPrice" class="ms-2 text-primary fw-bold fs-5"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3">Package Requirements</h5>
+                            <div id="packageRequirements" class="mb-3">
+                                <!-- Requirements will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selected Items Card -->
+            <div class="card shadow-lg border-0 mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-check-circle me-2"></i>Your Selected Items
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div id="selectedItemsContainer">
+                        <!-- Selected items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Free Lechon Banner (for Package B) -->
+            <div id="freeLechonBanner" class="card shadow-lg border-0 mb-4" style="display: none;">
+                <div class="card-body text-center py-4">
+                    <div class="free-lechon-banner">
+                        <div class="free-lechon-icon">
+                            <i class="bi bi-gift-fill"></i>
+                        </div>
+                        <div class="free-lechon-content">
+                            <span class="free-lechon-text">🎉 FREE LECHON INCLUDED! 🎉</span>
+                            <span class="free-lechon-desc">1 Whole Lechon automatically added to your package</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mb-4">
+                <button type="button" class="btn btn-outline-secondary btn-lg me-3" onclick="goBack()">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Menu
+                </button>
+                <button type="button" class="btn btn-primary btn-lg" onclick="proceedToOrder()">
+                    <i class="bi bi-check-circle me-2"></i>Confirm Package
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .free-lechon-banner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%);
+        border: 3px solid #f59e0b;
+        border-radius: 15px;
+        box-shadow: 0 6px 25px rgba(245, 158, 11, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .free-lechon-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
+        }
+
+    @@keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .free-lechon-icon {
+        flex-shrink: 0;
+        width: 80px;
+        height: 80px;
+        background: #f59e0b;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+    }
+
+        .free-lechon-icon i {
+            font-size: 2.5rem;
+            color: #fff;
+        }
+
+    .free-lechon-content {
+        text-align: center;
+    }
+
+    .free-lechon-text {
+        display: block;
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #92400e;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    .free-lechon-desc {
+        display: block;
+        font-size: 1.1rem;
+        color: #a16207;
+        font-weight: 600;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .requirement-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #0d6efd;
+    }
+
+    .requirement-icon {
+        color: #0d6efd;
+        font-size: 1.2rem;
+    }
+
+    .selected-category {
+        margin-bottom: 2rem;
+    }
+
+    .category-title {
+        color: #0d6efd;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .selected-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        .selected-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    .item-icon {
+        width: 50px;
+        height: 50px;
+        background: #0d6efd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .item-details {
+        flex-grow: 1;
+    }
+
+    .item-name {
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 0.25rem;
+    }
+
+    .item-category {
+        font-size: 0.9rem;
+        color: #6c757d;
+        text-transform: capitalize;
+    }
+
+    .bonus-item {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 2px solid #f59e0b;
+    }
+
+    .bonus-badge {
+        background: #f59e0b;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+</style>
+
+<script>
+    // Get package data from URL parameters or localStorage
+    function getPackageData() {
+        // Try to get from localStorage first (set when proceeding from package selection)
+        const packageData = localStorage.getItem('selectedPackageData');
+        if (packageData) {
+            return JSON.parse(packageData);
+        }
+
+        // Fallback: redirect back to menu if no data
+        alert('No package data found. Please select a package first.');
+        window.location.href = '/ClientMenus/Index';
+        return null;
+    }
+
+    // Populate the page with package data
+    function populatePackageData() {
+        const packageData = getPackageData();
+        if (!packageData) return;
+
+        // Package Information
+        document.getElementById('packageName').textContent = packageData.packageName;
+        document.getElementById('paxQuantity').textContent = packageData.paxQuantity;
+        document.getElementById('pricePerPerson').textContent = `₱${packageData.packagePrice}`;
+        document.getElementById('totalPrice').textContent = `₱${packageData.totalPrice.toLocaleString()}`;
+
+        // Package Requirements
+        populateRequirements(packageData);
+
+        // Selected Items
+        populateSelectedItems(packageData);
+
+        // Show free lechon banner for Package B (120 pax minimum)
+        if (packageData.paxQuantity >= 120) {
+            document.getElementById('freeLechonBanner').style.display = 'block';
+        }
+    }
+
+    // Populate package requirements
+    function populateRequirements(packageData) {
+        const requirementsContainer = document.getElementById('packageRequirements');
+        let requirementsHtml = '';
+
+        if (packageData.mainDish && packageData.mainDish.length > 0) {
+            const mainDishCount = packageData.mainDish.filter(item => !item.isLechon).length;
+            const lechonText = packageData.paxQuantity >= 120 ? ' + 1 Free Lechon' : '';
+            requirementsHtml += `
+                    <div class="requirement-item">
+                        <i class="bi bi-egg-fried requirement-icon"></i>
+                        <span>${mainDishCount} Main Dish(es)${lechonText}</span>
+                    </div>
+                `;
+        }
+
+        if (packageData.sideDish && packageData.sideDish.length > 0) {
+            requirementsHtml += `
+                    <div class="requirement-item">
+                        <i class="bi bi-egg requirement-icon"></i>
+                        <span>${packageData.sideDish.length} Side Dish(es)</span>
+                    </div>
+                `;
+        }
+
+        if (packageData.dessert && packageData.dessert.length > 0) {
+            requirementsHtml += `
+                    <div class="requirement-item">
+                        <i class="bi bi-cake2 requirement-icon"></i>
+                        <span>${packageData.dessert.length} Dessert(s)</span>
+                    </div>
+                `;
+        }
+
+        if (packageData.rice && packageData.rice.length > 0) {
+            requirementsHtml += `
+                    <div class="requirement-item">
+                        <i class="bi bi-egg-fried requirement-icon"></i>
+                        <span>${packageData.rice.length} Rice</span>
+                    </div>
+                `;
+        }
+
+        if (packageData.softDrinks && packageData.softDrinks.length > 0) {
+            requirementsHtml += `
+                    <div class="requirement-item">
+                        <i class="bi bi-cup-straw requirement-icon"></i>
+                        <span>${packageData.softDrinks.length} Soft Drink(s)</span>
+                    </div>
+                `;
+        }
+
+        requirementsContainer.innerHTML = requirementsHtml;
+    }
+
+    // Populate selected items
+    function populateSelectedItems(packageData) {
+        const container = document.getElementById('selectedItemsContainer');
+        let itemsHtml = '';
+
+        // Main Dishes
+        if (packageData.mainDish && packageData.mainDish.length > 0) {
+            itemsHtml += `
+                    <div class="selected-category">
+                        <h5 class="category-title">
+                            <i class="bi bi-egg-fried me-2"></i>Main Dishes
+                        </h5>
+                `;
+
+            packageData.mainDish.forEach(item => {
+                if (item.isLechon) {
+                    itemsHtml += `
+                            <div class="selected-item bonus-item">
+                                <div class="item-icon">
+                                    <i class="bi bi-gift"></i>
+                                </div>
+                                <div class="item-details">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-category">Free Bonus Item</div>
+                                </div>
+                                <span class="bonus-badge">FREE!</span>
+                            </div>
+                        `;
+                } else {
+                    itemsHtml += `
+                            <div class="selected-item">
+                                <div class="item-icon">
+                                    <i class="bi bi-egg-fried"></i>
+                                </div>
+                                <div class="item-details">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-category">Main Dish</div>
+                                </div>
+                            </div>
+                        `;
+                }
+            });
+
+            itemsHtml += '</div>';
+        }
+
+        // Side Dishes
+        if (packageData.sideDish && packageData.sideDish.length > 0) {
+            itemsHtml += `
+                    <div class="selected-category">
+                        <h5 class="category-title">
+                            <i class="bi bi-egg me-2"></i>Side Dishes
+                        </h5>
+                `;
+
+            packageData.sideDish.forEach(item => {
+                itemsHtml += `
+                        <div class="selected-item">
+                            <div class="item-icon">
+                                <i class="bi bi-egg"></i>
+                            </div>
+                            <div class="item-details">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-category">Side Dish</div>
+                            </div>
+                        </div>
+                    `;
+            });
+
+            itemsHtml += '</div>';
+        }
+
+        // Desserts
+        if (packageData.dessert && packageData.dessert.length > 0) {
+            itemsHtml += `
+                    <div class="selected-category">
+                        <h5 class="category-title">
+                            <i class="bi bi-cake2 me-2"></i>Desserts
+                        </h5>
+                `;
+
+            packageData.dessert.forEach(item => {
+                itemsHtml += `
+                        <div class="selected-item">
+                            <div class="item-icon">
+                                <i class="bi bi-cake2"></i>
+                            </div>
+                            <div class="item-details">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-category">Dessert</div>
+                            </div>
+                        </div>
+                    `;
+            });
+
+            itemsHtml += '</div>';
+        }
+
+        // Rice
+        if (packageData.rice && packageData.rice.length > 0) {
+            itemsHtml += `
+                    <div class="selected-category">
+                        <h5 class="category-title">
+                            <i class="bi bi-egg-fried me-2"></i>Rice
+                        </h5>
+                `;
+
+            packageData.rice.forEach(item => {
+                itemsHtml += `
+                        <div class="selected-item">
+                            <div class="item-icon">
+                                <i class="bi bi-egg-fried"></i>
+                            </div>
+                            <div class="item-details">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-category">Rice</div>
+                            </div>
+                        </div>
+                    `;
+            });
+
+            itemsHtml += '</div>';
+        }
+
+        // Soft Drinks
+        if (packageData.softDrinks && packageData.softDrinks.length > 0) {
+            itemsHtml += `
+                    <div class="selected-category">
+                        <h5 class="category-title">
+                            <i class="bi bi-cup-straw me-2"></i>Soft Drinks
+                        </h5>
+                `;
+
+            packageData.softDrinks.forEach(item => {
+                itemsHtml += `
+                        <div class="selected-item">
+                            <div class="item-icon">
+                                <i class="bi bi-cup-straw"></i>
+                            </div>
+                            <div class="item-details">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-category">Soft Drink</div>
+                            </div>
+                        </div>
+                    `;
+            });
+
+            itemsHtml += '</div>';
+        }
+
+        container.innerHTML = itemsHtml;
+    }
+
+    // Go back to menu
+    function goBack() {
+        window.location.href = '/ClientMenus/Index';
+    }
+
+    // Proceed to package order form
+    function proceedToOrder() {
+        // Store the package data in localStorage so it's available on the PackageForm page
+        const packageData = getPackageData();
+        if (packageData) {
+            // You can add any additional data needed for the order form
+            const orderData = {
+                ...packageData,
+                orderType: 'package',
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('orderData', JSON.stringify(orderData));
+        }
+
+        // Redirect to the PackageForm page
+        window.location.href = '/ClientMenus/PackageForm';
+    }
+
+    // Initialize the page when it loads
+    document.addEventListener('DOMContentLoaded', function () {
+        populatePackageData();
+    });
+</script>
