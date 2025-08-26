@@ -1,0 +1,954 @@
+﻿@model Capstone2.Models.Order
+
+@{
+    ViewData["Title"] = "Package Order Confirmation";
+}
+
+<input type="hidden" id="packageOrders" value="@TempData["PackageOrder"]" />
+
+<style>
+    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .confirm-bg {
+        background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
+        min-height: 100vh;
+        border-radius: 12px;
+        padding-bottom: 1rem;
+    }
+
+    .confirm-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .confirm-header-icon {
+        font-size: 1.5rem;
+        color: var(--primary-purple);
+        background: var(--purple-bg-light);
+        border-radius: 8px;
+        padding: 4px 8px;
+        box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+    }
+
+    .confirm-subtitle {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: -4px;
+        margin-bottom: 10px;
+    }
+
+    .confirm-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 3px 16px 0 rgba(124, 58, 237, 0.08);
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid var(--purple-border);
+    }
+
+    .confirm-row {
+        padding: 0.6rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .confirm-row:last-child {
+            border-bottom: none;
+        }
+
+    .confirm-label {
+        font-weight: 600;
+        color: var(--text-purple);
+        font-size: 0.9rem;
+    }
+
+    .confirm-value {
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .table {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        border: 1px solid var(--purple-border);
+    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            border: none;
+            font-weight: 600;
+            color: #fff;
+            padding: 0.8rem;
+            border-bottom: 2px solid var(--primary-purple-dark);
+            text-align: center;
+        }
+
+        .table tbody td {
+            padding: 0.8rem;
+            border: none;
+            border-bottom: 1px solid var(--purple-border);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table tbody tr {
+            background: #fff;
+        }
+
+            .table tbody tr:hover {
+                background: var(--purple-bg);
+                transition: background-color 0.2s ease;
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    .btn-back {
+        font-weight: 500;
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        position: absolute;
+        left: 1rem;
+        top: 4rem;
+        z-index: 1000;
+        font-size: 0.9rem;
+    }
+
+    .btn-submit {
+        font-weight: 600;
+        font-size: 1rem;
+        border-radius: 8px;
+        padding: 0.6rem 1.5rem;
+        box-shadow: 0 2px 6px 0 rgba(124, 58, 237, 0.10);
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        border: 1px solid var(--primary-purple);
+    }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
+    .total-section {
+        background: var(--purple-bg-light);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 0.8rem;
+        border: 1px solid var(--purple-border);
+    }
+
+    .ordered-items-header {
+        color: var(--text-purple);
+        font-weight: 700;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--purple-border);
+    }
+
+    .package-bonus-item {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 2px solid #f59e0b;
+    }
+
+    .package-bonus-badge {
+        background: #f59e0b;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    /* Purple theme variables */
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+    }
+</style>
+
+<div class="container-fluid mt-2 px-2 confirm-bg">
+    <button type="button" class="btn btn-outline-secondary mt-3 btn-back" onclick="goBack()">
+        <i class="bi bi-arrow-left me-2"></i>Back
+    </button>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <div class="confirm-header mb-1">
+                <span class="confirm-header-icon"><i class="bi bi-box-seam"></i></span>
+                <h2 class="fw-bold mb-0" style="font-size: 1.5rem;">Confirm Package Order</h2>
+            </div>
+            <div class="confirm-subtitle">Review and confirm package order for <span id="customerName">Customer</span></div>
+        </div>
+    </div>
+
+    <div class="confirm-card">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Contact:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="customerContact">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Address:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="customerAddress">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Venue:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="venue">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">No. of Pax:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="noOfPax">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Order Date:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="orderDate">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Catering Date:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="cateringDate">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Time of Food Serving:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="timeOfFoodServing">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Occasion:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="occasion">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Motif:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="motif">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="confirm-card">
+        <h4 class="ordered-items-header" style="font-size: 1.2rem;">Package Details</h4>
+        <div id="packageSummaryContent">
+            <!-- Package summary will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <div class="confirm-card">
+        <h4 class="ordered-items-header" style="font-size: 1.2rem;">Ordered Items</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Menu</th>
+                </tr>
+            </thead>
+            <tbody id="orderItemsTableBody">
+                <!-- Order items will be populated by JavaScript -->
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <div id="rushOrderSection" style="display: none;">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-2" style="color: var(--text-purple);">Base Amount:</h6>
+                        <p class="text-muted mb-0" id="baseAmount">₱0.00</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="fw-bold mb-2" style="color: var(--text-purple);">Rush Order Fee (10%):</h6>
+                        <p class="text-muted mb-0" id="rushOrderFee">₱0.00</p>
+                    </div>
+                </div>
+                <hr class="my-3" style="border-color: var(--purple-border);">
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="fw-bold mb-2" style="color: var(--text-purple);">50% Downpayment:</h6>
+                    <p class="text-muted mb-0" id="downpayment">₱0.00</p>
+                </div>
+            </div>
+            <hr class="my-3" style="border-color: var(--purple-border);">
+            <h5 class="fw-bold mb-0" style="color: var(--primary-purple);">Total Payment: <span id="totalPayment">₱0.00</span></h5>
+            <div class="mt-3 p-3" style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px;">
+                <p class="mb-0" style="color: #92400e; font-size: 0.9rem;">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Reminder:</strong> You can modify this order when you're about to pay for it at our office.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+        <button type="submit" id="confirmPackageOrder" class="btn btn-primary btn-submit">
+            <i class="bi bi-check-lg me-2"></i>Submit Package Order
+        </button>
+    </div>
+</div>
+
+<script>
+    let orderData = null;
+    let packageData = null;
+    let orderSubmitted = false; // Flag to track if order was successfully submitted
+
+    // Get package data from the hidden input (TempData)
+    function getPackageData() {
+        const packageDataStr = document.getElementById('packageOrders').value;
+        console.log('getPackageData - raw string:', packageDataStr);
+        if (packageDataStr) {
+            try {
+                const parsed = JSON.parse(packageDataStr);
+                console.log('getPackageData - parsed:', parsed);
+                return parsed.PackageData ? JSON.parse(parsed.PackageData) : null;
+            } catch (e) {
+                console.error('getPackageData - parse error:', e);
+                return null;
+            }
+        }
+        return null;
+    }
+
+    // Get order data from the hidden input (TempData)
+    function getOrderData() {
+        const orderDataStr = document.getElementById('packageOrders').value;
+        console.log('getOrderData - raw string:', orderDataStr);
+        if (orderDataStr) {
+            try {
+                const parsed = JSON.parse(orderDataStr);
+                console.log('getOrderData - parsed:', parsed);
+                return parsed;
+            } catch (e) {
+                console.error('getOrderData - parse error:', e);
+                return null;
+            }
+        }
+        return null;
+    }
+
+    // Go back to package form
+    function goBack() {
+        window.location.href = '/ClientMenus/PackageForm';
+    }
+
+    // Populate the page with order and package data
+    function populateOrderDetails() {
+        console.log('Starting populateOrderDetails...');
+
+        // Test localStorage directly
+        console.log('Direct localStorage test:');
+        console.log('orderData key exists:', localStorage.getItem('orderData') !== null);
+        console.log('selectedPackageData key exists:', localStorage.getItem('selectedPackageData') !== null);
+        console.log('Raw orderData from localStorage:', localStorage.getItem('orderData'));
+        console.log('Raw selectedPackageData from localStorage:', localStorage.getItem('selectedPackageData'));
+
+        orderData = getOrderData();
+        packageData = getPackageData();
+
+        console.log('Retrieved data:', { orderData, packageData });
+        console.log('localStorage orderData:', localStorage.getItem('orderData'));
+        console.log('localStorage selectedPackageData:', localStorage.getItem('selectedPackageData'));
+
+        if (!orderData || !packageData) {
+            console.error('Missing data:', { orderData, packageData });
+            console.log('Hidden input value:', document.getElementById('packageOrders')?.value);
+            console.log('TempData PackageOrder:', '@TempData["PackageOrder"]');
+
+            Swal.fire({
+                title: "No Data Found",
+                text: "Please complete the package form first. No order data was found in the session.",
+                icon: "error",
+                confirmButtonText: "OK"
+            }).then(() => {
+                window.location.href = '/ClientMenus/PackageForm';
+            });
+            return;
+        }
+
+        // Debug the data structure
+        console.log('Data structure debug:');
+        console.log('orderData keys:', Object.keys(orderData));
+        console.log('orderData values:', orderData);
+
+        // Populate customer information - try both nested and flat access
+        const customerName = orderData['Customer.Name'] || orderData.Customer?.Name || 'Customer';
+        const customerContact = orderData['Customer.ContactNo'] || orderData.Customer?.ContactNo || '-';
+        const customerAddress = orderData['Customer.Address'] || orderData.Customer?.Address || '-';
+        const venue = orderData.Venue || '-';
+        const noOfPax = orderData.NoOfPax || '-';
+        const cateringDate = orderData.CateringDate || '-';
+        const timeOfServing = orderData.timeOfFoodServing || '-';
+        const occasion = orderData.Occasion || '-';
+        const motif = orderData.Motif || '-';
+
+        console.log('Extracted values:', {
+            customerName, customerContact, customerAddress, venue, noOfPax,
+            cateringDate, timeOfServing, occasion, motif
+        });
+
+        document.getElementById('customerName').textContent = customerName;
+        document.getElementById('customerContact').textContent = customerContact;
+        document.getElementById('customerAddress').textContent = customerAddress;
+        document.getElementById('venue').textContent = venue;
+        document.getElementById('noOfPax').textContent = noOfPax;
+        document.getElementById('orderDate').textContent = new Date().toLocaleDateString();
+        document.getElementById('cateringDate').textContent = cateringDate;
+
+        // Format time to 12-hour format
+        if (timeOfServing !== '-') {
+            try {
+                const time = new Date(`2000-01-01T${timeOfServing}`);
+                const formattedTime = time.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                document.getElementById('timeOfFoodServing').textContent = formattedTime;
+            } catch (e) {
+                document.getElementById('timeOfFoodServing').textContent = timeOfServing;
+            }
+        } else {
+            document.getElementById('timeOfFoodServing').textContent = '-';
+        }
+        document.getElementById('occasion').textContent = occasion;
+        document.getElementById('motif').textContent = motif;
+
+        // Populate package summary
+        populatePackageSummary();
+
+        // Populate order items
+        populateOrderItems();
+
+        // Check for rush order
+        checkRushOrder();
+
+        // Set order data for submission
+        // Add TotalPayment and PackageData to the order data for the server
+        const submissionData = { ...orderData };
+        submissionData.TotalPayment = packageData.totalPrice || 0;
+        submissionData.PackageData = JSON.stringify(packageData); // Include PackageData as a string
+
+        // Validate required fields before submission
+        const requiredFields = [
+            { key: 'Customer.Name', label: 'Customer Name', value: customerName },
+            { key: 'Customer.ContactNo', label: 'Contact Number', value: customerContact },
+            { key: 'Customer.Address', label: 'Address', value: customerAddress },
+            { key: 'CateringDate', label: 'Catering Date', value: cateringDate },
+            { key: 'Venue', label: 'Venue', value: venue },
+            { key: 'NoOfPax', label: 'Number of PAX', value: noOfPax },
+            { key: 'timeOfFoodServing', label: 'Time of Food Serving', value: timeOfServing },
+            { key: 'Occasion', label: 'Occasion', value: occasion },
+            { key: 'Motif', label: 'Motif', value: motif }
+        ];
+
+        const missingFields = requiredFields.filter(field => !field.value || field.value === '-');
+
+        if (missingFields.length > 0) {
+            Swal.fire({
+                title: "Missing Information",
+                html: `Please fill in the following fields:<br><br><strong>${missingFields.map(f => f.label).join('<br>')}</strong>`,
+                icon: "warning",
+                confirmButtonText: "OK"
+            });
+            return;
+        }
+
+        // Validate package data
+        if (!packageData.packageId || !packageData.packagePrice || !packageData.totalPrice || !packageData.paxQuantity) {
+            Swal.fire({
+                title: "Invalid Package Data",
+                text: "Package information is incomplete. Please go back and select a package again.",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+            return;
+        }
+
+        // Debug logging (remove in production)
+        console.log('Submission Data:', submissionData);
+        console.log('Package Data:', packageData);
+        console.log('PackageData field in submission:', submissionData.PackageData);
+
+        document.getElementById('packageOrders').value = JSON.stringify(submissionData);
+        console.log('populateOrderDetails completed successfully');
+        console.log('Hidden input packageOrders now contains:', document.getElementById('packageOrders').value);
+    }
+
+    // Populate package summary
+    function populatePackageSummary() {
+        console.log('populatePackageSummary called with packageData:', packageData);
+
+        if (!packageData) {
+            console.error('No package data available for summary');
+            return;
+        }
+
+        const summaryContainer = document.getElementById('packageSummaryContent');
+        summaryContainer.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="confirm-row">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <span class="confirm-label">Package Name:</span>
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="confirm-value">${packageData.packageName || 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="confirm-row">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <span class="confirm-label">Package Price:</span>
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="confirm-value">₱${packageData.packagePrice || 0} per person</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="confirm-row">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <span class="confirm-label">Total Package:</span>
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="confirm-value">₱${(packageData.totalPrice || 0).toLocaleString()}</span>
+                                </div>
+                            </div>
+                        </div>
+                        ${(packageData.paxQuantity || 0) >= 120 ? `
+                        <div class="confirm-row">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <span class="confirm-label">Bonus:</span>
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="confirm-value text-success">🎉 FREE LECHON INCLUDED!</span>
+                                </div>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+    }
+
+    // Populate order items table
+    function populateOrderItems() {
+        console.log('populateOrderItems called with packageData:', packageData);
+
+        if (!packageData) {
+            console.error('No package data available for order items');
+            return;
+        }
+
+        const tableBody = document.getElementById('orderItemsTableBody');
+        let tableHtml = '';
+
+        // Add package items
+        Object.keys(packageData).forEach(category => {
+            console.log(`Processing category: ${category}`, packageData[category]);
+            if (Array.isArray(packageData[category]) && packageData[category].length > 0) {
+                packageData[category].forEach(item => {
+                    console.log(`Processing item:`, item);
+                    if (!item.isLechon) {
+                        tableHtml += `
+                                 <tr>
+                                     <td style="text-align: left; font-weight: 500; color: var(--text-purple);">${item.name}</td>
+                                 </tr>
+                             `;
+                    }
+                });
+            }
+        });
+
+        // Add free lechon for Package B
+        if (packageData.paxQuantity >= 120) {
+            tableHtml += `
+                    <tr class="package-bonus-item">
+                        <td style="text-align: left; font-weight: 500; color: var(--text-purple);">
+                            1 Whole Lechon (Package B Bonus)
+                            <span class="package-bonus-badge ms-2">FREE!</span>
+                        </td>
+                    </tr>
+                `;
+        }
+
+        tableBody.innerHTML = tableHtml;
+    }
+
+    // Check for rush order
+    function checkRushOrder() {
+        console.log('checkRushOrder called with:', { orderData, packageData });
+
+        if (!orderData || !packageData) {
+            console.error('Missing data for rush order calculation');
+            return;
+        }
+
+        const orderDate = new Date();
+        const cateringDate = new Date(orderData.CateringDate);
+        const isSameDay = orderDate.toDateString() === cateringDate.toDateString();
+
+        console.log('Rush order calculation:', { orderDate, cateringDate, isSameDay });
+
+        if (isSameDay) {
+            document.getElementById('rushOrderSection').style.display = 'block';
+            document.getElementById('baseAmount').textContent = `₱${(packageData.totalPrice || 0).toFixed(2)}`;
+            const rushFee = (packageData.totalPrice || 0) * 0.1;
+            document.getElementById('rushOrderFee').textContent = `₱${rushFee.toFixed(2)}`;
+            const totalWithRush = (packageData.totalPrice || 0) + rushFee;
+            document.getElementById('totalPayment').textContent = `₱${totalWithRush.toFixed(2)}`;
+            document.getElementById('downpayment').textContent = `₱${(totalWithRush * 0.5).toFixed(2)}`;
+        } else {
+            document.getElementById('rushOrderSection').style.display = 'none';
+            document.getElementById('totalPayment').textContent = `₱${(packageData.totalPrice || 0).toFixed(2)}`;
+            document.getElementById('downpayment').textContent = `₱${((packageData.totalPrice || 0) * 0.5).toFixed(2)}`;
+        }
+    }
+
+    // Initialize the page when it loads
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('DOM loaded, calling populateOrderDetails...');
+
+        populateOrderDetails();
+    });
+
+    // Handle order confirmation
+    $(function () {
+        console.log('jQuery ready function executed');
+
+        $("#confirmPackageOrder").click(function (e) {
+            e.preventDefault(); // Prevent any default form submission
+            console.log('Submit button clicked!');
+
+
+            Swal.fire({
+                title: "Confirm Package Order Submission",
+                text: "Are you sure to submit this package order? This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, submit order!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Get the order data to send
+                    const orderJsonToSend = $("#packageOrders").val();
+                    console.log('Sending order data:', orderJsonToSend);
+
+                    if (!orderJsonToSend || orderJsonToSend.trim() === '') {
+                        Swal.fire({
+                            title: "No Data to Send",
+                            text: "Order data is empty. Please go back and complete the form.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '/ClientMenus/PackageOrderConfirmed',
+                        type: 'POST',
+                        data: { orderJson: orderJsonToSend },
+                        timeout: 30000, // 30 second timeout
+                        beforeSend: function () {
+                            console.log('AJAX request starting...');
+                            // Show loading state
+                            Swal.fire({
+                                title: "Submitting Package Order",
+                                text: "Please wait while we process your order...",
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+                        },
+                        success: function (data) {
+                            console.log('AJAX Success Response received:', data);
+                            Swal.close();
+
+                            let responseData = data;
+                            if (typeof data === 'string') {
+                                try {
+                                    responseData = JSON.parse(data);
+                                } catch (e) {
+                                    console.error('Error parsing response data:', e);
+                                    responseData = data;
+                                }
+                            }
+
+                            if (responseData && responseData.success === true) {
+                                console.log('Order submitted successfully!');
+                                orderSubmitted = true;
+
+                                // Clear session data
+                                fetch('/ClientMenus/ClearPackageOrderData', { method: 'POST' });
+
+                                // Step 2: Show Order Number Confirmation
+                                Swal.fire({
+                                    title: "Package Order Confirmed!",
+                                    html: `Your package order has been successfully submitted.<br><br><strong>Order Number: ${responseData.orderNumber}</strong><br><br>Please take a note/screenshot and go to their office to make the payment and present this number for your reference.`,
+                                    icon: "success",
+                                    confirmButtonText: "View Invoice"
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Step 3: Show Invoice Modal
+                                        showPackageInvoicePreview(responseData.orderId, responseData.orderNumber);
+                                    } else {
+                                        // If user doesn't click "View Invoice", redirect to homepage
+                                        window.location.href = "/Home/Homepage";
+                                    }
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Package Order Cannot Be Confirmed",
+                                    text: responseData.message || "An error occurred",
+                                    icon: "error"
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX Error:', { status, error, responseText: xhr.responseText });
+                            Swal.close();
+
+                            Swal.fire({
+                                title: "Error confirming package order",
+                                text: "An error occurred while submitting the order. Please try again.",
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        // Move showPackageInvoicePreview function outside the click handler to make it globally accessible
+    });
+
+    function showPackageInvoicePreview(orderId, orderNumber) {
+        console.log('showPackageInvoicePreview called with:', { orderId, orderNumber });
+        console.log('orderData available:', orderData);
+        console.log('packageData available:', packageData);
+
+        // Build invoice HTML for package
+        var invoiceHtml = `
+                    <div style="text-align: left; max-width: 800px; margin: 0 auto;">
+                        <!-- Header -->
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="color: #7c3aed; margin: 0; font-size: 24px;">GRUSH Catering</h2>
+                            <p style="color: #6b7280; margin: 5px 0;">Package Order Invoice</p>
+                        </div>
+
+                        <!-- Order Details -->
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="flex: 1;">
+                                <h4 style="color: #374151; margin: 0 0 10px 0;">Billed To</h4>
+                                <p style="margin: 5px 0; font-weight: 600;">${orderData['Customer.Name'] || 'Customer'}</p>
+                                <p style="margin: 5px 0;">${orderData['Customer.ContactNo'] || 'Contact'}</p>
+                                <p style="margin: 5px 0;">${orderData['Customer.Address'] || 'Address'}</p>
+                            </div>
+                            <div style="text-align: right; flex: 1;">
+                                <p style="margin: 5px 0;"><strong>Order No:</strong> ${orderNumber}</p>
+                                                             <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
+                                 <p style="margin: 5px 0;"><strong>Catering Date:</strong> ${new Date(orderData.CateringDate).toLocaleDateString('en-GB')}</p>
+                                 <p style="margin: 5px 0;"><strong>Time of Food Serving:</strong> ${(() => {
+                const timeOfServing = orderData.timeOfFoodServing || '-';
+                if (timeOfServing !== '-') {
+                    try {
+                        const time = new Date(`2000-01-01T${timeOfServing}`);
+                        return time.toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                        });
+                    } catch (e) {
+                        return timeOfServing;
+                    }
+                }
+                return '-';
+            })()}</p>
+                            </div>
+                        </div>
+
+                        <!-- Package Summary -->
+                        <div style="margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px;">
+                            <h4 style="color: #374151; margin: 0 0 10px 0;">Package Details</h4>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span><strong>Package:</strong> ${packageData.packageName}</span>
+                                <span><strong>PAX:</strong> ${packageData.paxQuantity}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span><strong>Price per Person:</strong> ₱${packageData.packagePrice}</span>
+                                <span><strong>Total Package:</strong> ₱${packageData.totalPrice.toFixed(2)}</span>
+                            </div>
+                            ${packageData.paxQuantity >= 120 ? '<div style="text-align: center; color: #f59e0b; font-weight: 600; margin-top: 10px;">🎉 FREE LECHON INCLUDED! 🎉</div>' : ''}
+                        </div>
+
+                        <!-- Menu Items Table -->
+                        <div style="margin-bottom: 20px;">
+                                                     <table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb;">
+                                 <thead>
+                                     <tr style="background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); color: white;">
+                                         <th style="padding: 12px; text-align: left; border: 1px solid #e5e7eb;">Menu</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>`;
+
+        // Add package items
+        Object.keys(packageData).forEach(category => {
+            if (Array.isArray(packageData[category]) && packageData[category].length > 0) {
+                packageData[category].forEach(item => {
+                    if (!item.isLechon) {
+                        invoiceHtml += `
+                                     <tr style="background: white;">
+                                         <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">${item.name}</td>
+                                     </tr>`;
+                    }
+                });
+            }
+        });
+
+        // Add free lechon for Package B
+        if (packageData.paxQuantity >= 120) {
+            invoiceHtml += `
+                         <tr style="background: #fef3c7;">
+                             <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">1 Whole Lechon (Package B Bonus)</td>
+                         </tr>`;
+        }
+
+        // Add totals
+        const isRushOrder = new Date().toDateString() === new Date(orderData.CateringDate).toDateString();
+        const baseTotal = packageData.totalPrice;
+        const rushFee = isRushOrder ? baseTotal * 0.1 : 0;
+        const totalPayment = baseTotal + rushFee;
+
+        invoiceHtml += `
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Totals -->
+                            <div style="text-align: right; margin-bottom: 20px;">`;
+
+        if (isRushOrder) {
+            invoiceHtml += `
+                                <p style="margin: 5px 0;"><strong>Base Total:</strong> ₱${baseTotal.toFixed(2)}</p>
+                                <p style="margin: 5px 0; color: #dc2626;"><strong>Rush Order Fee (10%):</strong> ₱${rushFee.toFixed(2)}</p>`;
+        }
+
+        invoiceHtml += `
+                                <p style="margin: 5px 0; font-size: 18px;"><strong>Total Payment:</strong> ₱${totalPayment.toFixed(2)}</p>
+                                <p style="margin: 5px 0; color: #3b82f6;"><strong>50% Downpayment Required:</strong> ₱${(totalPayment * 0.5).toFixed(2)}</p>
+                            </div>
+
+                            <!-- Footer -->
+                            <div style="text-align: center; color: #6b7280; font-style: italic;">
+                                Thank you for choosing our package catering service!
+                            </div>
+                        </div>`;
+
+        Swal.fire({
+            title: "Package Invoice Preview",
+            html: invoiceHtml,
+            width: '900px',
+            showCloseButton: true,
+            showCancelButton: false,
+            confirmButtonColor: "#7c3aed",
+            confirmButtonText: '<i class="bi bi-download me-2"></i>Download PDF',
+            showDenyButton: true,
+            denyButtonColor: "#10b981",
+            denyButtonText: '<i class="bi bi-printer me-2"></i>Print',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Download PDF (you can implement this later)
+                Swal.fire({
+                    title: "PDF Download",
+                    text: "PDF download feature will be implemented soon.",
+                    icon: "info"
+                }).then(() => {
+                    window.location.href = "/Home/Homepage";
+                });
+            } else if (result.isDenied) {
+                // Print
+                window.print();
+                setTimeout(() => {
+                    window.location.href = "/Home/Homepage";
+                }, 1000);
+            } else {
+                // If closed with X button, redirect to homepage
+                window.location.href = "/Home/Homepage";
+            }
+        });
+    }
+</script>

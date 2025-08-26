@@ -26,23 +26,27 @@
          .ToList();
 
     var orderItemsJson = ViewBag.OrderItemsJson as string;
+    var menuPackages = ViewBag.MenuPackages as List<Capstone2.Models.MenuPackages> ?? new List<Capstone2.Models.MenuPackages>();
 }
 
 <style>
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .menu-bg {
         background: linear-gradient(135deg, #f8fafc 60%, #e0e7ef 100%);
         min-height: 100vh;
         border-radius: 12px;
         padding-bottom: 1rem;
     }
+
     .menu-header {
         display: flex;
         align-items: center;
         gap: 8px;
     }
+
     .menu-header-icon {
         font-size: 1.5rem;
         color: #0d6efd;
@@ -51,12 +55,377 @@
         padding: 4px 8px;
         box-shadow: 0 2px 8px rgba(13,110,253,0.08);
     }
+
     .menu-subtitle {
         color: #6c757d;
         font-size: 0.9rem;
         margin-top: -4px;
         margin-bottom: 10px;
     }
+
+    /* Toggle Styles */
+    .toggle-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin: 20px 0;
+        padding: 15px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .toggle-label {
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background: #e2e8f0;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+        .toggle-switch.active {
+            background: #0d6efd;
+        }
+
+    .toggle-slider {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 24px;
+        height: 24px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* Package Info Styles */
+    .package-info {
+        background: #f8fafc;
+        border: 2px solid #e0e7ef;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .package-info-title {
+        color: #0d6efd;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .package-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .package-detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem;
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e0e7ef;
+    }
+
+        .package-detail-item .detail-label {
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .package-detail-item .detail-value {
+            color: #0d6efd;
+            font-weight: 600;
+        }
+
+    .package-reminder-small {
+        margin-top: 0.2rem;
+        margin-left: 0.3rem;
+    }
+
+        .package-reminder-small .reminder-text-small {
+            color: #9ca3af;
+            font-size: 0.7rem;
+            font-style: italic;
+            opacity: 0.9;
+            line-height: 1.2;
+        }
+
+
+    .toggle-switch.active .toggle-slider {
+        transform: translateX(30px);
+    }
+
+    /* Package Styles */
+    .package-section {
+        display: none;
+    }
+
+        .package-section.active {
+            display: block;
+        }
+
+    .package-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 3px 16px 0 rgba(34, 41, 47, 0.08);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border: 2px solid #e0f2fe;
+        transition: all 0.3s ease;
+    }
+
+        .package-card:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 4px 20px 0 rgba(13, 110, 253, 0.15);
+        }
+
+    .package-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .package-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #344767;
+    }
+
+    .package-badge {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: #fff;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    /* Package Requirements */
+    .package-requirements {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid #0d6efd;
+    }
+
+    .requirements-title {
+        color: #344767;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+        font-size: 1rem;
+    }
+
+    .requirements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 0.8rem;
+    }
+
+    .requirement-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background: #fff;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .requirement-bonus {
+        background: #e0f2fe;
+        border: 1px solid #0d6efd;
+        color: #0d6efd;
+    }
+
+    .requirement-icon {
+        color: #0d6efd;
+        font-size: 1rem;
+    }
+
+    .requirement-text {
+        font-weight: 500;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .requirement-bonus .requirement-text {
+        color: #0d6efd;
+        font-weight: 600;
+    }
+
+    /* Package Selection */
+    .package-selection {
+        margin-bottom: 1.5rem;
+    }
+
+    .selection-title {
+        color: #344767;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+    }
+
+    .selection-category {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .category-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #64748b;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .selection-counter {
+        background: #e2e8f0;
+        color: #64748b;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+        .selection-counter.complete {
+            background: #10b981;
+            color: #fff;
+        }
+
+    .selection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+    }
+
+    .selection-item {
+        background: #fff;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.8rem;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .selection-item:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+        }
+
+        .selection-item.selected {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+    .selection-item-content {
+        text-align: center;
+        margin-bottom: 0.8rem;
+    }
+
+    .selection-item-name {
+        font-weight: 600;
+        color: #344767;
+        font-size: 0.9rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .selection-item-price {
+        font-weight: 700;
+        color: #0d6efd;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .selection-item-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .selection-item-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+        .selection-item-actions .btn {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+        }
+
+    /* Package Summary */
+    .package-summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        border: 1px solid #e2e8f0;
+    }
+
+    .package-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-text {
+        font-weight: 500;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+        .status-text.complete {
+            color: #10b981;
+        }
+
+    .status-icon {
+        font-size: 1.1rem;
+    }
+
+    .package-total {
+        font-weight: 700;
+        color: #0d6efd;
+        font-size: 1rem;
+    }
+
+    /* Package Actions */
+    .package-actions {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+        .package-actions .btn {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+
     .menu-section {
         background: #fff;
         border-radius: 12px;
@@ -64,6 +433,7 @@
         padding: 1rem;
         margin-bottom: 1rem;
     }
+
     .section-header {
         text-transform: uppercase;
         text-align: center;
@@ -74,6 +444,7 @@
         padding-bottom: 0.3rem;
         border-bottom: 2px solid #e0f2fe;
     }
+
     .category-header {
         color: #64748b;
         font-weight: 600;
@@ -82,6 +453,7 @@
         padding-left: 0.3rem;
         border-left: 2px solid #0d6efd;
     }
+
     .menu-card {
         border: 1px solid #e0e7ef;
         border-radius: 8px;
@@ -93,16 +465,19 @@
         transition: all 0.3s ease;
         margin-bottom: 0.6rem;
     }
-    .menu-card:hover {
-        box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-        transform: translateY(-1px);
-    }
+
+        .menu-card:hover {
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+
     .menu-item-name {
         font-weight: 600;
         color: #344767;
         font-size: 0.9rem;
         margin-bottom: 0.6rem;
     }
+
     .menu-item-image {
         width: 110px;
         height: 110px;
@@ -111,30 +486,35 @@
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         margin: 0.3rem 0;
     }
+
     .menu-item-price {
         font-weight: 700;
         color: #0d6efd;
         font-size: 1rem;
         margin: 0.6rem 0;
     }
+
     .quantity-selector {
         max-width: 120px;
         margin: 0.6rem auto 0 auto;
     }
-    .quantity-selector .btn {
-        border-radius: 4px;
-        font-weight: 600;
-        padding: 0.2rem 0.4rem;
-        font-size: 0.8rem;
-    }
-    .quantity-selector .form-control {
-        border-radius: 4px;
-        text-align: center;
-        font-weight: 600;
-        border: 1px solid #e0e7ef;
-        padding: 0.2rem;
-        font-size: 0.8rem;
-    }
+
+        .quantity-selector .btn {
+            border-radius: 4px;
+            font-weight: 600;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.8rem;
+        }
+
+        .quantity-selector .form-control {
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid #e0e7ef;
+            padding: 0.2rem;
+            font-size: 0.8rem;
+        }
+
     .order-summary {
         position: fixed;
         bottom: 15px;
@@ -142,6 +522,7 @@
         width: 300px;
         z-index: 1050;
     }
+
     .summary-panel {
         background: #fff;
         border-radius: 12px;
@@ -152,6 +533,7 @@
         max-height: 280px;
         overflow-y: auto;
     }
+
     .summary-header {
         font-weight: 600;
         color: #344767;
@@ -160,6 +542,7 @@
         padding-bottom: 0.3rem;
         border-bottom: 2px solid #f1f5f9;
     }
+
     .summary-item {
         display: flex;
         align-items: center;
@@ -167,23 +550,57 @@
         border-bottom: 1px solid #f1f5f9;
         gap: 0.2rem;
     }
-    .summary-item:last-child {
-        border-bottom: none;
-    }
-    .summary-item-name {
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+    .summary-item-details {
         flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .summary-item-name {
+        font-weight: 600;
+        color: #344767;
+        font-size: 0.85rem;
+    }
+
+    .summary-item-pax, .summary-item-quantity {
         font-weight: 500;
         color: #64748b;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
-    .summary-total {
+
+    .summary-item-bonus {
+        font-weight: 600;
+        color: #10b981;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+        .summary-item-bonus i {
+            color: #10b981;
+        }
+
+    .summary-item-total {
         font-weight: 700;
         color: #0d6efd;
         font-size: 0.9rem;
-        margin-top: 0.6rem;
-        padding-top: 0.6rem;
-        border-top: 2px solid #f1f5f9;
+        margin: 0 0.5rem;
+        min-width: 60px;
+        text-align: right;
     }
+
+    .summary-item-actions {
+        display: flex;
+        gap: 0.2rem;
+    }
+
     .btn-toggle-order {
         width: 100%;
         border-radius: 8px;
@@ -192,6 +609,7 @@
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         font-size: 0.9rem;
     }
+
     .btn-next {
         width: 100%;
         border-radius: 8px;
@@ -200,6 +618,7 @@
         box-shadow: 0 2px 6px 0 rgba(100, 118, 248, 0.10);
         font-size: 0.9rem;
     }
+
     .btn-summary {
         border-radius: 3px;
         font-size: 0.7rem;
@@ -211,16 +630,316 @@
         align-items: center;
         justify-content: center;
     }
+
     .no-image {
         color: #94a3b8;
         font-style: italic;
         font-size: 0.7rem;
     }
+
     .menu-grid {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
         justify-content: flex-start;
+    }
+    /* Package Selection Interface */
+    .package-selection-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+        .package-selection-header h3 {
+            color: #344767;
+            font-weight: 700;
+        }
+
+    .package-options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .package-option-card {
+        background: #fff;
+        border: 2px solid #e0f2fe;
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .package-option-card:hover {
+            border-color: #0d6efd;
+            box-shadow: 0 4px 20px 0 rgba(13, 110, 253, 0.15);
+            transform: translateY(-2px);
+        }
+
+    .package-option-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px solid #f1f5f9;
+    }
+
+    .package-option-name {
+        color: #344767;
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    .package-option-badge {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: #fff;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .package-option-summary {
+        margin-bottom: 1.5rem;
+    }
+
+    .package-option-pricing {
+        text-align: center;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+        border-radius: 8px;
+        border: 1px solid #e0f2fe;
+    }
+
+    .package-price {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #0d6efd;
+        margin-bottom: 0.3rem;
+    }
+
+        .package-price .price-amount {
+            display: block;
+            font-size: 2.2rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .package-price .price-unit {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+    .package-minimum {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        padding: 0.3rem 0.8rem;
+        background: #fff;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+    }
+
+        .package-minimum i {
+            color: #0d6efd;
+        }
+
+    .package-bonus {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        color: #0d6efd;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+        padding: 0.3rem 0.8rem;
+        background: #fff;
+        border-radius: 6px;
+        border: 2px solid #0d6efd;
+    }
+
+        .package-bonus i {
+            color: #0d6efd;
+        }
+
+    .package-option-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .package-option-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem;
+        background: #f8fafc;
+        border-radius: 6px;
+        border-left: 3px solid #0d6efd;
+    }
+
+        .package-option-item i {
+            color: #0d6efd;
+            font-size: 1rem;
+        }
+
+        .package-option-item span {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+    .package-option-actions {
+        text-align: center;
+    }
+
+    .select-package-btn {
+        width: 100%;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        border-radius: 8px;
+    }
+
+    /* Package Food Selection Screen */
+    .package-food-selection-header {
+        margin-bottom: 2rem;
+    }
+
+    .back-to-packages {
+        font-weight: 600;
+        border-radius: 8px;
+    }
+
+    .selected-package-name {
+        color: #344767;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .lechon-included-notice {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .lechon-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #f0fdf4;
+        border-radius: 6px;
+        border: 1px solid #10b981;
+    }
+
+        .lechon-item.selected {
+            background: #e0fdf4;
+            border: 1px solid #10b981;
+        }
+
+        .lechon-item .lechon-status {
+            font-size: 0.75rem;
+            color: #10b981;
+            font-weight: 600;
+        }
+    /* Free Lechon Notice */
+    .free-lechon-notice {
+        margin-bottom: 1.5rem;
+    }
+
+    .free-lechon-banner {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%);
+        border: 3px solid #f59e0b;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .free-lechon-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
+        }
+
+    @@keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .free-lechon-icon {
+        flex-shrink: 0;
+        width: 60px;
+        height: 60px;
+        background: #f59e0b;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    }
+
+        .free-lechon-icon i {
+            font-size: 2rem;
+            color: #fff;
+        }
+
+    .free-lechon-content {
+        flex-grow: 1;
+        text-align: center;
+    }
+
+    .free-lechon-text {
+        display: block;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #92400e;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    .free-lechon-desc {
+        display: block;
+        font-size: 1rem;
+        color: #a16207;
+        font-weight: 600;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
 </style>
 
@@ -235,116 +954,908 @@
         </div>
     </div>
 
-    <div style="gap: 20px;">
-        <!-- Left Column: Food Menu -->
-        <div style="flex: 2;">
-            @foreach (var dish in groupedByDishType)
-            {
-                <div class="menu-section">
-                    <h2 class="section-header">
-                        @(
-                        // Nicely format the header text:
-                        dish.DishType switch
-                        {
-                            "MAINDISH" => "Main Dish",
-                            "SIDEDISH" => "Side Dish",
-                            "DESSERTS" => "Desserts",
-                            "SOFTDRINKS" => "Soft Drinks",
-                            "RICE" => "Rice",
-                            _ => dish.DishType
-                        }
-                        )
-                    </h2>
+    <!-- Toggle Section -->
+    <div class="toggle-container">
+        <span class="toggle-label">Individual Foods</span>
+        <div class="toggle-switch" id="menuToggle">
+            <div class="toggle-slider"></div>
+        </div>
+        <span class="toggle-label">Packages</span>
+    </div>
 
-                    @foreach (var cat in dish.CategoryGroups)
+    <!-- Individual Foods Section -->
+    <div id="individualFoodsSection" class="menu-content-section active">
+        <div style="gap: 20px;">
+            <!-- Left Column: Food Menu -->
+            <div style="flex: 2;">
+                @foreach (var dish in groupedByDishType)
+                {
+                    <div class="menu-section">
+                        <h2 class="section-header">
+                            @(
+                                // Nicely format the header text:
+                                dish.DishType switch
+                                {
+                                    "MAINDISH" => "Main Dish",
+                                    "SIDEDISH" => "Side Dish",
+                                    "DESSERTS" => "Desserts",
+                                    "SOFTDRINKS" => "Soft Drinks",
+                                    "RICE" => "Rice",
+                                    _ => dish.DishType
+                                }
+                                )
+                        </h2>
+
+                        @foreach (var cat in dish.CategoryGroups)
+                        {
+                            <h3 class="category-header">@cat.Key</h3>
+                            <div class="menu-grid">
+                                @foreach (var item in cat)
+                                {
+                                    <div class="menu-card">
+                                        <div class="menu-item-name">@item.Name</div>
+                                        <div>
+                                            @if (!string.IsNullOrEmpty(item.ImagePath))
+                                            {
+                                                <img src="@item.ImagePath"
+                                                     alt="@item.Name"
+                                                     class="menu-item-image" />
+                                            }
+                                            else
+                                            {
+                                                <div class="no-image">No image available</div>
+                                            }
+                                        </div>
+                                        <div class="menu-item-price">₱@($"{item.Price:0.00}")</div>
+                                        <div class="input-group quantity-selector">
+                                            <button class="btn btn-outline-secondary decrement-item"
+                                                    data-target="#food@(item.MenuId)"
+                                                    type="button">
+                                                <i class="bi bi-dash"></i>
+                                            </button>
+                                            <input type="number"
+                                                   class="form-control text-center food-no"
+                                                   id="food@(item.MenuId)"
+                                                   value="0"
+                                                   min="1" />
+                                            <button class="btn btn-outline-secondary increment-item"
+                                                    data-target="#food@(item.MenuId)"
+                                                    type="button">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Packages Section -->
+    <div id="packagesSection" class="menu-content-section package-section">
+        <!-- Package Selection Screen -->
+        <div id="packageSelectionScreen">
+            <div class="package-selection-header">
+                <h3 class="text-center mb-4">
+                    <i class="bi bi-box me-2"></i>Choose Your Package
+                </h3>
+                <p class="text-center text-muted mb-4">Select a package that fits your catering needs</p>
+            </div>
+
+            <div class="package-options-grid">
+                @if (menuPackages.Any())
+                {
+                    @foreach (var package in menuPackages)
                     {
-                        <h3 class="category-header">@cat.Key</h3>
-                        <div class="menu-grid">
-                            @foreach (var item in cat)
-                            {
-                                <div class="menu-card">
-                                    <div class="menu-item-name">@item.Name</div>
-                                    <div>
-                                        @if (!string.IsNullOrEmpty(item.ImagePath))
-                                        {
-                                            <img src="@item.ImagePath"
-                                                 alt="@item.Name"
-                                                 class="menu-item-image" />
-                                        }
-                                        else
-                                        {
-                                            <div class="no-image">No image available</div>
-                                        }
+                        <div class="package-option-card" data-package-id="@package.MenuPackageId">
+                            <div class="package-option-header">
+                                <h4 class="package-option-name">@package.MenuPackageName</h4>
+                                <span class="package-option-badge">Package</span>
+                            </div>
+
+                            <div class="package-option-summary">
+                                <div class="package-option-pricing">
+                                    <div class="package-price">
+                                        <span class="price-amount">₱320</span>
+                                        <span class="price-unit">per person</span>
                                     </div>
-                                    <div class="menu-item-price">₱@($"{item.Price:0.00}")</div>
-                                    <div class="input-group quantity-selector">
-                                        <button class="btn btn-outline-secondary decrement-item"
-                                                data-target="#food@(item.MenuId)"
-                                                type="button">
-                                            <i class="bi bi-dash"></i>
-                                        </button>
-                                        <input type="number"
-                                               class="form-control text-center food-no"
-                                               id="food@(item.MenuId)"
-                                               value="0"
-                                               min="1" />
-                                        <button class="btn btn-outline-secondary increment-item"
-                                                data-target="#food@(item.MenuId)"
-                                                type="button">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
+                                    <div class="package-minimum">
+                                        <i class="bi bi-people"></i>
+                                        <span>Minimum @(package.MenuPackageId == 1 ? "60" : "120") pax</span>
                                     </div>
+                                    @if (package.MenuPackageId == 2)
+                                    {
+                                        <div class="package-bonus">
+                                            <i class="bi bi-gift"></i>
+                                            <span>1 Whole Lechon Included</span>
+                                        </div>
+                                    }
                                 </div>
-                            }
+
+                                <div class="package-option-items">
+                                    @if (package.NoOfMainDish > 0)
+                                    {
+                                        <div class="package-option-item">
+                                            <i class="bi bi-egg-fried"></i>
+                                            <span>@package.NoOfMainDish Main Dish(es)</span>
+                                        </div>
+                                    }
+                                    @if (package.NoOfSideDish > 0)
+                                    {
+                                        <div class="package-option-item">
+                                            <i class="bi bi-egg"></i>
+                                            <span>@package.NoOfSideDish Side Dish(es)</span>
+                                        </div>
+                                    }
+                                    @if (package.NoOfDessert > 0)
+                                    {
+                                        <div class="package-option-item">
+                                            <i class="bi bi-cake2"></i>
+                                            <span>@package.NoOfDessert Dessert(s)</span>
+                                        </div>
+                                    }
+                                    @if (package.NoOfRice > 0)
+                                    {
+                                        <div class="package-option-item">
+                                            <i class="bi bi-egg-fried"></i>
+                                            <span>@package.NoOfRice Rice</span>
+                                        </div>
+                                    }
+                                    @if (package.NoOfSoftDrinks > 0)
+                                    {
+                                        <div class="package-option-item">
+                                            <i class="bi bi-cup-straw"></i>
+                                            <span>@package.NoOfSoftDrinks Soft Drink(s)</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="package-option-actions">
+                                <button class="btn btn-primary select-package-btn" data-package-id="@package.MenuPackageId">
+                                    <i class="bi bi-check-circle me-2"></i>Select This Package
+                                </button>
+                            </div>
                         </div>
                     }
-                </div>
-            }
+                }
+                else
+                {
+                    <div class="package-option-card">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-box" style="font-size: 3rem; color: #cbd5e1;"></i>
+                            <h4 class="mt-3">No Packages Available</h4>
+                            <p>Packages are currently being prepared. Please check back later or order individual items.</p>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
 
-        <!-- Floating Order Button and Summary -->
-        <div class="order-summary">
-            <!-- Order Summary Panel (initially hidden above the button) -->
-            <div id="orderSummary" class="summary-panel" style="display: none;">
-                <div class="summary-header">
-                    <i class="bi bi-cart-check me-2"></i>Your Order
-                </div>
-                <ul id="orderList" class="list-unstyled mb-0">
-                    <li class="text-muted">No items ordered yet.</li>
-                </ul>
-                <div id="orderTotal" class="summary-total"></div>
-                <form id="submitOrderForm" method="post" action="/SelectedFoods/Index">
-                    <input type="hidden" name="OrderItemsJson" id="OrderItemsJson" />
-                    <input type="hidden" name="Order.TotalPayment" id="TotalPayment" />
-                    <button type="submit" class="btn btn-primary btn-next">
-                        <i class="bi bi-arrow-right me-2"></i>Next
-                    </button>
-                </form>
+        <!-- Package Food Selection Screen (Hidden by default) -->
+        <div id="packageFoodSelectionScreen" style="display: none;">
+            <div class="package-food-selection-header">
+                <button class="btn btn-outline-secondary back-to-packages mb-3">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Package Selection
+                </button>
+                <h3 class="selected-package-name mb-4"></h3>
             </div>
 
-            <!-- Button always fixed at bottom -->
-            <div class="text-end">
-                <button id="toggleOrder" class="btn btn-outline-primary btn-toggle-order">
-                    <i class="bi bi-cart me-2"></i>Show Order Summary
-                </button>
+            <div id="packageFoodSelectionContent">
+                <!-- Dynamic content will be loaded here -->
             </div>
+        </div>
+    </div>
+
+    <!-- Floating Order Button and Summary -->
+    <div class="order-summary">
+        <!-- Order Summary Panel (initially hidden above the button) -->
+        <div id="orderSummary" class="summary-panel" style="display: none;">
+            <div class="summary-header">
+                <i class="bi bi-cart-check me-2"></i>Your Order
+            </div>
+            <ul id="orderList" class="list-unstyled mb-0">
+                <li class="text-muted">No items ordered yet.</li>
+            </ul>
+            <div id="orderTotal" class="summary-total"></div>
+            <form id="submitOrderForm" method="post" action="/SelectedFoods/Index">
+                <input type="hidden" name="OrderItemsJson" id="OrderItemsJson" />
+                <input type="hidden" name="Order.TotalPayment" id="TotalPayment" />
+                <button type="submit" class="btn btn-primary btn-next">
+                    <i class="bi bi-arrow-right me-2"></i>Next
+                </button>
+            </form>
+        </div>
+
+        <!-- Button always fixed at bottom -->
+        <div class="text-end">
+            <button id="toggleOrder" class="btn btn-outline-primary btn-toggle-order">
+                <i class="bi bi-cart me-2"></i>Show Order Summary
+            </button>
         </div>
     </div>
 </div>
 
 <script>
     let order = {};
+    let selectedPackage = null;
+    let packageSelections = {};
+    let isPackageB = false; // Global variable for Package B detection
 
     $(function () {
+        // Initial state: show order summary (individual foods mode by default)
+        $("#orderSummary").show();
+        $("#toggleOrder").show();
+
+        // Toggle functionality
+        $("#menuToggle").click(function () {
+            const $toggle = $(this);
+            const $individualSection = $("#individualFoodsSection");
+            const $packagesSection = $("#packagesSection");
+            const $leftLabel = $toggle.siblings().first();
+            const $rightLabel = $toggle.siblings().last();
+            const $orderSummary = $("#orderSummary");
+            const $toggleOrder = $("#toggleOrder");
+
+            if ($toggle.hasClass("active")) {
+                // Switch to Individual Foods
+                $toggle.removeClass("active");
+                $individualSection.addClass("active").removeClass("package-section");
+                $packagesSection.removeClass("active").addClass("package-section");
+                $leftLabel.text("Individual Foods");
+                $rightLabel.text("Packages");
+
+                // Show order summary for individual foods
+                $orderSummary.show();
+                $toggleOrder.show();
+            } else {
+                // Switch to Packages
+                $toggle.addClass("active");
+                $packagesSection.addClass("active").removeClass("package-section");
+                $individualSection.removeClass("active").addClass("package-section");
+                $leftLabel.text("Packages");
+                $rightLabel.text("Individual Foods");
+
+                // Hide order summary for packages
+                $orderSummary.hide();
+                $toggleOrder.hide();
+            }
+        });
+
+        // Package selection functionality
+        let packageSelections = {};
+        let selectedPackage = null;
+
+        // Initialize package selections
+        $('.package-card').each(function () {
+            const packageId = $(this).data('package-id');
+            packageSelections[packageId] = {
+                mainDish: [],
+                sideDish: [],
+                dessert: [],
+                rice: [],
+                softDrinks: []
+            };
+        });
+
+        // Select package (Step 1)
+        $('.select-package-btn').click(function () {
+            const packageId = $(this).data('package-id');
+            const packageName = $(this).closest('.package-option-card').find('.package-option-name').text();
+
+            selectedPackage = {
+                id: packageId,
+                name: packageName
+            };
+
+            // Hide package selection screen, show food selection screen
+            $('#packageSelectionScreen').hide();
+            $('#packageFoodSelectionScreen').show();
+            $('.selected-package-name').text(`Customize Your ${packageName}`);
+
+            // Load the food selection interface for this package
+            loadPackageFoodSelection(packageId);
+        });
+
+        // Back to package selection
+        $('.back-to-packages').click(function () {
+            $('#packageFoodSelectionScreen').hide();
+            $('#packageSelectionScreen').show();
+            selectedPackage = null;
+        });
+
+        // Load package food selection interface
+        function loadPackageFoodSelection(packageId) {
+            const package = @Html.Raw(Json.Serialize(menuPackages));
+            const selectedPackageData = package.find(p => p.menuPackageId === packageId);
+
+            if (!selectedPackageData) return;
+
+            const minPax = packageId === 1 ? 60 : 120;
+            const packagePrice = 320;
+
+            // Check if this is Package B (the one with 120 pax minimum)
+            isPackageB = minPax === 120; // Set global variable
+
+            let html = `
+                    <div class="package-card" data-package-id="${packageId}">
+                        <div class="package-info">
+                            <h5 class="package-info-title">Package Details</h5>
+                            <div class="package-details">
+                                <div class="package-detail-item">
+                                    <span class="detail-label">Package:</span>
+                                    <span class="detail-value">${packageId === 1 ? 'Package A' : 'Package B'}</span>
+                                </div>
+                                <div class="package-detail-item">
+                                    <span class="detail-label">Number of People:</span>
+                                    <span class="detail-value">${minPax} pax (minimum)</span>
+                                    <div class="package-reminder-small">
+                                        <strong><small class="reminder-text-small">You can adjust this later in the order form</small></strong>
+                                    </div>
+                                </div>
+                                <div class="package-detail-item">
+                                    <span class="detail-label">Price per Person:</span>
+                                    <span class="detail-value">₱${packagePrice}</span>
+                                </div>
+                            </div>
+
+                            <!-- Hidden PAX input for internal use -->
+                            <input type="hidden" id="paxQuantity" value="${minPax}" data-package-id="${packageId}">
+                        </div>
+
+                        <div class="package-requirements">
+                            <h5 class="requirements-title">Package Requirements:</h5>
+                            <div class="requirements-grid">
+                                ${isPackageB ? `
+                                    <div class="requirement-item requirement-bonus">
+                                        <i class="bi bi-gift requirement-icon"></i>
+                                        <span class="requirement-text">1 Whole Lechon (Automatically Included)</span>
+                                    </div>
+                                ` : ''}
+                `;
+
+            if (selectedPackageData.noOfMainDish > 0) {
+                const mainDishText = isPackageB ?
+                    `${selectedPackageData.noOfMainDish} Main Dish(es) + 1 Free Lechon` :
+                    `Choose ${selectedPackageData.noOfMainDish} Main Dish(es)`;
+
+                html += `
+                        <div class="requirement-item">
+                            <i class="bi bi-egg-fried requirement-icon"></i>
+                            <span class="requirement-text">${mainDishText}</span>
+                        </div>
+                    `;
+            }
+            if (selectedPackageData.noOfSideDish > 0) {
+                html += `
+                        <div class="requirement-item">
+                            <i class="bi bi-egg requirement-icon"></i>
+                            <span class="requirement-text">Choose ${selectedPackageData.noOfSideDish} Side Dish(es)</span>
+                        </div>
+                    `;
+            }
+            if (selectedPackageData.noOfDessert > 0) {
+                html += `
+                        <div class="requirement-item">
+                            <i class="bi bi-cake2 requirement-icon"></i>
+                            <span class="requirement-text">Choose ${selectedPackageData.noOfDessert} Dessert(s)</span>
+                        </div>
+                    `;
+            }
+            if (selectedPackageData.noOfRice > 0) {
+                html += `
+                        <div class="requirement-item">
+                            <i class="bi bi-egg-fried requirement-icon"></i>
+                            <span class="requirement-text">Choose ${selectedPackageData.noOfRice} Rice</span>
+                        </div>
+                    `;
+            }
+            if (selectedPackageData.noOfSoftDrinks > 0) {
+                html += `
+                        <div class="requirement-item">
+                            <i class="bi bi-cup-straw requirement-icon"></i>
+                            <span class="requirement-text">Choose ${selectedPackageData.noOfSoftDrinks} Soft Drink(s)</span>
+                        </div>
+                    `;
+            }
+
+            html += `
+                            </div>
+                        </div>
+
+                        <div class="package-selection">
+                            <h5 class="selection-title">Select Your Items:</h5>
+                `;
+
+            // Main Dishes Selection
+            if (selectedPackageData.noOfMainDish > 0) {
+
+                const userSelectableMainDishes = selectedPackageData.noOfMainDish;
+
+                html += `
+                        <div class="selection-category">
+                            <h6 class="category-title">
+                                <i class="bi bi-egg-fried"></i> Main Dishes
+                                <span class="selection-counter" data-category="mainDish" data-max="${userSelectableMainDishes}">0/${userSelectableMainDishes}</span>
+                            </h6>
+                            <div class="selection-grid">
+                    `;
+
+                const mainDishes = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "MAINDISH").ToList()));
+                mainDishes.forEach(dish => {
+                    // Skip lechon from the main dish menu
+                    if (dish.name.toLowerCase().includes('lechon')) return;
+
+                    html += `
+                            <div class="selection-item" data-category="mainDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                <div class="selection-item-content">
+                                    <div class="selection-item-name">${dish.name}</div>
+                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                </div>
+                                <div class="selection-item-actions">
+                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="mainDish" data-dish-id="${dish.menuId}">
+                                        <i class="bi bi-plus"></i> Add
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="mainDish" data-dish-id="${dish.menuId}" style="display: none;">
+                                        <i class="bi bi-dash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+                    `;
+            }
+
+            // Side Dishes Selection
+            if (selectedPackageData.noOfSideDish > 0) {
+                html += `
+                        <div class="selection-category">
+                            <h6 class="category-title">
+                                <i class="bi bi-egg"></i> Side Dishes
+                                <span class="selection-counter" data-category="sideDish" data-max="${selectedPackageData.noOfSideDish}">0/${selectedPackageData.noOfSideDish}</span>
+                            </h6>
+                            <div class="selection-grid">
+                    `;
+
+                const sideDishes = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "SIDEDISH").ToList()));
+                sideDishes.forEach(dish => {
+                    html += `
+                            <div class="selection-item" data-category="sideDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                <div class="selection-item-content">
+                                    <div class="selection-item-name">${dish.name}</div>
+                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                </div>
+                                <div class="selection-item-actions">
+                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="sideDish" data-dish-id="${dish.menuId}">
+                                        <i class="bi bi-plus"></i> Add
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="sideDish" data-dish-id="${dish.menuId}" style="display: none;">
+                                        <i class="bi bi-dash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+                    `;
+            }
+
+            // Desserts Selection
+            if (selectedPackageData.noOfDessert > 0) {
+                html += `
+                        <div class="selection-category">
+                            <h6 class="category-title">
+                                <i class="bi bi-cake2"></i> Desserts
+                                <span class="selection-counter" data-category="dessert" data-max="${selectedPackageData.noOfDessert}">0/${selectedPackageData.noOfDessert}</span>
+                            </h6>
+                            <div class="selection-grid">
+                    `;
+
+                const desserts = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "DESSERTS").ToList()));
+                desserts.forEach(dish => {
+                    html += `
+                            <div class="selection-item" data-category="dessert" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                <div class="selection-item-content">
+                                    <div class="selection-item-name">${dish.name}</div>
+                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                </div>
+                                <div class="selection-item-actions">
+                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="dessert" data-dish-id="${dish.menuId}">
+                                        <i class="bi bi-plus"></i> Add
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="dessert" data-dish-id="${dish.menuId}" style="display: none;">
+                                        <i class="bi bi-dash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+                    `;
+            }
+
+            // Rice Selection
+            if (selectedPackageData.noOfRice > 0) {
+                html += `
+                        <div class="selection-category">
+                            <h6 class="category-title">
+                                <i class="bi bi-egg-fried"></i> Rice
+                                <span class="selection-counter" data-category="rice" data-max="${selectedPackageData.noOfRice}">0/${selectedPackageData.noOfRice}</span>
+                            </h6>
+                            <div class="selection-grid">
+                    `;
+
+                const riceItems = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "RICE").ToList()));
+                riceItems.forEach(dish => {
+                    html += `
+                            <div class="selection-item" data-category="rice" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                <div class="selection-item-content">
+                                    <div class="selection-item-name">${dish.name}</div>
+                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                </div>
+                                <div class="selection-item-actions">
+                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="rice" data-dish-id="${dish.menuId}">
+                                        <i class="bi bi-plus"></i> Add
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="rice" data-dish-id="${dish.menuId}" style="display: none;">
+                                        <i class="bi bi-dash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+                    `;
+            }
+
+            // Soft Drinks Selection
+            if (selectedPackageData.noOfSoftDrinks > 0) {
+                html += `
+                        <div class="selection-category">
+                            <h6 class="category-title">
+                                <i class="bi bi-cup-straw"></i> Soft Drinks
+                                <span class="selection-counter" data-category="softDrinks" data-max="${selectedPackageData.noOfSoftDrinks}">0/${selectedPackageData.noOfSoftDrinks}</span>
+                            </h6>
+                            <div class="selection-grid">
+                    `;
+
+                const softDrinks = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "SOFTDRINKS").ToList()));
+                softDrinks.forEach(dish => {
+                    html += `
+                            <div class="selection-item" data-category="softDrinks" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                <div class="selection-item-content">
+                                    <div class="selection-item-name">${dish.name}</div>
+                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                </div>
+                                <div class="selection-item-actions">
+                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="softDrinks" data-dish-id="${dish.menuId}">
+                                        <i class="bi bi-plus"></i> Add
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="softDrinks" data-dish-id="${dish.menuId}" style="display: none;">
+                                        <i class="bi bi-dash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+                    `;
+            }
+
+            html += `
+                        </div>
+
+                        <div class="package-summary">
+                            <div class="package-status" data-package-id="${packageId}">
+                                <span class="status-text">Package incomplete</span>
+                                <span class="status-icon text-warning"><i class="bi bi-exclamation-triangle"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="package-actions">
+                            <button class="btn btn-primary add-package-to-order"
+                                    data-package-id="${packageId}"
+                                    data-package-name="${selectedPackageData.menuPackageName}"
+                                    data-package-price="${packagePrice}"
+                                    disabled>
+                                <i class="bi bi-arrow-right me-2"></i>Proceed
+                            </button>
+                            <button class="btn btn-outline-secondary clear-package"
+                                    data-package-id="${packageId}">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Clear Selection
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+            $('#packageFoodSelectionContent').html(html);
+
+            // Re-attach event handlers for the dynamically loaded content
+            attachPackageEventHandlers();
+
+            // Initialize pax controls
+            // PAX is now fixed to package minimum, no controls needed
+        }
+
+        // Attach event handlers for package selection
+        function attachPackageEventHandlers() {
+            // Initialize package selections for this package
+            const packageId = selectedPackage.id;
+            if (!packageSelections[packageId]) {
+                packageSelections[packageId] = {
+                    mainDish: [],
+                    sideDish: [],
+                    dessert: [],
+                    rice: [],
+                    softDrinks: []
+                };
+
+                // For Package B, automatically add the free lechon
+                if (isPackageB) {
+                    packageSelections[packageId].mainDish.push({
+                        id: 'lechon',
+                        name: '1 Whole Lechon (Free Bonus)',
+                        isLechon: true
+                    });
+                }
+            }
+
+            // Add item to package
+            $(document).on('click', '.add-to-package', function () {
+                const $btn = $(this);
+                const packageId = $btn.data('package-id');
+                const category = $btn.data('category');
+                const dishId = $btn.data('dish-id');
+                const dishName = $btn.closest('.selection-item').data('dish-name');
+
+                const $selectionItem = $btn.closest('.selection-item');
+                const $counter = $(`.selection-counter[data-category="${category}"]`);
+                const maxAllowed = parseInt($counter.data('max'));
+
+                // For Package B main dishes, only count user-selected items (exclude lechon)
+                let currentUserCount;
+                if (isPackageB && category === 'mainDish') {
+                    currentUserCount = packageSelections[packageId][category].filter(item => !item.isLechon).length;
+                } else {
+                    currentUserCount = packageSelections[packageId][category].length;
+                }
+
+                if (currentUserCount >= maxAllowed) {
+                    alert(`You can only select ${maxAllowed} ${category.replace(/([A-Z])/g, ' $1').toLowerCase()} item(s) for this package.`);
+                    return;
+                }
+
+                // Add to package selections
+                packageSelections[packageId][category].push({
+                    id: dishId,
+                    name: dishName
+                });
+
+                // Update UI
+                $selectionItem.addClass('selected');
+                $btn.hide();
+                $selectionItem.find('.remove-from-package').show();
+
+                updatePackageCounter(packageId, category);
+                updatePackageStatus(packageId);
+            });
+
+            // Remove item from package
+            $(document).on('click', '.remove-from-package', function () {
+                const $btn = $(this);
+                const packageId = $btn.data('package-id');
+                const category = $btn.data('category');
+                const dishId = $btn.data('dish-id');
+
+                const $selectionItem = $btn.closest('.selection-item');
+
+                // Remove from package selections
+                packageSelections[packageId][category] = packageSelections[packageId][category].filter(item => item.id !== dishId);
+
+                // Update UI
+                $selectionItem.removeClass('selected');
+                $btn.hide();
+                $selectionItem.find('.add-to-package').show();
+
+                updatePackageCounter(packageId, category);
+                updatePackageStatus(packageId);
+            });
+
+            // Clear package selection
+            $(document).on('click', '.clear-package', function () {
+                const packageId = $(this).data('package-id');
+
+                // Clear all selections
+                packageSelections[packageId] = {
+                    mainDish: [],
+                    sideDish: [],
+                    dessert: [],
+                    rice: [],
+                    softDrinks: []
+                };
+
+                // For Package B, automatically add the free lechon back
+                if (isPackageB) {
+                    packageSelections[packageId].mainDish.push({
+                        id: 'lechon',
+                        name: '1 Whole Lechon (Free Bonus)',
+                        isLechon: true
+                    });
+                }
+
+                // Reset UI
+                const $packageCard = $(this).closest('.package-card');
+                $packageCard.find('.selection-item').removeClass('selected');
+                $packageCard.find('.add-to-package').show();
+                $packageCard.find('.remove-from-package').hide();
+
+                // Reset counters and status
+                $packageCard.find('.selection-counter').each(function () {
+                    const category = $(this).data('category');
+                    updatePackageCounter(packageId, category);
+                });
+
+                updatePackageStatus(packageId);
+
+                // Reset button
+                $packageCard.find('.add-package-to-order').prop('disabled', true);
+            });
+
+            // Add package to order
+            $(document).on('click', '.add-package-to-order', function () {
+                const packageId = $(this).data('package-id');
+                const packageName = $(this).data('package-name');
+                const packagePrice = $(this).data('package-price');
+                const paxQuantity = parseInt($('#paxQuantity').val());
+                const packageTotal = paxQuantity * packagePrice;
+
+                const package = packageSelections[packageId];
+
+                if (!package) return;
+
+                // Check if package is complete
+                let isComplete = true;
+                let totalItems = 0;
+
+                Object.keys(package).forEach(category => {
+                    const items = package[category];
+                    totalItems += items.length;
+
+                    const $counter = $(`.package-card[data-package-id="${packageId}"] .selection-counter[data-category="${category}"]`);
+                    const maxAllowed = parseInt($counter.data('max'));
+
+                    if (items.length < maxAllowed) {
+                        isComplete = false;
+                    }
+                });
+
+                if (!isComplete || totalItems === 0) {
+                    alert('Please complete the package selection before proceeding.');
+                    return;
+                }
+
+                // Store package data in localStorage for the new view
+                const packageData = {
+                    packageId: packageId,
+                    packageName: packageName,
+                    packagePrice: packagePrice,
+                    paxQuantity: paxQuantity,
+                    totalPrice: packageTotal,
+                    mainDish: package.mainDish || [],
+                    sideDish: package.sideDish || [],
+                    dessert: package.dessert || [],
+                    rice: package.rice || [],
+                    softDrinks: package.softDrinks || []
+                };
+
+                localStorage.setItem('selectedPackageData', JSON.stringify(packageData));
+
+                // Navigate to the SelectedPackageMenus view
+                window.location.href = '/ClientMenus/SelectedPackageMenus';
+            });
+        }
+
+        // Update package counter
+        function updatePackageCounter(packageId, category) {
+            const $counter = $(`.package-card[data-package-id="${packageId}"] .selection-counter[data-category="${category}"]`);
+            const currentCount = packageSelections[packageId][category].length;
+            const maxAllowed = parseInt($counter.data('max'));
+
+            // For Package B main dishes, only count user-selected items (exclude lechon)
+            let displayCount;
+            if (isPackageB && category === 'mainDish') {
+                const userSelectedCount = packageSelections[packageId][category].filter(item => !item.isLechon).length;
+                displayCount = userSelectedCount;
+            } else {
+                displayCount = currentCount;
+            }
+
+            $counter.text(`${displayCount}/${maxAllowed}`);
+
+            if (displayCount >= maxAllowed) {
+                $counter.addClass('complete');
+            } else {
+                $counter.removeClass('complete');
+            }
+        }
+
+        // Update package status
+        function updatePackageStatus(packageId) {
+            const package = packageSelections[packageId];
+            const $status = $(`.package-status[data-package-id="${packageId}"]`);
+            const $statusText = $status.find('.status-text');
+            const $statusIcon = $status.find('.status-icon');
+            const $addButton = $(`.add-package-to-order[data-package-id="${packageId}"]`);
+
+            let isComplete = true;
+            let totalItems = 0;
+
+            // Check if all required categories are filled
+            Object.keys(package).forEach(category => {
+                const items = package[category];
+                totalItems += items.length;
+
+                // Get the max allowed for this category from the package card
+                const $counter = $(`.package-card[data-package-id="${packageId}"] .selection-counter[data-category="${category}"]`);
+                const maxAllowed = parseInt($counter.data('max'));
+
+                // For Package B main dishes, account for the automatically included lechon
+                let requiredCount = maxAllowed;
+                if (isPackageB && category === 'mainDish') {
+                    // User needs to select maxAllowed dishes, lechon is automatically included
+                    const userSelectedCount = items.filter(item => !item.isLechon).length;
+                    if (userSelectedCount < requiredCount) {
+                        isComplete = false;
+                    }
+                } else {
+                    if (items.length < requiredCount) {
+                        isComplete = false;
+                    }
+                }
+            });
+
+            if (isComplete && totalItems > 0) {
+                $statusText.text('Package complete').addClass('complete');
+                $statusIcon.html('<i class="bi bi-check-circle text-success"></i>');
+                $addButton.prop('disabled', false);
+            } else {
+                $statusText.text('Package incomplete').removeClass('complete');
+                $statusIcon.html('<i class="bi bi-exclamation-triangle text-warning"></i>');
+                $addButton.prop('disabled', true);
+            }
+        }
+
+
+
+
         // Merge previous order if present
-        @if (!string.IsNullOrEmpty(orderItemsJson))
-        {
-            <text>
-            try {
-                let prevOrder = JSON.parse('@Html.Raw(orderItemsJson)');
-                prevOrder.forEach(item => {
-                    // Always use the latest price from the menu card
-                    let $input = $("#food" + item.MenuId);
+    @if (!string.IsNullOrEmpty(orderItemsJson))
+    {
+        <text>
+                    try {
+                        let prevOrder = JSON.parse('@Html.Raw(orderItemsJson)');
+                        prevOrder.forEach(item => {
+                        // Always use the latest price from the menu card
+                        let $input = $("#food" + item.MenuId);
                     let $card = $input.closest(".quantity-selector").parent();
                     let name = $card.find(".menu-item-name").text().trim();
                     let priceText = $card.find(".menu-item-price").text().replace("₱", "").trim();
@@ -356,23 +1867,23 @@
                             price: price,
                             quantity: item.Quantity
                         };
-                        setTimeout(() => {
-                            let $input = $("#food" + item.MenuId);
-                            if ($input.length) $input.val(item.Quantity);
-                        }, 0);
-                    }
-                });
-            } catch (e) { }
-            refreshOrderList();
-            </text>
-        }
-        
-        $(".increment-item").click(function () {
-            let inputSelector = $(this).data('target');
-            let $input = $(inputSelector);
-            $input.val(parseInt($input.val()) + 1);
-            updateOrder($input);
-        });
+                                setTimeout(() => {
+                        let $input = $("#food" + item.MenuId);
+                    if ($input.length) $input.val(item.Quantity);
+                                }, 0);
+                            }
+                        });
+                    } catch (e) { }
+                    refreshOrderList();
+        </text>
+    }
+
+            $(".increment-item").click(function () {
+                let inputSelector = $(this).data('target');
+                let $input = $(inputSelector);
+                $input.val(parseInt($input.val()) + 1);
+                updateOrder($input);
+            });
 
         $(".decrement-item").click(function () {
             let inputSelector = $(this).data('target');
@@ -400,7 +1911,7 @@
 
             const price = parseFloat(priceText);
             const quantity = parseInt($input.val());
-            
+
             console.log(name);
 
             if (!isNaN(price) && quantity > 0) {
@@ -428,65 +1939,117 @@
 
             keys.forEach(id => {
                 const item = order[id];
-                const total = item.quantity * item.price;
-                grandTotal += total;
 
-                // Render list item with +, –, Remove buttons
-                $orderList.append(`
-                    <li class="summary-item" data-id="${id}">
-                        <span class="summary-item-name">${item.name} x ${item.quantity}</span>
-                        <button class="btn btn-warning btn-sm btn-summary summary-minus">
-                            <i class="bi bi-dash"></i>
-                        </button>
-                        <button class="btn btn-success btn-sm btn-summary summary-plus">
-                            <i class="bi bi-plus"></i>
-                        </button>
-                        <button class="btn btn-danger btn-sm btn-summary summary-remove">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </li>
-                `);
+                if (item.type === 'package') {
+                    // Handle package items - show pax quantity and total package price
+                    grandTotal += item.totalPrice;
+
+                    $orderList.append(`
+                            <li class="summary-item" data-id="${id}">
+                                <div class="summary-item-details">
+                                    <span class="summary-item-name">${item.name}</span>
+                                    <span class="summary-item-pax">${item.quantity} pax × ₱${item.packagePrice}</span>
+                                    ${item.PackageId && item.PackageId === 2 ? '<span class="summary-item-bonus text-success"><i class="bi bi-gift"></i> Free Lechon Included</span>' : ''}
+                                </div>
+                                <div class="summary-item-total">₱${item.totalPrice.toLocaleString()}</div>
+                                <div class="summary-item-actions">
+                                    <button class="btn btn-danger btn-sm btn-summary summary-remove">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </li>
+                        `);
+                } else {
+                    // Handle individual food items
+                    const total = item.quantity * item.price;
+                    grandTotal += total;
+
+                    $orderList.append(`
+                            <li class="summary-item" data-id="${id}">
+                                <div class="summary-item-details">
+                                    <span class="summary-item-name">${item.name}</span>
+                                    <span class="summary-item-quantity">× ${item.quantity}</span>
+                                </div>
+                                <div class="summary-item-total">₱${total.toFixed(2)}</div>
+                                <div class="summary-item-actions">
+                                    <button class="btn btn-warning btn-sm btn-summary summary-minus">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <button class="btn btn-success btn-sm btn-summary summary-plus">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm btn-summary summary-remove">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </li>
+                        `);
+                }
             });
 
-            // $orderTotal.text(`Total: ₱${grandTotal.toFixed(2)}`);
+            if (grandTotal > 0) {
+                $orderTotal.text(`Total: ₱${grandTotal.toLocaleString()}`);
+            }
         }
 
         // Delegate clicks in the order summary
         $("#orderList")
             .on("click", ".summary-plus", function () {
                 const id = $(this).closest("li").data("id");
+                const item = order[id];
 
-                // update the order array
-                order[id].quantity++;
+                if (item.type === 'package') {
+                    // Handle package increment
+                    const packageId = item.PackageId;
+                    const $quantityInput = $(`.package-quantity-input[data-package-id="${packageId}"]`);
+                    item.quantity++;
+                    $quantityInput.val(item.quantity);
+                } else {
+                    // Handle individual food increment
+                    order[id].quantity++;
+                    $(`#food${id}`).val(order[id].quantity);
+                }
 
-                // push that change into the card's input
-                $(`#food${id}`).val(order[id].quantity);
-
-                // redraw the summary
                 refreshOrderList();
             })
             .on("click", ".summary-minus", function () {
                 const id = $(this).closest("li").data("id");
+                const item = order[id];
 
-                // decrement in our data, but never below 1
-                order[id].quantity = Math.max(1, order[id].quantity - 1);
+                if (item.type === 'package') {
+                    // Handle package decrement
+                    const packageId = item.PackageId;
+                    const $quantityInput = $(`.package-quantity-input[data-package-id="${packageId}"]`);
+                    item.quantity = Math.max(0, item.quantity - 1);
+                    $quantityInput.val(item.quantity);
 
-                // update the card
-                $(`#food${id}`).val(order[id].quantity);
+                    if (item.quantity === 0) {
+                        delete order[id];
+                    }
+                } else {
+                    // Handle individual food decrement
+                    order[id].quantity = Math.max(1, order[id].quantity - 1);
+                    $(`#food${id}`).val(order[id].quantity);
+                }
 
-                // redraw the summary
                 refreshOrderList();
             })
             .on("click", ".summary-remove", function () {
                 const id = $(this).closest("li").data("id");
+                const item = order[id];
 
-                // reset the card's input to 0
-                $(`#food${id}`).val(0);
+                if (item.type === 'package') {
+                    // Handle package removal
+                    const packageId = item.PackageId;
+                    const $quantityInput = $(`.package-quantity-input[data-package-id="${packageId}"]`);
+                    $quantityInput.val(0);
+                    delete order[id];
+                } else {
+                    // Handle individual food removal
+                    $(`#food${id}`).val(0);
+                    delete order[id];
+                }
 
-                // delete it from our data
-                delete order[id];
-
-                // redraw summary
                 refreshOrderList();
             });
 
@@ -496,8 +2059,8 @@
 
             $summary.slideToggle(200, function () {
                 const isVisible = $summary.is(":visible");
-                $button.html(isVisible ? 
-                    '<i class="bi bi-eye-slash me-2"></i>Hide Order Summary' : 
+                $button.html(isVisible ?
+                    '<i class="bi bi-eye-slash me-2"></i>Hide Order Summary' :
                     '<i class="bi bi-cart me-2"></i>Show Order Summary'
                 );
             });
@@ -507,6 +2070,7 @@
     $("#submitOrderForm").on("submit", function (e) {
         console.log(order);
         const items = [];
+        let grandTotal = 0;
 
         if (Object.keys(order).length === 0) {
             e.preventDefault();
@@ -515,15 +2079,60 @@
         }
 
         Object.keys(order).forEach(id => {
-            items.push({
-                MenuId: parseInt(id),
-                Name: order[id].name,
-                Price: order[id].price,
-                Quantity: order[id].quantity
-            });
+            const item = order[id];
+            if (item.type === 'package') {
+                // Handle package items - add each selected item individually with package info
+                grandTotal += item.totalPrice;
+
+                // For Package B, automatically add the free lechon
+                if (item.PackageId && item.PackageId === 2) {
+                    items.push({
+                        MenuId: 0, // Special ID for free lechon
+                        Name: "1 Whole Lechon (Package B Bonus)",
+                        Price: 0,
+                        Quantity: 1, // Only 1 lechon, not multiplied by pax
+                        Type: 'Package Bonus',
+                        PackageId: item.PackageId,
+                        PackageName: item.name,
+                        PackagePrice: item.packagePrice,
+                        PackageTotal: item.totalPrice,
+                        IsFreeLechon: true
+                    });
+                }
+
+                Object.keys(item.items).forEach(category => {
+                    item.items[category].forEach(selectedItem => {
+                        // Skip the automatically included lechon as it's handled separately
+                        if (selectedItem.isLechon) return;
+
+                        items.push({
+                            MenuId: selectedItem.id,
+                            Name: selectedItem.name,
+                            Price: 0, // Price is per-pax, not per item
+                            Quantity: 1, // Each food item counts as 1, not multiplied by pax
+                            Type: 'Package Item',
+                            PackageId: item.PackageId,
+                            PackageName: item.name,
+                            PackagePrice: item.packagePrice,
+                            PackageTotal: item.totalPrice
+                        });
+                    });
+                });
+            } else {
+                // Handle individual food items
+                const total = item.quantity * item.price;
+                grandTotal += total;
+                items.push({
+                    MenuId: parseInt(id),
+                    Name: item.name,
+                    Price: item.price,
+                    Quantity: item.quantity,
+                    Type: 'Individual'
+                });
+            }
         });
 
         $("#OrderItemsJson").val(JSON.stringify(items));
+        $("#TotalPayment").val(grandTotal);
     });
 </script>
-

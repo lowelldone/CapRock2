@@ -134,10 +134,6 @@ namespace Capstone2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaterialId"));
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("ChargePerItem")
                         .HasColumnType("decimal(18,2)");
 
@@ -377,7 +373,13 @@ namespace Capstone2.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"));
 
+                    b.Property<bool>("IsFreeLechon")
+                        .HasColumnType("bit");
+
                     b.Property<int>("MenuId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("MenuPackageId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -387,12 +389,23 @@ namespace Capstone2.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("PackagePrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("PackageTotal")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderDetailId");
 
                     b.HasIndex("MenuId");
+
+                    b.HasIndex("MenuPackageId");
 
                     b.HasIndex("OrderId");
 
@@ -438,6 +451,10 @@ namespace Capstone2.Migrations
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
+
+                    b.Property<string>("PaymentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PaymentId");
 
@@ -737,6 +754,10 @@ namespace Capstone2.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Capstone2.Models.MenuPackages", "MenuPackage")
+                        .WithMany()
+                        .HasForeignKey("MenuPackageId");
+
                     b.HasOne("Capstone2.Models.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
@@ -744,6 +765,8 @@ namespace Capstone2.Migrations
                         .IsRequired();
 
                     b.Navigation("Menu");
+
+                    b.Navigation("MenuPackage");
 
                     b.Navigation("Order");
                 });
