@@ -104,38 +104,89 @@ namespace Capstone2.Controllers
             if (order == null)
                 return NotFound();
 
-            // Remove all existing details and add new ones
-            _context.OrderDetails.RemoveRange(order.OrderDetails);
-            await _context.SaveChangesAsync();
+            bool isPackageOrder = order.OrderDetails.Any(od => od.MenuPackageId != null && od.PackagePrice != null);
 
-            double total = 0;
-            if (orderDetails != null)
+            // Remove all existing details and add new ones
+            if (isPackageOrder)
             {
-                foreach (var detail in orderDetails)
+                // For package, preserve package meta (first item carrying package info) and bonus lechon; clear all other items to avoid duplicates
+                var packageMeta = order.OrderDetails.FirstOrDefault(od => od.MenuPackageId != null && od.PackagePrice != null);
+                var bonusLechon = order.OrderDetails.Where(od => od.IsFreeLechon).ToList();
+
+                // Remove all non-bonus items (fresh rebuild from posted list)
+                var toRemove = order.OrderDetails.Where(od => !od.IsFreeLechon).ToList();
+                _context.OrderDetails.RemoveRange(toRemove);
+                await _context.SaveChangesAsync();
+
+                // Re-add posted items as package items with quantity 1
+                if (orderDetails != null)
                 {
-                    if (detail != null && detail.MenuId > 0)
+                    var seenMenuIds = new HashSet<int>();
+                    foreach (var detail in orderDetails)
                     {
-                        // Get the menu price from the database
-                        var menu = await _context.Menu.FindAsync(detail.MenuId);
-                        if (menu != null)
+                        if (detail != null && detail.MenuId > 0 && !seenMenuIds.Contains(detail.MenuId))
                         {
-                            total += menu.Price * detail.Quantity;
+                            seenMenuIds.Add(detail.MenuId);
+                            _context.OrderDetails.Add(new OrderDetail
+                            {
+                                MenuId = detail.MenuId,
+                                Name = detail.Name,
+                                Quantity = 1,
+                                OrderId = orderId,
+                                Type = "Package Item",
+                                MenuPackageId = packageMeta?.MenuPackageId,
+                                PackagePrice = packageMeta?.PackagePrice,
+                                PackageTotal = null,
+                                IsFreeLechon = false
+                            });
                         }
-                        _context.OrderDetails.Add(new OrderDetail
-                        {
-                            MenuId = detail.MenuId,
-                            Name = detail.Name,
-                            Quantity = detail.Quantity,
-                            OrderId = orderId
-                        });
                     }
                 }
+
+                await _context.SaveChangesAsync();
+
+                // Recalculate total: package base only (add-ons do not affect total)
+                var packagePrice = packageMeta?.PackagePrice ?? 0m;
+                double baseTotal = (double)packagePrice * order.NoOfPax;
+                var isRush = order.OrderDate.Date == order.CateringDate.Date;
+                order.TotalPayment = isRush ? baseTotal + (baseTotal * 0.10) : baseTotal;
+                _context.Orders.Update(order);
+                await _context.SaveChangesAsync();
             }
-            // Apply rush order fee if OrderDate and CateringDate are the same day
-            var isRush = order.OrderDate.Date == order.CateringDate.Date;
-            order.TotalPayment = isRush ? total + (total * 0.10) : total;
-            _context.Orders.Update(order);
-            await _context.SaveChangesAsync();
+            else
+            {
+                _context.OrderDetails.RemoveRange(order.OrderDetails);
+                await _context.SaveChangesAsync();
+
+                double total = 0;
+                if (orderDetails != null)
+                {
+                    foreach (var detail in orderDetails)
+                    {
+                        if (detail != null && detail.MenuId > 0)
+                        {
+                            // Get the menu price from the database
+                            var menu = await _context.Menu.FindAsync(detail.MenuId);
+                            if (menu != null)
+                            {
+                                total += menu.Price * detail.Quantity;
+                            }
+                            _context.OrderDetails.Add(new OrderDetail
+                            {
+                                MenuId = detail.MenuId,
+                                Name = detail.Name,
+                                Quantity = detail.Quantity,
+                                OrderId = orderId
+                            });
+                        }
+                    }
+                }
+                // Apply rush order fee if OrderDate and CateringDate are the same day
+                var isRushStd = order.OrderDate.Date == order.CateringDate.Date;
+                order.TotalPayment = isRushStd ? total + (total * 0.10) : total;
+                _context.Orders.Update(order);
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction("ViewOrder", "Customers", new { id = order.CustomerID });
         }

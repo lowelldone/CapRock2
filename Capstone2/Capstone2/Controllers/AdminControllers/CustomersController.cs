@@ -227,15 +227,52 @@ namespace Capstone2.Controllers.AdminControllers
 				.Include(o => o.Customer)
 				.Include(o => o.OrderDetails)
 					.ThenInclude(od => od.Menu)
-				.Include(o => o.HeadWaiter)
+                    .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.MenuPackage)
+                .Include(o => o.HeadWaiter)
 					.ThenInclude(hw => hw.User)
 				.FirstOrDefaultAsync(o => o.CustomerID == id.Value && !o.Customer.isDeleted && !o.isDeleted);
 
 			if (order == null)
 				return NotFound();
 
-			// Compute additional charges and remaining balance using strict allocation
-			var materialReturns = await _context.Set<MaterialReturn>()
+            // Determine base total considering package orders
+            var isPackageOrder = order.OrderDetails.Any(od => od.Type == "Package Item");
+            double baseTotal;
+
+            if (isPackageOrder)
+            {
+                // Prefer package total from detail; fallback to package price * pax; finally fallback to sum of menu prices
+                var pkgDetail = order.OrderDetails.FirstOrDefault(od => od.Type == "Package Item");
+                double pkgTotalFromDetail = order.OrderDetails
+                    .Where(od => od.Type == "Package Item" && od.PackageTotal.HasValue)
+                    .Select(od => (double)od.PackageTotal.Value)
+                    .FirstOrDefault();
+                double pkgPriceTimesPax = (pkgDetail?.PackagePrice.HasValue == true) ? (double)pkgDetail.PackagePrice.Value * order.NoOfPax : 0d;
+                double sumOfItems = order.OrderDetails.Sum(od => (od.Menu?.Price ?? 0) * od.Quantity);
+                baseTotal = pkgTotalFromDetail > 0 ? pkgTotalFromDetail : (pkgPriceTimesPax > 0 ? pkgPriceTimesPax : sumOfItems);
+            }
+            else
+            {
+                baseTotal = order.OrderDetails.Sum(od => (od.Menu?.Price ?? 0) * od.Quantity);
+            }
+
+            var rushFee = order.IsRushOrder ? baseTotal * 0.10 : 0d;
+
+            // If this is a package order and a rush order, ensure TotalPayment reflects the rush fee
+            if (isPackageOrder && order.IsRushOrder)
+            {
+                var desiredTotal = baseTotal + rushFee;
+                if (Math.Abs(order.TotalPayment - desiredTotal) > 0.005)
+                {
+                    order.TotalPayment = desiredTotal;
+                    _context.Orders.Update(order);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            // Compute additional charges and remaining balance using strict allocation
+            var materialReturns = await _context.Set<MaterialReturn>()
 				.Where(r => r.OrderId == order.OrderId)
 				.ToListAsync();
 
@@ -264,8 +301,6 @@ namespace Capstone2.Controllers.AdminControllers
 			ViewBag.HasPayments = existingPayments.Any();
 
 			// Rush order breakdown (base and fee)
-			var baseTotal = order.OrderDetails.Sum(od => (od.Menu?.Price ?? 0) * od.Quantity);
-			var rushFee = order.IsRushOrder ? baseTotal * 0.10 : 0d;
 			ViewBag.RushBaseTotal = baseTotal;
 			ViewBag.RushOrderFee = rushFee;
 			ViewBag.RushTotal = baseTotal + rushFee;

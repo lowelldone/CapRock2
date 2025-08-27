@@ -5,6 +5,7 @@
     var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
     bool isAdmin = ViewBag.IsAdmin ?? false;
     bool fromPast = ViewBag.FromPastOrders ?? false;
+    bool hasPackageItems = Model?.OrderDetails?.Any(od => !string.IsNullOrEmpty(od.Type)) == true;
 }
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
@@ -104,28 +105,53 @@
                     <thead>
                         <tr>
                             <th>Menu</th>
-                            <th>Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Subtotal</th>
+                            @if (!hasPackageItems)
+                            {
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Subtotal</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.OrderDetails)
                         {
-                            <tr>
-                                <td>
-                                    <div class="modern-name">@item.Name</div>
-                                </td>
-                                <td>
-                                    <div class="modern-info">@item.Quantity</div>
-                                </td>
-                                <td>
-                                    <div class="modern-info">₱@(item.Menu.Price.ToString("0.00"))</div>
-                                </td>
-                                <td>
-                                    <div class="modern-name">₱@((item.Menu.Price * item.Quantity).ToString("0.00"))</div>
-                                </td>
-                            </tr>
+                            var isPackageItem = !string.IsNullOrEmpty(item.Type);
+                            var isBonus = isPackageItem && item.Type == "Package Bonus";
+                            if (hasPackageItems)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="modern-name">
+                                            @item.Name
+                                            @if (isBonus)
+                                            {
+                                                <span class="badge bg-warning text-dark ms-1">Free</span>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                var unit = (decimal)(item.Menu?.Price ?? 0d);
+                                var qty = item.Quantity;
+                                var subtotal = unit * qty;
+                                <tr>
+                                    <td>
+                                        <div class="modern-name">@item.Name</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">@qty</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">₱@unit.ToString("0.00")</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-name">₱@subtotal.ToString("0.00")</div>
+                                    </td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
@@ -391,30 +417,53 @@
                                 <thead>
                                     <tr>
                                         <th>Menu</th>
-                                        <th class="text-end">Quantity</th>
-                                        <th class="text-end">Unit Price</th>
-                                        <th class="text-end">Subtotal</th>
+                                        @if (!hasPackageItems)
+                                        {
+                                            <th class="text-end">Quantity</th>
+                                            <th class="text-end">Unit Price</th>
+                                            <th class="text-end">Subtotal</th>
+                                        }
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var item in Model.OrderDetails)
                                     {
-                                        var unit = item.Menu?.Price ?? 0;
-                                        var sub = unit * item.Quantity;
-                                        <tr>
-                                            <td>
-                                                <div class="modern-name">@item.Name</div>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="modern-info">@item.Quantity</div>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="modern-info">₱@unit.ToString("N2")</div>
-                                            </td>
-                                            <td class="text-end">
-                                                <div class="modern-name">₱@sub.ToString("N2")</div>
-                                            </td>
-                                        </tr>
+                                        var isPackageItem = !string.IsNullOrEmpty(item.Type);
+                                        var isBonus = isPackageItem && item.Type == "Package Bonus";
+                                        if (hasPackageItems)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="modern-name">
+                                                        @item.Name
+                                                        @if (isBonus)
+                                                        {
+                                                            <span class="badge bg-warning text-dark ms-1">Free</span>
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            var unit = (double)(item.Menu?.Price ?? 0d);
+                                            var qty = item.Quantity;
+                                            var sub = unit * qty;
+                                            <tr>
+                                                <td>
+                                                    <div class="modern-name">@item.Name</div>
+                                                </td>
+                                                <td class="text-end">
+                                                    <div class="modern-info">@qty</div>
+                                                </td>
+                                                <td class="text-end">
+                                                    <div class="modern-info">₱@unit.ToString("N2")</div>
+                                                </td>
+                                                <td class="text-end">
+                                                    <div class="modern-name">₱@sub.ToString("N2")</div>
+                                                </td>
+                                            </tr>
+                                        }
                                     }
                                 </tbody>
                             </table>
