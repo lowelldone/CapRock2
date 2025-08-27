@@ -1079,35 +1079,30 @@
                                     @if (package.NoOfMainDish > 0)
                                     {
                                         <div class="package-option-item">
-                                            <i class="bi bi-egg-fried"></i>
                                             <span>@package.NoOfMainDish Main Dish(es)</span>
                                         </div>
                                     }
                                     @if (package.NoOfSideDish > 0)
                                     {
                                         <div class="package-option-item">
-                                            <i class="bi bi-egg"></i>
                                             <span>@package.NoOfSideDish Side Dish(es)</span>
                                         </div>
                                     }
                                     @if (package.NoOfDessert > 0)
                                     {
                                         <div class="package-option-item">
-                                            <i class="bi bi-cake2"></i>
                                             <span>@package.NoOfDessert Dessert(s)</span>
                                         </div>
                                     }
                                     @if (package.NoOfRice > 0)
                                     {
                                         <div class="package-option-item">
-                                            <i class="bi bi-egg-fried"></i>
                                             <span>@package.NoOfRice Rice</span>
                                         </div>
                                     }
                                     @if (package.NoOfSoftDrinks > 0)
                                     {
                                         <div class="package-option-item">
-                                            <i class="bi bi-cup-straw"></i>
                                             <span>@package.NoOfSoftDrinks Soft Drink(s)</span>
                                         </div>
                                     }
@@ -1341,7 +1336,6 @@
                             <div class="requirements-grid">
                                 ${isPackageB ? `
                                     <div class="requirement-item requirement-bonus">
-                                        <i class="bi bi-gift requirement-icon"></i>
                                         <span class="requirement-text">1 Whole Lechon (Automatically Included)</span>
                                     </div>
                                 ` : ''}
@@ -1354,7 +1348,6 @@
 
                 html += `
                         <div class="requirement-item">
-                            <i class="bi bi-egg-fried requirement-icon"></i>
                             <span class="requirement-text">${mainDishText}</span>
                         </div>
                     `;
@@ -1362,7 +1355,6 @@
             if (selectedPackageData.noOfSideDish > 0) {
                 html += `
                         <div class="requirement-item">
-                            <i class="bi bi-egg requirement-icon"></i>
                             <span class="requirement-text">Choose ${selectedPackageData.noOfSideDish} Side Dish(es)</span>
                         </div>
                     `;
@@ -1370,7 +1362,6 @@
             if (selectedPackageData.noOfDessert > 0) {
                 html += `
                         <div class="requirement-item">
-                            <i class="bi bi-cake2 requirement-icon"></i>
                             <span class="requirement-text">Choose ${selectedPackageData.noOfDessert} Dessert(s)</span>
                         </div>
                     `;
@@ -1378,7 +1369,6 @@
             if (selectedPackageData.noOfRice > 0) {
                 html += `
                         <div class="requirement-item">
-                            <i class="bi bi-egg-fried requirement-icon"></i>
                             <span class="requirement-text">Choose ${selectedPackageData.noOfRice} Rice</span>
                         </div>
                     `;
@@ -1386,7 +1376,6 @@
             if (selectedPackageData.noOfSoftDrinks > 0) {
                 html += `
                         <div class="requirement-item">
-                            <i class="bi bi-cup-straw requirement-icon"></i>
                             <span class="requirement-text">Choose ${selectedPackageData.noOfSoftDrinks} Soft Drink(s)</span>
                         </div>
                     `;
@@ -1408,7 +1397,7 @@
                 html += `
                         <div class="selection-category">
                             <h6 class="category-title">
-                                <i class="bi bi-egg-fried"></i> Main Dishes
+                                Main Dishes
                                 <span class="selection-counter" data-category="mainDish" data-max="${userSelectableMainDishes}">0/${userSelectableMainDishes}</span>
                             </h6>
                             <div class="selection-grid">
@@ -1448,7 +1437,7 @@
                 html += `
                         <div class="selection-category">
                             <h6 class="category-title">
-                                <i class="bi bi-egg"></i> Side Dishes
+                                Side Dishes
                                 <span class="selection-counter" data-category="sideDish" data-max="${selectedPackageData.noOfSideDish}">0/${selectedPackageData.noOfSideDish}</span>
                             </h6>
                             <div class="selection-grid">
@@ -1485,7 +1474,7 @@
                 html += `
                         <div class="selection-category">
                             <h6 class="category-title">
-                                <i class="bi bi-cake2"></i> Desserts
+                                Desserts
                                 <span class="selection-counter" data-category="dessert" data-max="${selectedPackageData.noOfDessert}">0/${selectedPackageData.noOfDessert}</span>
                             </h6>
                             <div class="selection-grid">
@@ -1522,7 +1511,7 @@
                 html += `
                         <div class="selection-category">
                             <h6 class="category-title">
-                                <i class="bi bi-egg-fried"></i> Rice
+                                Rice
                                 <span class="selection-counter" data-category="rice" data-max="${selectedPackageData.noOfRice}">0/${selectedPackageData.noOfRice}</span>
                             </h6>
                             <div class="selection-grid">
@@ -1559,7 +1548,7 @@
                 html += `
                         <div class="selection-category">
                             <h6 class="category-title">
-                                <i class="bi bi-cup-straw"></i> Soft Drinks
+                                Soft Drinks
                                 <span class="selection-counter" data-category="softDrinks" data-max="${selectedPackageData.noOfSoftDrinks}">0/${selectedPackageData.noOfSoftDrinks}</span>
                             </h6>
                             <div class="selection-grid">

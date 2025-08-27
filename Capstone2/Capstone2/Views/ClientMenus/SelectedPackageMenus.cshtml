@@ -64,27 +64,15 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Free Lechon Banner (for Package B) -->
-            <div id="freeLechonBanner" class="card shadow-lg border-0 mb-4" style="display: none;">
-                <div class="card-body text-center py-4">
-                    <div class="free-lechon-banner">
-                        <div class="free-lechon-icon">
-                            <i class="bi bi-gift-fill"></i>
-                        </div>
-                        <div class="free-lechon-content">
-                            <span class="free-lechon-text">🎉 FREE LECHON INCLUDED! 🎉</span>
-                            <span class="free-lechon-desc">1 Whole Lechon automatically added to your package</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="mt-3 p-3" style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px;">
+                <p class="mb-0" style="color: #92400e; font-size: 0.9rem;">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Reminder:</strong> You can modify this order when you're about to pay for it at our office.
+                </p>
             </div>
-
+            </br>
             <!-- Action Buttons -->
             <div class="text-center mb-4">
-                <button type="button" class="btn btn-outline-secondary btn-lg me-3" onclick="goBack()">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Menu
-                </button>
                 <button type="button" class="btn btn-primary btn-lg" onclick="proceedToOrder()">
                     <i class="bi bi-check-circle me-2"></i>Confirm Package
                 </button>
@@ -318,7 +306,6 @@
             const lechonText = packageData.paxQuantity >= 120 ? ' + 1 Free Lechon' : '';
             requirementsHtml += `
                     <div class="requirement-item">
-                        <i class="bi bi-egg-fried requirement-icon"></i>
                         <span>${mainDishCount} Main Dish(es)${lechonText}</span>
                     </div>
                 `;
@@ -327,7 +314,6 @@
         if (packageData.sideDish && packageData.sideDish.length > 0) {
             requirementsHtml += `
                     <div class="requirement-item">
-                        <i class="bi bi-egg requirement-icon"></i>
                         <span>${packageData.sideDish.length} Side Dish(es)</span>
                     </div>
                 `;
@@ -336,7 +322,6 @@
         if (packageData.dessert && packageData.dessert.length > 0) {
             requirementsHtml += `
                     <div class="requirement-item">
-                        <i class="bi bi-cake2 requirement-icon"></i>
                         <span>${packageData.dessert.length} Dessert(s)</span>
                     </div>
                 `;
@@ -345,7 +330,6 @@
         if (packageData.rice && packageData.rice.length > 0) {
             requirementsHtml += `
                     <div class="requirement-item">
-                        <i class="bi bi-egg-fried requirement-icon"></i>
                         <span>${packageData.rice.length} Rice</span>
                     </div>
                 `;
@@ -354,7 +338,6 @@
         if (packageData.softDrinks && packageData.softDrinks.length > 0) {
             requirementsHtml += `
                     <div class="requirement-item">
-                        <i class="bi bi-cup-straw requirement-icon"></i>
                         <span>${packageData.softDrinks.length} Soft Drink(s)</span>
                     </div>
                 `;
@@ -373,7 +356,7 @@
             itemsHtml += `
                     <div class="selected-category">
                         <h5 class="category-title">
-                            <i class="bi bi-egg-fried me-2"></i>Main Dishes
+                            Main Dishes
                         </h5>
                 `;
 
@@ -381,12 +364,8 @@
                 if (item.isLechon) {
                     itemsHtml += `
                             <div class="selected-item bonus-item">
-                                <div class="item-icon">
-                                    <i class="bi bi-gift"></i>
-                                </div>
                                 <div class="item-details">
                                     <div class="item-name">${item.name}</div>
-                                    <div class="item-category">Free Bonus Item</div>
                                 </div>
                                 <span class="bonus-badge">FREE!</span>
                             </div>
@@ -394,9 +373,6 @@
                 } else {
                     itemsHtml += `
                             <div class="selected-item">
-                                <div class="item-icon">
-                                    <i class="bi bi-egg-fried"></i>
-                                </div>
                                 <div class="item-details">
                                     <div class="item-name">${item.name}</div>
                                     <div class="item-category">Main Dish</div>
@@ -414,16 +390,13 @@
             itemsHtml += `
                     <div class="selected-category">
                         <h5 class="category-title">
-                            <i class="bi bi-egg me-2"></i>Side Dishes
+                            Side Dishes
                         </h5>
                 `;
 
             packageData.sideDish.forEach(item => {
                 itemsHtml += `
                         <div class="selected-item">
-                            <div class="item-icon">
-                                <i class="bi bi-egg"></i>
-                            </div>
                             <div class="item-details">
                                 <div class="item-name">${item.name}</div>
                                 <div class="item-category">Side Dish</div>
@@ -440,16 +413,13 @@
             itemsHtml += `
                     <div class="selected-category">
                         <h5 class="category-title">
-                            <i class="bi bi-cake2 me-2"></i>Desserts
+                            Desserts
                         </h5>
                 `;
 
             packageData.dessert.forEach(item => {
                 itemsHtml += `
                         <div class="selected-item">
-                            <div class="item-icon">
-                                <i class="bi bi-cake2"></i>
-                            </div>
                             <div class="item-details">
                                 <div class="item-name">${item.name}</div>
                                 <div class="item-category">Dessert</div>
@@ -466,16 +436,13 @@
             itemsHtml += `
                     <div class="selected-category">
                         <h5 class="category-title">
-                            <i class="bi bi-egg-fried me-2"></i>Rice
+                            Rice
                         </h5>
                 `;
 
             packageData.rice.forEach(item => {
                 itemsHtml += `
                         <div class="selected-item">
-                            <div class="item-icon">
-                                <i class="bi bi-egg-fried"></i>
-                            </div>
                             <div class="item-details">
                                 <div class="item-name">${item.name}</div>
                                 <div class="item-category">Rice</div>
@@ -492,16 +459,13 @@
             itemsHtml += `
                     <div class="selected-category">
                         <h5 class="category-title">
-                            <i class="bi bi-cup-straw me-2"></i>Soft Drinks
+                            Soft Drinks
                         </h5>
                 `;
 
             packageData.softDrinks.forEach(item => {
                 itemsHtml += `
                         <div class="selected-item">
-                            <div class="item-icon">
-                                <i class="bi bi-cup-straw"></i>
-                            </div>
                             <div class="item-details">
                                 <div class="item-name">${item.name}</div>
                                 <div class="item-category">Soft Drink</div>

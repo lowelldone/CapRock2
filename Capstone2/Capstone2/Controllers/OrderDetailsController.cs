@@ -112,6 +112,7 @@ namespace Capstone2.Controllers
                 // For package, preserve package meta (first item carrying package info) and bonus lechon; clear all other items to avoid duplicates
                 var packageMeta = order.OrderDetails.FirstOrDefault(od => od.MenuPackageId != null && od.PackagePrice != null);
                 var bonusLechon = order.OrderDetails.Where(od => od.IsFreeLechon).ToList();
+                var preservedFreeLechonMenuIds = new HashSet<int>(bonusLechon.Select(bl => bl.MenuId));
 
                 // Remove all non-bonus items (fresh rebuild from posted list)
                 var toRemove = order.OrderDetails.Where(od => !od.IsFreeLechon).ToList();
@@ -126,6 +127,10 @@ namespace Capstone2.Controllers
                     {
                         if (detail != null && detail.MenuId > 0 && !seenMenuIds.Contains(detail.MenuId))
                         {
+                            // Skip any posted free lechon (already preserved) and avoid duplicates by MenuId
+                            if (detail.IsFreeLechon || preservedFreeLechonMenuIds.Contains(detail.MenuId))
+                                continue;
+
                             seenMenuIds.Add(detail.MenuId);
                             _context.OrderDetails.Add(new OrderDetail
                             {
