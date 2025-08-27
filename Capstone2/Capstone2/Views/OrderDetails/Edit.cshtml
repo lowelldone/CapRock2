@@ -9,6 +9,9 @@
         packagePrice = Model.OrderDetails.FirstOrDefault(od => od.MenuPackageId != null && od.PackagePrice != null)?.PackagePrice ?? 0m;
     }
     decimal packageBaseTotal = isPackageOrder ? packagePrice * Model.NoOfPax : 0m;
+    bool isRush = Model.OrderDate.Date == Model.CateringDate.Date;
+    decimal rushFee = isPackageOrder && isRush ? packageBaseTotal * 0.10m : 0m;
+    decimal packageRushTotal = isPackageOrder ? packageBaseTotal + rushFee : 0m;
     var existingMenuIds = Model.OrderDetails.Select(od => od.MenuId).ToHashSet();
 }
 
@@ -204,6 +207,7 @@
                                                     <input type="hidden" name="orderDetails[@indexCounter].MenuId" value="@item.MenuId" />
                                                     <input type="hidden" name="orderDetails[@indexCounter].Name" value="@item.Name" />
                                                     <input type="hidden" name="orderDetails[@indexCounter].Quantity" value="1" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].IsFreeLechon" value="@(item.IsFreeLechon ? "true" : "false")" />
                                                     @item.Name
                                                 </td>
                                                 <td class="action-col text-end">
@@ -261,10 +265,6 @@
             <div class="total-section">
                 <h5 class="fw-bold mb-0">
                     Total Payment: ₱<span id="totalPayment">0.00</span>
-                    @if (isPackageOrder)
-                    {
-                        <small class="text-muted ms-2">(Package Base: ₱@packageBaseTotal.ToString("0.00"))</small>
-                    }
                 </h5>
             </div>
 
@@ -290,7 +290,7 @@
                                     {
                                         if (!isPackageOrder || (isPackageOrder && !existingMenuIds.Contains(menu.MenuId)))
                                         {
-                                            <option value="@menu.MenuId" data-name="@menu.Name">@menu.Name</option>
+                                            <option value="@menu.MenuId" data-name="@menu.Name" data-type="@menu.DishType">@menu.Name</option>
                                         }
                                     }
                                 </optgroup>
@@ -327,6 +327,7 @@
 @section Scripts {
     <script>
         var isPackage = @(isPackageOrder.ToString().ToLower());
+        var isRush = @(isRush.ToString().ToLower());
         function removeRow(btn) {
             $(btn).closest('tr').remove();
             // Re-index all rows
@@ -384,6 +385,7 @@
                     '<input type="hidden" name="orderDetails[' + index + '].MenuId" value="' + menuId + '" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].Name" value="' + menuName + '" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].Quantity" value="1" />' +
+                    '<input type="hidden" name="orderDetails[' + index + '].IsFreeLechon" value="false" />' +
                     menuName +
                     '</td>' +
                     '<td class="action-col text-end"><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">' +
@@ -417,6 +419,7 @@
                 '<input type="hidden" name="orderDetails[' + idx + '].OrderDetailId" value="0" />' +
                 '<input type="hidden" name="orderDetails[' + idx + '].MenuId" value="' + menuId + '" />' +
                 '<input type="hidden" name="orderDetails[' + idx + '].Name" value="' + menuName + '" />' +
+                '<input type="hidden" name="orderDetails[' + idx + '].IsFreeLechon" value="false" />' +
                 menuName +
                 '</td>' +
                 qtyCell +
@@ -441,9 +444,11 @@
 
             function recalculateTotal() {
                 var base = @((isPackageOrder ? packageBaseTotal : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                var rushFee = @((isPackageOrder ? rushFee : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 if (@(isPackageOrder.ToString().ToLower())) {
-                    // Package orders: total is based only on package base (no add-on menu prices)
-                    $('#totalPayment').text(base.toFixed(2));
+                    // Package orders: total is package base plus rush fee when applicable
+                    var totalPkg = base + (@(isRush.ToString().ToLower()) ? rushFee : 0);
+                    $('#totalPayment').text(totalPkg.toFixed(2));
                     return;
                 }
                 var total = 0;

@@ -180,9 +180,6 @@
 </style>
 
 <div class="container-fluid mt-2 px-2 confirm-bg">
-    <button type="button" class="btn btn-outline-secondary mt-3 btn-back" onclick="goBack()">
-        <i class="bi bi-arrow-left me-2"></i>Back
-    </button>
 
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
@@ -584,16 +581,6 @@
                             </div>
                         </div>
                         ${(packageData.paxQuantity || 0) >= 120 ? `
-                        <div class="confirm-row">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <span class="confirm-label">Bonus:</span>
-                                </div>
-                                <div class="col-md-8">
-                                    <span class="confirm-value text-success">🎉 FREE LECHON INCLUDED!</span>
-                                </div>
-                            </div>
-                        </div>
                         ` : ''}
                     </div>
                 </div>
