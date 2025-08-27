@@ -2,6 +2,14 @@
 @{
     ViewData["Title"] = "Edit Food Items";
     var menus = ViewBag.Menus as List<Capstone2.Models.Menu>;
+    bool isPackageOrder = Model?.OrderDetails?.Any(od => od.MenuPackageId != null) == true;
+    decimal packagePrice = 0m;
+    if (isPackageOrder)
+    {
+        packagePrice = Model.OrderDetails.FirstOrDefault(od => od.MenuPackageId != null && od.PackagePrice != null)?.PackagePrice ?? 0m;
+    }
+    decimal packageBaseTotal = isPackageOrder ? packagePrice * Model.NoOfPax : 0m;
+    var existingMenuIds = Model.OrderDetails.Select(od => od.MenuId).ToHashSet();
 }
 
 <style>
@@ -112,6 +120,16 @@
         padding: 0.5rem 1rem;
     }
 
+    /* Align action column consistently */
+    .action-col {
+        width: 160px;
+        text-align: right;
+        white-space: nowrap;
+    }
+    .table td.action-col, .table th.action-col {
+        vertical-align: middle;
+    }
+
     .total-section {
         background: #f8fafc;
         border-radius: 12px;
@@ -140,58 +158,152 @@
 
     <div class="edit-card">
         <form asp-action="Edit" asp-route-orderId="@Model.OrderId" method="post">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Menu</th>
-                        <th>Quantity</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="orderDetailsBody">
-                    @for (int i = 0; i < Model.OrderDetails.Count; i++)
-                    {
+            @if (isPackageOrder)
+            {
+                var dishTypes = new[] { "MAINDISH", "SIDEDISH", "DESSERTS", "RICE", "SOFTDRINKS" }; 
+                var typeTitles = new Dictionary<string, string> { {"MAINDISH","Main Dishes"}, {"SIDEDISH","Side Dishes"}, {"DESSERTS","Desserts"}, {"RICE","Rice"}, {"SOFTDRINKS","Soft Drinks"} }; 
+                var indexCounter = 0; 
+
+                @foreach (var dt in dishTypes)
+                {
+                    var itemsForType = Model.OrderDetails
+                        .Where(od => (od.Menu?.DishType ?? "") == dt)
+                        .OrderBy(od => od.Menu?.Category)
+                        .ThenBy(od => od.Name)
+                        .ToList();
+
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-2 text-primary">@typeTitles[dt]</h5>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Menu</th>
+                                    <th class="action-col text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="order-details-body" id="tbody-@dt">
+                                @if (!itemsForType.Any())
+                                {
+                                    <tr class="text-muted"><td colspan="2"><em>No items.</em></td></tr>
+                                }
+                                else
+                                {
+                                    var groups = itemsForType
+                                        .GroupBy(it => it.Menu?.Category ?? "")
+                                        .OrderBy(g => g.Key);
+                                    foreach (var grp in groups)
+                                    {
+                                        <tr class="table-light" data-category-header="@grp.Key">
+                                            <td colspan="2" class="fw-semibold">@grp.Key</td>
+                                        </tr>
+                                        foreach (var item in grp)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input type="hidden" name="orderDetails[@indexCounter].OrderDetailId" value="@item.OrderDetailId" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].MenuId" value="@item.MenuId" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].Name" value="@item.Name" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].Quantity" value="1" />
+                                                    @item.Name
+                                                </td>
+                                                <td class="action-col text-end">
+                                                    @if (!item.IsFreeLechon)
+                                                    {
+                                                        <button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
+                                                            <i class="bi bi-trash me-1"></i>Remove
+                                                        </button>
+                                                    }
+                                                </td>
+                                            </tr>
+                                            indexCounter++;
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>
-                                <input type="hidden" name="orderDetails[@i].OrderDetailId" value="@Model.OrderDetails[i].OrderDetailId" />
-                                <input type="hidden" name="orderDetails[@i].MenuId" value="@Model.OrderDetails[i].MenuId" />
-                                <input type="hidden" name="orderDetails[@i].Name" value="@Model.OrderDetails[i].Name" />
-                                @Model.OrderDetails[i].Name
-                            </td>
-                            <td>
-                                <input type="number" name="orderDetails[@i].Quantity" value="@Model.OrderDetails[i].Quantity" min="1" class="form-control" />
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
-                                    <i class="bi bi-trash me-1"></i>Remove
-                                </button>
-                            </td>
+                            <th>Menu</th>
+                            <th>Quantity</th>
+                            <th class="action-col text-end">Action</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody id="orderDetailsBody">
+                        @for (int i = 0; i < Model.OrderDetails.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="orderDetails[@i].OrderDetailId" value="@Model.OrderDetails[i].OrderDetailId" />
+                                    <input type="hidden" name="orderDetails[@i].MenuId" value="@Model.OrderDetails[i].MenuId" />
+                                    <input type="hidden" name="orderDetails[@i].Name" value="@Model.OrderDetails[i].Name" />
+                                    @Model.OrderDetails[i].Name
+                                </td>
+                                <td>
+                                    <input type="number" name="orderDetails[@i].Quantity" value="@Model.OrderDetails[i].Quantity" min="1" class="form-control" />
+                                </td>
+                                <td class="action-col text-end">
+                                    <button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
+                                        <i class="bi bi-trash me-1"></i>Remove
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
 
             <div class="total-section">
-                <h5 class="fw-bold mb-0">Total Payment: ₱<span id="totalPayment">0.00</span></h5>
+                <h5 class="fw-bold mb-0">
+                    Total Payment: ₱<span id="totalPayment">0.00</span>
+                    @if (isPackageOrder)
+                    {
+                        <small class="text-muted ms-2">(Package Base: ₱@packageBaseTotal.ToString("0.00"))</small>
+                    }
+                </h5>
             </div>
 
             <div class="add-section">
                 <h5 class="fw-bold mb-3">Add Menu Item</h5>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label class="form-label fw-semibold">Select Menu</label>
                         <select id="menuSelect" class="form-select">
                             <option value="">-- Select Menu --</option>
-                            @foreach (var menu in menus)
+                            @{
+                                var groupedMenus = menus
+                                    .OrderBy(m => m.DishType)
+                                    .ThenBy(m => m.Category)
+                                    .ThenBy(m => m.Name)
+                                    .GroupBy(m => new { m.DishType, m.Category });
+                            }
+                            @foreach (var group in groupedMenus)
                             {
-                                <option value="@menu.MenuId" data-name="@menu.Name">@menu.Name</option>
+                                var label = $"{group.Key.DishType} - {group.Key.Category}";
+                                <optgroup label="@label">
+                                    @foreach (var menu in group)
+                                    {
+                                        if (!isPackageOrder || (isPackageOrder && !existingMenuIds.Contains(menu.MenuId)))
+                                        {
+                                            <option value="@menu.MenuId" data-name="@menu.Name">@menu.Name</option>
+                                        }
+                                    }
+                                </optgroup>
                             }
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold">Quantity</label>
-                        <input type="number" id="menuQuantity" class="form-control" placeholder="Quantity" min="1" value="1" />
-                    </div>
+                    @if (!isPackageOrder)
+                    {
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Quantity</label>
+                            <input type="number" id="menuQuantity" class="form-control" placeholder="Quantity" min="1" value="1" />
+                        </div>
+                    }
                     <div class="col-md-3 d-flex align-items-end">
                         <button type="button" class="btn btn-success btn-add" onclick="addMenuItem()">
                             <i class="bi bi-plus-lg me-1"></i>Add Item
@@ -214,58 +326,109 @@
 
 @section Scripts {
     <script>
+        var isPackage = @(isPackageOrder.ToString().ToLower());
         function removeRow(btn) {
             $(btn).closest('tr').remove();
             // Re-index all rows
-            $('#orderDetailsBody tr').each(function (i, row) {
-                $(row).find('input, select').each(function () {
-                    var name = $(this).attr('name');
-                    if (name) {
-                        var newName = name.replace(/orderDetails\[\d+\]/, 'orderDetails[' + i + ']');
-                        $(this).attr('name', newName);
-                    }
+            if (isPackage) {
+                var idx = 0;
+                $('tbody.order-details-body tr').each(function () {
+                    var $row = $(this);
+                    if ($row.attr('data-category-header')) return; // skip category headers
+                    $row.find('input, select').each(function () {
+                        var name = $(this).attr('name');
+                        if (name) {
+                            var newName = name.replace(/orderDetails\[\d+\]/, 'orderDetails[' + idx + ']');
+                            $(this).attr('name', newName);
+                        }
+                    });
+                    idx++;
                 });
-            });
+            } else {
+                $('#orderDetailsBody tr').each(function (i, row) {
+                    $(row).find('input, select').each(function () {
+                        var name = $(this).attr('name');
+                        if (name) {
+                            var newName = name.replace(/orderDetails\[\d+\]/, 'orderDetails[' + i + ']');
+                            $(this).attr('name', newName);
+                        }
+                    });
+                });
+            }
             recalculateTotal(); // Call recalculateTotal after removing a row
         }
         function addMenuItem() {
             var menuId = $('#menuSelect').val();
-            var menuName = $('#menuSelect option:selected').data('name');
-            var quantity = parseInt($('#menuQuantity').val(), 10);
-            if (!menuId || !quantity || quantity < 1) return;
+            var $opt = $('#menuSelect option:selected');
+            var menuName = $opt.data('name');
+            if (!menuId) return;
 
-            // If the item already exists, merge by increasing its quantity
-            var existing = $('#orderDetailsBody input[name*=".MenuId"][value="' + menuId + '"]');
-            if (existing.length) {
-                var row = existing.closest('tr');
-                var qtyInput = row.find('input[name*=".Quantity"]');
-                var currentQty = parseInt(qtyInput.val(), 10) || 0;
-                qtyInput.val(currentQty + quantity);
-
-                // Reset controls and recalc
+            if (isPackage) {
+                // Determine target table based on dish type of selected menu
+                var dishType = $opt.data('type');
+                var $targetBody = $('#tbody-' + dishType);
+                if ($targetBody.length === 0) {
+                    $('#menuSelect').val('');
+                    return;
+                }
+                // Prevent adding duplicates only within the target dish table
+                var existingPkg = $targetBody.find('input[name*=".MenuId"][value="' + menuId + '"]');
+                if (existingPkg.length) {
+                    $('#menuSelect').val('');
+                    return;
+                }
+                var index = $('tbody.order-details-body tr').filter(function () { return !$(this).attr('data-category-header'); }).length; // global index excluding headers
+                var row = '<tr>' +
+                    '<td>' +
+                    '<input type="hidden" name="orderDetails[' + index + '].OrderDetailId" value="0" />' +
+                    '<input type="hidden" name="orderDetails[' + index + '].MenuId" value="' + menuId + '" />' +
+                    '<input type="hidden" name="orderDetails[' + index + '].Name" value="' + menuName + '" />' +
+                    '<input type="hidden" name="orderDetails[' + index + '].Quantity" value="1" />' +
+                    menuName +
+                    '</td>' +
+                    '<td class="action-col text-end"><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">' +
+                    '<i class="bi bi-trash me-1"></i>Remove' +
+                    '</button></td>' +
+                    '</tr>';
+                $targetBody.find('tr.text-muted').remove();
+                $targetBody.append(row);
                 $('#menuSelect').val('');
-                $('#menuQuantity').val(1);
                 recalculateTotal();
                 return;
             }
 
-            var index = $('#orderDetailsBody tr').length;
-            var row = `<tr>
-                                            <td><input type="hidden" name="orderDetails[${index}].MenuId" value="${menuId}" />
-                                                <input type="hidden" name="orderDetails[${index}].Name" value="${menuName}" />
-                                                ${menuName}</td>
-                                            <td><input type="number" name="orderDetails[${index}].Quantity" value="${quantity}" min="1" class="form-control" /></td>
-                                            <td><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
-                                                <i class="bi bi-trash me-1"></i>Remove
-                                            </button></td>
-                                        </tr>`;
-            $('#orderDetailsBody').append(row);
-
-            // Reset controls and recalc
-            $('#menuSelect').val('');
-            $('#menuQuantity').val(1);
-            recalculateTotal();
-        }
+            // Non-package: allow duplicates by merging quantity
+                var existing = $('#orderDetailsBody input[name*=".MenuId"][value="' + menuId + '"]');
+                if (existing.length) {
+                    var $row = existing.closest('tr');
+                    var $qty = $row.find('input[name*=".Quantity"]');
+                    var addQty = parseInt($('#menuQuantity').val(), 10) || 1;
+                    var cur = parseInt($qty.val(), 10) || 0;
+                    $qty.val(cur + addQty);
+                    $('#menuSelect').val('');
+                    $('#menuQuantity').val(1);
+                    recalculateTotal();
+                    return;
+                }
+            var idx = $('#orderDetailsBody tr').length;
+            var qtyCell = '<td><input type="number" name="orderDetails[' + idx + '].Quantity" value="' + (parseInt($("#menuQuantity").val(), 10) || 1) + '" min="1" class="form-control" /></td>';
+            var row2 = '<tr>' +
+                '<td>' +
+                '<input type="hidden" name="orderDetails[' + idx + '].OrderDetailId" value="0" />' +
+                '<input type="hidden" name="orderDetails[' + idx + '].MenuId" value="' + menuId + '" />' +
+                '<input type="hidden" name="orderDetails[' + idx + '].Name" value="' + menuName + '" />' +
+                menuName +
+                '</td>' +
+                qtyCell +
+                '<td class="action-col text-end"><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">' +
+                '<i class="bi bi-trash me-1"></i>Remove' +
+                '</button></td>' +
+                '</tr>';
+            $('#orderDetailsBody').append(row2);
+                $('#menuSelect').val('');
+                $('#menuQuantity').val(1);
+                recalculateTotal();
+            }
 
         // Create menu data object
         var menuData = {};
@@ -277,6 +440,12 @@
         }
 
             function recalculateTotal() {
+                var base = @((isPackageOrder ? packageBaseTotal : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                if (@(isPackageOrder.ToString().ToLower())) {
+                    // Package orders: total is based only on package base (no add-on menu prices)
+                    $('#totalPayment').text(base.toFixed(2));
+                    return;
+                }
                 var total = 0;
                 $('#orderDetailsBody tr').each(function () {
                     var menuId = parseInt($(this).find('input[name*=".MenuId"]').val());
@@ -291,7 +460,7 @@
             recalculateTotal();
         });
 
-        // Recalculate total when quantity changes
+        // Recalculate total when quantity changes (only for non-package)
         $('#orderDetailsBody').on('input', 'input[name*=".Quantity"]', function () {
             recalculateTotal();
         });

@@ -1251,6 +1251,15 @@
                 name: packageName
             };
 
+            // Reset any previous selections for this package
+            packageSelections[packageId] = {
+                mainDish: [],
+                sideDish: [],
+                dessert: [],
+                rice: [],
+                softDrinks: []
+            };
+
             // Hide package selection screen, show food selection screen
             $('#packageSelectionScreen').hide();
             $('#packageFoodSelectionScreen').show();
@@ -1264,7 +1273,12 @@
         $('.back-to-packages').click(function () {
             $('#packageFoodSelectionScreen').hide();
             $('#packageSelectionScreen').show();
+            // Clear ALL package selections to ensure fresh state for any package
+            packageSelections = {};
             selectedPackage = null;
+            isPackageB = false;
+            // Remove dynamic content to avoid any lingering UI state
+            $('#packageFoodSelectionContent').empty();
         });
 
         // Load package food selection interface
@@ -1279,6 +1293,22 @@
 
             // Check if this is Package B (the one with 120 pax minimum)
             isPackageB = minPax === 120; // Set global variable
+
+            // Always reset selections when (re)loading the food selection screen
+            packageSelections[packageId] = {
+                mainDish: [],
+                sideDish: [],
+                dessert: [],
+                rice: [],
+                softDrinks: []
+            };
+            if (isPackageB) {
+                packageSelections[packageId].mainDish.push({
+                    id: 'lechon',
+                    name: '1 Whole Lechon (Free Bonus)',
+                    isLechon: true
+                });
+            }
 
             let html = `
                     <div class="package-card" data-package-id="${packageId}">
@@ -1619,8 +1649,14 @@
                 }
             }
 
+            // Prevent duplicate bindings when returning from package selection
+            $(document).off('click.package', '.add-to-package');
+            $(document).off('click.package', '.remove-from-package');
+            $(document).off('click.package', '.clear-package');
+            $(document).off('click.package', '.add-package-to-order');
+
             // Add item to package
-            $(document).on('click', '.add-to-package', function () {
+            $(document).on('click.package', '.add-to-package', function () {
                 const $btn = $(this);
                 const packageId = $btn.data('package-id');
                 const category = $btn.data('category');
@@ -1660,7 +1696,7 @@
             });
 
             // Remove item from package
-            $(document).on('click', '.remove-from-package', function () {
+            $(document).on('click.package', '.remove-from-package', function () {
                 const $btn = $(this);
                 const packageId = $btn.data('package-id');
                 const category = $btn.data('category');
@@ -1681,7 +1717,7 @@
             });
 
             // Clear package selection
-            $(document).on('click', '.clear-package', function () {
+            $(document).on('click.package', '.clear-package', function () {
                 const packageId = $(this).data('package-id');
 
                 // Clear all selections
@@ -1721,7 +1757,7 @@
             });
 
             // Add package to order
-            $(document).on('click', '.add-package-to-order', function () {
+            $(document).on('click.package', '.add-package-to-order', function () {
                 const packageId = $(this).data('package-id');
                 const packageName = $(this).data('package-name');
                 const packagePrice = $(this).data('package-price');

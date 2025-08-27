@@ -108,13 +108,23 @@ namespace Capstone2.Controllers
             order.Customer.ContactNo = model.Customer.ContactNo;
             order.Customer.Address = model.Customer.Address;
 
-            // Recalculate base total from current order details
-            double baseTotal = 0;
-            if (order.OrderDetails != null)
+            // Recalculate base total
+            double baseTotal = 0d;
+            if (order.OrderDetails != null && order.OrderDetails.Any(od => od.MenuPackageId != null && od.PackagePrice != null))
             {
+                // Package order: base total = package price per pax * NoOfPax
+                var packagePrice = order.OrderDetails
+                    .Where(od => od.MenuPackageId != null && od.PackagePrice != null)
+                    .Select(od => od.PackagePrice.Value)
+                    .FirstOrDefault();
+                baseTotal = (double)packagePrice * order.NoOfPax;
+            }
+            else if (order.OrderDetails != null)
+            {
+                // Individual items order: sum of item price * quantity
                 foreach (var od in order.OrderDetails)
                 {
-                    var unit = od.Menu?.Price ?? 0;
+                    var unit = od.Menu?.Price ?? 0d;
                     baseTotal += unit * od.Quantity;
                 }
             }
