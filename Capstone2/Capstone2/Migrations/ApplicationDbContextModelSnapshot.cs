@@ -673,6 +673,10 @@ namespace Capstone2.Migrations
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
+                    b.Property<string>("TransactionOrderNumber")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
                     b.HasKey("ViewTransactionId");
 
                     b.HasIndex("SupplierId");

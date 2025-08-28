@@ -20,6 +20,33 @@ namespace Capstone2.Controllers.AdminControllers
             _context = context;
         }
 
+        private async Task<string> GenerateNextTransactionOrderNumberAsync(int supplierId)
+        {
+            var today = DateTime.Now.Date;
+            var prefix = today.ToString("yyyyMMdd");
+
+            var existingNumbers = await _context.ViewTransactions
+                .Where(vt => vt.SupplierId == supplierId && vt.TransactionOrderNumber != null && vt.TransactionOrderNumber.StartsWith(prefix))
+                .Select(vt => vt.TransactionOrderNumber!)
+                .ToListAsync();
+
+            int maxSeq = 0;
+            foreach (var num in existingNumbers)
+            {
+                if (num.Length >= 10)
+                {
+                    var seqStr = num.Substring(9);
+                    if (int.TryParse(seqStr, out int parsed))
+                    {
+                        if (parsed > maxSeq) maxSeq = parsed;
+                    }
+                }
+            }
+
+            int nextSeq = maxSeq + 1;
+            return $"{prefix}-{nextSeq:000}";
+        }
+
         // GET: Suppliers
         public async Task<IActionResult> Index(string searchString)
         {
@@ -177,6 +204,8 @@ namespace Capstone2.Controllers.AdminControllers
                 .Where(v => v.SupplierId == id)
                 .OrderByDescending(v => v.OrderDate)
                 .ToListAsync();
+
+            // No need to map per-PO numbers; use ViewTransaction.TransactionOrderNumber
 
             ViewBag.SupplierId = id;
             ViewBag.SupplierName = supplier.CompanyName;
@@ -344,13 +373,15 @@ namespace Capstone2.Controllers.AdminControllers
                 .Select(p => (decimal?)p.UnitPrice)
                 .FirstOrDefaultAsync() ?? material.Price;
 
+            var poNumber = await GenerateNextTransactionOrderNumberAsync(supplierId);
             // Create a ViewTransaction for this purchase order
             var viewTransaction = new ViewTransaction
             {
                 SupplierId = supplierId,
                 OrderDate = DateTime.Now,
                 ExpectedDate = scheduledDelivery,
-                Status = "Ordered"
+                Status = "Ordered",
+                TransactionOrderNumber = poNumber
             };
             _context.ViewTransactions.Add(viewTransaction);
 
@@ -414,12 +445,14 @@ namespace Capstone2.Controllers.AdminControllers
             }
 
             // Create a single ViewTransaction for this batch
+            var poNumberBatch = await GenerateNextTransactionOrderNumberAsync(supplierId);
             var viewTransaction = new ViewTransaction
             {
                 SupplierId = supplierId,
                 OrderDate = DateTime.Now,
                 ExpectedDate = scheduledDelivery,
-                Status = "Ordered"
+                Status = "Ordered",
+                TransactionOrderNumber = poNumberBatch
             };
             _context.ViewTransactions.Add(viewTransaction);
 
@@ -475,11 +508,9 @@ namespace Capstone2.Controllers.AdminControllers
 
             int qty = deliveredQuantity.HasValue && deliveredQuantity.Value > 0 ? deliveredQuantity.Value : po.Quantity;
 
-            // Update inventory
+            // Skip auto restock inventory update
             var material = await _context.Materials.FindAsync(po.MaterialId);
             if (material == null) return NotFound();
-            material.Quantity += qty;
-            _context.Materials.Update(material);
 
             // Mark PO delivered
             po.Status = "Delivered";
@@ -541,9 +572,9 @@ namespace Capstone2.Controllers.AdminControllers
             // AJAX support
             if (string.Equals(Request?.Headers["X-Requested-With"].ToString(), "XMLHttpRequest", StringComparison.OrdinalIgnoreCase))
             {
-                return Ok(new { success = true, message = "Purchase order received and inventory updated.", supplierId = po.SupplierId });
+                return Ok(new { success = true, message = "Purchase order received.", supplierId = po.SupplierId });
             }
-            TempData["SupplierSuccess"] = "Purchase order received and inventory updated.";
+            TempData["SupplierSuccess"] = "Purchase order received.";
             return RedirectToAction(nameof(ManageTransactions), new { id = po.SupplierId });
         }
 
@@ -568,12 +599,10 @@ namespace Capstone2.Controllers.AdminControllers
 
                 int qty = item.qty > 0 ? item.qty : po.Quantity;
 
+                // Skip auto restock inventory update
                 var material = await _context.Materials.FindAsync(po.MaterialId);
                 if (material == null)
                     continue;
-
-                material.Quantity += qty;
-                _context.Materials.Update(material);
 
                 po.Status = "Delivered";
                 po.ReceivedQuantity = qty;
@@ -642,95 +671,10 @@ namespace Capstone2.Controllers.AdminControllers
             // AJAX support
             if (string.Equals(Request?.Headers["X-Requested-With"].ToString(), "XMLHttpRequest", StringComparison.OrdinalIgnoreCase))
             {
-                return Ok(new { success = true, message = "Selected purchase orders received. Inventory updated.", supplierId });
+                return Ok(new { success = true, message = "Selected purchase orders received.", supplierId });
             }
-            TempData["SupplierSuccess"] = "Selected purchase orders received. Inventory updated.";
+            TempData["SupplierSuccess"] = "Selected purchase orders received.";
             return RedirectToAction(nameof(ManageTransactions), new { id = supplierId });
-        }
-
-        // ================== Auto-Restock ==================
-        // Automatically create purchase orders for materials below a threshold
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AutoRestock(int reorderPointConsumable = 50, int targetLevelConsumable = 200, int reorderPointNonConsumable = 5, int targetLevelNonConsumable = 10)
-        {
-            var materials = await _context.Materials.ToListAsync();
-            var created = new List<object>();
-            var createdSupplierIds = new HashSet<int>();
-            var supplierViewTransactions = new Dictionary<int, ViewTransaction>();
-            var orderDate = DateTime.Now;
-            var expectedDate = DateTime.Now.AddDays(3);
-
-            foreach (var mat in materials)
-            {
-                int rp = mat.IsConsumable ? reorderPointConsumable : reorderPointNonConsumable;
-                int target = mat.IsConsumable ? targetLevelConsumable : targetLevelNonConsumable;
-                if (mat.Quantity <= rp)
-                {
-                    int qtyToOrder = Math.Max(1, target - mat.Quantity);
-
-                    // Pick the cheapest supplier
-                    var bestOffer = await _context.SupplierMaterialPrices
-                        .Where(p => p.MaterialId == mat.MaterialId)
-                        .OrderBy(p => p.UnitPrice)
-                        .FirstOrDefaultAsync();
-
-                    if (bestOffer == null)
-                        continue; // No supplier price configured, skip
-
-                    // Create (or reuse) a single ViewTransaction per supplier for this auto-restock run
-                    if (!supplierViewTransactions.TryGetValue(bestOffer.SupplierId, out var viewTransaction))
-                    {
-                        viewTransaction = new ViewTransaction
-                        {
-                            SupplierId = bestOffer.SupplierId,
-                            OrderDate = orderDate,
-                            ExpectedDate = expectedDate,
-                            Status = "Ordered"
-                        };
-                        _context.ViewTransactions.Add(viewTransaction);
-                        supplierViewTransactions[bestOffer.SupplierId] = viewTransaction;
-                    }
-
-                    var po = new PurchaseOrder
-                    {
-                        SupplierId = bestOffer.SupplierId,
-                        MaterialId = mat.MaterialId,
-                        Quantity = qtyToOrder,
-                        UnitPrice = bestOffer.UnitPrice,
-                        ScheduledDelivery = expectedDate,
-                        Status = "Ordered",
-                        ViewTransaction = viewTransaction
-                    };
-                    _context.PurchaseOrders.Add(po);
-
-                    _context.SupplierTransactions.Add(new SupplierTransaction
-                    {
-                        SupplierId = bestOffer.SupplierId,
-                        MaterialId = mat.MaterialId,
-                        Quantity = qtyToOrder,
-                        UnitPrice = bestOffer.UnitPrice,
-                        OrderDate = orderDate,
-                        ExpectedDeliveryDate = expectedDate,
-                        Status = "Ordered",
-                        ViewTransaction = viewTransaction
-                    });
-
-                    created.Add(new { MaterialId = mat.MaterialId, MaterialName = mat.Name, Quantity = qtyToOrder, SupplierId = bestOffer.SupplierId, bestOffer.UnitPrice });
-                    createdSupplierIds.Add(bestOffer.SupplierId);
-                }
-            }
-
-            await _context.SaveChangesAsync();
-            TempData["SupplierSuccess"] = created.Any() ? $"Auto-restock created {created.Count} purchase order(s)." : "No materials at or below threshold.";
-
-            // Flow: AutoRestock -> ViewTransactions -> ManageTransactions
-            if (createdSupplierIds.Any())
-            {
-                var firstSupplierId = createdSupplierIds.First();
-                return RedirectToAction(nameof(ViewTransactions), new { id = firstSupplierId });
-            }
-            return RedirectToAction(nameof(Index));
         }
     }
 }

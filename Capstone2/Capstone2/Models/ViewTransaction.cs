@@ -20,6 +20,10 @@ namespace Capstone2.Models
 
         [Required]
         public string Status { get; set; } = "Ordered"; // Ordered, Delivered, Cancelled
+
+        // Human-readable order number for this transaction (per order), e.g., 20250131-001
+        [MaxLength(32)]
+        public string? TransactionOrderNumber { get; set; }
     }
 }
 

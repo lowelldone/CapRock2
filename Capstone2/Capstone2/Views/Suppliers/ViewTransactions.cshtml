@@ -82,6 +82,7 @@
                 <table class="modern-table">
                     <thead>
                         <tr>
+                            <th>PO Number</th>
                             <th>Ordered Date</th>
                             <th>Expected Date</th>
                             <th>Status</th>
@@ -92,6 +93,9 @@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                <td>
+                                    <div class="modern-name">@(string.IsNullOrWhiteSpace(item.TransactionOrderNumber) ? "-" : item.TransactionOrderNumber)</div>
+                                </td>
                                 <td>
                                     <div class="modern-info">@item.OrderDate.ToString("MM/dd/yyyy")</div>
                                 </td>
@@ -157,6 +161,17 @@
                 if (!loaded) {
                     await loadMaterials();
                     loaded = true;
+                }
+                // Set scheduled delivery to today's date and restrict past dates
+                const dateInput = modalEl.querySelector('input[name="scheduledDelivery"]');
+                if (dateInput) {
+                    const today = new Date();
+                    const yyyy = today.getFullYear();
+                    const mm = String(today.getMonth() + 1).padStart(2, '0');
+                    const dd = String(today.getDate()).padStart(2, '0');
+                    const todayStr = `${yyyy}-${mm}-${dd}`;
+                    dateInput.min = todayStr;
+                    dateInput.value = todayStr;
                 }
                 manualPoModal.show();
             });
