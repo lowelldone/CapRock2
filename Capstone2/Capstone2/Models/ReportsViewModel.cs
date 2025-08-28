@@ -72,9 +72,6 @@ namespace Capstone2.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public List<PreferencesItem> TopMenusByQuantity { get; set; } = new List<PreferencesItem>();
-        public List<PreferencesItem> TopMenusByRevenue { get; set; } = new List<PreferencesItem>();
-        public List<PreferencesItem> TopCategoriesByQuantity { get; set; } = new List<PreferencesItem>();
-        public List<PreferencesItem> TopCategoriesByRevenue { get; set; } = new List<PreferencesItem>();
         public List<AveragePaxItem> AveragePaxByOccasion { get; set; } = new List<AveragePaxItem>();
         public List<AveragePaxItem> AveragePaxByVenue { get; set; } = new List<AveragePaxItem>();
         public List<RepeatCustomerItem> RepeatCustomers { get; set; } = new List<RepeatCustomerItem>();

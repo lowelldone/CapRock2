@@ -602,32 +602,32 @@
                                 </div>
                             </li>
                             <li class="nav-item mb-2">
-                                <a class="nav-link sub-nav-link dropdown-toggle" data-bs-toggle="collapse" href="#reportsCollapse" role="button" aria-expanded="false" aria-controls="reportsCollapse">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#reportsCollapse" role="button" aria-expanded="false" aria-controls="reportsCollapse">
                                     <i class="bi bi-graph-up"></i>
                                     <span>Reports</span>
                                 </a>
                                 <div class="collapse" id="reportsCollapse">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Sales" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Sales">
+                                            <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Sales" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Sales">
                                                 <i class="bi bi-cash-stack"></i>
                                                 <span>Sales</span>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Trends" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Trends">
+                                            <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Trends" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Trends">
                                                 <i class="bi bi-activity"></i>
                                                 <span>Trends</span>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Preferences" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Preferences">
+                                            <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Preferences" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="Preferences">
                                                 <i class="bi bi-heart"></i>
                                                 <span>Preferences</span>
                                             </a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "InventoryTrends" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="InventoryTrends">
+                                            <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "InventoryTrends" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="InventoryTrends">
                                                 <i class="bi bi-box-seam"></i>
                                                 <span>Inventory Trends</span>
                                             </a>

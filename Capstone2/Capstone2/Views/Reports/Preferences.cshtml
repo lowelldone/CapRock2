@@ -56,42 +56,6 @@
             </ol>
         </div>
         <div class="report-card">
-            <h5 class="fw-bold mb-3">Top Menus (by Revenue)</h5>
-            <ol class="mb-0">
-                @foreach (var i in Model.TopMenusByRevenue)
-                {
-                    <li class="mb-1 d-flex justify-content-between">
-                        <span>@i.Name</span>
-                        <span class="text-muted">₱@i.Revenue.ToString("N2")</span>
-                    </li>
-                }
-            </ol>
-        </div>
-        <div class="report-card">
-            <h5 class="fw-bold mb-3">Top Categories (by Quantity)</h5>
-            <ol class="mb-0">
-                @foreach (var i in Model.TopCategoriesByQuantity)
-                {
-                    <li class="mb-1 d-flex justify-content-between">
-                        <span>@i.Name</span>
-                        <span class="text-muted">x @i.Quantity</span>
-                    </li>
-                }
-            </ol>
-        </div>
-        <div class="report-card">
-            <h5 class="fw-bold mb-3">Top Categories (by Revenue)</h5>
-            <ol class="mb-0">
-                @foreach (var i in Model.TopCategoriesByRevenue)
-                {
-                    <li class="mb-1 d-flex justify-content-between">
-                        <span>@i.Name</span>
-                        <span class="text-muted">₱@i.Revenue.ToString("N2")</span>
-                    </li>
-                }
-            </ol>
-        </div>
-        <div class="report-card">
             <h5 class="fw-bold mb-3">Average Pax by Occasion</h5>
             <table class="table">
                 <thead><tr><th>Occasion</th><th>Avg. Pax</th></tr></thead>
@@ -126,7 +90,7 @@
             @if (Model.RepeatCustomers.Any())
             {
                 <table class="table">
-                    <thead><tr><th>Customer</th><th>Orders</th></tr></thead>
+                    <thead><tr><th>Customer Name</th><th>Orders</th></tr></thead>
                     <tbody>
                         @foreach (var i in Model.RepeatCustomers)
                         {

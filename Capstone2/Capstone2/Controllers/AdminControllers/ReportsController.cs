@@ -278,30 +278,6 @@ namespace Capstone2.Controllers
                 .Take(10)
                 .ToList();
 
-            var topMenusByRevenue = orders
-                .SelectMany(o => o.OrderDetails)
-                .GroupBy(od => od.Menu?.Name ?? od.Name)
-                .Select(g => new PreferencesItem { Name = g.Key, Quantity = g.Sum(x => x.Quantity), Revenue = g.Sum(x => (x.Menu?.Price ?? 0) * x.Quantity) })
-                .OrderByDescending(x => x.Revenue)
-                .Take(10)
-                .ToList();
-
-            var topCategoriesByQty = orders
-                .SelectMany(o => o.OrderDetails)
-                .GroupBy(od => od.Menu?.Category ?? "Uncategorized")
-                .Select(g => new PreferencesItem { Name = g.Key, Quantity = g.Sum(x => x.Quantity), Revenue = g.Sum(x => (x.Menu?.Price ?? 0) * x.Quantity) })
-                .OrderByDescending(x => x.Quantity)
-                .Take(10)
-                .ToList();
-
-            var topCategoriesByRevenue = orders
-                .SelectMany(o => o.OrderDetails)
-                .GroupBy(od => od.Menu?.Category ?? "Uncategorized")
-                .Select(g => new PreferencesItem { Name = g.Key, Quantity = g.Sum(x => x.Quantity), Revenue = g.Sum(x => (x.Menu?.Price ?? 0) * x.Quantity) })
-                .OrderByDescending(x => x.Revenue)
-                .Take(10)
-                .ToList();
-
             var avgPaxByOccasion = orders
                 .GroupBy(o => o.Occasion)
                 .Select(g => new AveragePaxItem { Name = g.Key, AveragePax = g.Average(x => x.NoOfPax) })
@@ -331,9 +307,6 @@ namespace Capstone2.Controllers
                 StartDate = start,
                 EndDate = end,
                 TopMenusByQuantity = topMenusByQty,
-                TopMenusByRevenue = topMenusByRevenue,
-                TopCategoriesByQuantity = topCategoriesByQty,
-                TopCategoriesByRevenue = topCategoriesByRevenue,
                 AveragePaxByOccasion = avgPaxByOccasion,
                 AveragePaxByVenue = avgPaxByVenue,
                 RepeatCustomers = repeatCustomers

@@ -55,10 +55,6 @@
             </div>
         </div>
         <div class="modern-action-buttons">
-            <button type="button" class="modern-action-btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#autoRestockModal">
-                <i class="bi bi-lightning-charge"></i>
-                Auto Restock
-            </button>
             <a asp-action="Create" class="modern-action-btn btn-primary">
                 <i class="bi bi-plus-lg"></i>
                 Add New Supplier
@@ -141,51 +137,6 @@
                     }
                 </tbody>
             </table>
-        </div>
-    </div>
-
-    <!-- Auto Restock Modal -->
-    <div class="modal fade" id="autoRestockModal" tabindex="-1" aria-labelledby="autoRestockLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form asp-controller="Suppliers" asp-action="AutoRestock" method="post" id="autoRestockForm">
-                    @Html.AntiForgeryToken()
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="autoRestockLabel">
-                            <i class="bi bi-lightning-charge"></i> Auto Restock
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="modern-form-label">Consumable Restock Level</label>
-                                <input type="number" name="reorderPointConsumable" class="modern-form-control" value="1000" min="1" required />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="modern-form-label">Consumable Target Level</label>
-                                <input type="number" name="targetLevelConsumable" class="modern-form-control" value="1500" min="1" required />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="modern-form-label">Consumable Restock Level</label>
-                                <input type="number" name="reorderPointNonConsumable" class="modern-form-control" value="1000" min="1" required />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="modern-form-label">Non-consumable Target Level</label>
-                                <input type="number" name="targetLevelNonConsumable" class="modern-form-control" value="1500" min="1" required />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="modern-action-btn btn-outline-secondary" data-bs-dismiss="modal">
-                            <i class="bi bi-x-lg"></i> Cancel
-                        </button>
-                        <button type="submit" class="modern-action-btn btn-success">
-                            <i class="bi bi-lightning-charge"></i> Run Auto Restock
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>
