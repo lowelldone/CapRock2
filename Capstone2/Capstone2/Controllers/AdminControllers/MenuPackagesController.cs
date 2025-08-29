@@ -36,12 +36,18 @@ namespace Capstone2.Controllers.AdminControllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MenuPackageId,MenuPackageName,NoOfMainDish,NoOfSideDish,NoOfDessert,NoOfRice,NoOfSoftDrinks")] MenuPackages menuPackages)
+        public async Task<IActionResult> Create([Bind("MenuPackageId,MenuPackageName,Price,NoOfMainDish,NoOfSideDish,NoOfDessert,NoOfRice,NoOfSoftDrinks")] MenuPackages menuPackages)
         {
             // Check for blank inputs
             if (string.IsNullOrWhiteSpace(menuPackages.MenuPackageName))
             {
                 ModelState.AddModelError("MenuPackageName", "Package name is required.");
+            }
+
+            // Validate Price (must be non-negative)
+            if (menuPackages.Price < 0)
+            {
+                ModelState.AddModelError("Price", "Price must be zero or greater.");
             }
 
             // Check for duplicate package names
@@ -122,7 +128,7 @@ namespace Capstone2.Controllers.AdminControllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MenuPackageId,MenuPackageName,NoOfMainDish,NoOfSideDish,NoOfDessert,NoOfRice,NoOfSoftDrinks")] MenuPackages menuPackages)
+        public async Task<IActionResult> Edit(int id, [Bind("MenuPackageId,MenuPackageName,Price,NoOfMainDish,NoOfSideDish,NoOfDessert,NoOfRice,NoOfSoftDrinks")] MenuPackages menuPackages)
         {
             if (id != menuPackages.MenuPackageId)
             {
@@ -146,7 +152,11 @@ namespace Capstone2.Controllers.AdminControllers
                 }
             }
 
-            // Validate quantities (must be non-negative)
+            // Validate Price and quantities (must be non-negative)
+            if (menuPackages.Price < 0)
+            {
+                ModelState.AddModelError("Price", "Price must be zero or greater.");
+            }
             if (menuPackages.NoOfMainDish < 0)
             {
                 ModelState.AddModelError("NoOfMainDish", "Number of main dishes cannot be negative.");

@@ -82,6 +82,8 @@ namespace Capstone2.Controllers
             var order = await _context.Orders
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Menu)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.MenuPackage)
                 .Include(o => o.Customer)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
@@ -100,17 +102,19 @@ namespace Capstone2.Controllers
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Menu)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.MenuPackage)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null)
                 return NotFound();
 
-            bool isPackageOrder = order.OrderDetails.Any(od => od.MenuPackageId != null && od.PackagePrice != null);
+            bool isPackageOrder = order.OrderDetails.Any(od => od.MenuPackageId != null);
 
             // Remove all existing details and add new ones
             if (isPackageOrder)
             {
                 // For package, preserve package meta (first item carrying package info) and bonus lechon; clear all other items to avoid duplicates
-                var packageMeta = order.OrderDetails.FirstOrDefault(od => od.MenuPackageId != null && od.PackagePrice != null);
+                var packageMeta = order.OrderDetails.FirstOrDefault(od => od.MenuPackageId != null);
                 var bonusLechon = order.OrderDetails.Where(od => od.IsFreeLechon).ToList();
                 var preservedFreeLechonMenuIds = new HashSet<int>(bonusLechon.Select(bl => bl.MenuId));
 
@@ -143,7 +147,7 @@ namespace Capstone2.Controllers
                                 OrderId = orderId,
                                 Type = typeValue,
                                 MenuPackageId = packageMeta?.MenuPackageId,
-                                PackagePrice = packageMeta?.PackagePrice,
+                                PackagePrice = packageMeta?.MenuPackage != null ? (decimal?)Convert.ToDecimal(packageMeta.MenuPackage.Price) : packageMeta?.PackagePrice,
                                 PackageTotal = null,
                                 IsFreeLechon = false
                             });
@@ -153,9 +157,11 @@ namespace Capstone2.Controllers
 
                 await _context.SaveChangesAsync();
 
-                // Recalculate total: package base + rush fee (if applicable) + prices of newly added items
-                var packagePrice = packageMeta?.PackagePrice ?? 0m;
-                double baseTotal = (double)packagePrice * order.NoOfPax;
+                // Recalculate total: (package base + extras) + rush fee (if applicable)
+                // Prefer live MenuPackage price if available
+                double livePackagePrice = packageMeta?.MenuPackage != null ? packageMeta.MenuPackage.Price : 0d;
+                double effectivePrice = livePackagePrice > 0d ? livePackagePrice : (double)(packageMeta?.PackagePrice ?? 0m);
+                double baseFromPackage = effectivePrice * order.NoOfPax;
                 // Sum persisted extras by Type to be robust when re-editing
                 double extrasTotal = 0d;
                 await _context.Entry(order).Collection(o => o.OrderDetails).LoadAsync();
@@ -170,9 +176,8 @@ namespace Capstone2.Controllers
                         }
                     }
                 }
-                var isRush = order.OrderDate.Date == order.CateringDate.Date;
-                var rushFee = isRush ? baseTotal * 0.10 : 0d;
-                order.TotalPayment = baseTotal + rushFee + extrasTotal;
+                var pricing = Capstone2.Helpers.OrderPricing.Compute(order, _context);
+                order.TotalPayment = pricing.Total;
                 _context.Orders.Update(order);
                 await _context.SaveChangesAsync();
             }

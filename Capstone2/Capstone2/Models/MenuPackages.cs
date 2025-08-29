@@ -11,6 +11,10 @@ namespace Capstone2.Models
         public string MenuPackageName { get; set; }
 
         [Required]
+        [Range(0, double.MaxValue)]
+        public double Price { get; set; }
+
+        [Required]
         public int NoOfMainDish { get; set; }
         
         public int? NoOfSideDish { get; set; }

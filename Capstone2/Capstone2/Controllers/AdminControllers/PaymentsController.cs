@@ -394,7 +394,7 @@ namespace Capstone2.Controllers.AdminControllers
 
 
         // GET: Payments/PaymentHistory/5
-        public async Task<IActionResult> PaymentHistory(int? id)
+        public async Task<IActionResult> PaymentHistory(int? id, bool? fromPastOrders)
         {
             if (id == null)
                 return NotFound();
@@ -429,6 +429,7 @@ namespace Capstone2.Controllers.AdminControllers
             ViewBag.TotalPaid = totalPaid;
             ViewBag.AppliedPaidToBase = appliedPaidToBase;
 
+            ViewBag.FromPastOrders = fromPastOrders ?? false;
             return View(order);
         }
     }
