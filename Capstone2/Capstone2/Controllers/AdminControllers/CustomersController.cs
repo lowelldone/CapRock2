@@ -259,13 +259,14 @@ namespace Capstone2.Controllers.AdminControllers
 
             var rushFee = order.IsRushOrder ? baseTotal * 0.10 : 0d;
 
-            // If this is a package order and a rush order, ensure TotalPayment reflects the rush fee
+            // If this is a package order and a rush order, ensure TotalPayment is at least base + rush
+            // Do not overwrite if TotalPayment already includes add-ons above the base.
             if (isPackageOrder && order.IsRushOrder)
             {
-                var desiredTotal = baseTotal + rushFee;
-                if (Math.Abs(order.TotalPayment - desiredTotal) > 0.005)
+                var desiredBasePlusRush = baseTotal + rushFee;
+                if (order.TotalPayment + 0.005 < desiredBasePlusRush)
                 {
-                    order.TotalPayment = desiredTotal;
+                    order.TotalPayment = desiredBasePlusRush;
                     _context.Orders.Update(order);
                     await _context.SaveChangesAsync();
                 }

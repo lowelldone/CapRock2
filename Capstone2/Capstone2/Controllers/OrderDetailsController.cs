@@ -132,13 +132,16 @@ namespace Capstone2.Controllers
                                 continue;
 
                             seenMenuIds.Add(detail.MenuId);
+                            // Determine type: keep explicit Type if provided (e.g., "Package Extra") otherwise default to "Package Item"
+                            var typeValue = string.IsNullOrWhiteSpace(detail.Type) ? "Package Item" : detail.Type;
+                            
                             _context.OrderDetails.Add(new OrderDetail
                             {
                                 MenuId = detail.MenuId,
                                 Name = detail.Name,
                                 Quantity = 1,
                                 OrderId = orderId,
-                                Type = "Package Item",
+                                Type = typeValue,
                                 MenuPackageId = packageMeta?.MenuPackageId,
                                 PackagePrice = packageMeta?.PackagePrice,
                                 PackageTotal = null,
@@ -150,11 +153,26 @@ namespace Capstone2.Controllers
 
                 await _context.SaveChangesAsync();
 
-                // Recalculate total: package base only (add-ons do not affect total)
+                // Recalculate total: package base + rush fee (if applicable) + prices of newly added items
                 var packagePrice = packageMeta?.PackagePrice ?? 0m;
                 double baseTotal = (double)packagePrice * order.NoOfPax;
+                // Sum persisted extras by Type to be robust when re-editing
+                double extrasTotal = 0d;
+                await _context.Entry(order).Collection(o => o.OrderDetails).LoadAsync();
+                foreach (var od in order.OrderDetails)
+                {
+                    if (!od.IsFreeLechon && string.Equals(od.Type, "Package Extra", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var menu = await _context.Menu.FindAsync(od.MenuId);
+                        if (menu != null)
+                        {
+                            extrasTotal += menu.Price;
+                        }
+                    }
+                }
                 var isRush = order.OrderDate.Date == order.CateringDate.Date;
-                order.TotalPayment = isRush ? baseTotal + (baseTotal * 0.10) : baseTotal;
+                var rushFee = isRush ? baseTotal * 0.10 : 0d;
+                order.TotalPayment = baseTotal + rushFee + extrasTotal;
                 _context.Orders.Update(order);
                 await _context.SaveChangesAsync();
             }
