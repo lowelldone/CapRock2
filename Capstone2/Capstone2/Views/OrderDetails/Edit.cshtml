@@ -201,8 +201,12 @@
                                                     <input type="hidden" name="orderDetails[@indexCounter].MenuId" value="@item.MenuId" />
                                                     <input type="hidden" name="orderDetails[@indexCounter].Name" value="@item.Name" />
                                                     <input type="hidden" name="orderDetails[@indexCounter].Quantity" value="1" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].Type" value="@(string.IsNullOrWhiteSpace(item.Type) ? "Package Item" : item.Type)" />
                                                     <input type="hidden" name="orderDetails[@indexCounter].IsFreeLechon" value="@(item.IsFreeLechon ? "true" : "false")" />
-                                                    @item.Name
+                                                    @item.Name @if (item.Type == "Package Extra")
+                                                    {
+                                                        <small class="text-primary ms-2">(newly added to package)</small>
+                                                    }
                                                 </td>
                                                 <td class="action-col text-end">
                                                     @if (!item.IsFreeLechon)
@@ -379,8 +383,9 @@
                     '<input type="hidden" name="orderDetails[' + index + '].MenuId" value="' + menuId + '" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].Name" value="' + menuName + '" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].Quantity" value="1" />' +
+                    '<input type="hidden" name="orderDetails[' + index + '].Type" value="Package Extra" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].IsFreeLechon" value="false" />' +
-                    menuName +
+                    menuName + ' <small class="text-primary ms-2">(newly added to package)</small>' +
                     '</td>' +
                     '<td class="action-col text-end"><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">' +
                     '<i class="bi bi-trash me-1"></i>Remove' +
@@ -432,7 +437,7 @@
         @foreach (var menu in menus)
         {
             <text>
-                    menuData[@menu.MenuId] = @menu.Price;
+                    menuData[@menu.MenuId] = @menu.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
             </text>
         }
 
@@ -440,8 +445,19 @@
                 var base = @((isPackageOrder ? packageBaseTotal : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 var rushFee = @((isPackageOrder ? rushFee : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 if (@(isPackageOrder.ToString().ToLower())) {
-                    // Package orders: total is package base plus rush fee when applicable
-                    var totalPkg = base + (@(isRush.ToString().ToLower()) ? rushFee : 0);
+                    // Package orders: base + rush fee (if rush) + prices of rows marked as Package Extra
+                    var extras = 0;
+                    $('tbody.order-details-body tr').each(function () {
+                        var $row = $(this);
+                        if ($row.attr('data-category-header')) return; // skip category headers
+                        var typeVal = ($row.find('input[name*=".Type"]').val() || '').toString();
+                        if (typeVal === 'Package Extra') {
+                            var mid = parseInt($row.find('input[name*=".MenuId"]').val(), 10);
+                            var price = menuData[mid] || 0;
+                            extras += price;
+                        }
+                    });
+                    var totalPkg = base + (@(isRush.ToString().ToLower()) ? rushFee : 0) + extras;
                     $('#totalPayment').text(totalPkg.toFixed(2));
                     return;
                 }
