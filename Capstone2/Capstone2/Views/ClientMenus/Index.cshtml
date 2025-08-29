@@ -1059,7 +1059,7 @@
                             <div class="package-option-summary">
                                 <div class="package-option-pricing">
                                     <div class="package-price">
-                                        <span class="price-amount">₱320</span>
+                                        <span class="price-amount">₱@($"{package.Price:0.00}")</span>
                                         <span class="price-unit">per person</span>
                                     </div>
                                     <div class="package-minimum">
@@ -1284,7 +1284,7 @@
             if (!selectedPackageData) return;
 
             const minPax = packageId === 1 ? 60 : 120;
-            const packagePrice = 320;
+            const packagePrice = selectedPackageData.price ?? 0;
 
             // Check if this is Package B (the one with 120 pax minimum)
             isPackageB = minPax === 120; // Set global variable

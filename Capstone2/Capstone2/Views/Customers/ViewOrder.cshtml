@@ -172,7 +172,7 @@
                             <div class="fw-bold mb-1">Rush Order</div>
                             <div>Base Total: ₱@(((double)ViewBag.RushBaseTotal).ToString("N2"))</div>
                             <div>Rush Order Fee (10%): ₱@(((double)ViewBag.RushOrderFee).ToString("N2"))</div>
-                            <div class="fw-semibold">Rush Total: ₱@(((double)ViewBag.RushTotal).ToString("N2"))</div>
+                            <div class="fw-semibold">Rush Total: ₱@(((double)ViewBag.RushBaseTotal + (double)ViewBag.RushOrderFee).ToString("N2"))</div>
                         </div>
                     </div>
                 }
@@ -295,7 +295,7 @@
 
         @if (ViewBag.HasPayments == true)
         {
-            <a asp-action="PaymentHistory" asp-route-id="@Model.Customer.CustomerID" class="modern-action-btn btn-info">
+            <a asp-action="PaymentHistory" asp-route-id="@Model.Customer.CustomerID" asp-route-fromPastOrders="@(fromPast ? true : (bool?)null)" class="modern-action-btn btn-info">
                 <i class="bi bi-clock-history me-2"></i>View Payment History
             </a>
         }

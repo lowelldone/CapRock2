@@ -75,8 +75,46 @@ namespace Capstone2.Controllers
         {
             var order = await _context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Menu)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.MenuPackage)
                 .FirstOrDefaultAsync(o => o.OrderId == id);
             if (order == null) return NotFound();
+
+            // Provide package metadata to the view for dynamic total preview
+            bool isPackageOrder = order.OrderDetails != null && order.OrderDetails.Any(od => od.MenuPackageId != null);
+            ViewBag.IsPackageOrder = isPackageOrder;
+            if (isPackageOrder)
+            {
+                // Prefer live package price
+                var livePackagePrice = order.OrderDetails
+                    .Where(od => od.MenuPackageId != null)
+                    .Select(od => (double?)(od.MenuPackage != null ? od.MenuPackage.Price : (double?)null))
+                    .FirstOrDefault() ?? 0d;
+                if (livePackagePrice > 0)
+                {
+                    ViewBag.PackagePrice = livePackagePrice;
+                }
+                else
+                {
+                    var storedPackagePrice = order.OrderDetails
+                        .Where(od => od.MenuPackageId != null && od.PackagePrice != null)
+                        .Select(od => (double)od.PackagePrice.Value)
+                        .FirstOrDefault();
+                    ViewBag.PackagePrice = storedPackagePrice;
+                }
+                // Sum of existing extras
+                double extrasTotal = 0d;
+                foreach (var od in order.OrderDetails)
+                    {
+                    if (!od.IsFreeLechon && string.Equals(od.Type, "Package Extra", StringComparison.OrdinalIgnoreCase))
+                        {
+                        extrasTotal += od.Menu?.Price ?? 0d;
+                        }
+                    }
+                ViewBag.PackageExtrasTotal = extrasTotal;
+            }
             return View(order);
         }
 
@@ -92,6 +130,8 @@ namespace Capstone2.Controllers
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Menu)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.MenuPackage)
                 .FirstOrDefaultAsync(o => o.OrderId == id);
             if (order == null) return NotFound();
 
@@ -108,30 +148,9 @@ namespace Capstone2.Controllers
             order.Customer.ContactNo = model.Customer.ContactNo;
             order.Customer.Address = model.Customer.Address;
 
-            // Recalculate base total
-            double baseTotal = 0d;
-            if (order.OrderDetails != null && order.OrderDetails.Any(od => od.MenuPackageId != null && od.PackagePrice != null))
-            {
-                // Package order: base total = package price per pax * NoOfPax
-                var packagePrice = order.OrderDetails
-                    .Where(od => od.MenuPackageId != null && od.PackagePrice != null)
-                    .Select(od => od.PackagePrice.Value)
-                    .FirstOrDefault();
-                baseTotal = (double)packagePrice * order.NoOfPax;
-            }
-            else if (order.OrderDetails != null)
-            {
-                // Individual items order: sum of item price * quantity
-                foreach (var od in order.OrderDetails)
-                {
-                    var unit = od.Menu?.Price ?? 0d;
-                    baseTotal += unit * od.Quantity;
-                }
-            }
-
-            // Apply rush order fee when order date and catering date are the same calendar day
-            var isRush = order.OrderDate.Date == order.CateringDate.Date;
-            order.TotalPayment = isRush ? baseTotal + (baseTotal * 0.10) : baseTotal;
+            // Recalculate totals in a single, package-agnostic helper
+            var pricing = Capstone2.Helpers.OrderPricing.Compute(order, _context);
+            order.TotalPayment = pricing.Total;
 
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();

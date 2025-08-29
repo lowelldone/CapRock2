@@ -289,8 +289,8 @@
         <a asp-action="ProcessPayment" asp-route-id="@Model.OrderId" class="btn btn-primary btn-action">
             <i class="bi bi-credit-card me-2"></i>Process Payment
         </a>
-        <a asp-action="Index" class="btn btn-outline-secondary btn-action">
-            <i class="bi bi-arrow-left me-2"></i>Back to Payments
+        <a asp-controller="Customers" asp-action="ViewOrder" asp-route-id="@Model.Customer.CustomerID" asp-route-fromPastOrders="@((bool)(ViewBag.FromPastOrders ?? false) ? true : (bool?)null)" class="btn btn-outline-secondary btn-action">
+            <i class="bi bi-arrow-left me-2"></i>Back to Order
         </a>
     </div>
 </div>

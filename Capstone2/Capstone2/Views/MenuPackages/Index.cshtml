@@ -170,6 +170,7 @@
                 <thead class="table-light rounded-4">
                     <tr>
                         <th>@Html.DisplayNameFor(model => model.First().MenuPackageName)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Price)</th>
                         <th>@Html.DisplayNameFor(model => model.First().NoOfMainDish)</th>
                         <th>@Html.DisplayNameFor(model => model.First().NoOfSideDish)</th>
                         <th>@Html.DisplayNameFor(model => model.First().NoOfDessert)</th>
@@ -183,6 +184,7 @@
                     {
                         <tr>
                             <td>@item.MenuPackageName</td>
+                            <td>₱@string.Format("{0:N2}", item.Price)</td>
                             <td>@item.NoOfMainDish</td>
                             <td>@item.NoOfSideDish</td>
                             <td>@item.NoOfDessert</td>

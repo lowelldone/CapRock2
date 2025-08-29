@@ -428,6 +428,7 @@
                 <thead>
                     <tr>
                         <th style="min-width: 180px;">Package Name</th>
+                        <th style="min-width: 120px;">Price</th>
                         <th style="min-width: 100px;">Main Dishes</th>
                         <th style="min-width: 100px;">Side Dishes</th>
                         <th style="min-width: 100px;">Desserts</th>
@@ -442,6 +443,9 @@
                         <tr>
                             <td>
                                 <div class="modern-name">@item.MenuPackageName</div>
+                            </td>
+                            <td>
+                                <div class="modern-name">₱@item.Price.ToString("N2")</div>
                             </td>
                             <td>
                                 <span class="modern-badge">@item.NoOfMainDish</span>

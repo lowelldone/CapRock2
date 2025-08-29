@@ -295,6 +295,9 @@ namespace Capstone2.Migrations
                     b.Property<int?>("NoOfSoftDrinks")
                         .HasColumnType("int");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
                     b.HasKey("MenuPackageId");
 
                     b.ToTable("MenuPackages");

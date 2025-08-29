@@ -6,7 +6,8 @@
     decimal packagePrice = 0m;
     if (isPackageOrder)
     {
-        packagePrice = Model.OrderDetails.FirstOrDefault(od => od.MenuPackageId != null && od.PackagePrice != null)?.PackagePrice ?? 0m;
+        var pkgDetail = Model.OrderDetails.FirstOrDefault(od => od.MenuPackageId != null);
+        packagePrice = pkgDetail?.MenuPackage != null ? (decimal)pkgDetail.MenuPackage.Price : (pkgDetail?.PackagePrice ?? 0m);
     }
     decimal packageBaseTotal = isPackageOrder ? packagePrice * Model.NoOfPax : 0m;
     bool isRush = Model.OrderDate.Date == Model.CateringDate.Date;
@@ -260,12 +261,6 @@
                 </table>
             }
 
-            <div class="total-section">
-                <h5 class="fw-bold mb-0">
-                    Total Payment: ₱<span id="totalPayment">0.00</span>
-                </h5>
-            </div>
-
             <div class="add-section">
                 <h5 class="fw-bold mb-3">Add Menu Item</h5>
                 <div class="row">
@@ -326,6 +321,7 @@
     <script>
         var isPackage = @(isPackageOrder.ToString().ToLower());
         var isRush = @(isRush.ToString().ToLower());
+        var packageUnitPrice = @((isPackageOrder ? packagePrice : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
         function removeRow(btn) {
             $(btn).closest('tr').remove();
             // Re-index all rows
@@ -354,7 +350,7 @@
                     });
                 });
             }
-            recalculateTotal(); // Call recalculateTotal after removing a row
+            recalculateTotal();
         }
         function addMenuItem() {
             var menuId = $('#menuSelect').val();
@@ -442,10 +438,12 @@
         }
 
             function recalculateTotal() {
-                var base = @((isPackageOrder ? packageBaseTotal : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
-                var rushFee = @((isPackageOrder ? rushFee : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                var base = @((isPackageOrder ? 0m : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                var rushFee = 0;
                 if (@(isPackageOrder.ToString().ToLower())) {
-                    // Package orders: base + rush fee (if rush) + prices of rows marked as Package Extra
+                    // Package orders: (package price per pax * current pax) + rush (if same-day) + extras
+                    var pax = parseInt($('#noOfPaxLive').val(), 10) || @Model.NoOfPax;
+                    base = (packageUnitPrice * pax);
                     var extras = 0;
                     $('tbody.order-details-body tr').each(function () {
                         var $row = $(this);
@@ -453,12 +451,15 @@
                         var typeVal = ($row.find('input[name*=".Type"]').val() || '').toString();
                         if (typeVal === 'Package Extra') {
                             var mid = parseInt($row.find('input[name*=".MenuId"]').val(), 10);
-                            var price = menuData[mid] || 0;
+                            var price = parseFloat(menuData[mid]) || 0;
                             extras += price;
                         }
                     });
-                    var totalPkg = base + (@(isRush.ToString().ToLower()) ? rushFee : 0) + extras;
-                    $('#totalPayment').text(totalPkg.toFixed(2));
+                    // Rush fee displayed on ViewOrder only; just compute total here
+                    var isSameDay = @(isRush.ToString().ToLower());
+                    rushFee = isSameDay ? (base * 0.10) : 0;
+                    var totalPkg = base + rushFee + extras;
+                    // No UI display here per requirements
                     return;
                 }
                 var total = 0;
@@ -484,5 +485,6 @@
         $(document).ready(function () {
             recalculateTotal();
         });
+        // No local pax editor here; pax is edited on Orders/Edit
     </script>
 } 
