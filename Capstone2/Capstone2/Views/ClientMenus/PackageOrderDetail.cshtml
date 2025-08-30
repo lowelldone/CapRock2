@@ -918,14 +918,9 @@
             allowOutsideClick: false
         }).then((result) => {
             if (result.isConfirmed) {
-                // Download PDF (you can implement this later)
-                Swal.fire({
-                    title: "PDF Download",
-                    text: "PDF download feature will be implemented soon.",
-                    icon: "info"
-                }).then(() => {
+                    // Download PDF
+                    window.open(`/ClientMenus/GeneratePackageInvoice/${orderId}`, '_blank')
                     window.location.href = "/Home/Homepage";
-                });
             } else if (result.isDenied) {
                 // Print
                 window.print();

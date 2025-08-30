@@ -9,6 +9,9 @@ using Capstone2.Data;
 using Capstone2.Models;
 using System.Text.Json; // Added for JsonSerializer
 using Microsoft.AspNetCore.Http; // Added for session support
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 namespace Capstone2.Controllers.AdminControllers
 {
@@ -532,6 +535,213 @@ namespace Capstone2.Controllers.AdminControllers
             var sequentialNumber = todayPackageOrderCount + 1;
 
             return $"PKG-{dateString}-{sequentialNumber:D3}";
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GeneratePackageInvoice(int id)
+        {
+            var order = await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Menu)
+                .FirstOrDefaultAsync(o => o.OrderId == id);
+
+            if (order == null)
+                return NotFound();
+
+            // Get package metadata from any package item detail
+            var packageDetail = order.OrderDetails
+                .FirstOrDefault(od => od.Type == "Package Item" && od.MenuPackageId != null);
+
+            MenuPackages? menuPackage = null;
+            if (packageDetail?.MenuPackageId != null)
+            {
+                menuPackage = await _context.MenuPackages
+                    .FirstOrDefaultAsync(mp => mp.MenuPackageId == packageDetail.MenuPackageId);
+            }
+
+            string Peso(double v) => $"₱{v:N2}";
+
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            var isRush = order.OrderDate.Date == order.CateringDate.Date;
+            var baseTotal = order.TotalPayment;
+            var rushFee = isRush ? baseTotal * 0.10 : 0;
+            var totalWithRush = baseTotal + rushFee;
+
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(40);
+                    page.DefaultTextStyle(x => x.FontSize(11));
+
+                    page.Header().Row(row =>
+                    {
+                        row.RelativeColumn().Stack(stack =>
+                        {
+                            stack.Item().Text("GRUSH Catering").FontSize(16).SemiBold();
+                            stack.Item().Text("Package Order Invoice").FontColor(Colors.Blue.Medium);
+                        });
+
+                        row.ConstantColumn(260).AlignRight().Stack(stack =>
+                        {
+                            stack.Item().Text(text =>
+                            {
+                                text.Span("Order No: ").SemiBold();
+                                text.Span(string.IsNullOrWhiteSpace(order.OrderNumber) ? $"PKG-{order.OrderDate:yyyyMMdd}-{order.OrderId:D3}" : order.OrderNumber);
+                            });
+                            stack.Item().Text(text =>
+                            {
+                                text.Span("Order Date: ").SemiBold();
+                                text.Span(order.OrderDate.ToString("dd/MM/yyyy"));
+                            });
+                            stack.Item().Text(text =>
+                            {
+                                text.Span("Catering Date: ").SemiBold();
+                                text.Span(order.CateringDate.ToString("dd/MM/yyyy"));
+                            });
+                            stack.Item().Text(text =>
+                            {
+                                text.Span("Time of Food Serving: ").SemiBold();
+                                text.Span(order.timeOfFoodServing.ToString("hh:mm tt"));
+                            });
+                        });
+                    });
+
+                    page.Content().Stack(stack =>
+                    {
+                        stack.Spacing(10);
+
+                        // Billed To
+                        stack.Item().Text("Billed To").SemiBold();
+                        stack.Item().Text(order.Customer?.Name ?? string.Empty);
+                        if (!string.IsNullOrWhiteSpace(order.Customer?.ContactNo))
+                            stack.Item().Text(order.Customer.ContactNo).FontColor(Colors.Blue.Medium);
+                        if (!string.IsNullOrWhiteSpace(order.Customer?.Address))
+                            stack.Item().Text(order.Customer.Address);
+
+                        // Package Summary
+                        stack.Item().PaddingTop(10).Stack(section =>
+                        {
+                            section.Spacing(4);
+                            section.Item().Text("Package Details").SemiBold();
+
+                            section.Item().Row(r =>
+                            {
+                                r.RelativeColumn().Text(text =>
+                                {
+                                    text.Span("Package: ").SemiBold();
+                                    text.Span(menuPackage?.MenuPackageName ?? "N/A");
+                                });
+                                r.RelativeColumn().AlignRight().Text(text =>
+                                {
+                                    text.Span("PAX: ").SemiBold();
+                                    text.Span(order.NoOfPax.ToString());
+                                });
+                            });
+
+                            section.Item().Row(r =>
+                            {
+                                r.RelativeColumn().Text(text =>
+                                {
+                                    text.Span("Price per Person: ").SemiBold();
+                                    var pricePerPerson = packageDetail?.PackagePrice.HasValue == true ? (double)packageDetail.PackagePrice.Value : 0.0;
+                                    text.Span(Peso(pricePerPerson));
+                                });
+                                r.RelativeColumn().AlignRight().Text(text =>
+                                {
+                                    text.Span("Total Package: ").SemiBold();
+                                    var packageTotal = packageDetail?.PackageTotal.HasValue == true ? (double)packageDetail.PackageTotal.Value : baseTotal;
+                                    text.Span(Peso(packageTotal));
+                                });
+                            });
+
+                            if (order.NoOfPax >= 120)
+                            {
+                                section.Item().AlignCenter().Text("FREE LECHON INCLUDED").FontColor(Colors.Orange.Darken2).SemiBold();
+                            }
+                        });
+
+                        // Menu Items (no prices)
+                        stack.Item().PaddingTop(10).Element(container2 =>
+                        {
+                            container2.Table(table =>
+                            {
+                                table.ColumnsDefinition(columns =>
+                                {
+                                    columns.RelativeColumn(); // Menu
+                                });
+
+                                table.Header(header =>
+                                {
+                                    header.Cell().Element(CellHeader).Text("Menu");
+
+                                    static IContainer CellHeader(IContainer container) =>
+                                        container.DefaultTextStyle(x => x.SemiBold())
+                                                 .Background(Colors.Grey.Lighten3)
+                                                 .PaddingVertical(6)
+                                                 .PaddingHorizontal(8);
+                                });
+
+                                foreach (var item in order.OrderDetails)
+                                {
+                                    if (item.IsFreeLechon) continue; // Bonus displayed separately
+                                    table.Cell().Element(Cell).Text(item.Name);
+                                }
+
+                                static IContainer Cell(IContainer container) =>
+                                    container.BorderBottom(1).BorderColor(Colors.Grey.Lighten3)
+                                             .PaddingVertical(6).PaddingHorizontal(8);
+                            });
+                        });
+
+                        if (order.OrderDetails.Any(od => od.IsFreeLechon) || order.NoOfPax >= 120)
+                        {
+                            stack.Item().PaddingTop(6).Text("1 Whole Lechon (Package B Bonus)").FontColor(Colors.Orange.Darken2).SemiBold();
+                        }
+
+                        // Totals
+                        stack.Item().PaddingTop(10).AlignRight().Stack(totals =>
+                        {
+                            totals.Spacing(4);
+
+                            if (isRush)
+                            {
+                                totals.Item().Text(text =>
+                                {
+                                    text.Span("Base Total: ").SemiBold();
+                                    text.Span(Peso(baseTotal));
+                                });
+                                totals.Item().Text(text =>
+                                {
+                                    text.Span("Rush Order Fee (10%): ").SemiBold().FontColor(Colors.Red.Medium);
+                                    text.Span(Peso(rushFee)).FontColor(Colors.Red.Medium);
+                                });
+                            }
+
+                            totals.Item().Text(text =>
+                            {
+                                text.Span("Total Payment: ").SemiBold().FontSize(13);
+                                text.Span(Peso(totalWithRush)).SemiBold().FontSize(13);
+                            });
+
+                            totals.Item().Text(text =>
+                            {
+                                text.Span("50% Downpayment Required: ").SemiBold().FontColor(Colors.Blue.Medium);
+                                text.Span(Peso(totalWithRush * 0.5)).FontColor(Colors.Blue.Medium);
+                            });
+                        });
+                    });
+
+                    page.Footer().AlignCenter().Text("Thank you for choosing our package catering service!");
+                });
+            });
+
+            var pdf = document.GeneratePdf();
+            var fileName = $"{order.Customer?.Name ?? "Customer"} - Package Invoice.pdf";
+            return File(pdf, "application/pdf", fileName);
         }
     }
 }
