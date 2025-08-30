@@ -168,6 +168,18 @@
     }
 
     /* Package Styles */
+    :root {
+        --primary-purple: #7c3aed;
+        --primary-purple-dark: #6d28d9;
+        --primary-purple-light: #a78bfa;
+        --secondary-purple: #8b5cf6;
+        --accent-purple: #c084fc;
+        --purple-bg: #faf5ff;
+        --purple-bg-light: #f3e8ff;
+        --purple-border: #e9d5ff;
+        --text-purple: #581c87;
+        --text-purple-light: #7c3aed;
+    }
     .package-section {
         display: none;
     }
@@ -321,23 +333,48 @@
 
     .selection-item {
         background: #fff;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
+        border: 2px solid var(--purple-border);
+        border-radius: 10px;
         padding: 0.8rem;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         position: relative;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(124,58,237,0.08);
     }
 
         .selection-item:hover {
-            border-color: #0d6efd;
-            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+            border-color: var(--primary-purple);
+            box-shadow: 0 4px 12px rgba(124,58,237,0.15);
         }
 
         .selection-item.selected {
-            border-color: #10b981;
-            background: #f0fdf4;
+            border-color: var(--primary-purple);
+            background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 100%);
+            box-shadow: 0 6px 16px rgba(124,58,237,0.18);
         }
 
+    .selection-item-check {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        color: #fff;
+        opacity: 0;
+        transform: scale(0.9);
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(124,58,237,0.25);
+    }
+
+    .selection-item.selected .selection-item-check {
+        opacity: 1;
+        transform: scale(1);
+    }
     .selection-item-content {
         text-align: center;
         margin-bottom: 0.8rem;
@@ -1411,17 +1448,10 @@
                     html += `
                             <div class="selection-item" data-category="mainDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
                                 <div class="selection-item-content">
-                                    <div class="selection-item-name">${dish.name}</div>
                                     ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                    <div class="selection-item-name">${dish.name}</div>
                                 </div>
-                                <div class="selection-item-actions">
-                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="mainDish" data-dish-id="${dish.menuId}">
-                                        <i class="bi bi-plus"></i> Add
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="mainDish" data-dish-id="${dish.menuId}" style="display: none;">
-                                        <i class="bi bi-dash"></i> Remove
-                                    </button>
-                                </div>
+                              <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                             </div>
                         `;
                 });
@@ -1448,17 +1478,10 @@
                     html += `
                             <div class="selection-item" data-category="sideDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
                                 <div class="selection-item-content">
-                                    <div class="selection-item-name">${dish.name}</div>
                                     ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                    <div class="selection-item-name">${dish.name}</div>
                                 </div>
-                                <div class="selection-item-actions">
-                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="sideDish" data-dish-id="${dish.menuId}">
-                                        <i class="bi bi-plus"></i> Add
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="sideDish" data-dish-id="${dish.menuId}" style="display: none;">
-                                        <i class="bi bi-dash"></i> Remove
-                                    </button>
-                                </div>
+                               <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                             </div>
                         `;
                 });
@@ -1485,17 +1508,10 @@
                     html += `
                             <div class="selection-item" data-category="dessert" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
                                 <div class="selection-item-content">
-                                    <div class="selection-item-name">${dish.name}</div>
                                     ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                    <div class="selection-item-name">${dish.name}</div>
                                 </div>
-                                <div class="selection-item-actions">
-                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="dessert" data-dish-id="${dish.menuId}">
-                                        <i class="bi bi-plus"></i> Add
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="dessert" data-dish-id="${dish.menuId}" style="display: none;">
-                                        <i class="bi bi-dash"></i> Remove
-                                    </button>
-                                </div>
+                               <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                             </div>
                         `;
                 });
@@ -1522,17 +1538,10 @@
                     html += `
                             <div class="selection-item" data-category="rice" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
                                 <div class="selection-item-content">
-                                    <div class="selection-item-name">${dish.name}</div>
                                     ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                    <div class="selection-item-name">${dish.name}</div>
                                 </div>
-                                <div class="selection-item-actions">
-                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="rice" data-dish-id="${dish.menuId}">
-                                        <i class="bi bi-plus"></i> Add
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="rice" data-dish-id="${dish.menuId}" style="display: none;">
-                                        <i class="bi bi-dash"></i> Remove
-                                    </button>
-                                </div>
+                               <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                             </div>
                         `;
                 });
@@ -1559,17 +1568,10 @@
                     html += `
                             <div class="selection-item" data-category="softDrinks" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
                                 <div class="selection-item-content">
-                                    <div class="selection-item-name">${dish.name}</div>
                                     ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                    <div class="selection-item-name">${dish.name}</div>
                                 </div>
-                                <div class="selection-item-actions">
-                                    <button class="btn btn-sm btn-outline-primary add-to-package" data-package-id="${packageId}" data-category="softDrinks" data-dish-id="${dish.menuId}">
-                                        <i class="bi bi-plus"></i> Add
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger remove-from-package" data-package-id="${packageId}" data-category="softDrinks" data-dish-id="${dish.menuId}" style="display: none;">
-                                        <i class="bi bi-dash"></i> Remove
-                                    </button>
-                                </div>
+                               <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                             </div>
                         `;
                 });
@@ -1639,20 +1641,18 @@
             }
 
             // Prevent duplicate bindings when returning from package selection
-            $(document).off('click.package', '.add-to-package');
-            $(document).off('click.package', '.remove-from-package');
             $(document).off('click.package', '.clear-package');
             $(document).off('click.package', '.add-package-to-order');
+            $(document).off('click.package', '.selection-item');
 
-            // Add item to package
-            $(document).on('click.package', '.add-to-package', function () {
-                const $btn = $(this);
-                const packageId = $btn.data('package-id');
-                const category = $btn.data('category');
-                const dishId = $btn.data('dish-id');
-                const dishName = $btn.closest('.selection-item').data('dish-name');
+            // Make entire selection item clickable (toggle select)
+            $(document).on('click.package', '.selection-item', function () {
+                const $selectionItem = $(this);
+                const packageId = selectedPackage.id;
+                const category = $selectionItem.data('category');
+                const dishId = $selectionItem.data('dish-id');
+                const dishName = $selectionItem.data('dish-name');
 
-                const $selectionItem = $btn.closest('.selection-item');
                 const $counter = $(`.selection-counter[data-category="${category}"]`);
                 const maxAllowed = parseInt($counter.data('max'));
 
@@ -1664,45 +1664,23 @@
                     currentUserCount = packageSelections[packageId][category].length;
                 }
 
-                if (currentUserCount >= maxAllowed) {
-                    alert(`You can only select ${maxAllowed} ${category.replace(/([A-Z])/g, ' $1').toLowerCase()} item(s) for this package.`);
-                    return;
-                }
+                const alreadySelected = $selectionItem.hasClass('selected');
+                    if (alreadySelected) {
+                        // Remove from selections
+                            packageSelections[packageId][category] = packageSelections[packageId][category].filter(item => item.id !== dishId);
+                        $selectionItem.removeClass('selected');
+                        } else {
+                    if (currentUserCount >= maxAllowed) {
+                        const label = category.replace(/([A-Z])/g, ' $1').toLowerCase();
+                        Swal && Swal.fire ? Swal.fire({ title: 'Selection limit reached', text: `You can only select ${maxAllowed} ${label} item(s) for this package.`, icon: 'info' }) : alert(`You can only select ${maxAllowed} ${label} item(s) for this package.`);
+                        return;
+                        }
+                        packageSelections[packageId][category].push({ id: dishId, name: dishName });
+                        $selectionItem.addClass('selected');
+                    }
 
-                // Add to package selections
-                packageSelections[packageId][category].push({
-                    id: dishId,
-                    name: dishName
-                });
-
-                // Update UI
-                $selectionItem.addClass('selected');
-                $btn.hide();
-                $selectionItem.find('.remove-from-package').show();
-
-                updatePackageCounter(packageId, category);
-                updatePackageStatus(packageId);
-            });
-
-            // Remove item from package
-            $(document).on('click.package', '.remove-from-package', function () {
-                const $btn = $(this);
-                const packageId = $btn.data('package-id');
-                const category = $btn.data('category');
-                const dishId = $btn.data('dish-id');
-
-                const $selectionItem = $btn.closest('.selection-item');
-
-                // Remove from package selections
-                packageSelections[packageId][category] = packageSelections[packageId][category].filter(item => item.id !== dishId);
-
-                // Update UI
-                $selectionItem.removeClass('selected');
-                $btn.hide();
-                $selectionItem.find('.add-to-package').show();
-
-                updatePackageCounter(packageId, category);
-                updatePackageStatus(packageId);
+                    updatePackageCounter(packageId, category);
+                    updatePackageStatus(packageId);
             });
 
             // Clear package selection
@@ -1730,8 +1708,6 @@
                 // Reset UI
                 const $packageCard = $(this).closest('.package-card');
                 $packageCard.find('.selection-item').removeClass('selected');
-                $packageCard.find('.add-to-package').show();
-                $packageCard.find('.remove-from-package').hide();
 
                 // Reset counters and status
                 $packageCard.find('.selection-counter').each(function () {
