@@ -21,6 +21,9 @@ namespace Capstone2.Controllers.AdminControllers
         // GET: DashboardDateSummary
         public async Task<IActionResult> Index(DateTime? startDate = null, DateTime? endDate = null)
         {
+            var role = HttpContext.Session.GetString("Role");
+            ViewBag.IsAdmin = role == "ADMIN";
+
             // If no dates provided, default to current month
             if (!startDate.HasValue && !endDate.HasValue)
             {
@@ -90,5 +93,48 @@ namespace Capstone2.Controllers.AdminControllers
 
             return View(viewModel);
         }
+
+        [HttpGet]
+         public async Task<IActionResult> RecentLogs(DateTime? since = null, int take = 5)
+         {
+             var role = HttpContext.Session.GetString("Role");
+             if (role != "ADMIN")
+             {
+                 return Forbid();
+             }
+ 
+             var baseQuery = _context.AuditLogs
+                 .Where(l => l.Action != "Logout");
+
+             var latestItems = await baseQuery
+                 .OrderByDescending(l => l.Timestamp)
+                 .Take(Math.Max(1, Math.Min(20, take)))
+                 .Select(l => new
+                 {
+                    l.AuditLogId,
+                    l.Timestamp,
+                    l.Username,
+                    l.Role,
+                    l.Action,
+                    l.OrderNumber
+                 })
+                 .ToListAsync();
+
+            int newCount = 0;
+            if (since.HasValue)
+            {
+                var s = since.Value;
+                newCount = await baseQuery.CountAsync(l => l.Timestamp > s);
+            }
+
+            var latestUtc = latestItems.FirstOrDefault()?.Timestamp;
+
+            return Ok(new
+            {
+                items = latestItems,
+                newCount,
+                latestUtc
+            });
+         }
     }
 }

@@ -112,7 +112,7 @@
                 </div>
                 <div class="col-md-3">
                     <h6 class="fw-bold mb-1">Total Orders:</h6>
-                    <p class="mb-0">@Model.Count()</p>
+                    <p class="mb-0">@Model.Where(o => o.Status != "Completed").Count()</p>
                 </div>
                 <div class="col-md-3">
                     <h6 class="fw-bold mb-1">Total Pax:</h6>
@@ -165,7 +165,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var order in Model)
+                        @foreach (var order in Model.Where(o => o.Status != "Completed"))
                         {
                             <tr class="@(order.NoOfPax >= 701 && order.NoOfPax <= 1500 ? "table-primary" : "")">
                                 <td>
@@ -189,7 +189,6 @@
                                 </td>
                                 <td>
                                     <span class="badge @(order.Status == "Accepted" ? "bg-warning" :
-                                                       order.Status == "Completed" ? "bg-success" :
                                                        order.Status == "Cancelled" ? "bg-danger" : "bg-secondary")">
                                         @order.Status
                                     </span>

@@ -233,7 +233,7 @@ namespace Capstone2.Controllers.AdminControllers
                 .ToListAsync();
 
             var allMaterials = await _context.Materials
-                .Select(m => new { m.MaterialId, m.Name, m.IsConsumable })
+                .Select(m => new { m.MaterialId, m.Name, m.IsConsumable, m.Quantity })
                 .ToListAsync();
 
             return Ok(new { Supplier = supplier, Materials = allMaterials, Prices = prices });

@@ -13,43 +13,7 @@
                 <p class="lead text-muted">Review your package selection before proceeding</p>
             </div>
 
-            <!-- Package Summary Card -->
-            <div class="card shadow-lg border-0 mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="bi bi-info-circle me-2"></i>Package Details
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5 class="text-primary mb-3">Package Information</h5>
-                            <div class="mb-3">
-                                <strong>Package Name:</strong>
-                                <span id="packageName" class="ms-2 badge bg-primary fs-6"></span>
-                            </div>
-                            <div class="mb-3">
-                                <strong>Number of People:</strong>
-                                <span id="paxQuantity" class="ms-2 badge bg-success fs-6"></span>
-                            </div>
-                            <div class="mb-3">
-                                <strong>Price per Person:</strong>
-                                <span id="pricePerPerson" class="ms-2 text-success fw-bold"></span>
-                            </div>
-                            <div class="mb-3">
-                                <strong>Total Package Price:</strong>
-                                <span id="totalPrice" class="ms-2 text-primary fw-bold fs-5"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <h5 class="text-primary mb-3">Package Requirements</h5>
-                            <div id="packageRequirements" class="mb-3">
-                                <!-- Requirements will be populated by JavaScript -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Selected Items Card -->
             <div class="card shadow-lg border-0 mb-4">
@@ -278,15 +242,6 @@
         const packageData = getPackageData();
         if (!packageData) return;
 
-        // Package Information
-        document.getElementById('packageName').textContent = packageData.packageName;
-        document.getElementById('paxQuantity').textContent = packageData.paxQuantity;
-        document.getElementById('pricePerPerson').textContent = `₱${packageData.packagePrice}`;
-        document.getElementById('totalPrice').textContent = `₱${packageData.totalPrice.toLocaleString()}`;
-
-        // Package Requirements
-        populateRequirements(packageData);
-
         // Selected Items
         populateSelectedItems(packageData);
 
@@ -296,55 +251,7 @@
         }
     }
 
-    // Populate package requirements
-    function populateRequirements(packageData) {
-        const requirementsContainer = document.getElementById('packageRequirements');
-        let requirementsHtml = '';
 
-        if (packageData.mainDish && packageData.mainDish.length > 0) {
-            const mainDishCount = packageData.mainDish.filter(item => !item.isLechon).length;
-            const lechonText = packageData.paxQuantity >= 120 ? ' + 1 Free Lechon' : '';
-            requirementsHtml += `
-                    <div class="requirement-item">
-                        <span>${mainDishCount} Main Dish(es)${lechonText}</span>
-                    </div>
-                `;
-        }
-
-        if (packageData.sideDish && packageData.sideDish.length > 0) {
-            requirementsHtml += `
-                    <div class="requirement-item">
-                        <span>${packageData.sideDish.length} Side Dish(es)</span>
-                    </div>
-                `;
-        }
-
-        if (packageData.dessert && packageData.dessert.length > 0) {
-            requirementsHtml += `
-                    <div class="requirement-item">
-                        <span>${packageData.dessert.length} Dessert(s)</span>
-                    </div>
-                `;
-        }
-
-        if (packageData.rice && packageData.rice.length > 0) {
-            requirementsHtml += `
-                    <div class="requirement-item">
-                        <span>${packageData.rice.length} Rice</span>
-                    </div>
-                `;
-        }
-
-        if (packageData.softDrinks && packageData.softDrinks.length > 0) {
-            requirementsHtml += `
-                    <div class="requirement-item">
-                        <span>${packageData.softDrinks.length} Soft Drink(s)</span>
-                    </div>
-                `;
-        }
-
-        requirementsContainer.innerHTML = requirementsHtml;
-    }
 
     // Populate selected items
     function populateSelectedItems(packageData) {
@@ -354,31 +261,31 @@
         // Main Dishes
         if (packageData.mainDish && packageData.mainDish.length > 0) {
             itemsHtml += `
-                    <div class="selected-category">
-                        <h5 class="category-title">
-                            Main Dishes
-                        </h5>
-                `;
+                        <div class="selected-category">
+                            <h5 class="category-title">
+                                Main Dishes
+                            </h5>
+                    `;
 
             packageData.mainDish.forEach(item => {
                 if (item.isLechon) {
                     itemsHtml += `
-                            <div class="selected-item bonus-item">
-                                <div class="item-details">
-                                    <div class="item-name">${item.name}</div>
+                                <div class="selected-item bonus-item">
+                                    <div class="item-details">
+                                        <div class="item-name">1 Free Lechon</div>
+                                    </div>
+                                    <span class="bonus-badge">FREE!</span>
                                 </div>
-                                <span class="bonus-badge">FREE!</span>
-                            </div>
-                        `;
+                            `;
                 } else {
                     itemsHtml += `
-                            <div class="selected-item">
-                                <div class="item-details">
-                                    <div class="item-name">${item.name}</div>
-                                    <div class="item-category">Main Dish</div>
+                                <div class="selected-item">
+                                    <div class="item-details">
+                                        <div class="item-name">${item.name}</div>
+                                        <div class="item-category">Main Dish</div>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
                 }
             });
 
@@ -388,21 +295,21 @@
         // Side Dishes
         if (packageData.sideDish && packageData.sideDish.length > 0) {
             itemsHtml += `
-                    <div class="selected-category">
-                        <h5 class="category-title">
-                            Side Dishes
-                        </h5>
-                `;
+                        <div class="selected-category">
+                            <h5 class="category-title">
+                                Side Dishes
+                            </h5>
+                    `;
 
             packageData.sideDish.forEach(item => {
                 itemsHtml += `
-                        <div class="selected-item">
-                            <div class="item-details">
-                                <div class="item-name">${item.name}</div>
-                                <div class="item-category">Side Dish</div>
+                            <div class="selected-item">
+                                <div class="item-details">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-category">Side Dish</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
             });
 
             itemsHtml += '</div>';
@@ -411,21 +318,21 @@
         // Desserts
         if (packageData.dessert && packageData.dessert.length > 0) {
             itemsHtml += `
-                    <div class="selected-category">
-                        <h5 class="category-title">
-                            Desserts
-                        </h5>
-                `;
+                        <div class="selected-category">
+                            <h5 class="category-title">
+                                Desserts
+                            </h5>
+                    `;
 
             packageData.dessert.forEach(item => {
                 itemsHtml += `
-                        <div class="selected-item">
-                            <div class="item-details">
-                                <div class="item-name">${item.name}</div>
-                                <div class="item-category">Dessert</div>
+                            <div class="selected-item">
+                                <div class="item-details">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-category">Dessert</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
             });
 
             itemsHtml += '</div>';
@@ -434,21 +341,21 @@
         // Rice
         if (packageData.rice && packageData.rice.length > 0) {
             itemsHtml += `
-                    <div class="selected-category">
-                        <h5 class="category-title">
-                            Rice
-                        </h5>
-                `;
+                        <div class="selected-category">
+                            <h5 class="category-title">
+                                Rice
+                            </h5>
+                    `;
 
             packageData.rice.forEach(item => {
                 itemsHtml += `
-                        <div class="selected-item">
-                            <div class="item-details">
-                                <div class="item-name">${item.name}</div>
-                                <div class="item-category">Rice</div>
+                            <div class="selected-item">
+                                <div class="item-details">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-category">Rice</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
             });
 
             itemsHtml += '</div>';
@@ -457,21 +364,21 @@
         // Soft Drinks
         if (packageData.softDrinks && packageData.softDrinks.length > 0) {
             itemsHtml += `
-                    <div class="selected-category">
-                        <h5 class="category-title">
-                            Soft Drinks
-                        </h5>
-                `;
+                        <div class="selected-category">
+                            <h5 class="category-title">
+                                Soft Drinks
+                            </h5>
+                    `;
 
             packageData.softDrinks.forEach(item => {
                 itemsHtml += `
-                        <div class="selected-item">
-                            <div class="item-details">
-                                <div class="item-name">${item.name}</div>
-                                <div class="item-category">Soft Drink</div>
+                            <div class="selected-item">
+                                <div class="item-details">
+                                    <div class="item-name">${item.name}</div>
+                                    <div class="item-category">Soft Drink</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
             });
 
             itemsHtml += '</div>';
