@@ -407,6 +407,7 @@ namespace Capstone2.Controllers
             }
 
             _context.SaveChanges();
+            TempData["Success"] = "Waiter successfully removed from the order.";
             // Audit: remove waiter from order
             try
             {
@@ -552,6 +553,7 @@ namespace Capstone2.Controllers
             }
             _context.SaveChanges();
             // Audit: deploy waiters to order
+            TempData["Success"] = "Waiter(s) successfully assigned to the order.";
             try
             {
                 var userId = HttpContext.Session.GetInt32("UserId");
@@ -575,11 +577,11 @@ namespace Capstone2.Controllers
             catch { }
 
             if (role == "ADMIN")
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { id });
             else if (headWaiterId.HasValue)
-                return RedirectToAction(nameof(Index), new { headWaiterId = headWaiterId.Value });
+                return RedirectToAction(nameof(Index), new { id, headWaiterId = headWaiterId.Value });
             else
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { id });
         }
 
         // GET: PaidOrders/PullOutMaterials/5

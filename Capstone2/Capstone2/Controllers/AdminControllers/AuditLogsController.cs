@@ -19,7 +19,7 @@ namespace Capstone2.Controllers.AdminControllers
 
         // GET: /Admin/AuditLogs
         public async Task<IActionResult> Index(string? role = null, string? orderNumber = null, string? username = null,
-            DateTime? filterDate = null, int page = 1, int pageSize = 50)
+            DateTime? filterDate = null, int? tzOffset = null, int page = 1, int pageSize = 50, int? highlightId = null)
         {
             var currentRole = HttpContext.Session.GetString("Role");
             if (currentRole != "ADMIN")
@@ -41,11 +41,14 @@ namespace Capstone2.Controllers.AdminControllers
             // Add single date filtering
             if (filterDate.HasValue)
             {
-                // Convert to UTC start and end of the selected date to handle timezone issues
-                var startOfDay = filterDate.Value.Date.ToUniversalTime();
-                var endOfDay = startOfDay.AddDays(1).AddTicks(-1);
+                // Interpret the provided date as LOCAL (browser) midnight and convert to UTC using provided offset (in minutes)
+                // tzOffset follows JS Date.getTimezoneOffset(): minutes between UTC and local time (UTC - Local)
+                var offsetMinutes = tzOffset ?? 0;
+                var localDate = DateTime.SpecifyKind(filterDate.Value.Date, DateTimeKind.Unspecified);
+                var startUtc = localDate.AddMinutes(offsetMinutes);
+                var endUtc = startUtc.AddDays(1).AddTicks(-1);
 
-                query = query.Where(l => l.Timestamp >= startOfDay && l.Timestamp <= endOfDay);
+                query = query.Where(l => l.Timestamp >= startUtc && l.Timestamp <= endUtc);
             }
 
             var total = await query.CountAsync();
@@ -75,6 +78,7 @@ namespace Capstone2.Controllers.AdminControllers
             ViewBag.PageSize = pageSize;
             ViewBag.FilterDate = filterDate;
             ViewBag.SelectedRole = role; // Pass selected role to view for filter display
+            ViewBag.HighlightId = highlightId;
 
             return View(items);
         }

@@ -187,13 +187,22 @@
                 <span class="confirm-header-icon"><i class="bi bi-box-seam"></i></span>
                 <h2 class="fw-bold mb-0" style="font-size: 1.5rem;">Confirm Package Order</h2>
             </div>
-            <div class="confirm-subtitle">Review and confirm package order for <span id="customerName">Customer</span></div>
         </div>
     </div>
 
     <div class="confirm-card">
         <div class="row">
             <div class="col-md-6">
+                <div class="confirm-row">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="confirm-label">Customer Name:</span>
+                        </div>
+                        <div class="col-md-8">
+                            <span class="confirm-value" id="customerNameDisplay">-</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="confirm-row">
                     <div class="row">
                         <div class="col-md-4">
@@ -447,7 +456,7 @@
             cateringDate, timeOfServing, occasion, motif
         });
 
-        document.getElementById('customerName').textContent = customerName;
+        document.getElementById('customerNameDisplay').textContent = customerName;
         document.getElementById('customerContact').textContent = customerContact;
         document.getElementById('customerAddress').textContent = customerAddress;
         document.getElementById('venue').textContent = venue;
@@ -912,9 +921,6 @@
             showCancelButton: false,
             confirmButtonColor: "#7c3aed",
             confirmButtonText: '<i class="bi bi-download me-2"></i>Download PDF',
-            showDenyButton: true,
-            denyButtonColor: "#10b981",
-            denyButtonText: '<i class="bi bi-printer me-2"></i>Print',
             allowOutsideClick: false
         }).then((result) => {
             if (result.isConfirmed) {

@@ -21,6 +21,12 @@
         --danger-color: #ef4444;
         --info-color: #3b82f6;
     }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden; /* prevent scrolling */
+    }
     body, .container, .card, .btn, h2, label, input {
         font-family: 'Segoe UI', sans-serif;
     }
@@ -30,6 +36,9 @@
         align-items: center;
         justify-content: center;
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
+        position: relative;
+        top: -30px;
+        left: -50px;
     }
     .login-card {
         background: #fff;
@@ -85,27 +94,139 @@
         color: var(--text-purple);
         font-weight: 600;
     }
+
+    .login-wrapper {
+        background: #fff;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        border: 1px solid var(--purple-border);
+        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.15);
+        max-width: 700px;
+        width: 100%;
+    }
+
+    .login-left {
+        background: linear-gradient(180deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+        color: #fff;
+        padding: 2.5rem 2rem;
+        flex: 1 1 45%;
+        display: flex; /* enable flexbox */
+        flex-direction: column; /* stack items vertically */
+        justify-content: center; /* center vertically */
+        align-items: center; /* center horizontally */
+        text-align: center; /* center text */
+    }
+
+        .login-left .brand-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .login-left .brand-subcopy {
+            opacity: .95;
+            margin-top: 1rem;
+            font-size: .95rem;
+        }
+
+    .feature-icons {
+        margin-top: 1.75rem;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .feature-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, .15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .feature-icon i {
+            font-size: 1.25rem;
+            color: #fff;
+        }
+
+    .login-right {
+        background: #fff;
+        padding: 2.5rem;
+        flex: 1 1 55%;
+    }
+
+    .brand-name {
+        font-weight: 800;
+        color: var(--text-purple);
+    }
+
+        .brand-name .accent {
+            color: var(--accent-purple);
+        }
+
+    .brand-subtitle {
+        color: var(--text-purple-light);
+        font-size: .9rem;
+        margin-top: -.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .input-group .input-group-text {
+        background: #fff;
+        border: 2px solid var(--purple-border);
+        border-right: 0;
+        border-radius: 12px 0 0 12px;
+        color: var(--text-purple-light);
+    }
+
+    .input-with-icon .form-control {
+        border-left: 0;
+        border-radius: 0 12px 12px 0;
+    }
 </style>
 
 <div class="login-bg">
-    <div class="login-card">
-        <h2 class="mb-4 text-center fw-bold">Login</h2>
-        <form asp-action="Login" method="post">
-            <div class="mb-3">
-                <label asp-for="Username" class="form-label">Username</label>
-                <input asp-for="Username" class="form-control" placeholder="Enter username" required />
-                <span asp-validation-for="Username" class="text-danger"></span>
+    <div class="login-wrapper d-flex">
+        <div class="login-left">
+            <h3 class="brand-title">GRUSH Catering System</h3>
+            <p class="brand-subcopy">Delicious food experiences for every occasion, crafted with passion and precision.</p>
+            <div class="feature-icons">
+                <span class="feature-icon"><i class="bi bi-egg-fried"></i></span>
+                <span class="feature-icon"><i class="bi bi-bag-check"></i></span>
+                <span class="feature-icon"><i class="bi bi-cup-hot"></i></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label">Password</label>
-                <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" required />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            @if (ViewBag.Error != null)
-            {
-                <div class="alert alert-danger">@ViewBag.Error</div>
-            }
-            <button type="submit" class="btn btn-primary w-100 btn-login mt-2">Login</button>
-        </form>
+        </div>
+        <div class="login-right">
+            <h2 class="text-center brand-name mb-1">GRUSH<span class="accent">Serve</span></h2>
+            <div class="text-center brand-subtitle">Premium Catering Management System</div>
+            <form asp-action="Login" method="post">
+                <div class="mb-3">
+                    <label asp-for="Username" class="form-label">Username</label>
+                    <div class="input-group input-with-icon">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input asp-for="Username" class="form-control" placeholder="Enter your username" required />
+                    </div>
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label">Password</label>
+                    <div class="input-group input-with-icon">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password" required />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="mb-3 form-check">
+                    <input class="form-check-input" type="checkbox" name="rememberMe" id="rememberMe" />
+                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+                @if (ViewBag.Error != null)
+                    {
+                       <div class="alert alert-danger">@ViewBag.Error</div>
+                    }
+                <button type="submit" class="btn btn-primary w-100 btn-login mt-2">Login</button>
+            </form>
+        </div>
     </div>
 </div>

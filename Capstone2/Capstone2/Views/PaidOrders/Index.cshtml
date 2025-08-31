@@ -45,6 +45,13 @@
             @TempData["ReturnSuccess"]
         </div>
     }
+    @if (TempData["Success"] != null)
+    {
+        <div class="modern-alert modern-alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["Success"]
+        </div>
+    }
 
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-start mb-4">

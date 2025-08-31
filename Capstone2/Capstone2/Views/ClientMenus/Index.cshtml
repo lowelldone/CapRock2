@@ -1116,7 +1116,18 @@
                                     @if (package.NoOfMainDish > 0)
                                     {
                                         <div class="package-option-item">
-                                            <span>@package.NoOfMainDish Main Dish(es)</span>
+                                            @{
+                                                // Check if this is Package B (120 pax minimum) based on the package name or other criteria
+                                                bool isPackageB = package.MenuPackageName.Contains("B") || package.MenuPackageName.Contains("b");
+                                            }
+                                            @if (isPackageB)
+                                            {
+                                                <span>@package.NoOfMainDish Main Dish(es) + 1 Free Lechon</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@package.NoOfMainDish Main Dish(es)</span>
+                                            }
                                         </div>
                                     }
                                     @if (package.NoOfSideDish > 0)
@@ -1369,7 +1380,7 @@
                         </div>
 
                         <div class="package-requirements">
-                            <h5 class="requirements-title">Package Requirements:</h5>
+                            <h5 class="requirements-title">Package Inclusions:</h5>
                             <div class="requirements-grid">
                                 ${isPackageB ? `
                                     <div class="requirement-item requirement-bonus">
@@ -1423,7 +1434,7 @@
                         </div>
 
                         <div class="package-selection">
-                            <h5 class="selection-title">Select Your Items:</h5>
+                            <h5 class="selection-title">Select Your Dishes:</h5>
                 `;
 
             // Main Dishes Selection

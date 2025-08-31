@@ -34,7 +34,7 @@
             }
     </style>
 
-    <form method="get" class="row g-2 mb-3">
+    <form method="get" class="row g-2 mb-3" id="filterForm">
         <div class="col-auto">
             <select class="form-select" name="role">
                 <option value="">All Roles</option>
@@ -74,6 +74,7 @@
             <input type="date" class="form-control" name="filterDate" placeholder="Filter by Date" value="@(ViewBag.FilterDate?.ToString("yyyy-MM-dd"))" />
         </div>
         <div class="col-auto">
+            <input type="hidden" name="tzOffset" id="tzOffset" />
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
         <div class="col-auto">
@@ -89,8 +90,6 @@
                     <th>User</th>
                     <th>Action</th>
                     <th>Order #</th>
-                    <th>Waiter</th>
-                    <th>Succeeded</th>
                     <th class="text-end">Details</th>
                 </tr>
             </thead>
@@ -98,38 +97,13 @@
                 @foreach (var log in Model)
                 {
                     var rowId = $"details_{log.AuditLogId}";
-                    <tr class="main-row">
-                        <td>@log.Timestamp.ToLocalTime()</td>
+                    var highlightClass = (ViewBag.HighlightId != null && (int)ViewBag.HighlightId == log.AuditLogId) ? "table-warning" : string.Empty;
+                    <tr class="main-row @highlightClass" id="log_@log.AuditLogId">
+                        <td><span class="ts" data-utc="@log.Timestamp.ToString("o")"></span></td>
                         <td>@log.Username (@log.Role)</td>
                         <td>@log.Action</td>
                         <td>@log.OrderNumber</td>
-                        <td>
-                            @{
-                                var wn = (ViewBag.WaiterNames as System.Collections.Generic.IDictionary<int, string>);
-                            }
-                            @if (log.WaiterId.HasValue && wn != null && wn.ContainsKey(log.WaiterId.Value))
-                            {
-                                @wn[log.WaiterId.Value]
-                            }
-                            else if (log.WaiterId.HasValue)
-                            {
-                                @($"Waiter #{log.WaiterId.Value}")
-                            }
-                            else
-                            {
-                                @("-")
-                            }
-                        </td>
-                        <td>
-                            @if (log.Succeeded)
-                            {
-                                <span class="badge bg-success">Yes</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">No</span>
-                            }
-                        </td>
+                       
                         <td class="text-end">
                             <button class="btn btn-sm btn-outline-secondary toggle-btn" data-bs-toggle="collapse" data-bs-target="#@rowId" aria-expanded="false" aria-controls="@rowId">
                                 <i class="bi bi-chevron-down"></i>
@@ -137,7 +111,7 @@
                         </td>
                     </tr>
                     <tr class="collapse" id="@rowId">
-                        <td colspan="7">
+                        <td colspan="5">
                             <div class="p-3 details-card">
                                 @{
                                     string details = log.Details ?? string.Empty;
@@ -145,12 +119,38 @@
 
                                     // Replace waiter IDs with names in plain-text details
                                     var wnMap = ViewBag.WaiterNames as System.Collections.Generic.IDictionary<int, string>;
-                                    if (wnMap != null && wnMap.Count > 0 && details.IndexOf("waiter", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                                    if (wnMap != null && wnMap.Count > 0)
                                     {
-                                        foreach (var kv in wnMap)
-                                        {
-                                            details = details.Replace($"waiter {kv.Key}", $"waiter {kv.Value}")
-                                            .Replace($"Waiter {kv.Key}", $"Waiter {kv.Value}");
+                                        // case 1: phrases like "waiter 42" or "Waiter 42"
+                                        if (details.IndexOf("waiter", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                                            {
+                                            foreach (var kv in wnMap)
+                                                {
+                                                     details = details.Replace($"waiter {kv.Key}", $"waiter {kv.Value}")
+                                                    .Replace($"Waiter {kv.Key}", $"Waiter {kv.Value}");
+                                                 }
+                                            }
+                                        // case 2: pattern "Deployed waiters: [42,43]" -> map to names
+                                        if (details.StartsWith("Deployed waiters:", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                            var open = details.IndexOf('[');
+                                            var close = details.IndexOf(']');
+                                            if (open >= 0 && close > open)
+                                            {
+                                                var inner = details.Substring(open + 1, close - open - 1);
+                                                var ids = inner.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                                            .Select(s => s.Trim())
+                                                            .ToList();
+                                                var names = new System.Collections.Generic.List<string>();
+                                                foreach (var s in ids)
+                                                {
+                                                        if (int.TryParse(s, out var id) && wnMap.ContainsKey(id))
+                                                            names.Add(wnMap[id]);
+                                                        else if (!string.IsNullOrWhiteSpace(s))
+                                                            names.Add(s);
+                                                }
+                                                details = $"Deployed waiters: [{string.Join(", ", names)}]";
+                                            }
                                         }
                                     }
 
@@ -290,7 +290,30 @@
             </tbody>
         </table>
     </div>
-
+@section Scripts {
+    <script>
+        (function () {
+            var tz = document.getElementById('tzOffset');
+            if (tz) tz.value = new Date().getTimezoneOffset();
+            var form = document.getElementById('filterForm');
+            if (form) {
+                form.addEventListener('submit', function () {
+                    if (tz) tz.value = new Date().getTimezoneOffset();
+                });
+            }
+            // Convert UTC timestamps to user's local date
+            document.querySelectorAll('.ts').forEach(function (el) {
+                var iso = el.getAttribute('data-utc');
+                if (!iso) return;
+                var d = new Date(iso);
+                if (isNaN(d.getTime())) return;
+                // Format as locale date (no time)
+                el.textContent = d.toLocaleDateString();
+                el.title = 'UTC: ' + d.toUTCString();
+            });
+        })();
+    </script>
+}
     <div class="d-flex gap-2">
         <a class="btn btn-outline-secondary" href="?page=@(Math.Max(1, (int)ViewBag.Page - 1))&pageSize=@ViewBag.PageSize&username=@Context.Request.Query["username"]&orderNumber=@Context.Request.Query["orderNumber"]&filterDate=@Context.Request.Query["filterDate"]">Prev</a>
         <a class="btn btn-outline-secondary" href="?page=@((int)ViewBag.Page + 1)&pageSize=@ViewBag.PageSize&username=@Context.Request.Query["username"]&orderNumber=@Context.Request.Query["orderNumber"]&filterDate=@Context.Request.Query["filterDate"]">Next</a>
