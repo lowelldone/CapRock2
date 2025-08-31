@@ -1,7 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Selected Package Menus";
 }
-
+<style>
+    #selected-items{
+        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+    }
+</style>
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-lg-10">
@@ -17,7 +21,7 @@
 
             <!-- Selected Items Card -->
             <div class="card shadow-lg border-0 mb-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-success text-white" id="selected-items">
                     <h4 class="mb-0">
                         <i class="bi bi-check-circle me-2"></i>Your Selected Items
                     </h4>

@@ -65,11 +65,32 @@
         padding: 0.5rem;
         border-radius: 8px;
         transition: all 0.3s ease;
+        display: inline-block; /* needed so transform animations apply reliably */
+    }
+    /* Bell click animation */
+    #notifBell.ringing {
+        animation: bellRing 0.7s ease-in-out 0s 1 normal both;
+        transform-origin: top center;
     }
     /* Notification dropdown */
      .notif-wrapper {
         position: relative;
     }
+
+    /* Small red dot on bell when there are new notifications */
+     .notif-indicator {
+         position: absolute;
+         top: 2px;
+         right: 2px;
+         width: 10px;
+         height: 10px;
+         background: #ef4444;
+         border: 2px solid #fff;
+         border-radius: 50%;
+         display: none;
+         z-index: 2000;
+         pointer-events: none;
+     }
 
      .notif-dropdown {
         position: absolute;
@@ -106,11 +127,46 @@
      .notif-item {
         padding: .75rem 1rem;
         border-bottom: 1px solid #f3e8ff;
+        position: relative;
     }
 
-         .notif-item:last-child {
-            border-bottom: none;
-        }
+    /* Make entire notification row clickable and add purple hover */
+    .notif-list a {
+        display: block;
+    }
+
+    .notif-item {
+        transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+        border-left: 4px solid transparent;
+        border-radius: 8px;
+    }
+
+    .notif-item:hover {
+        background: var(--purple-bg-light);
+        color: var(--primary-purple);
+        border-left-color: var(--primary-purple);
+    }
+    .notif-item:hover .notif-title {
+        color: var(--primary-purple);
+    }
+    .notif-item:hover .notif-meta {
+        color: var(--text-purple-light);
+    }
+    .notif-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Per-item unseen indicator */
+     .notif-new-dot {
+         position: absolute;
+         top: 10px;
+         right: 10px;
+         width: 8px;
+         height: 8px;
+         background: #ef4444;
+         border-radius: 50%;
+         display: inline-block;
+     }
 
      .notif-title {
         font-weight: 600;
@@ -217,6 +273,35 @@
             opacity: 0;
         }
     }
+    /* Bell ring keyframes */
+     @@keyframes bellRing {
+         0% { transform: rotate(0deg); }
+         10% { transform: rotate(-18deg); }
+         20% { transform: rotate(16deg); }
+         30% { transform: rotate(-14deg); }
+         40% { transform: rotate(12deg); }
+         50% { transform: rotate(-9deg); }
+         60% { transform: rotate(7deg); }
+         70% { transform: rotate(-4deg); }
+         80% { transform: rotate(3deg); }
+         90% { transform: rotate(-2deg); }
+         100% { transform: rotate(0deg); }
+     }
+
+     /* Clear all link in notif header */
+     .notif-clear-btn {
+         background: transparent;
+         border: none;
+         color: var(--primary-purple);
+         font-weight: 600;
+         cursor: pointer;
+         font-size: .85rem;
+         padding: 0;
+     }
+         .notif-clear-btn:hover {
+             color: var(--primary-purple-dark);
+             text-decoration: underline;
+         }
 
     /* Main Content Grid */
     .content-grid {
@@ -744,9 +829,11 @@
         <div class="header-controls">
             <div class="notif-wrapper">
                 <i id="notifBell" class="bi bi-bell header-icon"></i>
+                <span id="notifDot" class="notif-indicator"></span>
                 <div id="notifMenu" class="notif-dropdown">
                     <div class="notif-header">
                         <span>Activity Notifications</span>
+                        <button id="notifClearBtn" type="button" class="notif-clear-btn">Clear</button>
                         <span id="notifCount" class="notif-dot" style="display:none">0</span>
                     </div>
                     <div id="notifList" class="notif-list">
@@ -1087,50 +1174,118 @@
         const menu = document.getElementById('notifMenu');
         const list = document.getElementById('notifList');
         const countEl = document.getElementById('notifCount');
+        const bellDot = document.getElementById('notifDot');
         if (!bell || !menu) return;
             let latestSeenUtc = null;
-            async function loadNotifications() {
-                try {
-                    const qs = latestSeenUtc ? ('?since=' + encodeURIComponent(latestSeenUtc)) : '';
-                    const res = await fetch('/DashboardDateSummary/RecentLogs' + qs);
-                    if (!res.ok) return;
-                    const data = await res.json();
-                    const items = Array.isArray(data.items) ? data.items : [];
-                    const newCount = data.newCount || 0;
-                    if (data.latestUtc) {
-                        latestSeenUtc = data.latestUtc;
-                        }
-                        if (items.length === 0) {
-                            list.innerHTML = '<div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">—</div></div>';
-                            } else {
-                        list.innerHTML = items.map(it => {
-                            const when = new Date(it.timestamp).toLocaleString();
-                            const who = (it.username || 'User') + (it.role ? (' (' + it.role + ')') : '');
-                            const action = it.action || 'Action';
-                            const order = it.orderNumber ? (' · Order ' + it.orderNumber) : '';
-                            const href = '/AuditLogs/Index?highlightId=' + encodeURIComponent(it.auditLogId);
-                            return `<a href="${href}" class="text-decoration-none text-reset"><div class="notif-item"><div class="notif-title"><i class=\"bi bi-activity me-1\"></i>${action}${order}</div><div class=\"notif-meta\">${who} · ${when}</div></div></a>`;
-                        }).join('');
-                        }
-                        if (newCount > 0) {
-                            countEl.textContent = newCount;
-                            countEl.style.display = '';
-                            } else {
-                        countEl.style.display = 'none';
-                        }
-                    } catch { }
-                }
-            bell.addEventListener('click', async () => {
+         let lastItems = [];
+         const SEEN_KEY = 'notifSeenIds';
+         function getSeenIds() {
+             try {
+                 const raw = localStorage.getItem(SEEN_KEY);
+                 if (!raw) return new Set();
+                 const arr = JSON.parse(raw);
+                 return new Set((Array.isArray(arr) ? arr : []).map(x => String(x)));
+             } catch { return new Set(); }
+         }
+         function saveSeenIds(seen) {
+             try { localStorage.setItem(SEEN_KEY, JSON.stringify(Array.from(seen))); } catch {}
+         }
+         async function loadNotifications() {
+             try {
+                 const isInitial = (latestSeenUtc === null);
+                 const qs = latestSeenUtc ? ('?since=' + encodeURIComponent(latestSeenUtc)) : '';
+                 const res = await fetch('/DashboardDateSummary/RecentLogs' + qs);
+                 if (!res.ok) return;
+                 const data = await res.json();
+                 const items = Array.isArray(data.items) ? data.items : [];
+                 lastItems = items;
+                 const newCount = data.newCount || 0;
+                 if (data.latestUtc) {
+                     latestSeenUtc = data.latestUtc;
+                 }
+                 const seen = getSeenIds();
+                 const filtered = items.filter(it => !seen.has(String(it.auditLogId)));
+                 if (filtered.length === 0) {
+                     list.innerHTML = '<div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">—</div></div>';
+                 } else {
+                     list.innerHTML = filtered.map(it => {
+                         const when = new Date(it.timestamp).toLocaleString();
+                         const who = (it.username || 'User') + (it.role ? (' (' + it.role + ')') : '');
+                         const action = it.action || 'Action';
+                         const order = it.orderNumber ? (' · Order ' + it.orderNumber) : '';
+                         const href = '/AuditLogs/Index?highlightId=' + encodeURIComponent(it.auditLogId);
+                         return `<a href="${href}" class="text-decoration-none text-reset" data-audit-id="${it.auditLogId}"><div class="notif-item"><span class="notif-new-dot"></span><div class="notif-title">${action}${order}</div><div class=\"notif-meta\">${who} · ${when}</div></div></a>`;
+                     }).join('');
+                 }
+                 // Show dot if there are unseen items after filtering
+                 const hasNew = (filtered.length > 0);
+                 if (hasNew) {
+                     const badgeCount = filtered.length;
+                     if (countEl) countEl.textContent = badgeCount;
+                     countEl.style.display = '';
+                     if (bellDot) bellDot.style.display = 'block';
+                 } else {
+                     countEl.style.display = 'none';
+                     if (bellDot) bellDot.style.display = 'none';
+                 }
+             } catch { }
+         }
+         bell.addEventListener('click', async () => {
+             // Play ring animation
+             bell.classList.remove('ringing');
+             void bell.offsetWidth; // restart animation
+             bell.classList.add('ringing');
                 if (!menu.classList.contains('show')) {
-                    await loadNotifications();
-                    }
-                menu.classList.toggle('show');
-                });
-            document.addEventListener('click', (e) => {
-                if (!menu.contains(e.target) && e.target !== bell) {
-                    menu.classList.remove('show');
-                    }
-                });
-            setInterval(loadNotifications, 60000);
-        })();
+                 await loadNotifications();
+             }
+             menu.classList.toggle('show');
+             // Opening the menu no longer clears dots; they clear when an item is clicked
+         });
+         bell.addEventListener('animationend', () => {
+             bell.classList.remove('ringing');
+         });
+         document.addEventListener('click', (e) => {
+             if (!menu.contains(e.target) && e.target !== bell) {
+                 menu.classList.remove('show');
+             }
+         });
+         // Mark a notification as seen when clicked: remove its red dot only for that item and persist it
+         document.addEventListener('click', (e) => {
+             const anchor = e.target.closest && e.target.closest('#notifList a[data-audit-id]');
+             if (anchor) {
+                 const id = anchor.getAttribute('data-audit-id');
+                 const dot = anchor.querySelector('.notif-new-dot');
+                 if (dot) dot.remove();
+                 // Remove this notification item from the list
+                 anchor.remove();
+                 // Persist seen id so it stays cleared on reload
+                 if (id) {
+                     const seen = getSeenIds();
+                     seen.add(String(id));
+                     saveSeenIds(seen);
+                 }
+                 // If no more per-item dots remain, hide the bell dot and counter
+                 if (!list.querySelector('.notif-new-dot')) {
+                     if (bellDot) bellDot.style.display = 'none';
+                     if (countEl) countEl.style.display = 'none';
+                 }
+             }
+         });
+         // Clear all button
+         const clearBtn = document.getElementById('notifClearBtn');
+         if (clearBtn) {
+             clearBtn.addEventListener('click', () => {
+                 // Persist all current ids as seen so they don't reappear
+                 const seen = getSeenIds();
+                 (lastItems || []).forEach(it => seen.add(String(it.auditLogId)));
+                 saveSeenIds(seen);
+                 list.innerHTML = '<div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">—</div></div>';
+                 if (bellDot) bellDot.style.display = 'none';
+                 if (countEl) countEl.style.display = 'none';
+             });
+         }
+         // Initial load so the red dot can appear on first paint
+         loadNotifications();
+         setInterval(loadNotifications, 60000);
+     })();
 </script> 

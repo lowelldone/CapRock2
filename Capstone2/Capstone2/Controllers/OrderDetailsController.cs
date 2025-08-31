@@ -231,6 +231,23 @@ namespace Capstone2.Controllers
             if (order == null)
                 return NotFound();
 
+            // Ensure BaseAmount and RushOrderFee are populated to match the on-screen preview
+            double computedBase = 0d;
+            if (order.OrderDetails != null)
+                {
+                foreach (var od in order.OrderDetails)
+                    {
+                        var unit = od.Menu?.Price ?? 0d;
+                        computedBase += unit * od.Quantity;
+                    }
+                }
+            order.BaseAmount = computedBase;
+            order.RushOrderFee = order.IsRushOrder ? Math.Round(computedBase * 0.10, 2) : 0d;
+            if (order.TotalPayment <= 0)
+            {
+                order.TotalPayment = order.IsRushOrder ? (order.BaseAmount + order.RushOrderFee) : order.BaseAmount;
+            }
+
             string Peso(double v) => $"₱{v:N2}";
 
             QuestPDF.Settings.License = LicenseType.Community;

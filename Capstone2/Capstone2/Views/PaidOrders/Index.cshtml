@@ -298,6 +298,17 @@
                                             Details
                                         </a>
                                     }
+                                    @* Headwaiter remove-from-view for Completed orders *@
+                                    @if (!isAdmin && item?.Order?.Status == "Completed")
+                                    {
+                                        <form asp-controller="PaidOrders" asp-action="HideFromView" asp-route-id="@item.CustomerID" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="modern-table-action-btn btn-outline-danger" onclick="return confirm('Remove this completed order from your view?');">
+                                                <i class="bi bi-eye-slash"></i>
+                                                Remove
+                                            </button>
+                                        </form>
+                                    }
                                 </div>
                             </td>
                         </tr>
