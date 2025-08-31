@@ -1,180 +1,731 @@
 ﻿@{
     ViewData["Title"] = "Welcome to Grush Catering";
+    Layout = null;
 }
 
-<style>
-    :root {
-        --primary-purple: #7c3aed;
-        --primary-purple-dark: #6d28d9;
-        --primary-purple-light: #a78bfa;
-        --secondary-purple: #8b5cf6;
-        --accent-purple: #c084fc;
-        --purple-bg: #faf5ff;
-        --purple-bg-light: #f3e8ff;
-        --purple-border: #e9d5ff;
-        --text-purple: #581c87;
-        --text-purple-light: #7c3aed;
-        --success-color: #10b981;
-        --warning-color: #f59e0b;
-        --danger-color: #ef4444;
-        --info-color: #3b82f6;
-    }
-    body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p {
-        font-family: 'Segoe UI', sans-serif;
-    }
-    .hero-section {
-        background: rgba(255,255,255,0.95);
-        border-radius: 2rem;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.15);
-        border: 1px solid var(--purple-border);
-        padding: 3rem 2rem 2rem 2rem;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        transition: all 0.3s ease;
-    }
-    .hero-section:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.2);
-        transform: translateY(-2px);
-    }
-    .hero-img-wrapper {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .hero-img-wrapper img {
-        border-radius: 1.5rem;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.2);
-        max-width: 90%;
-        filter: brightness(0.97) saturate(1.1);
-        transition: all 0.3s ease;
-    }
-    .hero-img-wrapper img:hover {
-        transform: scale(1.02);
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.3);
-    }
-    .section-divider {
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        border-radius: 2px;
-        margin: 3rem 0 2rem 0;
-        opacity: 0.3;
-    }
-    .feature-card {
-        background: #fff;
-        border-radius: 1.5rem;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-        padding: 2rem 1.5rem 1.5rem 1.5rem;
-        margin-bottom: 2rem;
-        min-height: 260px;
-        transition: all 0.3s ease;
-    }
-    .feature-card:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        transform: translateY(-3px);
-        border-color: var(--primary-purple);
-    }
-    .feature-card i {
-        color: var(--primary-purple);
-        transition: all 0.3s ease;
-    }
-    .feature-card:hover i {
-        transform: scale(1.1);
-        color: var(--secondary-purple);
-    }
-    .btn-order {
-        font-size: 1.25rem;
-        font-weight: 600;
-        padding: 0.75rem 2.5rem;
-        border-radius: 2rem;
-        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        border: none;
-        color: white;
-        transition: all 0.3s ease;
-    }
-    .btn-order:hover {
-        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
-    }
-    .cta-section {
-        background: rgba(255,255,255,0.95);
-        border-radius: 1.5rem;
-        box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-        padding: 2.5rem 1rem;
-        transition: all 0.3s ease;
-    }
-    .cta-section:hover {
-        box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
-        transform: translateY(-2px);
-    }
-    /* Text color enhancements */
-    .text-warning {
-        color: var(--warning-color) !important;
-    }
-    .text-success {
-        color: var(--success-color) !important;
-    }
-    .text-primary {
-        color: var(--primary-purple) !important;
-    }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grush Catering - Premium Catering Services</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #7c3aed;
+            --primary-purple-dark: #6d28d9;
+            --primary-purple-light: #a78bfa;
+            --secondary-purple: #8b5cf6;
+            --accent-purple: #c084fc;
+            --purple-bg: #faf5ff;
+            --purple-bg-light: #f3e8ff;
+            --purple-border: #e9d5ff;
+            --text-purple: #581c87;
+            --text-purple-light: #7c3aed;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        /* Header & Navigation */
+        .navbar {
+            padding: .5rem 0;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-purple);
+            font-size: 1.8rem;
+        }
+        .navbar-brand:hover{
+            color: var(--primary-purple);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: #4a5568;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-purple);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 0.6rem 1.8rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(250, 245, 255, 0.9)), url('https://images.unsplash.com/photo-1495195134817-aeb325a55b65?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 7rem 0 5rem;
+            position: relative;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-title {
+            font-weight: 800;
+            font-size: 3.5rem;
+            color: var(--text-purple);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #4a5568;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+        
+        .hero-badge {
+            background: var(--purple-bg);
+            color: var(--primary-purple);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background: var(--purple-bg);
+            padding: 4rem 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #4a5568;
+            font-weight: 500;
+        }
+        
+        /* Services Section */
+        .services-section {
+            padding: 6rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+        
+        .section-title h2 {
+            font-weight: 800;
+            color: var(--text-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: #718096;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .service-card {
+            background: #fff;
+            border-radius: 1.2rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.15);
+        }
+        
+        .service-img {
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .service-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .service-card:hover .service-img img {
+            transform: scale(1.05);
+        }
+        
+        .service-content {
+            padding: 1.8rem;
+        }
+        
+        .service-title {
+            font-weight: 700;
+            color: var(--text-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .service-desc {
+            color: #718096;
+            margin-bottom: 1.5rem;
+        }
+        
+        .service-link {
+            color: var(--primary-purple);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .service-link i {
+            margin-left: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .service-link:hover {
+            color: var(--primary-purple-dark);
+        }
+        
+        .service-link:hover i {
+            transform: translateX(5px);
+        }
+        
+        /* Testimonials */
+        .testimonial-section {
+            background: var(--purple-bg);
+            padding: 6rem 0;
+        }
+        
+        .testimonial-card {
+            background: #fff;
+            border-radius: 1.2rem;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin: 1rem;
+            height: 100%;
+        }
+        
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #4a5568;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .testimonial-text:before {
+            content: """;
+            font-size: 5rem;
+            color: var(--purple-border);
+            position: absolute;
+            top: -1.5rem;
+            left: -1rem;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 1rem;
+        }
+        
+        .author-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .author-info h5 {
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            color: var(--text-purple);
+        }
+        
+        .author-info p {
+            color: #718096;
+            margin: 0;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            padding: 6rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-title {
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+        }
+        
+        .cta-text {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.9;
+        }
+        
+        .btn-light {
+            background: white;
+            color: var(--primary-purple);
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 2.5rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-light:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1a202c;
+            color: white;
+            padding: 5rem 0 2rem;
+        }
+        
+        .footer-title {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #a0aec0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-contact {
+            color: #a0aec0;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .footer-contact i {
+            margin-right: 0.8rem;
+            color: var(--primary-purple-light);
+        }
+        
+        .social-links {
+            display: flex;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary-purple);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid #2d3748;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            text-align: center;
+            color: #a0aec0;
+        }
+        
+        /* Responsive Adjustments */
+        @@media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .service-card {
+                margin-bottom: 2rem;
+            }
+        }
 
-<!-- Hero Section -->
-<div class="container hero-section">
-    <div class="row align-items-center">
-        <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
-            <h1 class="display-4 fw-bold mb-3">Delicious Catering for All Occasions</h1>
-            <p class="lead mb-4">
-                Grush Catering Services offers affordable, customizable catering packages for birthdays, weddings, and corporate events. Taste, quality, and service—guaranteed.
-            </p>
-            <a class="btn btn-primary btn-order mt-2" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
-        </div>
-        <div class="col-md-6 hero-img-wrapper">
-            <img src="~/images/GRUSH.jpg" class="img-fluid" alt="Catering food sample" />
-        </div>
-    </div>
-</div>
+        .order-login{
+            display: flex;
+            gap: 1rem;
+        }
 
-<div class="section-divider"></div>
+        .order-login .btn{
+            width: 10rem;
+            padding: 1rem 1rem;
+        }
 
-<!-- Features Section -->
-<div class="container">
-    <h2 class="text-center mb-5 fw-bold">Why Choose Us?</h2>
-    <div class="row justify-content-center">
-        <div class="col-md-4 mb-4">
-            <div class="feature-card text-center h-100">
-                <i class="bi bi-star-fill text-warning" style="font-size: 2.5rem;"></i>
-                <h4 class="mt-3 fw-semibold">Premium Quality</h4>
-                <p>Only the best ingredients go into our dishes. You’ll taste the difference!</p>
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" asp-controller = "Home" asp-action="Homepage">GRUSH Catering Services</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Menus</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Gallery</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+                <div class = "order-login">
+                    <a class="btn btn-primary d-none d-lg-block" asp-controller = "ClientMenus" asp-action = "Index">Order Now</a>
+                    <a class="btn btn-primary d-none d-lg-block" id="login-btn" asp-controller = "Home" asp-action = "LogIn">Login</a>
+                </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="feature-card text-center h-100">
-                <i class="bi bi-wallet2 text-success" style="font-size: 2.5rem;"></i>
-                <h4 class="mt-3 fw-semibold">Affordable Packages</h4>
-                <p>Customize your menu according to your budget without sacrificing quality.</p>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <span class="hero-badge"><i class="bi bi-star-fill me-2"></i>Premium Catering Services</span>
+                    <h1 class="hero-title">Exquisite Catering for Unforgettable Events</h1>
+                    <p class="hero-subtitle">From intimate gatherings to grand celebrations, we create culinary experiences that delight your guests and elevate your special occasions.</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#" class="btn btn-primary btn-lg">View Our Menus</a>
+                        <a href="#" class="btn btn-outline-primary btn-lg">Contact Us</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <img src="https://images.unsplash.com/photo-1555244162-803834f70033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="img-fluid rounded-3 shadow-lg" alt="Catering presentation">
+                </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="feature-card text-center h-100">
-                <i class="bi bi-truck text-info" style="font-size: 2.5rem;"></i>
-                <h4 class="mt-3 fw-semibold">Reliable Delivery</h4>
-                <p>We deliver on time, every time—hot, fresh, and ready to serve.</p>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 col-6 mb-4 mb-md-0">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="500">0</div>
+                        <div class="stat-label">Events Catered</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4 mb-md-0">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="120">0</div>
+                        <div class="stat-label">Menu Options</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="98">0</div>
+                        <div class="stat-label">Client Satisfaction</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="15">0</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </section>
 
-<div class="section-divider"></div>
+    <!-- Services Section -->
+    <section class="services-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Our Catering Services</h2>
+                <p>We offer comprehensive catering solutions for all types of events, ensuring exceptional food and service every time.</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <div class="service-img">
+                            <img src="https://images.unsplash.com/photo-1522728323383-63f3f32df11e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding Catering">
+                        </div>
+                        <div class="service-content">
+                            <h3 class="service-title">Wedding Catering</h3>
+                            <p class="service-desc">Create unforgettable wedding experiences with our customized menus and impeccable service for your special day.</p>
+                            <a href="#" class="service-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <div class="service-img">
+                            <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Corporate Events">
+                        </div>
+                        <div class="service-content">
+                            <h3 class="service-title">Corporate Events</h3>
+                            <p class="service-desc">Impress clients and colleagues with professional catering services for meetings, conferences, and corporate functions.</p>
+                            <a href="#" class="service-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="service-card">
+                        <div class="service-img">
+                            <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Social Gatherings">
+                        </div>
+                        <div class="service-content">
+                            <h3 class="service-title">Social Gatherings</h3>
+                            <p class="service-desc">From birthdays to anniversaries, we make your celebrations special with delicious food and attentive service.</p>
+                            <a href="#" class="service-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- Call to Action Section -->
-<div class="container cta-section text-center">
-    <h3 class="mb-3 fw-bold">Ready to make your event unforgettable?</h3>
-    <a class="btn btn-outline-primary btn-lg btn-order" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
-</div>
+    <!-- Testimonials Section -->
+    <section class="testimonial-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>What Our Clients Say</h2>
+                <p>Don't just take our word for it - hear from some of our satisfied clients</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">Grush Catering made our wedding day absolutely perfect. The food was exquisite and the service was impeccable. Our guests are still talking about it!</p>
+                        <div class="testimonial-author">
+                            <div class="author-img">
+                                <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Sarah Johnson">
+                            </div>
+                            <div class="author-info">
+                                <h5>Sarah Johnson</h5>
+                                <p>Wedding Client</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">We've used Grush Catering for three corporate events now, and they consistently deliver exceptional food and professional service. Highly recommended!</p>
+                        <div class="testimonial-author">
+                            <div class="author-img">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen">
+                            </div>
+                            <div class="author-info">
+                                <h5>Michael Chen</h5>
+                                <p>Corporate Client</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="testimonial-card">
+                        <p class="testimonial-text">The team at Grush Catering went above and beyond for our anniversary party. The customized menu was perfect, and the presentation was stunning.</p>
+                        <div class="testimonial-author">
+                            <div class="author-img">
+                                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Elena Rodriguez">
+                            </div>
+                            <div class="author-info">
+                                <h5>Elena Rodriguez</h5>
+                                <p>Private Event Client</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Plan Your Event?</h2>
+            <p class="cta-text">Contact us today for a personalized consultation and let us create a memorable culinary experience for your next event.</p>
+            <a href="#" class="btn btn-light btn-lg">Get a Free Quote</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="footer-title">Grush Catering</h4>
+                    <p>Providing exceptional catering services for all occasions since 2008. We pride ourselves on quality, creativity, and outstanding service.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-twitter"></i></a>
+                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-5 mb-md-0">
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Menus</a></li>
+                        <li><a href="#">Gallery</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-5 mb-md-0">
+                    <h4 class="footer-title">Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Wedding Catering</a></li>
+                        <li><a href="#">Corporate Events</a></li>
+                        <li><a href="#">Private Parties</a></li>
+                        <li><a href="#">Social Gatherings</a></li>
+                        <li><a href="#">Drop-off Catering</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 col-md-4">
+                    <h4 class="footer-title">Contact Us</h4>
+                    <div class="footer-contact">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>123 Catering Street, Food City, FC 12345</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="bi bi-telephone-fill"></i>
+                        <span>(555) 123-4567</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span>info@grushcatering.com</span>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="bi bi-clock-fill"></i>
+                        <span>Mon-Fri: 9AM-6PM, Sat: 10AM-4PM</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Grush Catering. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Simple counter animation for stats
+        document.addEventListener('DOMContentLoaded', function() {
+            const counters = document.querySelectorAll('.stat-number');
+            const speed = 200;
+            
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-count');
+                const count = +counter.innerText;
+                const increment = Math.ceil(target / speed);
+                
+                if (count < target) {
+                    let current = count;
+                    const updateCount = () => {
+                        current += increment;
+                        if (current > target) current = target;
+                        counter.innerText = current;
+                        if (current < target) {
+                            setTimeout(updateCount, 1);
+                        }
+                    };
+                    updateCount();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

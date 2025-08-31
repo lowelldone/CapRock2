@@ -73,6 +73,17 @@ namespace Capstone2.Controllers.AdminControllers
                 ViewBag.WaiterNames = waiterNames;
             }
 
+            // Map HeadWaiterId -> HeadWaiter Full Name for display (used when details contain "head waiter <id>")
+            var headWaiters = await _context.HeadWaiters
+                             .Include(h => h.User)
+                             .Where(h => h.isActive)
+                             .ToListAsync();
+            var headWaiterNames = headWaiters.ToDictionary(
+            h => h.HeadWaiterId,
+            h => h.User != null ? ($"{h.User.FirstName} {h.User.LastName}") : ($"HeadWaiter #{h.HeadWaiterId}")
+                         );
+            ViewBag.HeadWaiterNames = headWaiterNames;
+
             ViewBag.Total = total;
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;

@@ -484,9 +484,6 @@
                 <a asp-controller="Customers" asp-action="GenerateInvoice" asp-route-id="@Model.Customer.CustomerID" class="modern-action-btn btn-primary">
                     <i class="bi bi-download me-1"></i> Download PDF
                 </a>
-                <button type="button" class="modern-action-btn btn-success" id="printInvoiceBtn">
-                    <i class="bi bi-printer me-1"></i> Print
-                </button>
                 <button type="button" class="modern-action-btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -495,12 +492,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const btn = document.getElementById('printInvoiceBtn');
-        if (btn) {
-            btn.addEventListener('click', function () {
-                window.print();
-            });
-        }
         var shouldShow = '@(ViewBag.ShowInvoiceModal == true ? "true" : "false")' === 'true';
         if (shouldShow) {
             var modalEl = document.getElementById('invoicePreviewModal');

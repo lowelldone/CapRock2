@@ -32,6 +32,15 @@
             .details-card .table {
                 margin-bottom: 0;
             }
+        /* Purple highlight styling for the focused (linked) row */
+        .row-highlight-purple {
+            background: linear-gradient(135deg, #d8b4fe 0%, #a78bfa 100%) !important;
+        }
+
+        .row-highlight-purple td {
+            background-color: transparent !important;
+        }
+
     </style>
 
     <form method="get" class="row g-2 mb-3" id="filterForm">
@@ -97,7 +106,7 @@
                 @foreach (var log in Model)
                 {
                     var rowId = $"details_{log.AuditLogId}";
-                    var highlightClass = (ViewBag.HighlightId != null && (int)ViewBag.HighlightId == log.AuditLogId) ? "table-warning" : string.Empty;
+                    var highlightClass = (ViewBag.HighlightId != null && (int)ViewBag.HighlightId == log.AuditLogId) ? "row-highlight-purple" : string.Empty;
                     <tr class="main-row @highlightClass" id="log_@log.AuditLogId">
                         <td><span class="ts" data-utc="@log.Timestamp.ToString("o")"></span></td>
                         <td>@log.Username (@log.Role)</td>
@@ -119,6 +128,7 @@
 
                                     // Replace waiter IDs with names in plain-text details
                                     var wnMap = ViewBag.WaiterNames as System.Collections.Generic.IDictionary<int, string>;
+                                    var hwMap = ViewBag.HeadWaiterNames as System.Collections.Generic.IDictionary<int, string>;
                                     if (wnMap != null && wnMap.Count > 0)
                                     {
                                         // case 1: phrases like "waiter 42" or "Waiter 42"
@@ -153,6 +163,17 @@
                                             }
                                         }
                                     }
+
+                                    // Replace head waiter IDs with names, e.g., "head waiter 20" -> "head waiter John Doe"
+                                    if (hwMap != null && hwMap.Count > 0 && details.IndexOf("head waiter", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                                        {
+                                        foreach (var kv in hwMap)
+                                            {
+                                                 details = details.Replace($"head waiter {kv.Key}", $"head waiter {kv.Value}")
+                                                .Replace($"Head waiter {kv.Key}", $"Head waiter {kv.Value}")
+                                                .Replace($"Head Waiter {kv.Key}", $"Head Waiter {kv.Value}");
+                                            }
+                                        }
 
                                     // Replace generic "order <id>" with known order number if available
                                     if (!string.IsNullOrWhiteSpace(log.OrderNumber))
@@ -311,6 +332,36 @@
                 el.textContent = d.toLocaleDateString();
                 el.title = 'UTC: ' + d.toUTCString();
             });
+                // Remove purple highlight when the highlighted row or its details are interacted with
+             var highlightedRows = document.querySelectorAll('.main-row.row-highlight-purple');
+             highlightedRows.forEach(function (row) {
+                             function clearHighlight() {
+                                 row.classList.remove('row-highlight-purple');
+                             }
+            
+                             // Click anywhere on the row
+                             row.addEventListener('click', clearHighlight, { once: true });
+            
+                             // Click on the details toggle button
+                             var toggleBtn = row.querySelector('.toggle-btn');
+                             if (toggleBtn) {
+                                 toggleBtn.addEventListener('click', clearHighlight, { once: true });
+                                 toggleBtn.addEventListener('keydown', function (e) {
+                                     if (e && (e.key === 'Enter' || e.key === ' ')) clearHighlight();
+                                 }, { once: true });
+                             }
+            
+                             // When the related collapse opens
+                             if (toggleBtn) {
+                                 var target = toggleBtn.getAttribute('data-bs-target');
+                                 if (target) {
+                                     var panel = document.querySelector(target);
+                                     if (panel) {
+                                         panel.addEventListener('show.bs.collapse', clearHighlight, { once: true });
+                                     }
+                                 }
+                             }
+             });
         })();
     </script>
 }
