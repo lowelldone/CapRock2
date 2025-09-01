@@ -2,7 +2,7 @@
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
-<div class="container-fluid modern-bg">
+<div class="container-fluid modern-bg modern-compact">
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div class="modern-header">
@@ -18,6 +18,9 @@
             <button type="button" id="toggleManualPo" class="modern-action-btn btn-primary">
                 <i class="bi bi-cart-plus"></i>Create PO(s)
             </button>
+            <a asp-action="TransactionHistory" asp-route-id="@ViewBag.SupplierId" class="modern-action-btn btn-outline-info">
+                <i class="bi bi-clock-history"></i>Transaction History
+            </a>
             <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i>Back
             </a>
@@ -38,12 +41,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row g-3 align-items-end">
-                            <div class="col-md-4">
-                                <label class="modern-form-label">Scheduled Delivery</label>
-                                <input class="modern-form-control" type="date" name="scheduledDelivery" required />
-                            </div>
-                        </div>
+                       <div class="row g-3 align-items-end"></div>
                         <div class="table-responsive mt-3">
                             <table class="modern-table">
                                 <thead>
@@ -74,7 +72,7 @@
         <div class="modern-status-card-header">
             <h5 class="modern-status-card-title">
                 <i class="bi bi-list-ul"></i>
-                Transaction History
+                Supplier Orders
             </h5>
         </div>
         <div class="modern-card-body">
@@ -84,7 +82,6 @@
                         <tr>
                             <th>PO Number</th>
                             <th>Ordered Date</th>
-                            <th>Expected Date</th>
                             <th>Status</th>
                             <th class="text-end">Action</th>
                         </tr>
@@ -100,20 +97,14 @@
                                     <div class="modern-info">@item.OrderDate.ToString("MM/dd/yyyy")</div>
                                 </td>
                                 <td>
-                                    <div class="modern-info">@(item.ExpectedDate.HasValue ? item.ExpectedDate.Value.ToString("MM/dd/yyyy") : "-")</div>
-                                </td>
-                                <td>
                                     <span class="modern-status-badge @(item.Status.ToLower())">
                                         @item.Status
                                     </span>
                                 </td>
                                 <td class="text-end">
                                     <div class="modern-table-actions">
-                                        <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="po" asp-route-vtId="@item.ViewTransactionId" class="modern-table-action-btn btn-outline-primary">
+                                        <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="po" asp-route-vtId="@item.ViewTransactionId" class="modern-table-action-btn btn-primary">
                                             <i class="bi bi-box"></i>View PO
-                                        </a>
-                                        <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="tx" asp-route-vtId="@item.ViewTransactionId" class="modern-table-action-btn btn-primary">
-                                            <i class="bi bi-receipt"></i>View TX
                                         </a>
                                     </div>
                                 </td>
@@ -136,7 +127,7 @@
         let loaded = false;
 
         async function loadMaterials() {
-            const res = await fetch(`/Suppliers/Prices/${supplierId}`);
+            const res = await fetch(`/Suppliers/Materials/${supplierId}`);
             if (!res.ok) return;
             const data = await res.json();
             const materials = data.materials || data.Materials || [];
@@ -166,17 +157,6 @@
                 if (!loaded) {
                     await loadMaterials();
                     loaded = true;
-                }
-                // Set scheduled delivery to today's date and restrict past dates
-                const dateInput = modalEl.querySelector('input[name="scheduledDelivery"]');
-                if (dateInput) {
-                    const today = new Date();
-                    const yyyy = today.getFullYear();
-                    const mm = String(today.getMonth() + 1).padStart(2, '0');
-                    const dd = String(today.getDate()).padStart(2, '0');
-                    const todayStr = `${yyyy}-${mm}-${dd}`;
-                    dateInput.min = todayStr;
-                    dateInput.value = todayStr;
                 }
                 manualPoModal.show();
             });

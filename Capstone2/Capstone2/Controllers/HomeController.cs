@@ -130,20 +130,14 @@ namespace Capstone2.Controllers
         {
             try
             {
-                var userId = HttpContext.Session.GetInt32("UserId");
                 var username = HttpContext.Session.GetString("Username");
                 var role = HttpContext.Session.GetString("Role");
                 var context = _context;
                 context.AuditLogs.Add(new Capstone2.Models.AuditLog
                 {
-                    UserId = userId,
                     Username = username,
                     Role = role,
                     Action = nameof(Logout),
-                    HttpMethod = "GET",
-                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
-                    UserAgent = Request.Headers["User-Agent"].ToString(),
-                    Succeeded = true,
                     Details = "User logged out"
                 });
                 context.SaveChanges();

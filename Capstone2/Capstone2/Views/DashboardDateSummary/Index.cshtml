@@ -837,7 +837,7 @@
                         <span id="notifCount" class="notif-dot" style="display:none">0</span>
                     </div>
                     <div id="notifList" class="notif-list">
-                        <div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">—</div></div>
+                        <div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">-</div></div>
                     </div>
                 </div>
             </div>
@@ -986,7 +986,6 @@
             }
         </div>
     }
-</div>
 </div>
 
 <!-- Filter Modal -->
@@ -1190,102 +1189,155 @@
          function saveSeenIds(seen) {
              try { localStorage.setItem(SEEN_KEY, JSON.stringify(Array.from(seen))); } catch {}
          }
-         async function loadNotifications() {
-             try {
-                 const isInitial = (latestSeenUtc === null);
-                 const qs = latestSeenUtc ? ('?since=' + encodeURIComponent(latestSeenUtc)) : '';
-                 const res = await fetch('/DashboardDateSummary/RecentLogs' + qs);
-                 if (!res.ok) return;
-                 const data = await res.json();
-                 const items = Array.isArray(data.items) ? data.items : [];
-                 lastItems = items;
-                 const newCount = data.newCount || 0;
-                 if (data.latestUtc) {
-                     latestSeenUtc = data.latestUtc;
-                 }
-                 const seen = getSeenIds();
-                 const filtered = items.filter(it => !seen.has(String(it.auditLogId)));
-                 if (filtered.length === 0) {
-                     list.innerHTML = '<div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">—</div></div>';
-                 } else {
-                     list.innerHTML = filtered.map(it => {
-                         const when = new Date(it.timestamp).toLocaleString();
-                         const who = (it.username || 'User') + (it.role ? (' (' + it.role + ')') : '');
-                         const action = it.action || 'Action';
-                         const order = it.orderNumber ? (' · Order ' + it.orderNumber) : '';
-                         const href = '/AuditLogs/Index?highlightId=' + encodeURIComponent(it.auditLogId);
-                         return `<a href="${href}" class="text-decoration-none text-reset" data-audit-id="${it.auditLogId}"><div class="notif-item"><span class="notif-new-dot"></span><div class="notif-title">${action}${order}</div><div class=\"notif-meta\">${who} · ${when}</div></div></a>`;
-                     }).join('');
-                 }
-                 // Show dot if there are unseen items after filtering
-                 const hasNew = (filtered.length > 0);
-                 if (hasNew) {
-                     const badgeCount = filtered.length;
-                     if (countEl) countEl.textContent = badgeCount;
-                     countEl.style.display = '';
-                     if (bellDot) bellDot.style.display = 'block';
-                 } else {
-                     countEl.style.display = 'none';
-                     if (bellDot) bellDot.style.display = 'none';
-                 }
-             } catch { }
-         }
-         bell.addEventListener('click', async () => {
-             // Play ring animation
-             bell.classList.remove('ringing');
-             void bell.offsetWidth; // restart animation
-             bell.classList.add('ringing');
-                if (!menu.classList.contains('show')) {
-                 await loadNotifications();
-             }
-             menu.classList.toggle('show');
-             // Opening the menu no longer clears dots; they clear when an item is clicked
-         });
-         bell.addEventListener('animationend', () => {
-             bell.classList.remove('ringing');
-         });
-         document.addEventListener('click', (e) => {
-             if (!menu.contains(e.target) && e.target !== bell) {
-                 menu.classList.remove('show');
-             }
-         });
-         // Mark a notification as seen when clicked: remove its red dot only for that item and persist it
-         document.addEventListener('click', (e) => {
-             const anchor = e.target.closest && e.target.closest('#notifList a[data-audit-id]');
-             if (anchor) {
-                 const id = anchor.getAttribute('data-audit-id');
-                 const dot = anchor.querySelector('.notif-new-dot');
-                 if (dot) dot.remove();
-                 // Remove this notification item from the list
-                 anchor.remove();
-                 // Persist seen id so it stays cleared on reload
-                 if (id) {
-                     const seen = getSeenIds();
-                     seen.add(String(id));
-                     saveSeenIds(seen);
-                 }
-                 // If no more per-item dots remain, hide the bell dot and counter
-                 if (!list.querySelector('.notif-new-dot')) {
-                     if (bellDot) bellDot.style.display = 'none';
-                     if (countEl) countEl.style.display = 'none';
-                 }
-             }
-         });
-         // Clear all button
-         const clearBtn = document.getElementById('notifClearBtn');
-         if (clearBtn) {
-             clearBtn.addEventListener('click', () => {
-                 // Persist all current ids as seen so they don't reappear
-                 const seen = getSeenIds();
-                 (lastItems || []).forEach(it => seen.add(String(it.auditLogId)));
-                 saveSeenIds(seen);
-                 list.innerHTML = '<div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">—</div></div>';
-                 if (bellDot) bellDot.style.display = 'none';
-                 if (countEl) countEl.style.display = 'none';
-             });
-         }
-         // Initial load so the red dot can appear on first paint
-         loadNotifications();
-         setInterval(loadNotifications, 60000);
+        async function loadNotifications(onOpen) {
+            try {
+                var qs = (!onOpen && latestSeenUtc) ? ('?since=' + encodeURIComponent(latestSeenUtc)) : '';
+                var logsRes = await fetch('/DashboardDateSummary/RecentLogs' + qs);
+                var ordersRes = await fetch('/DashboardDateSummary/RecentOrders' + qs);
+                var logsData = logsRes.ok ? await logsRes.json() : { items: [], latestUtc: null };
+                var ordersData = ordersRes.ok ? await ordersRes.json() : { items: [], latestUtc: null };
+
+                var merged = [];
+                if (Array.isArray(logsData.items)) {
+                    for (var i = 0; i < logsData.items.length; i++) {
+                        var li = logsData.items[i];
+                        merged.push({ type: 'log', id: String(li.auditLogId), ts: li.timestamp, data: li });
+                    }
+                }
+                if (Array.isArray(ordersData.items)) {
+                    for (var j = 0; j < ordersData.items.length; j++) {
+                        var oi = ordersData.items[j];
+                        var ts = oi.timestamp || oi.Timestamp || oi.orderDate || oi.OrderDate;
+                        var oid = oi.orderId || oi.OrderId;
+                        merged.push({ type: 'order', id: 'order-' + String(oid), ts: ts, data: oi });
+                    }
+                }
+
+                merged = merged.filter(function (x) { return x.ts; })
+                    .sort(function (a, b) { return new Date(b.ts) - new Date(a.ts); });
+
+                lastItems = merged;
+
+                var latestFromLogs = logsData.latestUtc;
+                var latestFromOrders = ordersData.latestUtc;
+                if (onOpen) {
+                    latestSeenUtc = latestFromLogs && latestFromOrders
+                        ? (new Date(latestFromLogs) > new Date(latestFromOrders) ? latestFromLogs : latestFromOrders)
+                        : (latestFromLogs || latestFromOrders || latestSeenUtc);
+                }
+
+                var seen = getSeenIds();
+                var filtered = merged.filter(function (x) { return !seen.has(String(x.id)); });
+
+                if (filtered.length === 0) {
+                    list.innerHTML = '<div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">-</div></div>';
+                } else {
+                    var html = '';
+                    for (var k = 0; k < filtered.length; k++) {
+                        var x = filtered[k];
+                        if (x.type === 'order') {
+                            var o = x.data || {};
+                            var whenStr = new Date(o.Timestamp || o.timestamp || o.OrderDate || o.orderDate || Date.now()).toLocaleString();
+                            var orderNumStr = o.OrderNumber || o.orderNumber;
+                            var title = orderNumStr ? ('Order ' + orderNumStr) : 'New Order';
+                            var name = o.CustomerName || o.customerName || 'Customer';
+                            var cid = o.CustomerID || o.customerID || o.customerId || '';
+                            var href = '/Customers/ViewOrder?id=' + encodeURIComponent(cid);
+                            html += '<a href="' + href + '" class="text-decoration-none text-reset" data-audit-id="' + x.id + '"><div class="notif-item"><span class="notif-new-dot"></span><div class="notif-title">' + title + '</div><div class="notif-meta">' + name + ' - ' + whenStr + '</div></div></a>';
+                        } else {
+                            var it = x.data || {};
+                            var when = it.timestamp ? new Date(it.timestamp).toLocaleString() : '';
+                            var who = (it.username || 'User') + (it.role ? (' (' + it.role + ')') : '');
+                            var action = it.action || 'Action';
+                            var ord = it.orderNumber ? (' - Order ' + it.orderNumber) : '';
+                            var href2 = '/AuditLogs/Index?highlightId=' + encodeURIComponent(it.auditLogId);
+                            html += '<a href="' + href2 + '" class="text-decoration-none text-reset" data-audit-id="' + x.id + '"><div class="notif-item"><span class="notif-new-dot"></span><div class="notif-title">' + action + ord + '</div><div class="notif-meta">' + who + ' - ' + when + '</div></div></a>';
+                        }
+                    }
+                    list.innerHTML = html;
+                }
+
+                var hasNew = filtered.length > 0;
+                if (hasNew) {
+                    var badgeCount = filtered.length;
+                    if (countEl) countEl.textContent = String(badgeCount);
+                    countEl.style.display = '';
+                    if (bellDot) bellDot.style.display = 'block';
+                } else {
+                    countEl.style.display = 'none';
+                    if (bellDot) bellDot.style.display = 'none';
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        bell.addEventListener('click', async () => {
+            bell.classList.remove('ringing');
+            void bell.offsetWidth;
+            bell.classList.add('ringing');
+            menu.classList.toggle('show');
+            await loadNotifications(true); // fetch full list on open (no since)
+        });
+
+        bell.addEventListener('animationend', () => {
+            bell.classList.remove('ringing');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!menu.contains(e.target) && e.target !== bell) {
+                menu.classList.remove('show');
+            }
+        });
+
+        // Remove clicked notification, persist seen, then navigate
+        document.addEventListener('click', function (e) {
+            var anchor = e.target.closest && e.target.closest('#notifList a[data-audit-id]');
+            if (!anchor) return;
+            e.preventDefault();
+
+            var id = anchor.getAttribute('data-audit-id');
+            var href = anchor.getAttribute('href');
+
+            var dot = anchor.querySelector('.notif-new-dot');
+            if (dot) dot.remove();
+
+            // Remove from list
+            anchor.remove();
+
+            // Persist as seen
+            if (id) {
+                var seen = getSeenIds();
+                seen.add(String(id));
+                saveSeenIds(seen);
+            }
+
+            // Update UI if empty or no more dots
+            if (!list.querySelector('a[data-audit-id]')) {
+                list.innerHTML = '<div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">-</div></div>';
+                if (bellDot) bellDot.style.display = 'none';
+                if (countEl) countEl.style.display = 'none';
+            } else if (!list.querySelector('.notif-new-dot')) {
+                if (bellDot) bellDot.style.display = 'none';
+                if (countEl) countEl.style.display = 'none';
+            }
+
+            if (href) setTimeout(function () { window.location.href = href; }, 0);
+        });
+
+        // Clear all button fix (use hyphen)
+        const clearBtn = document.getElementById('notifClearBtn');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                const seen = getSeenIds();
+                (lastItems || []).forEach(x => seen.add(String(x.id)));
+                saveSeenIds(seen);
+                list.innerHTML = '<div class="notif-item"><div class="notif-title">No recent activity</div><div class="notif-meta">-</div></div>';
+                if (bellDot) bellDot.style.display = 'none';
+                if (countEl) countEl.style.display = 'none';
+            });
+        }
+
+        // Initial load & background poll (use since)
+        loadNotifications(false);
+        setInterval(function () { loadNotifications(false); }, 60000);
      })();
 </script> 

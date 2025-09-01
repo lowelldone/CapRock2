@@ -33,13 +33,7 @@ namespace Capstone2.Migrations
                     b.Property<string>("Action")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Amount")
-                        .HasColumnType("float");
-
                     b.Property<string>("Details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HttpMethod")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderNumber")
@@ -48,20 +42,8 @@ namespace Capstone2.Migrations
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Route")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Succeeded")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("UserAgent")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
@@ -486,18 +468,12 @@ namespace Capstone2.Migrations
                     b.Property<int?>("ReceivedQuantity")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ScheduledDelivery")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ViewTransactionId")
                         .HasColumnType("int");
@@ -538,35 +514,6 @@ namespace Capstone2.Migrations
                     b.ToTable("Suppliers");
                 });
 
-            modelBuilder.Entity("Capstone2.Models.SupplierMaterialPrice", b =>
-                {
-                    b.Property<int>("SupplierMaterialPriceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SupplierMaterialPriceId"));
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MaterialId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("SupplierMaterialPriceId");
-
-                    b.HasIndex("MaterialId");
-
-                    b.HasIndex("SupplierId");
-
-                    b.ToTable("SupplierMaterialPrices");
-                });
-
             modelBuilder.Entity("Capstone2.Models.SupplierTransaction", b =>
                 {
                     b.Property<int>("SupplierTransactionId")
@@ -576,9 +523,6 @@ namespace Capstone2.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SupplierTransactionId"));
 
                     b.Property<DateTime?>("DeliveredDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ExpectedDeliveryDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("MaterialId")
@@ -599,9 +543,6 @@ namespace Capstone2.Migrations
 
                     b.Property<int>("SupplierId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ViewTransactionId")
                         .HasColumnType("int");
@@ -662,9 +603,6 @@ namespace Capstone2.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ViewTransactionId"));
-
-                    b.Property<DateTime?>("ExpectedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -832,25 +770,6 @@ namespace Capstone2.Migrations
                     b.Navigation("Supplier");
 
                     b.Navigation("ViewTransaction");
-                });
-
-            modelBuilder.Entity("Capstone2.Models.SupplierMaterialPrice", b =>
-                {
-                    b.HasOne("Capstone2.Models.Material", "Material")
-                        .WithMany()
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Capstone2.Models.Supplier", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Material");
-
-                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Capstone2.Models.SupplierTransaction", b =>

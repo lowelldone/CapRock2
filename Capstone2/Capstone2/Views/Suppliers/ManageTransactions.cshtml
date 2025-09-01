@@ -44,7 +44,11 @@
             </div>
         </div>
         <div class="modern-action-buttons">
-            <a asp-action="ViewTransactions" asp-route-id="@supplierId" class="modern-action-btn btn-outline-secondary">
+            @{
+                bool isReadOnly = ViewBag.IsReadOnly as bool? ?? false;
+                string returnUrl = ViewBag.ReturnUrl as string ?? Url.Action("ViewTransactions", new { id = supplierId })!;
+             }
+             <a href="@returnUrl" class="modern-action-btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i>Back
             </a>
         </div>
@@ -61,9 +65,16 @@
                         <h5 class="modern-status-card-title">
                             <i class="bi bi-box"></i>Purchase Orders
                         </h5>
-                        <button type="button" id="btnReceiveAll" class="modern-action-btn btn-success">
-                            <i class="bi bi-check2-all"></i>Receive All
-                        </button>
+                        @{
+                            bool isReadOnlyHeader = ViewBag.IsReadOnly as bool? ?? false;
+                            
+                         }
+                        @if (!isReadOnlyHeader)
+                        {
+                            <button type="button" id="btnReceiveAll" class="modern-action-btn btn-outline-success">
+                                <i class="bi bi-check2-all"></i>Receive All
+                            </button>
+                        }
                     </div>
                 </div>
                 <div class="modern-card-body">
@@ -76,46 +87,23 @@
                                     <tr>
                                         <th>Material</th>
                                         <th>Qty</th>
-                                        <th>Unit Price</th>
+                                        <th>Received</th>
+                                        <th>Ordered</th>
+                                        <th>Delivered</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        @{
+                                            bool isReadOnlyHeader2 = ViewBag.IsReadOnly as bool? ?? false;
+                                         }
+                                         @if (!isReadOnlyHeader2)
+                                         {
+                                            <th>Actions</th>
+                                         }
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
                             </table>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Transactions Section -->
-        <div class="col-lg-12" style="display:@(ViewBag.ViewMode == "tx" ? "block" : "none")">
-            <div class="modern-status-card">
-                <div class="modern-status-card-header">
-                    <h5 class="modern-status-card-title">
-                        <i class="bi bi-list-ul"></i>Transactions
-                    </h5>
-                </div>
-                <div class="modern-card-body">
-                    <div class="table-responsive">
-                        <table class="modern-table" id="txTable">
-                            <thead>
-                                <tr>
-                                    <th>Material</th>
-                                    <th>Qty</th>
-                                    <th>Received</th>
-                                    <th>Unit Price</th>
-                                    <th>Total Payment</th>
-                                    <th>Ordered</th>
-                                    <th>Expected</th>
-                                    <th>Delivered</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
                 </div>
             </div>
         </div>
@@ -127,7 +115,7 @@
         const supplierId = @supplierId;
         const viewTransactionId = @(viewTransactionId.HasValue ? viewTransactionId.Value.ToString() : "null");
         const poTableBody = document.querySelector('#poTable tbody');
-        const txTableBody = document.querySelector('#txTable tbody');
+        const isReadOnly = @(((ViewBag.IsReadOnly as bool?) ?? false).ToString().ToLower());
         const afTokenEl = document.querySelector('#af-form input[name="__RequestVerificationToken"]');
         const afToken = afTokenEl ? afTokenEl.value : '';
 
@@ -139,7 +127,21 @@
             data.purchaseOrders.forEach(po => {
                 const tr = document.createElement('tr');
                 const rec = po.receivedQuantity ?? 0;
-                const total = (rec > 0 ? rec : 0) * Number(po.unitPrice);
+                let actionsCol = '';
+                if (!isReadOnly && po.status === 'Ordered') {
+                    actionsCol = `<td>
+                        <form class="inline-receive-form" data-action="/Suppliers/ReceivePurchaseOrder">
+                            <input type="hidden" name="__RequestVerificationToken" value="${afToken}" />
+                            <input type="hidden" name="purchaseOrderId" value="${po.purchaseOrderId}" />
+                            <input type="number" name="deliveredQuantity" min="1" step="1" inputmode="numeric" class="modern-form-control d-inline-block row-delivered-qty" data-po-id="${po.purchaseOrderId}" style="width:90px" value="${po.quantity}" oninput="document.getElementById('batchqty-${po.purchaseOrderId}').value = this.value" />
+                            <button type="button" class="modern-table-action-btn btn-outline-success ms-1 btn-inline-receive">
+                                <i class="bi bi-box-arrow-in-down"></i>Receive
+                            </button>
+                        </form>
+                        <input type="hidden" name="purchaseOrderIds" form="batchReceiveForm" value="${po.purchaseOrderId}" />
+                        <input type="hidden" id="batchqty-${po.purchaseOrderId}" name="deliveredQuantities" form="batchReceiveForm" value="${po.quantity}" />
+                    </td>`;
+                }
                 tr.innerHTML = `<td>
                                         <div class="modern-name">${po.materialName}</div>
                                     </td>
@@ -147,70 +149,23 @@
                                         <div class="modern-info">${po.quantity}</div>
                                     </td>
                                     <td>
-                                        <div class="modern-name">₱${Number(po.unitPrice).toFixed(2)}</div>
+                                        <div class="modern-info">${rec}</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">${new Date(po.createdAt).toLocaleDateString()}</div>
+                                    </td>
+                                    <td>
+                                        <div class="modern-info">${po.deliveredDate ? new Date(po.deliveredDate).toLocaleDateString() : '-'}</div>
                                     </td>
                                     <td>
                                         <span class="modern-status-badge ${po.status.toLowerCase()}">${po.status}</span>
                                     </td>
-                                    <td>
-                                        ${po.status === 'Ordered' ?
-                        `<form class="inline-receive-form" data-action="/Suppliers/ReceivePurchaseOrder">
-                                                <input type="hidden" name="__RequestVerificationToken" value="${afToken}" />
-                                                <input type="hidden" name="purchaseOrderId" value="${po.purchaseOrderId}" />
-                                                <input type="number" name="deliveredQuantity" min="1" class="modern-form-control d-inline-block row-delivered-qty" data-po-id="${po.purchaseOrderId}" style="width:100px" value="${po.quantity}" oninput="document.getElementById('batchqty-${po.purchaseOrderId}').value = this.value" />
-                                                <button type="button" class="modern-action-btn btn-success ms-1 btn-inline-receive">
-                                                    <i class="bi bi-box-arrow-in-down"></i>Receive
-                                                </button>
-                                            </form>` : ''}
-                                        ${po.status === 'Ordered' ?
-                        `<input type="hidden" name="purchaseOrderIds" form="batchReceiveForm" value="${po.purchaseOrderId}" />
-                                             <input type="hidden" id="batchqty-${po.purchaseOrderId}" name="deliveredQuantities" form="batchReceiveForm" value="${po.quantity}" />` : ''}
-                                    </td>`;
+                                    ${actionsCol}`;
                 poTableBody.appendChild(tr);
             });
         }
 
-        async function loadTx() {
-            const res = await fetch(`/Suppliers/Transactions/${supplierId}${viewTransactionId ? `?vtId=${viewTransactionId}` : ''}`);
-            if (!res.ok) return;
-            const data = await res.json();
-            txTableBody.innerHTML = '';
-            data.transactions.forEach(tx => {
-                const tr = document.createElement('tr');
-                const tRec = tx.receivedQuantity ?? 0;
-                const tTotal = tRec * Number(tx.unitPrice);
-                tr.innerHTML = `<td>
-                                        <div class="modern-name">${tx.materialName}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-info">${tx.quantity}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-info">${tRec}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-name">₱${Number(tx.unitPrice).toFixed(2)}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-name">₱${tTotal.toFixed(2)}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-info">${new Date(tx.orderDate).toLocaleDateString()}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-info">${tx.expectedDeliveryDate ? new Date(tx.expectedDeliveryDate).toLocaleDateString() : '-'}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-info">${tx.deliveredDate ? new Date(tx.deliveredDate).toLocaleDateString() : '-'}</div>
-                                    </td>
-                                    <td>
-                                        <span class="modern-status-badge ${tx.status.toLowerCase()}">${tx.status}</span>
-                                    </td>`;
-                txTableBody.appendChild(tr);
-            });
-        }
-
-        Promise.all([loadPOs(), loadTx()]);
+        Promise.all([loadPOs()]);
 
         // Inline receive via AJAX
         document.addEventListener('click', async function (e) {
@@ -218,6 +173,16 @@
             if (!btn) return;
             const form = btn.closest('.inline-receive-form');
             if (!form) return;
+            // Sanitize integer only
+            const qtyInput = form.querySelector('input[name="deliveredQuantity"]');
+            if (qtyInput) {
+                const parsed = parseInt(qtyInput.value, 10);
+                if (isNaN(parsed) || parsed <= 0) {
+                    qtyInput.value = 1;
+                    } else {
+                    qtyInput.value = parsed;
+                    }
+                }
             const action = form.getAttribute('data-action');
             const fd = new FormData(form);
             const res = await fetch(action, {
@@ -227,13 +192,18 @@
             });
             if (res.ok) {
                 await loadPOs();
-                await loadTx();
             }
         });
 
         // Batch receive via AJAX
-        document.getElementById('btnReceiveAll').addEventListener('click', async function () {
+        const btnReceiveAll = document.getElementById('btnReceiveAll');
+        if (btnReceiveAll) btnReceiveAll.addEventListener('click', async function () {
             const form = document.getElementById('batchReceiveForm');
+            // Ensure all batch quantities are integers
+            form.querySelectorAll('input[id^="batchqty-"]').forEach(inp => {
+                const parsed = parseInt(inp.value, 10);
+                inp.value = (!isNaN(parsed) && parsed > 0) ? parsed : 1;
+                });
             const fd = new FormData(form);
             const res = await fetch(form.getAttribute('action') || '/Suppliers/ReceiveAllPurchaseOrders', {
                 method: 'POST',
@@ -242,9 +212,15 @@
             });
             if (res.ok) {
                 await loadPOs();
-                await loadTx();
             }
         });
+        // Prevent decimal typing and non-digits in quantity inputs
+        document.addEventListener('input', function (e) {
+            const input = e.target.closest('input.row-delivered-qty');
+            if (!input) return;
+            input.value = input.value.replace(/[^0-9]/g, '');
+            if (input.value === '' || input.value === '0') input.value = '1';
+            });
     })();
 </script>
 

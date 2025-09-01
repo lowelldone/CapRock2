@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Capstone2.Data;
 using Capstone2.Models;
+using NuGet.Packaging.Signing;
 
 namespace Capstone2.Controllers.AdminControllers
 {
@@ -129,6 +130,59 @@ namespace Capstone2.Controllers.AdminControllers
 
             var latestUtc = latestItems.FirstOrDefault()?.Timestamp;
 
+            return Ok(new
+            {
+                items = latestItems,
+                newCount,
+                latestUtc
+            });
+         }
+
+        [HttpGet]
+         public async Task<IActionResult> RecentOrders(DateTime? since = null, int take = 5)
+         {
+            var role = HttpContext.Session.GetString("Role");
+            if (role != "ADMIN")
+            {
+                return Forbid();
+            }
+ 
+            var baseQuery = _context.Orders
+                .Include(o => o.Customer)
+                .Where(o => !o.isDeleted && !o.Customer.isDeleted);
+ 
+            if (since.HasValue)
+            {
+                var s = since.Value;
+                baseQuery = baseQuery.Where(o => o.OrderDate > s);
+            }
+
+            var latestItems = await baseQuery
+                .OrderByDescending(o => o.OrderDate)
+                .Take(Math.Max(1, Math.Min(20, take)))
+                .Select(o => new
+                {
+                    o.OrderId,
+                    o.CustomerID,
+                    o.OrderNumber,
+                    CustomerName = o.Customer.Name,
+                    Timestamp = o.OrderDate,
+                    o.CateringDate,
+                    o.NoOfPax
+                })
+                .ToListAsync();
+                
+            int newCount = 0;
+            if (since.HasValue)
+            {
+                var s = since.Value;
+                newCount = await _context.Orders
+                    .Where(o => !o.isDeleted && o.OrderDate > s)
+                    .CountAsync();
+            }
+                
+            var latestUtc = latestItems.FirstOrDefault()?.Timestamp;
+                
             return Ok(new
             {
                 items = latestItems,

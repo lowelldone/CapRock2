@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Purchase Order History";
+    var supplierId = (int)ViewBag.SupplierId;
+    int vtId = (int)ViewBag.ViewTransactionId;
+    
+}
+
+
+<link rel="stylesheet" href="~/css/modern-ui.css" />
+
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                 <i class="bi bi-box"></i>
+            </div>
+            <div>
+                <h1 class="modern-title">Purchase Order History</h1>
+                <p class="modern-subtitle"><strong>@ViewBag.SupplierName</strong></p>
+            </div>
+        </div>
+        <div class="modern-action-buttons">
+            <a asp-action="TransactionHistory" asp-route-id="@supplierId" class="modern-action-btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>Back
+            </a>
+        </div>
+    </div>
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title">
+                <i class="bi bi-list-ul"></i>
+                Orders in this Transaction
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Qty</th>
+                            <th>Received</th>
+                            <th>Ordered</th>
+                            <th>Delivered</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="poHistoryTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+      (function () {
+          const supplierId = @supplierId;
+          const vtId = @vtId;
+          const tbody = document.getElementById('poHistoryTbody');
+
+      async function loadPOs() {
+          const res = await fetch(`/Suppliers/PurchaseOrders/${supplierId}?vtId=${vtId}`);
+          if (!res.ok) return;
+          const data = await res.json();
+          tbody.innerHTML = '';
+          data.purchaseOrders.forEach(po => {
+              const tr = document.createElement('tr');
+              const rec = po.receivedQuantity ?? 0;
+              tr.innerHTML = `<td>
+                                <div class="modern-name">${po.materialName}</div>
+                             </td>
+                             <td>
+                                <div class="modern-info">${po.quantity}</div>
+                             </td>
+                             <td>
+                                <div class="modern-info">${rec}</div>
+                             </td>
+                             <td>
+                                <div class="modern-info">${new Date(po.createdAt).toLocaleDateString()}</div>
+                             </td>
+                             <td>
+                                <div class="modern-info">${po.deliveredDate ? new Date(po.deliveredDate).toLocaleDateString() : '-'}</div>
+                             </td>
+                             <td>
+                                <span class="modern-status-badge ${po.status.toLowerCase()}">${po.status}</span>
+                             </td>`;
+                tbody.appendChild(tr);
+            });
+        }
+        loadPOs();
+    })();
+</script>
+
+

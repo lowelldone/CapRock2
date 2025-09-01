@@ -178,14 +178,9 @@ namespace Capstone2.Controllers
 
                 _context.AuditLogs.Add(new AuditLog
                 {
-                    UserId = userId,
                     Username = username,
                     Role = role,
                     Action = nameof(UpSert),
-                    HttpMethod = "POST",
-                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
-                    UserAgent = Request.Headers["User-Agent"].ToString(),
-                    Succeeded = true,
                     WaiterId = waiter.WaiterId,
                     Details = details
                 });
@@ -242,14 +237,9 @@ namespace Capstone2.Controllers
                 var username = HttpContext.Session.GetString("Username");
                 _context.AuditLogs.Add(new AuditLog
                 {
-                    UserId = userId,
                     Username = username,
                     Role = role,
                     Action = nameof(Delete),
-                    HttpMethod = "POST",
-                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
-                    UserAgent = Request.Headers["User-Agent"].ToString(),
-                    Succeeded = true,
                     WaiterId = id,
                     Details = $"Deactivated waiter {id} with username '{waiter.User?.Username}' (Name: {waiter.User?.FirstName} {waiter.User?.LastName})"
                 });

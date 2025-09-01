@@ -22,12 +22,7 @@ namespace Capstone2.Models
         // Quantity actually received; may be less than ordered when partially delivered
         public int? ReceivedQuantity { get; set; }
 
-        [Required]
-        [Range(0, double.MaxValue)]
-        public decimal UnitPrice { get; set; }
-
         public DateTime OrderDate { get; set; } = DateTime.Now;
-        public DateTime? ExpectedDeliveryDate { get; set; }
         public DateTime? DeliveredDate { get; set; }
 
         [Required]

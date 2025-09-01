@@ -8,6 +8,11 @@
     bool hasPackageItems = Model?.OrderDetails?.Any(od => !string.IsNullOrEmpty(od.Type)) == true;
 }
 
+<style>
+    .info-line{
+        border-bottom: 1px solid black;
+    }
+</style>
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
 <div class="container-fluid modern-bg">
@@ -43,45 +48,45 @@
         <div class="modern-card-body">
             <div class="row g-4">
                 <div class="col-md-6">
-                    <div class="modern-form-group">
+                    <div class="modern-form-group info-line">
                         <label class="modern-form-label">Customer Name</label>
                         <div class="modern-name">@Model.Customer.Name</div>
                     </div>
-                    <div class="modern-form-group">
+                    <div class="modern-form-group info-line">
                         <label class="modern-form-label">Contact</label>
                         <div class="modern-info">@Model.Customer.ContactNo</div>
                     </div>
-                    <div class="modern-form-group">
+                    <div class="modern-form-group info-line">
                         <label class="modern-form-label">Address</label>
                         <div class="modern-address">@Model.Customer.Address</div>
                     </div>
-                    <div class="modern-form-group">
+                    <div class="modern-form-group info-line">
                         <label class="modern-form-label">Venue</label>
                         <div class="modern-info">@Model.Venue</div>
                     </div>
-                    <div class="modern-form-group">
+                    <div class="modern-form-group info-line">
                         <label class="modern-form-label">No. Of Pax</label>
                         <div class="modern-info">@Model.NoOfPax</div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="modern-form-group">
-                        <label class="modern-form-label">Order Date</label>
+                    <div class="modern-form-group info-line">
+                        <label class="modern-form-label ">Order Date</label>
                         <div class="modern-info">@Model.OrderDate.ToShortDateString()</div>
                     </div>
-                    <div class="modern-form-group">
+                    <div class="modern-form-group info-line">
                         <label class="modern-form-label">Catering Date</label>
                         <div class="modern-info">@Model.CateringDate.ToShortDateString()</div>
                     </div>
-                    <div class="modern-form-group">
+                    <div class="modern-form-group info-line">
                         <label class="modern-form-label">Time of Food Serving</label>
                         <div class="modern-info">@Model.timeOfFoodServing.ToShortTimeString()</div>
                     </div>
-                    <div class="modern-form-group">
+                    <div class="modern-form-group info-line">
                         <label class="modern-form-label">Occasion</label>
                         <div class="modern-info">@Model.Occasion</div>
                     </div>
-                    <div class="modern-form-group">
+                    <div class="modern-form-group info-line">
                         <label class="modern-form-label">Motif</label>
                         <div class="modern-info">@Model.Motif</div>
                     </div>
@@ -159,7 +164,7 @@
 
             <!-- Total Section -->
             <div class="modern-card-body">
-                <div class="modern-form-group">
+                <div class="modern-form-group info-line">
                     <label class="modern-form-label">Total Payment</label>
                     <div class="modern-name fs-4">₱@(Model.TotalPayment.ToString("0.00"))</div>
                 </div>
