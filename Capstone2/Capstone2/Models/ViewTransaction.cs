@@ -16,8 +16,6 @@ namespace Capstone2.Models
         [Required]
         public DateTime OrderDate { get; set; } = DateTime.Now;
 
-        public DateTime? ExpectedDate { get; set; }
-
         [Required]
         public string Status { get; set; } = "Ordered"; // Ordered, Delivered, Cancelled
 

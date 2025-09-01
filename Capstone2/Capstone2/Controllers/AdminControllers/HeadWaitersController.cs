@@ -115,7 +115,6 @@ namespace Capstone2.Controllers.AdminControllers
             try
             {
                 var role = HttpContext.Session.GetString("Role");
-                var userId = HttpContext.Session.GetInt32("UserId");
                 var username = HttpContext.Session.GetString("Username");
 
                 string details;
@@ -159,14 +158,9 @@ namespace Capstone2.Controllers.AdminControllers
 
                 _context.AuditLogs.Add(new AuditLog
                 {
-                    UserId = userId,
                     Username = username,
                     Role = role,
                     Action = nameof(UpSert),
-                    HttpMethod = "POST",
-                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
-                    UserAgent = Request.Headers["User-Agent"].ToString(),
-                    Succeeded = true,
                     WaiterId = null, // Head waiters don't have WaiterId
                     Details = details
                 });
@@ -225,14 +219,9 @@ namespace Capstone2.Controllers.AdminControllers
                 var username = HttpContext.Session.GetString("Username");
                 _context.AuditLogs.Add(new AuditLog
                 {
-                    UserId = userId,
                     Username = username,
                     Role = role,
                     Action = nameof(Delete),
-                    HttpMethod = "POST",
-                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
-                    UserAgent = Request.Headers["User-Agent"].ToString(),
-                    Succeeded = true,
                     WaiterId = null, // Head waiters don't have WaiterId
                     Details = $"Deactivated head waiter {id} with username '{headWaiter.User?.Username}'"
                 });

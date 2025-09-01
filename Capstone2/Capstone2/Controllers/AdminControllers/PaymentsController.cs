@@ -250,20 +250,13 @@ namespace Capstone2.Controllers.AdminControllers
                     // Audit: failed attempt
                     try
                     {
-                        var userId = HttpContext.Session.GetInt32("UserId");
                         var username = HttpContext.Session.GetString("Username");
                         _context.AuditLogs.Add(new AuditLog
                         {
-                            UserId = userId,
                             Username = username,
                             Role = role,
                             Action = nameof(ProcessPayment),
-                            HttpMethod = "POST",
-                            Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
-                            UserAgent = Request.Headers["User-Agent"].ToString(),
-                            Succeeded = false,
                             OrderNumber = order?.OrderNumber,
-                            Amount = paymentAmount,
                             Details = $"Attempted non-exact payment; Required={remainingBalance:F2} Amount={paymentAmount:F2}"
                         });
                         await _context.SaveChangesAsync();
@@ -278,20 +271,13 @@ namespace Capstone2.Controllers.AdminControllers
                 // Audit: failed attempt (admin overpay)
                 try
                 {
-                    var userId = HttpContext.Session.GetInt32("UserId");
                     var username = HttpContext.Session.GetString("Username");
                     _context.AuditLogs.Add(new AuditLog
                     {
-                        UserId = userId,
                         Username = username,
                         Role = role,
                         Action = nameof(ProcessPayment),
-                        HttpMethod = "POST",
-                        Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
-                        UserAgent = Request.Headers["User-Agent"].ToString(),
-                        Succeeded = false,
                         OrderNumber = order?.OrderNumber,
-                        Amount = paymentAmount,
                         Details = $"Attempted overpayment; Remaining={remainingBalance:F2} Amount={paymentAmount:F2}"
                     });
                     await _context.SaveChangesAsync();
@@ -367,20 +353,13 @@ namespace Capstone2.Controllers.AdminControllers
             // Audit: record payment attempts (especially by HeadWaiter)
             try
             {
-                var userId = HttpContext.Session.GetInt32("UserId");
                 var username = HttpContext.Session.GetString("Username");
                 var log = new AuditLog
                 {
-                    UserId = userId,
                     Username = username,
                     Role = role,
                     Action = nameof(ProcessPayment),
-                    HttpMethod = "POST",
-                    Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
-                    UserAgent = Request.Headers["User-Agent"].ToString(),
-                    Succeeded = true,
                     OrderNumber = order?.OrderNumber,
-                    Amount = paymentAmount,
                     Details = $"Processed payment amount ₱{paymentAmount:F2}"
                 };
                 _context.AuditLogs.Add(log);

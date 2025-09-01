@@ -175,15 +175,7 @@ namespace Capstone2.Controllers.AdminControllers
         // ================== Extended Supplier Management ==================
         // Maintains materials supplied and their pricing per supplier
 
-        // GET: Suppliers/ManagePrices/5 (view)
-        [HttpGet]
-        public IActionResult ManagePrices(int id)
-        {
-            ViewBag.SupplierId = id;
-            return View();
-        }
-
-        // GET: Suppliers/ManageTransactions/5 (view)
+        // GET: Suppliers/ManageTransactions/ (view)
         [HttpGet]
         public IActionResult ManageTransactions(int id, string view = "po", int? vtId = null)
         {
@@ -193,15 +185,28 @@ namespace Capstone2.Controllers.AdminControllers
             return View();
         }
 
-        // GET: Suppliers/ViewTransactions/5
-        [HttpGet]
+        // GET: Suppliers/PurchaseOrderHistory/5
+         [HttpGet]
+         public async Task<IActionResult> PurchaseOrderHistory(int id, int vtId)
+         {
+             var supplier = await _context.Suppliers.FindAsync(id);
+             if (supplier == null) return NotFound();
+ 
+             ViewBag.SupplierId = id;
+             ViewBag.SupplierName = supplier.CompanyName;
+             ViewBag.ViewTransactionId = vtId;
+              return View();
+         }
+
+    // GET: Suppliers/ViewTransactions (shows only Ordered)
+    [HttpGet]
         public async Task<IActionResult> ViewTransactions(int id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null) return NotFound();
 
             var viewTransactions = await _context.ViewTransactions
-                .Where(v => v.SupplierId == id)
+                .Where(v => v.SupplierId == id && v.Status == "Ordered")
                 .OrderByDescending(v => v.OrderDate)
                 .ToListAsync();
 
@@ -212,72 +217,50 @@ namespace Capstone2.Controllers.AdminControllers
             return View(viewTransactions);
         }
 
-        // GET: Suppliers/Prices/5
+        // GET: Suppliers/TransactionHistory/ (shows Delivered with date range filter)
         [HttpGet]
-        public async Task<IActionResult> Prices(int id)
+        public async Task<IActionResult> TransactionHistory(int id, DateTime? from, DateTime? to)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null) return NotFound();
 
-            var prices = await _context.SupplierMaterialPrices
-                .Include(smp => smp.Material)
-                .Where(smp => smp.SupplierId == id)
-                .Select(smp => new
+            var query = _context.ViewTransactions
+                 .Where(v => v.SupplierId == id && v.Status == "Delivered")
+                 .AsQueryable();
+            
+            if (from.HasValue)
+            {
+                var fromDate = from.Value.Date;
+                query = query.Where(v => v.OrderDate >= fromDate);
+            }
+            if (to.HasValue)
                 {
-                    smp.SupplierMaterialPriceId,
-                    smp.MaterialId,
-                    MaterialName = smp.Material.Name,
-                    smp.UnitPrice,
-                    smp.LastUpdated
-                })
+                var toDate = to.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(v => v.OrderDate <= toDate);
+            }
+            var delivered = await query
+                .OrderByDescending(v => v.OrderDate)
                 .ToListAsync();
 
-            var allMaterials = await _context.Materials
+            ViewBag.SupplierId = id;
+            ViewBag.SupplierName = supplier.CompanyName;
+            ViewBag.From = from?.ToString("yyyy-MM-dd");
+            ViewBag.To = to?.ToString("yyyy-MM-dd");
+                         return View(delivered);
+                     }
+ 
+         // GET: Suppliers/Materials/5
+         [HttpGet]
+         public async Task<IActionResult> Materials(int id)
+         {
+             var supplier = await _context.Suppliers.FindAsync(id);
+             if (supplier == null) return NotFound();
+ 
+             var materials = await _context.Materials
                 .Select(m => new { m.MaterialId, m.Name, m.IsConsumable, m.Quantity })
                 .ToListAsync();
 
-            return Ok(new { Supplier = supplier, Materials = allMaterials, Prices = prices });
-        }
-
-        // POST: Suppliers/SetPrice
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SetPrice(int supplierId, int materialId, decimal unitPrice)
-        {
-            if (unitPrice < 0)
-            {
-                TempData["SupplierError"] = "Unit price must be non-negative.";
-                return RedirectToAction(nameof(ManagePrices), new { id = supplierId });
-            }
-
-            var supplier = await _context.Suppliers.FindAsync(supplierId);
-            var material = await _context.Materials.FindAsync(materialId);
-            if (supplier == null || material == null) return NotFound();
-
-            var existing = await _context.SupplierMaterialPrices
-                .FirstOrDefaultAsync(x => x.SupplierId == supplierId && x.MaterialId == materialId);
-
-            if (existing == null)
-            {
-                existing = new SupplierMaterialPrice
-                {
-                    SupplierId = supplierId,
-                    MaterialId = materialId,
-                    UnitPrice = unitPrice,
-                    LastUpdated = DateTime.Now
-                };
-                _context.SupplierMaterialPrices.Add(existing);
-            }
-            else
-            {
-                existing.UnitPrice = unitPrice;
-                existing.LastUpdated = DateTime.Now;
-                _context.SupplierMaterialPrices.Update(existing);
-            }
-
-            await _context.SaveChangesAsync();
-            TempData["SupplierSuccess"] = "Supplier material price saved.";
-            return RedirectToAction(nameof(ManagePrices), new { id = supplierId });
+            return Ok(new { Supplier = supplier, Materials = materials });
         }
 
         // ================== Transactions & Deliveries ==================
@@ -308,9 +291,7 @@ namespace Capstone2.Controllers.AdminControllers
                     MaterialName = t.Material.Name,
                     t.Quantity,
                     t.ReceivedQuantity,
-                    t.UnitPrice,
                     t.OrderDate,
-                    t.ExpectedDeliveryDate,
                     t.DeliveredDate,
                     t.Status
                 })
@@ -344,9 +325,12 @@ namespace Capstone2.Controllers.AdminControllers
                 MaterialName = po.Material.Name,
                 po.Quantity,
                 po.ReceivedQuantity,
-                po.UnitPrice,
                 po.CreatedAt,
-                po.ScheduledDelivery,
+                DeliveredDate = _context.SupplierTransactions
+                     .Where(t => t.SupplierId == po.SupplierId && t.MaterialId == po.MaterialId && t.ViewTransactionId == po.ViewTransactionId && t.Status == "Delivered")
+                     .OrderByDescending(t => t.DeliveredDate)
+                     .Select(t => (DateTime?)t.DeliveredDate)
+                     .FirstOrDefault(),
                 po.Status
             }).ToListAsync();
 
@@ -356,7 +340,7 @@ namespace Capstone2.Controllers.AdminControllers
         // POST: Suppliers/CreatePurchaseOrder
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreatePurchaseOrder(int supplierId, int materialId, int quantity, DateTime? scheduledDelivery)
+        public async Task<IActionResult> CreatePurchaseOrder(int supplierId, int materialId, int quantity)
         {
             if (quantity <= 0)
             {
@@ -368,18 +352,12 @@ namespace Capstone2.Controllers.AdminControllers
             var material = await _context.Materials.FindAsync(materialId);
             if (supplier == null || material == null) return NotFound();
 
-            var price = await _context.SupplierMaterialPrices
-                .Where(p => p.SupplierId == supplierId && p.MaterialId == materialId)
-                .Select(p => (decimal?)p.UnitPrice)
-                .FirstOrDefaultAsync() ?? material.Price;
-
             var poNumber = await GenerateNextTransactionOrderNumberAsync(supplierId);
             // Create a ViewTransaction for this purchase order
             var viewTransaction = new ViewTransaction
             {
                 SupplierId = supplierId,
                 OrderDate = DateTime.Now,
-                ExpectedDate = scheduledDelivery,
                 Status = "Ordered",
                 TransactionOrderNumber = poNumber
             };
@@ -390,8 +368,6 @@ namespace Capstone2.Controllers.AdminControllers
                 SupplierId = supplierId,
                 MaterialId = materialId,
                 Quantity = quantity,
-                UnitPrice = price,
-                ScheduledDelivery = scheduledDelivery,
                 Status = "Ordered",
                 ViewTransaction = viewTransaction
             };
@@ -403,9 +379,7 @@ namespace Capstone2.Controllers.AdminControllers
                 SupplierId = supplierId,
                 MaterialId = materialId,
                 Quantity = quantity,
-                UnitPrice = price,
                 OrderDate = DateTime.Now,
-                ExpectedDeliveryDate = scheduledDelivery,
                 Status = "Ordered",
                 ViewTransaction = viewTransaction
             };
@@ -419,7 +393,7 @@ namespace Capstone2.Controllers.AdminControllers
         // POST: Suppliers/CreatePurchaseOrderBatch
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreatePurchaseOrderBatch(int supplierId, List<int> materialIds, List<int> quantities, DateTime? scheduledDelivery)
+        public async Task<IActionResult> CreatePurchaseOrderBatch(int supplierId, List<int> materialIds, List<int> quantities)
         {
             if (materialIds == null || quantities == null || materialIds.Count == 0 || quantities.Count == 0 || materialIds.Count != quantities.Count)
             {
@@ -450,7 +424,6 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 SupplierId = supplierId,
                 OrderDate = DateTime.Now,
-                ExpectedDate = scheduledDelivery,
                 Status = "Ordered",
                 TransactionOrderNumber = poNumberBatch
             };
@@ -462,18 +435,11 @@ namespace Capstone2.Controllers.AdminControllers
                 if (material == null)
                     continue;
 
-                var price = await _context.SupplierMaterialPrices
-                    .Where(p => p.SupplierId == supplierId && p.MaterialId == item.MaterialId)
-                    .Select(p => (decimal?)p.UnitPrice)
-                    .FirstOrDefaultAsync() ?? material.Price;
-
                 var po = new PurchaseOrder
                 {
                     SupplierId = supplierId,
                     MaterialId = item.MaterialId,
                     Quantity = item.Quantity,
-                    UnitPrice = price,
-                    ScheduledDelivery = scheduledDelivery,
                     Status = "Ordered",
                     ViewTransaction = viewTransaction
                 };
@@ -484,9 +450,7 @@ namespace Capstone2.Controllers.AdminControllers
                     SupplierId = supplierId,
                     MaterialId = item.MaterialId,
                     Quantity = item.Quantity,
-                    UnitPrice = price,
                     OrderDate = DateTime.Now,
-                    ExpectedDeliveryDate = scheduledDelivery,
                     Status = "Ordered",
                     ViewTransaction = viewTransaction
                 };
@@ -541,7 +505,6 @@ namespace Capstone2.Controllers.AdminControllers
                     MaterialId = po.MaterialId,
                     Quantity = qty,
                     ReceivedQuantity = qty,
-                    UnitPrice = po.UnitPrice,
                     OrderDate = po.CreatedAt,
                     DeliveredDate = DateTime.Now,
                     Status = "Delivered",
@@ -636,7 +599,6 @@ namespace Capstone2.Controllers.AdminControllers
                         MaterialId = po.MaterialId,
                         Quantity = qty,
                         ReceivedQuantity = qty,
-                        UnitPrice = po.UnitPrice,
                         OrderDate = po.CreatedAt,
                         DeliveredDate = DateTime.Now,
                         Status = "Delivered",

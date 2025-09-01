@@ -234,14 +234,9 @@ namespace Capstone2.Controllers
 
                     _context.AuditLogs.Add(new AuditLog
                     {
-                        UserId = userId,
                         Username = sessionUsername,
                         Role = role,
                         Action = "UpdateProfile",
-                        HttpMethod = "POST",
-                        Route = HttpContext.Request.Path + HttpContext.Request.QueryString,
-                        UserAgent = Request.Headers["User-Agent"].ToString(),
-                        Succeeded = true,
                         WaiterId = waiterId,
                         Details = changes.Any() ?
                             $"Profile updated ({string.Join(", ", changes)})" :

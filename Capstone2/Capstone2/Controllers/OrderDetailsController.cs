@@ -6,6 +6,9 @@ using System.Text.Json;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using NuGet.Protocol.Core.Types;
+using System.Data;
 
 namespace Capstone2.Controllers
 {
@@ -51,6 +54,12 @@ namespace Capstone2.Controllers
             //        });
             //    }
             //}
+
+            // Ensure order date is set to now if missing/default
+            if (order.OrderDate == default(DateTime))
+            {
+                order.OrderDate = DateTime.Now;
+            }
 
             // Generate unique order number
             order.OrderNumber = await GenerateOrderNumber();
