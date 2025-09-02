@@ -362,6 +362,23 @@ body, .container-fluid, .card, .table {
         text-overflow: ellipsis; /* Show ellipsis for long content */
     }
 
+        /* Responsive table cell content */
+        .modern-table tbody td .modern-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+            display: inline-block;
+        }
+
+        .modern-table tbody td .modern-address {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+            display: inline-block;
+        }
+
 /* Column width utilities */
 .col-customer {
     width: 20%;
@@ -413,6 +430,7 @@ body, .container-fluid, .card, .table {
     height: 36px; /* Fixed height for all buttons */
     min-width: 90px; /* Ensure minimum width is enforced */
     max-width: 90px; /* Ensure maximum width is enforced */
+    touch-action: manipulation; /* Improve touch responsiveness */
 }
 
     .modern-table-action-btn:hover {
@@ -604,14 +622,25 @@ body, .container-fluid, .card, .table {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@@media (max-width: 768px) {
     .modern-bg {
         padding: 1rem;
         margin: 0.5rem;
+        border-radius: 16px;
     }
 
     .modern-title {
+        font-size: 1.75rem;
+        line-height: 1.3;
+    }
+
+    .modern-subtitle {
+        font-size: 1rem;
+    }
+
+    .modern-header-icon {
         font-size: 2rem;
+        padding: 0.75rem;
     }
 
     .modern-search-form {
@@ -627,43 +656,119 @@ body, .container-fluid, .card, .table {
 
     .modern-action-buttons {
         width: 100%;
-        justify-content: stretch;
+        flex-direction: column;
+        gap: 0.75rem;
     }
 
     .modern-action-btn {
-        flex: 1;
+        width: 100%;
         justify-content: center;
-        border: 2px solid GRAY;
+        padding: 0.875rem 1.5rem;
+        font-size: 0.95rem;
     }
 
     /* Mobile table adjustments */
-    .modern-table thead th,
-    .modern-table tbody td {
-        padding: 0.75rem 0.5rem;
-        font-size: 0.875rem;
+    .modern-table {
+        font-size: 0.8rem;
     }
+
+        .modern-table thead th {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .modern-table tbody td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.8rem;
+            max-width: 120px;
+        }
 
     .modern-table-actions {
         flex-direction: column;
         gap: 0.25rem;
+        align-items: stretch;
     }
 
     .modern-table-action-btn {
         width: 100%;
-        min-width: 90px; /* Maintain minimum width on mobile */
-        max-width: 90px; /* Maintain maximum width on mobile */
+        min-width: 80px;
+        max-width: 100px;
+        height: 32px;
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
         justify-content: center;
+    }
+
+    .modern-status-badge {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.5rem;
+    }
+
+    .modern-badge {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    .modern-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .modern-info {
+        font-size: 0.75rem;
+    }
+
+    .modern-address {
+        font-size: 0.7rem;
+        line-height: 1.3;
+    }
+
+    /* Hide less important columns on mobile */
+    .modern-table th:nth-child(3),
+    .modern-table td:nth-child(3) {
+        display: none;
+    }
+
+    /* Stack status cards vertically on mobile */
+    .modern-status-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .modern-status-card-header {
+        padding: 1rem;
+    }
+
+    .modern-status-card-title {
+        font-size: 1rem;
+    }
+
+    /* Search card mobile adjustments */
+    .modern-search-card {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .modern-form-control {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .modern-btn-search {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
     }
 }
 
 /* Prevent horizontal scrolling */
 .table-responsive {
-    overflow-x: hidden; /* Changed from auto to hidden to prevent horizontal scroll */
+    overflow-x: auto; /* Allow horizontal scroll on mobile when needed */
     -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
 }
 
 /* Ensure tables don't cause horizontal scroll on desktop */
-@media (min-width: 769px) {
+@@media (min-width: 769px) {
     .table-responsive {
         overflow-x: visible;
     }
@@ -673,8 +778,68 @@ body, .container-fluid, .card, .table {
     }
 }
 
+/* Additional mobile optimizations */
+@@media (max-width: 576px) {
+    .modern-bg {
+        padding: 0.75rem;
+        margin: 0.25rem;
+        border-radius: 12px;
+    }
+
+    .modern-title {
+        font-size: 1.5rem;
+    }
+
+    .modern-header-icon {
+        font-size: 1.75rem;
+        padding: 0.5rem;
+    }
+
+    .modern-table thead th,
+    .modern-table tbody td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.7rem;
+    }
+
+    .modern-table-action-btn {
+        min-width: 70px;
+        max-width: 80px;
+        height: 28px;
+        font-size: 0.7rem;
+        padding: 0.3rem 0.5rem;
+    }
+
+    /* Hide more columns on very small screens */
+    .modern-table th:nth-child(4),
+    .modern-table td:nth-child(4) {
+        display: none;
+    }
+
+    .modern-status-badge {
+        font-size: 0.6rem;
+        padding: 0.25rem 0.4rem;
+    }
+
+    .modern-badge {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+    }
+
+    .modern-name {
+        font-size: 0.8rem;
+    }
+
+    .modern-info {
+        font-size: 0.7rem;
+    }
+
+    .modern-address {
+        font-size: 0.65rem;
+    }
+}
+
 /* Animation Classes */
-@keyframes shimmer {
+@@keyframes shimmer {
     0% {
         background-position: -200px 0;
     }
@@ -735,7 +900,7 @@ body, .container-fluid, .card, .table {
         animation: spin 1s linear infinite;
     }
 
-@keyframes spin {
+@@keyframes spin {
     0% {
         transform: rotate(0deg);
     }

@@ -496,6 +496,25 @@
                 margin-left: 0;
             }
         }
+
+        /* Mobile responsive navbar buttons */
+        @@media (max-width: 768px) {
+            .order-login {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            .order-login .btn {
+                width: 100%;
+                padding: 0.75rem 1rem;
+            }
+
+            #header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -719,8 +738,8 @@
             <div class="container" id="header-container">
                 <a class="navbar-brand" id="grush" asp-controller="Home" asp-action="Homepage">GRUSH Catering Services</a>
                     <div class="order-login">
-                    <a class="btn btn-primary d-none d-lg-block" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
-                        <a class="btn btn-primary d-none d-lg-block" asp-controller="Home" asp-action="LogIn">Login</a>
+                    <a class="btn btn-primary" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
+                        <a class="btn btn-primary" asp-controller="Home" asp-action="LogIn">Login</a>
                 </div>
             </div>
         </nav>

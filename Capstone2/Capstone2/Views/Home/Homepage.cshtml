@@ -416,6 +416,15 @@
             .service-card {
                 margin-bottom: 2rem;
             }
+
+            .order-login{
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .order-login .btn{
+                width: 100%;
+            }
         }
 
         .order-login{
@@ -460,8 +469,8 @@
                     </li>
                 </ul>
                 <div class = "order-login">
-                    <a class="btn btn-primary d-none d-lg-block" asp-controller = "ClientMenus" asp-action = "Index">Order Now</a>
-                    <a class="btn btn-primary d-none d-lg-block" id="login-btn" asp-controller = "Home" asp-action = "LogIn">Login</a>
+                    <a class="btn btn-primary" asp-controller = "ClientMenus" asp-action = "Index">Order Now</a>
+                    <a class="btn btn-primary" id="login-btn" asp-controller = "Home" asp-action = "LogIn">Login</a>
                 </div>
             </div>
         </div>
