@@ -38,6 +38,7 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
+                                <th>Transaction Number</th>
                                 <th>Amount</th>
                                 <th>Payment Type</th>
                                 <th>Running Total</th>
@@ -53,6 +54,9 @@
                                 <tr>
                                     <td>
                                         <div class="modern-info">@payment.Date.ToString("MM/dd/yyyy")</div>
+                                    </td>
+                                    <td>
+                                        <span class="modern-status-badge accepted">@payment.TransactionNumber</span>
                                     </td>
                                     <td>
                                         <div class="modern-name">₱@payment.Amount.ToString("F2")</div>

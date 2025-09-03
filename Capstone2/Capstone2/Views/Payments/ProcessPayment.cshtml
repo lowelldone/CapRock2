@@ -283,6 +283,7 @@
                     <thead>
                         <tr>
                             <th>Date & Time</th>
+                            <th>Transaction Number</th>
                             <th>Amount</th>
                             <th>Payment Type</th>
                         </tr>
@@ -292,6 +293,9 @@
                         {
                             <tr>
                                 <td>@payment.Date.ToString("MMM dd, yyyy HH:mm")</td>
+                                <td>
+                                    <span class="badge bg-info">@payment.TransactionNumber</span>
+                                </td>
                                 <td>₱@payment.Amount.ToString("F2")</td>
                                 <td>
                                     <span class="badge bg-primary">@payment.PaymentType</span>

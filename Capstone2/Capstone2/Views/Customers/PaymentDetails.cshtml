@@ -187,6 +187,7 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
+                                <th>Transaction Number</th>
                                 <th>Amount</th>
                                 <th>Payment Type</th>
                             </tr>
@@ -197,6 +198,9 @@
                                 <tr>
                                     <td>
                                         <div class="modern-info">@payment.Date.ToString("MM/dd/yyyy")</div>
+                                    </td>
+                                    <td>
+                                        <span class="modern-status-badge accepted">@payment.TransactionNumber</span>
                                     </td>
                                     <td>
                                         <div class="modern-name">@payment.Amount.ToString("C")</div>

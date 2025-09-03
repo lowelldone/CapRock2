@@ -186,20 +186,20 @@ namespace Capstone2.Controllers.AdminControllers
         }
 
         // GET: Suppliers/PurchaseOrderHistory/5
-         [HttpGet]
-         public async Task<IActionResult> PurchaseOrderHistory(int id, int vtId)
-         {
-             var supplier = await _context.Suppliers.FindAsync(id);
-             if (supplier == null) return NotFound();
- 
-             ViewBag.SupplierId = id;
-             ViewBag.SupplierName = supplier.CompanyName;
-             ViewBag.ViewTransactionId = vtId;
-              return View();
-         }
+        [HttpGet]
+        public async Task<IActionResult> PurchaseOrderHistory(int id, int vtId)
+        {
+            var supplier = await _context.Suppliers.FindAsync(id);
+            if (supplier == null) return NotFound();
 
-    // GET: Suppliers/ViewTransactions (shows only Ordered)
-    [HttpGet]
+            ViewBag.SupplierId = id;
+            ViewBag.SupplierName = supplier.CompanyName;
+            ViewBag.ViewTransactionId = vtId;
+            return View();
+        }
+
+        // GET: Suppliers/ViewTransactions (shows only Ordered)
+        [HttpGet]
         public async Task<IActionResult> ViewTransactions(int id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
@@ -227,14 +227,14 @@ namespace Capstone2.Controllers.AdminControllers
             var query = _context.ViewTransactions
                  .Where(v => v.SupplierId == id && v.Status == "Delivered")
                  .AsQueryable();
-            
+
             if (from.HasValue)
             {
                 var fromDate = from.Value.Date;
                 query = query.Where(v => v.OrderDate >= fromDate);
             }
             if (to.HasValue)
-                {
+            {
                 var toDate = to.Value.Date.AddDays(1).AddTicks(-1);
                 query = query.Where(v => v.OrderDate <= toDate);
             }
@@ -246,19 +246,19 @@ namespace Capstone2.Controllers.AdminControllers
             ViewBag.SupplierName = supplier.CompanyName;
             ViewBag.From = from?.ToString("yyyy-MM-dd");
             ViewBag.To = to?.ToString("yyyy-MM-dd");
-                         return View(delivered);
-                     }
- 
-         // GET: Suppliers/Materials/5
-         [HttpGet]
-         public async Task<IActionResult> Materials(int id)
-         {
-             var supplier = await _context.Suppliers.FindAsync(id);
-             if (supplier == null) return NotFound();
- 
-             var materials = await _context.Materials
-                .Select(m => new { m.MaterialId, m.Name, m.IsConsumable, m.Quantity })
-                .ToListAsync();
+            return View(delivered);
+        }
+
+        // GET: Suppliers/Materials/5
+        [HttpGet]
+        public async Task<IActionResult> Materials(int id)
+        {
+            var supplier = await _context.Suppliers.FindAsync(id);
+            if (supplier == null) return NotFound();
+
+            var materials = await _context.Materials
+               .Select(m => new { m.MaterialId, m.Name, m.IsConsumable, m.Quantity })
+               .ToListAsync();
 
             return Ok(new { Supplier = supplier, Materials = materials });
         }
@@ -472,9 +472,13 @@ namespace Capstone2.Controllers.AdminControllers
 
             int qty = deliveredQuantity.HasValue && deliveredQuantity.Value > 0 ? deliveredQuantity.Value : po.Quantity;
 
-            // Skip auto restock inventory update
+            // Update material inventory
             var material = await _context.Materials.FindAsync(po.MaterialId);
             if (material == null) return NotFound();
+
+            // Add received quantity to material inventory
+            material.Quantity += qty;
+            _context.Materials.Update(material);
 
             // Mark PO delivered
             po.Status = "Delivered";
@@ -562,10 +566,14 @@ namespace Capstone2.Controllers.AdminControllers
 
                 int qty = item.qty > 0 ? item.qty : po.Quantity;
 
-                // Skip auto restock inventory update
+                // Update material inventory
                 var material = await _context.Materials.FindAsync(po.MaterialId);
                 if (material == null)
                     continue;
+
+                // Add received quantity to material inventory
+                material.Quantity += qty;
+                _context.Materials.Update(material);
 
                 po.Status = "Delivered";
                 po.ReceivedQuantity = qty;

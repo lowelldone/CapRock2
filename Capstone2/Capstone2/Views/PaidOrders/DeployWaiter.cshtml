@@ -2,11 +2,7 @@
 @{
     ViewData["Title"] = "Assign Waiter";
     var waiters = ViewBag.Waiters as List<Capstone2.Models.Waiter>;
-    int? headWaiterId = null;
-    if (Context.Request.Query["headWaiterId"].Count > 0)
-    {
-        headWaiterId = Convert.ToInt32(Context.Request.Query["headWaiterId"]);
-    }
+    bool isHeadWaiter = ViewBag.IsHeadWaiter ?? false;
 }
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
@@ -22,10 +18,10 @@
         transition: all 0.3s ease;
     }
 
-    .waiter-selection-container:hover {
-        border-color: var(--primary-purple);
-        box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15);
-    }
+        .waiter-selection-container:hover {
+            border-color: var(--primary-purple);
+            box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15);
+        }
 
     .waiter-select {
         border: 2px solid var(--purple-border);
@@ -38,11 +34,11 @@
         transition: all 0.3s ease;
     }
 
-    .waiter-select:focus {
-        border-color: var(--primary-purple);
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-        background: white;
-    }
+        .waiter-select:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+            background: white;
+        }
 
     .waiter-option {
         padding: 0.75rem 1rem;
@@ -54,23 +50,23 @@
         background: rgba(255, 255, 255, 0.7);
     }
 
-    .waiter-option:hover {
-        background: rgba(124, 58, 237, 0.1);
-        border-color: var(--purple-border);
-        transform: translateX(4px);
-    }
+        .waiter-option:hover {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: var(--purple-border);
+            transform: translateX(4px);
+        }
 
-    .waiter-option:checked {
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-dark) 100%);
-        color: white;
-        border-color: var(--primary-purple);
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
-    }
+        .waiter-option:checked {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-dark) 100%);
+            color: white;
+            border-color: var(--primary-purple);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
 
-    .waiter-option:checked:hover {
-        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--text-purple) 100%);
-        transform: translateX(4px) scale(1.02);
-    }
+            .waiter-option:checked:hover {
+                background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--text-purple) 100%);
+                transform: translateX(4px) scale(1.02);
+            }
 
     /* Waiter Selection Info Section */
     .waiter-selection-info {
@@ -103,12 +99,12 @@
         color: var(--text-purple);
     }
 
-    .info-text strong {
-        display: block;
-        margin-bottom: 0.75rem;
-        font-size: 1rem;
-        color: var(--text-purple);
-    }
+        .info-text strong {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            color: var(--text-purple);
+        }
 
     .info-list {
         margin: 0;
@@ -116,49 +112,49 @@
         list-style: none;
     }
 
-    .info-list li {
-        margin-bottom: 0.5rem;
-        position: relative;
-        padding-left: 0.5rem;
-        font-size: 0.9rem;
-        line-height: 1.5;
-    }
+        .info-list li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 0.5rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
 
-    .info-list li:before {
-        content: "•";
-        color: var(--primary-purple);
-        font-weight: bold;
-        position: absolute;
-        left: -0.75rem;
-    }
+            .info-list li:before {
+                content: "•";
+                color: var(--primary-purple);
+                font-weight: bold;
+                position: absolute;
+                left: -0.75rem;
+            }
 
-    .info-list li:last-child {
-        margin-bottom: 0;
-    }
+            .info-list li:last-child {
+                margin-bottom: 0;
+            }
 
-    .info-list kbd {
-        background: rgba(124, 58, 237, 0.1);
-        border: 1px solid var(--purple-border);
-        border-radius: 4px;
-        padding: 0.25rem 0.5rem;
-        font-size: 0.8rem;
-        font-family: 'Courier New', monospace;
-        color: var(--primary-purple);
-        font-weight: 600;
-    }
+        .info-list kbd {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid var(--purple-border);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            font-family: 'Courier New', monospace;
+            color: var(--primary-purple);
+            font-weight: 600;
+        }
 
     /* Responsive adjustments */
     @@media (max-width: 768px) {
         .waiter-selection-container {
             padding: 1rem;
         }
-        
+
         .waiter-selection-info {
             flex-direction: column;
             align-items: center;
             text-align: center;
         }
-        
+
         .info-icon {
             margin-bottom: 0.5rem;
         }
@@ -179,11 +175,11 @@
         text-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);
     }
 
-    .modern-form-label i {
-        margin-right: 0.5rem;
-        color: var(--primary-purple);
-        -webkit-text-fill-color: var(--primary-purple);
-    }
+        .modern-form-label i {
+            margin-right: 0.5rem;
+            color: var(--primary-purple);
+            -webkit-text-fill-color: var(--primary-purple);
+        }
 </style>
 
 <div class="container-fluid modern-bg">
@@ -227,10 +223,6 @@
             }
 
             <form asp-action="DeployWaiter" asp-route-id="@Model.CustomerID" method="post">
-                @if (headWaiterId != null)
-                {
-                    <input type="hidden" name="headWaiterId" value="@headWaiterId" />
-                }
                 <div class="modern-form-group">
                     <label for="waiterIds" class="modern-form-label">
                         <i class="bi bi-people-fill me-2"></i>
@@ -240,7 +232,7 @@
                         <select id="waiterIds" name="waiterIds" class="modern-form-control waiter-select" multiple size="6" required>
                             @foreach (var w in waiters)
                             {
-                                // only available waiters go in the select list
+                            // only available waiters go in the select list
                                 <option value="@w.WaiterId" class="waiter-option">
                                     <span class="waiter-name">@w.User.FirstName @w.User.LastName</span>
                                     <span class="waiter-username">(@w.User.Username)</span>
@@ -297,7 +289,10 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Availability</th>
-                                    <th class="text-end">Actions</th>
+                                    @if (!isHeadWaiter)
+                                    {
+                                        <th class="text-end">Actions</th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
@@ -312,19 +307,18 @@
                                                 @w.Availability
                                             </span>
                                         </td>
-                                        <td class="text-end">
-                                            <form asp-action="RemoveAssignedWaiter" asp-route-id="@Model.CustomerID" method="post" class="d-inline">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="waiterId" value="@w.WaiterId" />
-                                                @if (headWaiterId != null)
-                                                {
-                                                    <input type="hidden" name="headWaiterId" value="@headWaiterId" />
-                                                }
-                                                <button type="submit" class="modern-table-action-btn btn-outline-danger">
-                                                    <i class="bi bi-x-circle"></i> Remove
-                                                </button>
-                                            </form>
-                                        </td>
+                                        @if (!isHeadWaiter)
+                                        {
+                                            <td class="text-end">
+                                                <form asp-action="RemoveAssignedWaiter" asp-route-id="@Model.CustomerID" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="waiterId" value="@w.WaiterId" />
+                                                    <button type="submit" class="modern-table-action-btn btn-outline-danger">
+                                                        <i class="bi bi-x-circle"></i> Remove
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        }
                                     </tr>
                                 }
                             </tbody>

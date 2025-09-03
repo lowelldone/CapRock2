@@ -7,9 +7,9 @@ namespace Capstone2.Models
     {
         public DateTime PeriodStart { get; set; }
         public string Label { get; set; } = string.Empty;
-        public double BasePaid { get; set; }
-        public double ChargesPaid { get; set; }
-        public double TotalPaid => BasePaid + ChargesPaid;
+        public int NumberOfOrders { get; set; }
+        public int NumberOfTransactions { get; set; }
+        public double GrandTotal { get; set; }
     }
 
     public class SalesReportViewModel
@@ -18,9 +18,9 @@ namespace Capstone2.Models
         public DateTime EndDate { get; set; }
         public string GroupBy { get; set; } = "day"; // day | week | month
         public List<SalesPeriodItem> Periods { get; set; } = new List<SalesPeriodItem>();
-        public double TotalBasePaid { get; set; }
-        public double TotalChargesPaid { get; set; }
-        public double GrandTotal => TotalBasePaid + TotalChargesPaid;
+        public int TotalOrders { get; set; }
+        public int TotalTransactions { get; set; }
+        public double GrandTotal { get; set; }
     }
 
     public class TrendsPeriodItem
