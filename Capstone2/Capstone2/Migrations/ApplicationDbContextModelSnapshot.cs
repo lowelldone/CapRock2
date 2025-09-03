@@ -447,6 +447,10 @@ namespace Capstone2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TransactionNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("PaymentId");
 
                     b.HasIndex("OrderId");

@@ -18,6 +18,26 @@ namespace Capstone2.Controllers.AdminControllers
             _context = context;
         }
 
+        // Generate unique transaction number
+        private async Task<string> GenerateTransactionNumber()
+        {
+            string transactionNumber;
+            bool isUnique;
+
+            do
+            {
+                // Generate transaction number with format: TXN-YYYYMMDD-HHMMSS-XXXX
+                var now = DateTime.Now;
+                var randomSuffix = new Random().Next(1000, 9999);
+                transactionNumber = $"TXN-{now:yyyyMMdd}-{now:HHmmss}-{randomSuffix}";
+
+                // Check if transaction number already exists
+                isUnique = !await _context.Payments.AnyAsync(p => p.TransactionNumber == transactionNumber);
+            } while (!isUnique);
+
+            return transactionNumber;
+        }
+
         // Allocate payments to the base total first. If a single payment crosses the base boundary,
         // allocate the remainder of that same payment to additional charges. After the base has been
         // fully covered, subsequent payments are applied entirely to charges.
@@ -286,13 +306,17 @@ namespace Capstone2.Controllers.AdminControllers
                 return RedirectToAction("ProcessPayment", new { id = orderId });
             }
 
+            // Generate unique transaction number
+            var transactionNumber = await GenerateTransactionNumber();
+
             // Add payment record
             var payment = new Payment
             {
                 OrderId = order.OrderId,
                 Amount = paymentAmount,
                 Date = DateTime.Now,
-                PaymentType = paymentType
+                PaymentType = paymentType,
+                TransactionNumber = transactionNumber
             };
             _context.Payments.Add(payment);
 

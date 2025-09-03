@@ -26,6 +26,10 @@ namespace Capstone2.Models
         [Display(Name = "Payment Type")]
         public string PaymentType { get; set; } = "Cash";
 
+        [Required]
+        [Display(Name = "Transaction Number")]
+        public string TransactionNumber { get; set; }
+
         [NotMapped]
         public bool IsForAdditionalCharges { get; set; } = false;
     }

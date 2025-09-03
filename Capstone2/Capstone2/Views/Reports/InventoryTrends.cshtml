@@ -15,34 +15,7 @@
         margin-bottom: 1.5rem;
     }
 
-    .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
 
-    .summary-item {
-        background: #faf5ff;
-        border: 1px solid #e9d5ff;
-        border-radius: 12px;
-        padding: 1.5rem;
-        text-align: center;
-    }
-
-    .summary-value {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #7c3aed;
-        margin-bottom: 0.5rem;
-    }
-
-    .summary-label {
-        color: #6b7280;
-        font-size: 0.875rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
 
     .trend-table {
         font-size: 0.875rem;
@@ -54,45 +27,6 @@
             color: #374151;
         }
 
-    .consumable-badge {
-        background: #dcfce7;
-        color: #166534;
-        padding: 0.25rem 0.5rem;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 500;
-    }
-
-    .non-consumable-badge {
-        background: #dbeafe;
-        color: #1e40af;
-        padding: 0.25rem 0.5rem;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 500;
-    }
-
-    .chart-container {
-        position: relative;
-        height: 400px;
-        margin: 1rem 0;
-    }
-
-    .tab-content {
-        padding: 1rem 0;
-    }
-
-    .nav-tabs .nav-link {
-        border: none;
-        color: #6b7280;
-        font-weight: 500;
-    }
-
-        .nav-tabs .nav-link.active {
-            color: #7c3aed;
-            border-bottom: 2px solid #7c3aed;
-            background: none;
-        }
 </style>
 
 <div class="container-fluid mt-4">
@@ -169,225 +103,37 @@
         </form>
     </div>
 
-    <!-- Summary Statistics -->
+
+
+    <!-- Inventory Trends Table -->
     <div class="report-card">
-        <h5 class="fw-bold mb-3">Summary Overview</h5>
-        <div class="summary-grid">
-            <div class="summary-item">
-                <div class="summary-value">@Model.Summary.TotalMaterials</div>
-                <div class="summary-label">Total Materials</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">@Model.Summary.ConsumableMaterials</div>
-                <div class="summary-label">Consumable Items</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">@Model.Summary.NonConsumableMaterials</div>
-                <div class="summary-label">Non-Consumable Items</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">@Model.Summary.TotalOrders</div>
-                <div class="summary-label">Total Orders</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">@Model.Summary.TotalConsumption.ToString("N0")</div>
-                <div class="summary-label">Total Items Consumed</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">@Model.Summary.OverallLossRate.ToString("F1")%</div>
-                <div class="summary-label">Overall Loss Rate</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">@Model.Summary.OverallDamageRate.ToString("F1")%</div>
-                <div class="summary-label">Overall Damage Rate</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-value">@Model.Summary.AverageMaterialsPerOrder.ToString("F1")</div>
-                <div class="summary-label">Avg Items per Order</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Navigation Tabs -->
-    <div class="report-card">
-        <ul class="nav nav-tabs" id="trendsTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
-                    <i class="bi bi-graph-up"></i> Overview Trends
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="materials-tab" data-bs-toggle="tab" data-bs-target="#materials" type="button" role="tab">
-                    <i class="bi bi-box"></i> Material Details
-                </button>
-            </li>
-
-        </ul>
-
-        <div class="tab-content" id="trendsTabContent">
-            <!-- Overview Trends Tab -->
-            <div class="tab-pane fade show active" id="overview" role="tabpanel">
-                <div class="chart-container">
-                    <canvas id="overviewChart"></canvas>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover trend-table">
-                        <thead>
-                            <tr>
-                                <th>Period</th>
-                                <th>Orders</th>
-                                <th>Items Consumed</th>
-                                <th>Items Returned</th>
-                                <th>Items Lost</th>
-                                <th>Items Damaged</th>
-                                <th>Net Consumption</th>
-                                <th>Avg per Order</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var period in Model.Periods)
-                            {
-                                <tr>
-                                    <td><strong>@period.Label</strong></td>
-                                    <td>@period.OrderCount</td>
-                                    <td>@period.Consumed.ToString("N0")</td>
-                                    <td>@period.Returned.ToString("N0")</td>
-                                    <td>@period.Lost.ToString("N0")</td>
-                                    <td>@period.Damaged.ToString("N0")</td>
-                                    <td><strong>@period.NetConsumption.ToString("N0")</strong></td>
-                                    <td>@period.AverageConsumptionPerOrder.ToString("F1")</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Material Details Tab -->
-            <div class="tab-pane fade" id="materials" role="tabpanel">
-                <div class="table-responsive">
-                    <table class="table table-hover trend-table">
-                        <thead>
-                            <tr>
-                                <th>Material</th>
-                                <th>Type</th>
-                                <th>Total Consumed</th>
-                                <th>Total Lost</th>
-                                <th>Total Damaged</th>
-                                <th>Loss Rate</th>
-                                <th>Damage Rate</th>
-                                <th>Orders Used</th>
-                                <th>Avg per Order</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var material in Model.MaterialTrends)
-                            {
-                                <tr>
-                                    <td><strong>@material.MaterialName</strong></td>
-                                    <td>
-                                        @if (material.IsConsumable)
-                                        {
-                                            <span class="consumable-badge">Consumable</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="non-consumable-badge">Non-Consumable</span>
-                                        }
-                                    </td>
-                                    <td>@material.TotalConsumption.ToString("N0")</td>
-                                    <td>@material.TotalLoss.ToString("N0")</td>
-                                    <td>@material.TotalDamage.ToString("N0")</td>
-                                    <td>@material.LossRate.ToString("F1")%</td>
-                                    <td>@material.DamageRate.ToString("F1")%</td>
-                                    <td>@material.OrderCount</td>
-                                    <td>@material.AverageConsumptionPerOrder.ToString("F1")</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-
+        <h5 class="fw-bold mb-3">Inventory Trends</h5>
+        <div class="table-responsive">
+            <table class="table table-hover trend-table">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Total Quantity of Materials</th>
+                        <th>Used Materials</th>
+                        <th>Items Lost/Damaged</th>
+                        <th>Return Materials</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var period in Model.Periods)
+                    {
+                        <tr>
+                            <td><strong>@period.Label</strong></td>
+                            <td>@Model.Summary.TotalMaterials.ToString("N0")</td>
+                            <td>@period.Consumed.ToString("N0")</td>
+                            <td>@((period.Lost + period.Damaged).ToString("N0"))</td>
+                            <td>@(period.ReturnMaterials.ToString("N0"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<!-- Chart.js Library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-    // Overview Chart
-    const overviewCtx = document.getElementById('overviewChart').getContext('2d');
-    const overviewChart = new Chart(overviewCtx, {
-        type: 'line',
-        data: {
-            labels: @Html.Raw(Json.Serialize(Model.Periods.Select(p => p.Label))),
-            datasets: [
-                {
-                    label: 'Items Consumed',
-                    data: @Html.Raw(Json.Serialize(Model.Periods.Select(p => p.Consumed))),
-                    borderColor: '#7c3aed',
-                    backgroundColor: 'rgba(124, 58, 237, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                },
-                {
-                    label: 'Items Returned',
-                    data: @Html.Raw(Json.Serialize(Model.Periods.Select(p => p.Returned))),
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                },
-                {
-                    label: 'Items Lost',
-                    data: @Html.Raw(Json.Serialize(Model.Periods.Select(p => p.Lost))),
-                    borderColor: '#ef4444',
-                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                },
-                {
-                    label: 'Items Damaged',
-                    data: @Html.Raw(Json.Serialize(Model.Periods.Select(p => p.Damaged))),
-                    borderColor: '#f59e0b',
-                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Material Consumption Trends Over Time'
-                },
-                legend: {
-                    position: 'top'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Number of Items'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Time Period'
-                    }
-                }
-            }
-        }
-    });
-
-
-</script>

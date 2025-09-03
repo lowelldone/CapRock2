@@ -34,23 +34,6 @@ namespace Capstone2.Controllers
                 .OrderBy(p => p.Date)
                 .ToListAsync();
 
-            // Preload additional charges per order to know how to split base vs charges via strict allocation
-            var orderIds = payments.Select(p => p.OrderId).Distinct().ToList();
-            var additionalChargesByOrder = await _context.MaterialReturns
-                .Where(r => orderIds.Contains(r.OrderId))
-                .GroupBy(r => r.OrderId)
-                .Select(g => new { OrderId = g.Key, TotalCharge = g.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem) })
-                .ToDictionaryAsync(x => x.OrderId, x => (double)x.TotalCharge);
-
-            // Load all payments for the involved orders (for correct prior allocation, including before start date)
-            var paymentsAll = await _context.Payments
-                .Where(p => orderIds.Contains(p.OrderId))
-                .OrderBy(p => p.Date)
-                .ToListAsync();
-            var paymentsAllByOrder = paymentsAll
-                .GroupBy(p => p.OrderId)
-                .ToDictionary(g => g.Key, g => g.ToList());
-
             // Group by period helper
             DateTime Truncate(DateTime d)
             {
@@ -77,33 +60,14 @@ namespace Capstone2.Controllers
             foreach (var group in payments.GroupBy(p => Truncate(p.Date)))
             {
                 var periodKey = group.Key;
-                var periodItem = new SalesPeriodItem { PeriodStart = periodKey, Label = LabelFor(periodKey) };
-
-                foreach (var byOrder in group.GroupBy(p => p.OrderId))
+                var periodItem = new SalesPeriodItem
                 {
-                    var order = byOrder.First().Order;
-                    var orderPaymentsChrono = byOrder.OrderBy(p => p.Date).ToList();
-
-                    // Allocate per period only for the payments in this period bucket
-                    // Compute effective base and charges still remaining before this period's payments
-                    double orderBase = order.TotalPayment;
-                    double orderCharges = additionalChargesByOrder.TryGetValue(order.OrderId, out var c) ? c : 0d;
-
-                    // To allocate properly per-period, compute cumulative allocations up to (but excluding) this group
-                    var priorPayments = paymentsAllByOrder.TryGetValue(order.OrderId, out var allList)
-                        ? allList.Where(p => Truncate(p.Date) < periodKey).OrderBy(p => p.Date).ToList()
-                        : new List<Payment>();
-
-                    var (priorBaseAlloc, priorChargeAlloc) = AllocateBaseThenCharges(orderBase, orderCharges, priorPayments.Select(p => p.Amount));
-
-                    // Now allocate only current group's payments starting from remaining
-                    double remainingBaseBefore = Math.Max(0d, orderBase - priorBaseAlloc);
-                    double remainingChargeBefore = Math.Max(0d, orderCharges - priorChargeAlloc);
-                    var (currBaseAlloc, currChargeAlloc) = AllocateBaseThenCharges(remainingBaseBefore, remainingChargeBefore, orderPaymentsChrono.Select(p => p.Amount));
-
-                    periodItem.BasePaid += currBaseAlloc;
-                    periodItem.ChargesPaid += currChargeAlloc;
-                }
+                    PeriodStart = periodKey,
+                    Label = LabelFor(periodKey),
+                    NumberOfOrders = group.Select(p => p.OrderId).Distinct().Count(),
+                    NumberOfTransactions = group.Count(),
+                    GrandTotal = group.Sum(p => p.Amount)
+                };
 
                 periodsDict[periodKey] = periodItem;
             }
@@ -115,8 +79,9 @@ namespace Capstone2.Controllers
                 GroupBy = groupBy,
                 Periods = periodsDict.Values.OrderBy(p => p.PeriodStart).ToList()
             };
-            model.TotalBasePaid = model.Periods.Sum(p => p.BasePaid);
-            model.TotalChargesPaid = model.Periods.Sum(p => p.ChargesPaid);
+            model.TotalOrders = model.Periods.Sum(p => p.NumberOfOrders);
+            model.TotalTransactions = model.Periods.Sum(p => p.NumberOfTransactions);
+            model.GrandTotal = model.Periods.Sum(p => p.GrandTotal);
 
             return View(model);
         }
@@ -129,14 +94,52 @@ namespace Capstone2.Controllers
             if (model == null) return NotFound();
 
             var sb = new StringBuilder();
-            sb.AppendLine("Label,Base Paid,Charges Paid,Total Paid");
+            sb.AppendLine("Date,No. of Orders,No. of Transactions,Grand Total");
             foreach (var p in model.Periods)
             {
-                sb.AppendLine($"{Escape(p.Label)},{p.BasePaid.ToString("F2", CultureInfo.InvariantCulture)},{p.ChargesPaid.ToString("F2", CultureInfo.InvariantCulture)},{p.TotalPaid.ToString("F2", CultureInfo.InvariantCulture)}");
+                sb.AppendLine($"{Escape(p.Label)},{p.NumberOfOrders},{p.NumberOfTransactions},{p.GrandTotal.ToString("F2", CultureInfo.InvariantCulture)}");
             }
-            sb.AppendLine($"TOTAL,{model.TotalBasePaid.ToString("F2", CultureInfo.InvariantCulture)},{model.TotalChargesPaid.ToString("F2", CultureInfo.InvariantCulture)},{model.GrandTotal.ToString("F2", CultureInfo.InvariantCulture)}");
+            sb.AppendLine($"TOTAL,{model.TotalOrders},{model.TotalTransactions},{model.GrandTotal.ToString("F2", CultureInfo.InvariantCulture)}");
 
             return File(Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", $"sales_{DateTime.Now:yyyyMMddHHmmss}.csv");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTransactions(DateTime periodStart, string groupBy = "day")
+        {
+            try
+            {
+                // Calculate the period end based on groupBy
+                DateTime periodEnd = groupBy switch
+                {
+                    "week" => periodStart.AddDays(7),
+                    "month" => periodStart.AddMonths(1),
+                    _ => periodStart.AddDays(1) // day
+                };
+
+                // Get payments within the period
+                var payments = await _context.Payments
+                    .Include(p => p.Order)
+                        .ThenInclude(o => o.Customer)
+                    .Where(p => p.Date.Date >= periodStart && p.Date.Date < periodEnd)
+                    .OrderBy(p => p.Date)
+                    .Select(p => new
+                    {
+                        date = p.Date,
+                        transactionNumber = p.TransactionNumber,
+                        orderNumber = p.Order.OrderNumber,
+                        customerName = p.Order.Customer.Name,
+                        amount = p.Amount,
+                        paymentType = p.PaymentType
+                    })
+                    .ToListAsync();
+
+                return Json(payments);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "Failed to load transactions" });
+            }
         }
 
         private static (double baseAllocated, double chargesAllocated) AllocateBaseThenCharges(double baseAmount, double chargesAmount, IEnumerable<double> payments)
@@ -393,10 +396,6 @@ namespace Capstone2.Controllers
             foreach (var order in orders)
             {
                 var periodKey = Truncate(order.CateringDate);
-                if (periodsDict.ContainsKey(periodKey))
-                {
-                    periodsDict[periodKey].OrderCount++;
-                }
 
                 // Get pull out for this order
                 var pullOut = materialPullOuts.FirstOrDefault(p => p.OrderId == order.OrderId);
@@ -419,7 +418,11 @@ namespace Capstone2.Controllers
                                 if (returnData != null)
                                 {
                                     // Add returned, lost, and damaged items
-                                    period.Returned += returnData.Returned;
+                                    // For return materials calculation: only count consumable materials
+                                    if (material.IsConsumable)
+                                    {
+                                        period.Returned += returnData.Returned;
+                                    }
                                     period.Lost += returnData.Lost;
                                     period.Damaged += returnData.Damaged;
                                 }
@@ -428,99 +431,53 @@ namespace Capstone2.Controllers
                                     // If no return data exists, check if it's a consumable
                                     if (material.IsConsumable)
                                     {
-                                        // For consumables, everything pulled out is consumed
-                                        period.Returned = 0;
-                                        period.Lost = 0;
-                                        period.Damaged = 0;
+                                        // For consumables with no return data, everything pulled out is consumed
+                                        // No items returned, lost, or damaged (they were all consumed)
+                                        // Don't add anything to period.Returned, period.Lost, or period.Damaged
                                     }
-                                    // For non-consumables, if no return data, assume everything was returned
-                                    // (this might need adjustment based on your business logic)
+                                    else
+                                    {
+                                        // For non-consumables with no return data, assume everything was returned
+                                        // But don't count in return materials calculation since they're non-consumable
+                                        // Don't add anything to period.Returned, period.Lost, or period.Damaged
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            // Create material trends
-            var materialTrends = new List<MaterialConsumptionTrend>();
-            foreach (var material in materials)
-            {
-                var trend = new MaterialConsumptionTrend
+                // Also process materials that have return data but might not have pull-out data
+                var orderReturns = materialReturns.Where(r => r.OrderId == order.OrderId).ToList();
+                foreach (var returnData in orderReturns)
                 {
-                    MaterialId = material.MaterialId,
-                    MaterialName = material.Name,
-                    IsConsumable = material.IsConsumable
-                };
-
-                // Calculate totals and populate consumption by period
-                foreach (var period in periodsDict.Values.OrderBy(p => p.PeriodStart))
-                {
-                    var materialPeriod = new ConsumptionPeriod
+                    var material = materials.FirstOrDefault(m => m.Name == returnData.MaterialName);
+                    if (material != null && periodsDict.ContainsKey(periodKey))
                     {
-                        PeriodStart = period.PeriodStart,
-                        Label = period.Label,
-                        OrderCount = period.OrderCount
-                    };
+                        var period = periodsDict[periodKey];
 
-                    // Get material-specific data for this period
-                    var periodOrders = orders.Where(o => Truncate(o.CateringDate) == period.PeriodStart).ToList();
+                        // Only add if we haven't already processed this material from pull-out data
+                        var alreadyProcessed = pullOut?.Items?.Any(i => i.MaterialName == returnData.MaterialName) ?? false;
 
-                    foreach (var order in periodOrders)
-                    {
-                        var pullOut = materialPullOuts.FirstOrDefault(p => p.OrderId == order.OrderId);
-                        var pullOutItem = pullOut?.Items?.FirstOrDefault(i => i.MaterialName == material.Name);
-
-                        if (pullOutItem != null)
+                        if (!alreadyProcessed)
                         {
-                            materialPeriod.Consumed += pullOutItem.Quantity;
-
-                            // Find return data for this material and order
-                            var returnData = materialReturns.FirstOrDefault(r =>
-                                r.OrderId == order.OrderId && r.MaterialName == material.Name);
-
-                            if (returnData != null)
+                            // This material has return data but no pull-out data
+                            // Add returned, lost, and damaged items
+                            if (material.IsConsumable)
                             {
-                                materialPeriod.Returned += returnData.Returned;
-                                materialPeriod.Lost += returnData.Lost;
-                                materialPeriod.Damaged += returnData.Damaged;
+                                period.Returned += returnData.Returned;
                             }
-                            else if (material.IsConsumable)
-                            {
-                                // For consumables with no return data, everything is consumed
-                                materialPeriod.Returned = 0;
-                                materialPeriod.Lost = 0;
-                                materialPeriod.Damaged = 0;
-                            }
-                            // For non-consumables with no return data, assume everything was returned
+                            period.Lost += returnData.Lost;
+                            period.Damaged += returnData.Damaged;
                         }
                     }
-
-                    trend.ConsumptionByPeriod.Add(materialPeriod);
                 }
-
-                // Calculate totals
-                trend.TotalConsumption = trend.ConsumptionByPeriod.Sum(p => p.Consumed);
-                trend.TotalLoss = trend.ConsumptionByPeriod.Sum(p => p.Lost);
-                trend.TotalDamage = trend.ConsumptionByPeriod.Sum(p => p.Damaged);
-                trend.OrderCount = trend.ConsumptionByPeriod.Sum(p => p.OrderCount);
-                trend.AverageConsumptionPerOrder = trend.OrderCount > 0 ? trend.TotalConsumption / trend.OrderCount : 0;
-
-                materialTrends.Add(trend);
             }
-
-
 
             // Create summary
             var summary = new InventorySummary
             {
-                TotalMaterials = materials.Count,
-                ConsumableMaterials = materials.Count(m => m.IsConsumable),
-                NonConsumableMaterials = materials.Count(m => !m.IsConsumable),
-                TotalConsumption = materialTrends.Sum(m => m.TotalConsumption),
-                TotalLoss = materialTrends.Sum(m => m.TotalLoss),
-                TotalDamage = materialTrends.Sum(m => m.TotalDamage),
-                TotalOrders = orders.Count
+                TotalMaterials = materials.Sum(m => m.Quantity)
             };
 
             var model = new InventoryTrendsViewModel
@@ -528,7 +485,6 @@ namespace Capstone2.Controllers
                 StartDate = start,
                 EndDate = end,
                 GroupBy = groupBy,
-                MaterialTrends = materialTrends.OrderByDescending(m => m.TotalConsumption).ToList(),
                 Periods = periodsDict.Values.OrderBy(p => p.PeriodStart).ToList(),
                 Summary = summary
             };

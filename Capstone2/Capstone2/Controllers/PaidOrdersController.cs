@@ -20,27 +20,27 @@ namespace Capstone2.Controllers
             _context = context;
         }
         private List<int> GetHiddenCustomerIdsForHeadWaiter(int headWaiterId)
-         {
-             var key = $"HiddenCustomers_{headWaiterId}";
-             var raw = HttpContext.Session.GetString(key);
-             if (string.IsNullOrWhiteSpace(raw)) return new List<int>();
-             return raw.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                 .Select(s => int.TryParse(s, out var v) ? v : (int?)null)
-                 .Where(v => v.HasValue)
-                 .Select(v => v!.Value)
-                 .Distinct()
-                 .ToList();
-         }
- 
-         private void SaveHiddenCustomerIdsForHeadWaiter(int headWaiterId, List<int> ids)
-         {
-             var key = $"HiddenCustomers_{headWaiterId}";
-             var raw = string.Join(",", ids.Distinct());
-             HttpContext.Session.SetString(key, raw);
-         }
+        {
+            var key = $"HiddenCustomers_{headWaiterId}";
+            var raw = HttpContext.Session.GetString(key);
+            if (string.IsNullOrWhiteSpace(raw)) return new List<int>();
+            return raw.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(s => int.TryParse(s, out var v) ? v : (int?)null)
+                .Where(v => v.HasValue)
+                .Select(v => v!.Value)
+                .Distinct()
+                .ToList();
+        }
 
-// GET: PaidOrders
-public async Task<IActionResult> Index(string statusFilter, int? headWaiterId, string searchString)
+        private void SaveHiddenCustomerIdsForHeadWaiter(int headWaiterId, List<int> ids)
+        {
+            var key = $"HiddenCustomers_{headWaiterId}";
+            var raw = string.Join(",", ids.Distinct());
+            HttpContext.Session.SetString(key, raw);
+        }
+
+        // GET: PaidOrders
+        public async Task<IActionResult> Index(string statusFilter, int? headWaiterId, string searchString)
         {
             var role = HttpContext.Session.GetString("Role");
 
@@ -106,11 +106,11 @@ public async Task<IActionResult> Index(string statusFilter, int? headWaiterId, s
 
                 // Exclude items the headwaiter chose to hide from their view
                 if (headWaiterId.HasValue)
-                    {
+                {
                     var hiddenIds = GetHiddenCustomerIdsForHeadWaiter(headWaiterId.Value);
                     if (hiddenIds.Count > 0)
                         paidOrders = paidOrders.Where(c => !hiddenIds.Contains(c.CustomerID));
-                    }
+                }
 
                 ViewBag.IsAdmin = false;
                 ViewBag.SearchString = searchString;
@@ -503,6 +503,7 @@ public async Task<IActionResult> Index(string statusFilter, int? headWaiterId, s
             ViewBag.AssignedWaiters = assignedWaiters;
             ViewBag.AssignedWaiterIds = assignedIds;
             ViewBag.IsAdmin = role == "ADMIN";
+            ViewBag.IsHeadWaiter = role == "HEADWAITER";
             return View(order);
         }
 
@@ -1097,35 +1098,35 @@ public async Task<IActionResult> Index(string statusFilter, int? headWaiterId, s
         }
 
         // POST: PaidOrders/HideFromView/5 (HEADWAITER)
-         [HttpPost]
-         [ValidateAntiForgeryToken]
-         public IActionResult HideFromView(int id)
-         {
-             var role = HttpContext.Session.GetString("Role");
-             if (role != "HEADWAITER") return Forbid();
- 
-             var userId = HttpContext.Session.GetInt32("UserId");
-             var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId && h.isActive);
-             if (headWaiter == null) return Forbid();
- 
-             var order = _context.Orders
-                 .Include(o => o.Customer)
-                 .FirstOrDefault(o => o.CustomerID == id && !o.isDeleted && !o.Customer.isDeleted);
-             if (order == null) return NotFound();
-             if (order.HeadWaiterId != headWaiter.HeadWaiterId) return Forbid();
- 
-             if (order.Status != "Completed")
-             {
-                 TempData["ProfileError"] = "Only completed orders can be removed from view.";
-                 return RedirectToAction(nameof(Index));
-             }
- 
-             var hidden = GetHiddenCustomerIdsForHeadWaiter(headWaiter.HeadWaiterId);
-             if (!hidden.Contains(id)) hidden.Add(id);
-             SaveHiddenCustomerIdsForHeadWaiter(headWaiter.HeadWaiterId, hidden);
- 
-             TempData["Success"] = "Removed from view.";
-             return RedirectToAction(nameof(Index));
-         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult HideFromView(int id)
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role != "HEADWAITER") return Forbid();
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var headWaiter = _context.HeadWaiters.FirstOrDefault(h => h.UserId == userId && h.isActive);
+            if (headWaiter == null) return Forbid();
+
+            var order = _context.Orders
+                .Include(o => o.Customer)
+                .FirstOrDefault(o => o.CustomerID == id && !o.isDeleted && !o.Customer.isDeleted);
+            if (order == null) return NotFound();
+            if (order.HeadWaiterId != headWaiter.HeadWaiterId) return Forbid();
+
+            if (order.Status != "Completed")
+            {
+                TempData["ProfileError"] = "Only completed orders can be removed from view.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var hidden = GetHiddenCustomerIdsForHeadWaiter(headWaiter.HeadWaiterId);
+            if (!hidden.Contains(id)) hidden.Add(id);
+            SaveHiddenCustomerIdsForHeadWaiter(headWaiter.HeadWaiterId, hidden);
+
+            TempData["Success"] = "Removed from view.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
