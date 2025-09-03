@@ -142,6 +142,11 @@
                     <input asp-for="NoOfMainDish" class="form-control" placeholder="Enter number" type="number" min="0" />
                     <span asp-validation-for="NoOfMainDish" class="text-danger"></span>
                 </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MinimumPax" class="form-label fw-semibold">Minimum Pax <span class="text-danger">*</span></label>
+                    <input asp-for="MinimumPax" class="form-control" placeholder="Enter minimum pax" type="number" min="1" />
+                    <span asp-validation-for="MinimumPax" class="text-danger"></span>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -183,6 +188,16 @@
                     <span asp-validation-for="NoOfSoftDrinks" class="text-danger"></span>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="NumberOfFreeLechons" class="form-label fw-semibold">Number of Free Lechons</label>
+                    <input asp-for="NumberOfFreeLechons" class="form-control" placeholder="Enter number of free lechons" type="number" min="0" />
+                    <small class="form-text text-muted">Enter 0 if no free lechons are included in this package</small>
+                    <span asp-validation-for="NumberOfFreeLechons" class="text-danger"></span>
+                </div>
+            </div>
+
             <div class="d-flex gap-3">
                 <button type="submit" class="btn btn-primary btn-save">
                     <i class="bi bi-check-lg me-2"></i>Save Changes
@@ -236,6 +251,14 @@
             if (isNaN(mainDish) || mainDish < 0) {
                 $('#NoOfMainDish').addClass('is-invalid');
                 $('#NoOfMainDish').after('<span class="text-danger">Number of main dishes must be 0 or greater.</span>');
+                isValid = false;
+            }
+
+            // Validate Minimum Pax
+            var minimumPax = parseInt($('#MinimumPax').val());
+            if (isNaN(minimumPax) || minimumPax < 1) {
+                $('#MinimumPax').addClass('is-invalid');
+                $('#MinimumPax').after('<span class="text-danger">Minimum pax must be 1 or greater.</span>');
                 isValid = false;
             }
 

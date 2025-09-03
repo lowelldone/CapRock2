@@ -9,7 +9,7 @@
 }
 
 <style>
-    .info-line{
+    .info-line {
         border-bottom: 1px solid black;
     }
 </style>
@@ -119,20 +119,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model.OrderDetails)
+                        @{
+                            var freeLechonItems = Model.OrderDetails.Where(od => !string.IsNullOrEmpty(od.Type) && (od.Type == "Package Bonus" || od.IsFreeLechon == true)).ToList();
+                            var regularItems = Model.OrderDetails.Where(od => !freeLechonItems.Contains(od)).ToList();
+                        }
+
+                        @foreach (var item in regularItems)
                         {
                             var isPackageItem = !string.IsNullOrEmpty(item.Type);
-                            var isBonus = isPackageItem && item.Type == "Package Bonus";
                             if (hasPackageItems)
                             {
                                 <tr>
                                     <td>
                                         <div class="modern-name">
                                             @item.Name
-                                            @if (isBonus)
-                                            {
-                                                <span class="badge bg-warning text-dark ms-1">Free</span>
-                                            }
                                         </div>
                                     </td>
                                 </tr>
@@ -157,6 +157,27 @@
                                     </td>
                                 </tr>
                             }
+                        }
+
+                        @* Display merged free lechons *@
+                        @if (freeLechonItems.Any())
+                        {
+                            var lechonCount = freeLechonItems.Count;
+                            <tr>
+                                <td>
+                                    <div class="modern-name">
+                                        @if (lechonCount == 1)
+                                        {
+                                            <text>1 Whole Lechon (Package Bonus)</text>
+                                        }
+                                        else
+                                        {
+                                            <text>@lechonCount Whole Lechons (Package Bonus)</text>
+                                        }
+                                        <span class="badge bg-warning text-dark ms-1">Free</span>
+                                    </div>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -431,20 +452,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.OrderDetails)
+                                    @{
+                                        var invoiceFreeLechonItems = Model.OrderDetails.Where(od => !string.IsNullOrEmpty(od.Type) && (od.Type == "Package Bonus" || od.IsFreeLechon == true)).ToList();
+                                        var invoiceRegularItems = Model.OrderDetails.Where(od => !invoiceFreeLechonItems.Contains(od)).ToList();
+                                    }
+
+                                    @foreach (var item in invoiceRegularItems)
                                     {
                                         var isPackageItem = !string.IsNullOrEmpty(item.Type);
-                                        var isBonus = isPackageItem && item.Type == "Package Bonus";
                                         if (hasPackageItems)
                                         {
                                             <tr>
                                                 <td>
                                                     <div class="modern-name">
                                                         @item.Name
-                                                        @if (isBonus)
-                                                        {
-                                                            <span class="badge bg-warning text-dark ms-1">Free</span>
-                                                        }
                                                     </div>
                                                 </td>
                                             </tr>
@@ -469,6 +490,27 @@
                                                 </td>
                                             </tr>
                                         }
+                                    }
+
+                                    @* Display merged free lechons in invoice *@
+                                    @if (invoiceFreeLechonItems.Any())
+                                    {
+                                        var invoiceLechonCount = invoiceFreeLechonItems.Count;
+                                        <tr>
+                                            <td>
+                                                <div class="modern-name">
+                                                    @if (invoiceLechonCount == 1)
+                                                    {
+                                                        <text>1 Whole Lechon (Package Bonus)</text>
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>@invoiceLechonCount Whole Lechons (Package Bonus)</text>
+                                                    }
+                                                    <span class="badge bg-warning text-dark ms-1">Free</span>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>

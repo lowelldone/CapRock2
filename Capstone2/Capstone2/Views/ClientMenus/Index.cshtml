@@ -1507,13 +1507,13 @@
                                     </div>
                                     <div class="package-minimum">
                                         <i class="bi bi-people"></i>
-                                        <span>Minimum @(package.MenuPackageId == 1 ? "60" : "120") pax</span>
+                                        <span>Minimum @package.MinimumPax pax</span>
                                     </div>
-                                    @if (package.MenuPackageId == 2)
+                                    @if (package.NumberOfFreeLechons > 0)
                                     {
                                         <div class="package-bonus">
                                             <i class="bi bi-gift"></i>
-                                            <span>1 Whole Lechon Included</span>
+                                            <span>@package.NumberOfFreeLechons Whole Lechon@(package.NumberOfFreeLechons > 1 ? "s" : "") Included</span>
                                         </div>
                                     }
                                 </div>
@@ -1522,13 +1522,9 @@
                                     @if (package.NoOfMainDish > 0)
                                     {
                                         <div class="package-option-item">
-                                            @{
-                                                // Check if this is Package B (120 pax minimum) based on the package name or other criteria
-                                                bool isPackageB = package.MenuPackageName.Contains("B") || package.MenuPackageName.Contains("b");
-                                            }
-                                            @if (isPackageB)
+                                            @if (package.NumberOfFreeLechons > 0)
                                             {
-                                                <span>@package.NoOfMainDish Main Dish(es) + 1 Free Lechon</span>
+                                                <span>@package.NoOfMainDish Main Dish(es) + @package.NumberOfFreeLechons Free Lechon@(package.NumberOfFreeLechons > 1 ? "s" : "")</span>
                                             }
                                             else
                                             {
@@ -1632,7 +1628,7 @@
     let order = {};
     let selectedPackage = null;
     let packageSelections = {};
-    let isPackageB = false; // Global variable for Package B detection
+    let numberOfFreeLechons = 0; // Global variable for number of free lechons
 
     $(function () {
         // Initial state: show order summary (individual foods mode by default)
@@ -1725,7 +1721,7 @@
             // Clear ALL package selections to ensure fresh state for any package
             packageSelections = {};
             selectedPackage = null;
-            isPackageB = false;
+            numberOfFreeLechons = 0;
             // Remove dynamic content to avoid any lingering UI state
             $('#packageFoodSelectionContent').empty();
         });
@@ -1737,11 +1733,11 @@
 
             if (!selectedPackageData) return;
 
-            const minPax = packageId === 1 ? 60 : 120;
+            const minPax = selectedPackageData.minimumPax || 60;
             const packagePrice = selectedPackageData.price ?? 0;
 
-            // Check if this is Package B (the one with 120 pax minimum)
-            isPackageB = minPax === 120; // Set global variable
+            // Check number of free lechons in this package
+            numberOfFreeLechons = selectedPackageData.numberOfFreeLechons || 0; // Set global variable
 
             // Always reset selections when (re)loading the food selection screen
             packageSelections[packageId] = {
@@ -1751,97 +1747,98 @@
                 rice: [],
                 softDrinks: []
             };
-            if (isPackageB) {
+            // Add free lechons to the main dish selections
+            for (let i = 0; i < numberOfFreeLechons; i++) {
                 packageSelections[packageId].mainDish.push({
-                    id: 'lechon',
-                    name: '1 Whole Lechon (Free Bonus)',
+                    id: `lechon_${i + 1}`,
+                    name: `${i + 1} Whole Lechon (Free Bonus)`,
                     isLechon: true
                 });
             }
 
             let html = `
-                        <div class="package-card" data-package-id="${packageId}">
-                            <div class="package-info">
-                                <h5 class="package-info-title">Package Details</h5>
-                                <div class="package-details">
-                                    <div class="package-detail-item">
-                                        <span class="detail-label">Package:</span>
-                                        <span class="detail-value">${packageId === 1 ? 'Package A' : 'Package B'}</span>
-                                    </div>
-                                    <div class="package-detail-item">
-                                        <span class="detail-label">Number of People:</span>
-                                        <span class="detail-value">${minPax} pax (minimum)</span>
-                                        <div class="package-reminder-small">
-                                            <strong><small class="reminder-text-small">You can adjust this later in the order form</small></strong>
+                            <div class="package-card" data-package-id="${packageId}">
+                                <div class="package-info">
+                                    <h5 class="package-info-title">Package Details</h5>
+                                    <div class="package-details">
+                                        <div class="package-detail-item">
+                                            <span class="detail-label">Package:</span>
+                                            <span class="detail-value">${selectedPackageData.menuPackageName || 'Package'}</span>
+                                        </div>
+                                        <div class="package-detail-item">
+                                            <span class="detail-label">Number of People:</span>
+                                            <span class="detail-value">${minPax} pax (minimum)</span>
+                                            <div class="package-reminder-small">
+                                                <strong><small class="reminder-text-small">You can adjust this later in the order form</small></strong>
+                                            </div>
+                                        </div>
+                                        <div class="package-detail-item">
+                                            <span class="detail-label">Price per Person:</span>
+                                            <span class="detail-value">₱${packagePrice}</span>
                                         </div>
                                     </div>
-                                    <div class="package-detail-item">
-                                        <span class="detail-label">Price per Person:</span>
-                                        <span class="detail-value">₱${packagePrice}</span>
-                                    </div>
+
+                                    <!-- Hidden PAX input for internal use -->
+                                    <input type="hidden" id="paxQuantity" value="${minPax}" data-package-id="${packageId}">
                                 </div>
 
-                                <!-- Hidden PAX input for internal use -->
-                                <input type="hidden" id="paxQuantity" value="${minPax}" data-package-id="${packageId}">
-                            </div>
-
-                            <div class="package-requirements">
-                                <h5 class="requirements-title">Package Inclusions:</h5>
-                                <div class="requirements-grid">
-                                    ${isPackageB ? `
-                                        <div class="requirement-item requirement-bonus">
-                                            <span class="requirement-text">1 Whole Lechon (Automatically Included)</span>
-                                        </div>
-                                    ` : ''}
-                    `;
+                                <div class="package-requirements">
+                                    <h5 class="requirements-title">Package Inclusions:</h5>
+                                    <div class="requirements-grid">
+                                        ${numberOfFreeLechons > 0 ? `
+                                            <div class="requirement-item requirement-bonus">
+                                                <span class="requirement-text">${numberOfFreeLechons} Whole Lechon${numberOfFreeLechons > 1 ? 's' : ''} (Automatically Included)</span>
+                                            </div>
+                                        ` : ''}
+                        `;
 
             if (selectedPackageData.noOfMainDish > 0) {
-                const mainDishText = isPackageB ?
-                    `${selectedPackageData.noOfMainDish} Main Dish(es) + 1 Free Lechon` :
+                const mainDishText = numberOfFreeLechons > 0 ?
+                    `${selectedPackageData.noOfMainDish} Main Dish(es) + ${numberOfFreeLechons} Free Lechon${numberOfFreeLechons > 1 ? 's' : ''}` :
                     `Choose ${selectedPackageData.noOfMainDish} Main Dish(es)`;
 
                 html += `
-                            <div class="requirement-item">
-                                <span class="requirement-text">${mainDishText}</span>
-                            </div>
-                        `;
+                                <div class="requirement-item">
+                                    <span class="requirement-text">${mainDishText}</span>
+                                </div>
+                            `;
             }
             if (selectedPackageData.noOfSideDish > 0) {
                 html += `
-                            <div class="requirement-item">
-                                <span class="requirement-text">Choose ${selectedPackageData.noOfSideDish} Side Dish(es)</span>
-                            </div>
-                        `;
+                                <div class="requirement-item">
+                                    <span class="requirement-text">Choose ${selectedPackageData.noOfSideDish} Side Dish(es)</span>
+                                </div>
+                            `;
             }
             if (selectedPackageData.noOfDessert > 0) {
                 html += `
-                            <div class="requirement-item">
-                                <span class="requirement-text">Choose ${selectedPackageData.noOfDessert} Dessert(s)</span>
-                            </div>
-                        `;
+                                <div class="requirement-item">
+                                    <span class="requirement-text">Choose ${selectedPackageData.noOfDessert} Dessert(s)</span>
+                                </div>
+                            `;
             }
             if (selectedPackageData.noOfRice > 0) {
                 html += `
-                            <div class="requirement-item">
-                                <span class="requirement-text">Choose ${selectedPackageData.noOfRice} Rice</span>
-                            </div>
-                        `;
+                                <div class="requirement-item">
+                                    <span class="requirement-text">Choose ${selectedPackageData.noOfRice} Rice</span>
+                                </div>
+                            `;
             }
             if (selectedPackageData.noOfSoftDrinks > 0) {
                 html += `
-                            <div class="requirement-item">
-                                <span class="requirement-text">Choose ${selectedPackageData.noOfSoftDrinks} Soft Drink(s)</span>
-                            </div>
-                        `;
+                                <div class="requirement-item">
+                                    <span class="requirement-text">Choose ${selectedPackageData.noOfSoftDrinks} Soft Drink(s)</span>
+                                </div>
+                            `;
             }
 
             html += `
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="package-selection">
-                                <h5 class="selection-title">Select Your Dishes:</h5>
-                    `;
+                                <div class="package-selection">
+                                    <h5 class="selection-title">Select Your Dishes:</h5>
+                        `;
 
             // Main Dishes Selection
             if (selectedPackageData.noOfMainDish > 0) {
@@ -1849,12 +1846,12 @@
                 const userSelectableMainDishes = selectedPackageData.noOfMainDish;
 
                 html += `
-                            <div class="selection-category">
-                                <h6 class="category-title">
-                                    Main Dishes
-                                    <span class="selection-counter" data-category="mainDish" data-max="${userSelectableMainDishes}">0/${userSelectableMainDishes}</span>
-                                </h6>
-                        `;
+                                <div class="selection-category">
+                                    <h6 class="category-title">
+                                        Main Dishes
+                                        <span class="selection-counter" data-category="mainDish" data-max="${userSelectableMainDishes}">0/${userSelectableMainDishes}</span>
+                                    </h6>
+                            `;
 
                 const mainDishes = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "MAINDISH").ToList()));
                 const mainDishCategories = {};
@@ -1873,43 +1870,43 @@
                 // Display each category
                 Object.keys(mainDishCategories).forEach(category => {
                     html += `
-                                <div class="package-category-section">
-                                    <h7 class="package-category-header">${category}</h7>
-                                    <div class="selection-grid">
-                        `;
+                                    <div class="package-category-section">
+                                        <h7 class="package-category-header">${category}</h7>
+                                        <div class="selection-grid">
+                            `;
 
                     mainDishCategories[category].forEach(dish => {
                         html += `
-                                    <div class="selection-item" data-category="mainDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                        <div class="selection-item-content">
-                                            ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                            <div class="selection-item-name">${dish.name}</div>
+                                        <div class="selection-item" data-category="mainDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                            <div class="selection-item-content">
+                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                <div class="selection-item-name">${dish.name}</div>
+                                            </div>
+                                          <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                         </div>
-                                      <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                    </div>
-                                `;
+                                    `;
                     });
 
                     html += `
+                                        </div>
                                     </div>
-                                </div>
-                        `;
+                            `;
                 });
 
                 html += `
-                            </div>
-                        `;
+                                </div>
+                            `;
             }
 
             // Side Dishes Selection
             if (selectedPackageData.noOfSideDish > 0) {
                 html += `
-                            <div class="selection-category">
-                                <h6 class="category-title">
-                                    Side Dishes
-                                    <span class="selection-counter" data-category="sideDish" data-max="${selectedPackageData.noOfSideDish}">0/${selectedPackageData.noOfSideDish}</span>
-                                </h6>
-                        `;
+                                <div class="selection-category">
+                                    <h6 class="category-title">
+                                        Side Dishes
+                                        <span class="selection-counter" data-category="sideDish" data-max="${selectedPackageData.noOfSideDish}">0/${selectedPackageData.noOfSideDish}</span>
+                                    </h6>
+                            `;
 
                 const sideDishes = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "SIDEDISH").ToList()));
                 const sideDishCategories = {};
@@ -1925,43 +1922,43 @@
                 // Display each category
                 Object.keys(sideDishCategories).forEach(category => {
                     html += `
-                                <div class="package-category-section">
-                                    <h7 class="package-category-header">${category}</h7>
-                                    <div class="selection-grid">
-                        `;
+                                    <div class="package-category-section">
+                                        <h7 class="package-category-header">${category}</h7>
+                                        <div class="selection-grid">
+                            `;
 
                     sideDishCategories[category].forEach(dish => {
                         html += `
-                                    <div class="selection-item" data-category="sideDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                        <div class="selection-item-content">
-                                            ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                            <div class="selection-item-name">${dish.name}</div>
+                                        <div class="selection-item" data-category="sideDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                            <div class="selection-item-content">
+                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                <div class="selection-item-name">${dish.name}</div>
+                                            </div>
+                                           <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                         </div>
-                                       <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                    </div>
-                                `;
+                                    `;
                     });
 
                     html += `
+                                        </div>
                                     </div>
-                                </div>
-                        `;
+                            `;
                 });
 
                 html += `
-                            </div>
-                        `;
+                                </div>
+                            `;
             }
 
             // Desserts Selection
             if (selectedPackageData.noOfDessert > 0) {
                 html += `
-                            <div class="selection-category">
-                                <h6 class="category-title">
-                                    Desserts
-                                    <span class="selection-counter" data-category="dessert" data-max="${selectedPackageData.noOfDessert}">0/${selectedPackageData.noOfDessert}</span>
-                                </h6>
-                        `;
+                                <div class="selection-category">
+                                    <h6 class="category-title">
+                                        Desserts
+                                        <span class="selection-counter" data-category="dessert" data-max="${selectedPackageData.noOfDessert}">0/${selectedPackageData.noOfDessert}</span>
+                                    </h6>
+                            `;
 
                 const desserts = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "DESSERTS").ToList()));
                 const dessertCategories = {};
@@ -1977,43 +1974,43 @@
                 // Display each category
                 Object.keys(dessertCategories).forEach(category => {
                     html += `
-                                <div class="package-category-section">
-                                    <h7 class="package-category-header">${category}</h7>
-                                    <div class="selection-grid">
-                        `;
+                                    <div class="package-category-section">
+                                        <h7 class="package-category-header">${category}</h7>
+                                        <div class="selection-grid">
+                            `;
 
                     dessertCategories[category].forEach(dish => {
                         html += `
-                                    <div class="selection-item" data-category="dessert" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                        <div class="selection-item-content">
-                                            ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                            <div class="selection-item-name">${dish.name}</div>
+                                        <div class="selection-item" data-category="dessert" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                            <div class="selection-item-content">
+                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                <div class="selection-item-name">${dish.name}</div>
+                                            </div>
+                                           <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                         </div>
-                                       <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                    </div>
-                                `;
+                                    `;
                     });
 
                     html += `
+                                        </div>
                                     </div>
-                                </div>
-                        `;
+                            `;
                 });
 
                 html += `
-                            </div>
-                        `;
+                                </div>
+                            `;
             }
 
             // Rice Selection
             if (selectedPackageData.noOfRice > 0) {
                 html += `
-                            <div class="selection-category">
-                                <h6 class="category-title">
-                                    Rice
-                                    <span class="selection-counter" data-category="rice" data-max="${selectedPackageData.noOfRice}">0/${selectedPackageData.noOfRice}</span>
-                                </h6>
-                        `;
+                                <div class="selection-category">
+                                    <h6 class="category-title">
+                                        Rice
+                                        <span class="selection-counter" data-category="rice" data-max="${selectedPackageData.noOfRice}">0/${selectedPackageData.noOfRice}</span>
+                                    </h6>
+                            `;
 
                 const riceItems = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "RICE").ToList()));
                 const riceCategories = {};
@@ -2029,43 +2026,43 @@
                 // Display each category
                 Object.keys(riceCategories).forEach(category => {
                     html += `
-                                <div class="package-category-section">
-                                    <h7 class="package-category-header">${category}</h7>
-                                    <div class="selection-grid">
-                        `;
+                                    <div class="package-category-section">
+                                        <h7 class="package-category-header">${category}</h7>
+                                        <div class="selection-grid">
+                            `;
 
                     riceCategories[category].forEach(dish => {
                         html += `
-                                    <div class="selection-item" data-category="rice" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                        <div class="selection-item-content">
-                                            ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                            <div class="selection-item-name">${dish.name}</div>
+                                        <div class="selection-item" data-category="rice" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                            <div class="selection-item-content">
+                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                <div class="selection-item-name">${dish.name}</div>
+                                            </div>
+                                           <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                         </div>
-                                       <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                    </div>
-                                `;
+                                    `;
                     });
 
                     html += `
+                                        </div>
                                     </div>
-                                </div>
-                        `;
+                            `;
                 });
 
                 html += `
-                            </div>
-                        `;
+                                </div>
+                            `;
             }
 
             // Soft Drinks Selection
             if (selectedPackageData.noOfSoftDrinks > 0) {
                 html += `
-                            <div class="selection-category">
-                                <h6 class="category-title">
-                                    Soft Drinks
-                                    <span class="selection-counter" data-category="softDrinks" data-max="${selectedPackageData.noOfSoftDrinks}">0/${selectedPackageData.noOfSoftDrinks}</span>
-                                </h6>
-                        `;
+                                <div class="selection-category">
+                                    <h6 class="category-title">
+                                        Soft Drinks
+                                        <span class="selection-counter" data-category="softDrinks" data-max="${selectedPackageData.noOfSoftDrinks}">0/${selectedPackageData.noOfSoftDrinks}</span>
+                                    </h6>
+                            `;
 
                 const softDrinks = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "SOFTDRINKS").ToList()));
                 const softDrinkCategories = {};
@@ -2081,59 +2078,59 @@
                 // Display each category
                 Object.keys(softDrinkCategories).forEach(category => {
                     html += `
-                                <div class="package-category-section">
-                                    <h7 class="package-category-header">${category}</h7>
-                                    <div class="selection-grid">
-                        `;
+                                    <div class="package-category-section">
+                                        <h7 class="package-category-header">${category}</h7>
+                                        <div class="selection-grid">
+                            `;
 
                     softDrinkCategories[category].forEach(dish => {
                         html += `
-                                    <div class="selection-item" data-category="softDrinks" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                        <div class="selection-item-content">
-                                            ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                            <div class="selection-item-name">${dish.name}</div>
+                                        <div class="selection-item" data-category="softDrinks" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                            <div class="selection-item-content">
+                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                <div class="selection-item-name">${dish.name}</div>
+                                            </div>
+                                           <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                         </div>
-                                       <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                    </div>
-                                `;
+                                    `;
                     });
 
                     html += `
+                                        </div>
                                     </div>
-                                </div>
-                        `;
+                            `;
                 });
 
                 html += `
-                            </div>
-                        `;
+                                </div>
+                            `;
             }
 
             html += `
-                            </div>
+                                </div>
 
-                            <div class="package-summary">
-                                <div class="package-status" data-package-id="${packageId}">
-                                    <span class="status-text">Package incomplete</span>
-                                    <span class="status-icon text-warning"><i class="bi bi-exclamation-triangle"></i></span>
+                                <div class="package-summary">
+                                    <div class="package-status" data-package-id="${packageId}">
+                                        <span class="status-text">Package incomplete</span>
+                                        <span class="status-icon text-warning"><i class="bi bi-exclamation-triangle"></i></span>
+                                    </div>
+                                </div>
+
+                                <div class="package-actions">
+                                    <button class="btn btn-primary add-package-to-order"
+                                            data-package-id="${packageId}"
+                                            data-package-name="${selectedPackageData.menuPackageName}"
+                                            data-package-price="${packagePrice}"
+                                            disabled>
+                                        <i class="bi bi-arrow-right me-2"></i>Proceed
+                                    </button>
+                                    <button class="btn btn-outline-secondary clear-package"
+                                            data-package-id="${packageId}">
+                                        <i class="bi bi-arrow-clockwise me-2"></i>Clear Selection
+                                    </button>
                                 </div>
                             </div>
-
-                            <div class="package-actions">
-                                <button class="btn btn-primary add-package-to-order"
-                                        data-package-id="${packageId}"
-                                        data-package-name="${selectedPackageData.menuPackageName}"
-                                        data-package-price="${packagePrice}"
-                                        disabled>
-                                    <i class="bi bi-arrow-right me-2"></i>Proceed
-                                </button>
-                                <button class="btn btn-outline-secondary clear-package"
-                                        data-package-id="${packageId}">
-                                    <i class="bi bi-arrow-clockwise me-2"></i>Clear Selection
-                                </button>
-                            </div>
-                        </div>
-                    `;
+                        `;
 
             $('#packageFoodSelectionContent').html(html);
 
@@ -2157,11 +2154,11 @@
                     softDrinks: []
                 };
 
-                // For Package B, automatically add the free lechon
-                if (isPackageB) {
+                // For packages with free lechons, automatically add the free lechons
+                for (let i = 0; i < numberOfFreeLechons; i++) {
                     packageSelections[packageId].mainDish.push({
-                        id: 'lechon',
-                        name: '1 Whole Lechon (Free Bonus)',
+                        id: `lechon_${i + 1}`,
+                        name: `${i + 1} Whole Lechon (Free Bonus)`,
                         isLechon: true
                     });
                 }
@@ -2183,9 +2180,9 @@
                 const $counter = $(`.selection-counter[data-category="${category}"]`);
                 const maxAllowed = parseInt($counter.data('max'));
 
-                // For Package B main dishes, only count user-selected items (exclude lechon)
+                // For packages with free lechons main dishes, only count user-selected items (exclude lechons)
                 let currentUserCount;
-                if (isPackageB && category === 'mainDish') {
+                if (numberOfFreeLechons > 0 && category === 'mainDish') {
                     currentUserCount = packageSelections[packageId][category].filter(item => !item.isLechon).length;
                 } else {
                     currentUserCount = packageSelections[packageId][category].length;
@@ -2223,11 +2220,11 @@
                     softDrinks: []
                 };
 
-                // For Package B, automatically add the free lechon back
-                if (isPackageB) {
+                // For packages with free lechons, automatically add the free lechons back
+                for (let i = 0; i < numberOfFreeLechons; i++) {
                     packageSelections[packageId].mainDish.push({
-                        id: 'lechon',
-                        name: '1 Whole Lechon (Free Bonus)',
+                        id: `lechon_${i + 1}`,
+                        name: `${i + 1} Whole Lechon (Free Bonus)`,
                         isLechon: true
                     });
                 }
@@ -2288,6 +2285,7 @@
                     packagePrice: packagePrice,
                     paxQuantity: paxQuantity,
                     totalPrice: packageTotal,
+                    numberOfFreeLechons: numberOfFreeLechons,
                     mainDish: package.mainDish || [],
                     sideDish: package.sideDish || [],
                     dessert: package.dessert || [],
@@ -2308,9 +2306,9 @@
             const currentCount = packageSelections[packageId][category].length;
             const maxAllowed = parseInt($counter.data('max'));
 
-            // For Package B main dishes, only count user-selected items (exclude lechon)
+            // For packages with free lechons main dishes, only count user-selected items (exclude lechons)
             let displayCount;
-            if (isPackageB && category === 'mainDish') {
+            if (numberOfFreeLechons > 0 && category === 'mainDish') {
                 const userSelectedCount = packageSelections[packageId][category].filter(item => !item.isLechon).length;
                 displayCount = userSelectedCount;
             } else {
@@ -2346,10 +2344,10 @@
                 const $counter = $(`.package-card[data-package-id="${packageId}"] .selection-counter[data-category="${category}"]`);
                 const maxAllowed = parseInt($counter.data('max'));
 
-                // For Package B main dishes, account for the automatically included lechon
+                // For packages with free lechons main dishes, account for the automatically included lechons
                 let requiredCount = maxAllowed;
-                if (isPackageB && category === 'mainDish') {
-                    // User needs to select maxAllowed dishes, lechon is automatically included
+                if (numberOfFreeLechons > 0 && category === 'mainDish') {
+                    // User needs to select maxAllowed dishes, lechons are automatically included
                     const userSelectedCount = items.filter(item => !item.isLechon).length;
                     if (userSelectedCount < requiredCount) {
                         isComplete = false;
@@ -2381,7 +2379,7 @@
         <text>
                     try {
                         let prevOrder = JSON.parse('@Html.Raw(orderItemsJson)');
-                                prevOrder.forEach(item => {
+                                        prevOrder.forEach(item => {
                         // Always use the latest price from the menu card
                         let $input = $("#food" + item.MenuId);
                     let $card = $input.closest(".quantity-selector").parent();
@@ -2395,13 +2393,13 @@
                             price: price,
                             quantity: item.Quantity
                         };
-                                        setTimeout(() => {
+                                                setTimeout(() => {
                         let $input = $("#food" + item.MenuId);
                     if ($input.length) $input.val(item.Quantity);
-                                        }, 0);
-                                    }
-                                });
-                            } catch (e) { }
+                                                }, 0);
+                                            }
+                                        });
+                                    } catch (e) { }
                     refreshOrderList();
         </text>
     }
@@ -2473,45 +2471,45 @@
                     grandTotal += item.totalPrice;
 
                     $orderList.append(`
-                                <li class="summary-item" data-id="${id}">
-                                    <div class="summary-item-details">
-                                        <span class="summary-item-name">${item.name}</span>
-                                        <span class="summary-item-pax">${item.quantity} pax × ₱${item.packagePrice}</span>
-                                        ${item.PackageId && item.PackageId === 2 ? '<span class="summary-item-bonus text-success"><i class="bi bi-gift"></i> Free Lechon Included</span>' : ''}
-                                    </div>
-                                    <div class="summary-item-total">₱${item.totalPrice.toLocaleString()}</div>
-                                    <div class="summary-item-actions">
-                                        <button class="btn btn-danger btn-sm btn-summary summary-remove">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </li>
-                            `);
+                                    <li class="summary-item" data-id="${id}">
+                                        <div class="summary-item-details">
+                                            <span class="summary-item-name">${item.name}</span>
+                                            <span class="summary-item-pax">${item.quantity} pax × ₱${item.packagePrice}</span>
+                                            ${item.PackageId && item.numberOfFreeLechons > 0 ? `<span class="summary-item-bonus text-success"><i class="bi bi-gift"></i> ${item.numberOfFreeLechons} Free Lechon${item.numberOfFreeLechons > 1 ? 's' : ''} Included</span>` : ''}
+                                        </div>
+                                        <div class="summary-item-total">₱${item.totalPrice.toLocaleString()}</div>
+                                        <div class="summary-item-actions">
+                                            <button class="btn btn-danger btn-sm btn-summary summary-remove">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                `);
                 } else {
                     // Handle individual food items
                     const total = item.quantity * item.price;
                     grandTotal += total;
 
                     $orderList.append(`
-                                <li class="summary-item" data-id="${id}">
-                                    <div class="summary-item-details">
-                                        <span class="summary-item-name">${item.name}</span>
-                                        <span class="summary-item-quantity">× ${item.quantity}</span>
-                                    </div>
-                                    <div class="summary-item-total">₱${total.toFixed(2)}</div>
-                                    <div class="summary-item-actions">
-                                        <button class="btn btn-warning btn-sm btn-summary summary-minus">
-                                            <i class="bi bi-dash"></i>
-                                        </button>
-                                        <button class="btn btn-success btn-sm btn-summary summary-plus">
-                                            <i class="bi bi-plus"></i>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm btn-summary summary-remove">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </li>
-                            `);
+                                    <li class="summary-item" data-id="${id}">
+                                        <div class="summary-item-details">
+                                            <span class="summary-item-name">${item.name}</span>
+                                            <span class="summary-item-quantity">× ${item.quantity}</span>
+                                        </div>
+                                        <div class="summary-item-total">₱${total.toFixed(2)}</div>
+                                        <div class="summary-item-actions">
+                                            <button class="btn btn-warning btn-sm btn-summary summary-minus">
+                                                <i class="bi bi-dash"></i>
+                                            </button>
+                                            <button class="btn btn-success btn-sm btn-summary summary-plus">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm btn-summary summary-remove">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                `);
                 }
             });
 
@@ -2612,25 +2610,27 @@
                 // Handle package items - add each selected item individually with package info
                 grandTotal += item.totalPrice;
 
-                // For Package B, automatically add the free lechon
-                if (item.PackageId && item.PackageId === 2) {
-                    items.push({
-                        MenuId: 0, // Special ID for free lechon
-                        Name: "1 Whole Lechon (Package B Bonus)",
-                        Price: 0,
-                        Quantity: 1, // Only 1 lechon, not multiplied by pax
-                        Type: 'Package Bonus',
-                        PackageId: item.PackageId,
-                        PackageName: item.name,
-                        PackagePrice: item.packagePrice,
-                        PackageTotal: item.totalPrice,
-                        IsFreeLechon: true
-                    });
+                // For packages with free lechons, automatically add the free lechons
+                if (item.PackageId && item.numberOfFreeLechons > 0) {
+                    for (let i = 0; i < item.numberOfFreeLechons; i++) {
+                        items.push({
+                            MenuId: 0, // Special ID for free lechon
+                            Name: `${i + 1} Whole Lechon (Package Bonus)`,
+                            Price: 0,
+                            Quantity: 1, // Only 1 lechon, not multiplied by pax
+                            Type: 'Package Bonus',
+                            PackageId: item.PackageId,
+                            PackageName: item.name,
+                            PackagePrice: item.packagePrice,
+                            PackageTotal: item.totalPrice,
+                            IsFreeLechon: true
+                        });
+                    }
                 }
 
                 Object.keys(item.items).forEach(category => {
                     item.items[category].forEach(selectedItem => {
-                        // Skip the automatically included lechon as it's handled separately
+                        // Skip the automatically included lechons as they're handled separately
                         if (selectedItem.isLechon) return;
 
                         items.push({

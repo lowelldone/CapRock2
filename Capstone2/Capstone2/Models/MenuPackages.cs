@@ -16,14 +16,19 @@ namespace Capstone2.Models
 
         [Required]
         public int NoOfMainDish { get; set; }
-        
+
         public int? NoOfSideDish { get; set; }
-        
-        public int? NoOfDessert {  get; set; }
+
+        public int? NoOfDessert { get; set; }
 
         public int? NoOfRice { get; set; }
 
         public int? NoOfSoftDrinks { get; set; }
+
+        public int NumberOfFreeLechons { get; set; } = 0;
+
+        [Required]
+        public int MinimumPax { get; set; }
 
     }
 }
