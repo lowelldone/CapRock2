@@ -36,7 +36,7 @@ namespace Capstone2.Controllers.AdminControllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MenuPackageId,MenuPackageName,Price,NoOfMainDish,NoOfSideDish,NoOfDessert,NoOfRice,NoOfSoftDrinks")] MenuPackages menuPackages)
+        public async Task<IActionResult> Create([Bind("MenuPackageId,MenuPackageName,Price,NoOfMainDish,NoOfSideDish,NoOfDessert,NoOfRice,NoOfSoftDrinks,NumberOfFreeLechons,MinimumPax")] MenuPackages menuPackages)
         {
             // Check for blank inputs
             if (string.IsNullOrWhiteSpace(menuPackages.MenuPackageName))
@@ -59,6 +59,18 @@ namespace Capstone2.Controllers.AdminControllers
                 {
                     ModelState.AddModelError("MenuPackageName", "A package with this name already exists.");
                 }
+            }
+
+            // Validate Minimum Pax (must be positive)
+            if (menuPackages.MinimumPax < 1)
+            {
+                ModelState.AddModelError("MinimumPax", "Minimum pax must be 1 or greater.");
+            }
+
+            // Validate Number of Free Lechons (must be non-negative)
+            if (menuPackages.NumberOfFreeLechons < 0)
+            {
+                ModelState.AddModelError("NumberOfFreeLechons", "Number of free lechons cannot be negative.");
             }
 
             // Validate quantities (must be non-negative)
@@ -128,7 +140,7 @@ namespace Capstone2.Controllers.AdminControllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MenuPackageId,MenuPackageName,Price,NoOfMainDish,NoOfSideDish,NoOfDessert,NoOfRice,NoOfSoftDrinks")] MenuPackages menuPackages)
+        public async Task<IActionResult> Edit(int id, [Bind("MenuPackageId,MenuPackageName,Price,NoOfMainDish,NoOfSideDish,NoOfDessert,NoOfRice,NoOfSoftDrinks,NumberOfFreeLechons,MinimumPax")] MenuPackages menuPackages)
         {
             if (id != menuPackages.MenuPackageId)
             {
@@ -157,6 +169,19 @@ namespace Capstone2.Controllers.AdminControllers
             {
                 ModelState.AddModelError("Price", "Price must be zero or greater.");
             }
+
+            // Validate Minimum Pax (must be positive)
+            if (menuPackages.MinimumPax < 1)
+            {
+                ModelState.AddModelError("MinimumPax", "Minimum pax must be 1 or greater.");
+            }
+
+            // Validate Number of Free Lechons (must be non-negative)
+            if (menuPackages.NumberOfFreeLechons < 0)
+            {
+                ModelState.AddModelError("NumberOfFreeLechons", "Number of free lechons cannot be negative.");
+            }
+
             if (menuPackages.NoOfMainDish < 0)
             {
                 ModelState.AddModelError("NoOfMainDish", "Number of main dishes cannot be negative.");

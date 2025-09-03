@@ -646,20 +646,22 @@
                 }
             });
 
-            // Add free lechon for Package B (check current PAX input value)
-            if (currentPax >= 120) {
-                orderItems.push({
-                    MenuId: 0, // Special ID for free lechon
-                    Name: "1 Whole Lechon (Package B Bonus)",
-                    Price: 0,
-                    Quantity: 1,
-                    Type: 'Package Bonus',
-                    packageId: packageData.packageId,
-                    packageName: packageData.packageName,
-                    packagePrice: packageData.packagePrice,
-                    totalPrice: currentTotalPrice,
-                    IsFreeLechon: true
-                });
+            // Add free lechons if any (check package numberOfFreeLechons)
+            if (packageData.numberOfFreeLechons > 0) {
+                for (let i = 0; i < packageData.numberOfFreeLechons; i++) {
+                    orderItems.push({
+                        MenuId: 0, // Special ID for free lechon
+                        Name: `${i + 1} Whole Lechon (Package Bonus)`,
+                        Price: 0,
+                        Quantity: 1,
+                        Type: 'Package Bonus',
+                        packageId: packageData.packageId,
+                        packageName: packageData.packageName,
+                        packagePrice: packageData.packagePrice,
+                        totalPrice: currentTotalPrice,
+                        IsFreeLechon: true
+                    });
+                }
             }
 
             document.getElementById('OrderItemsJson').value = JSON.stringify(orderItems);

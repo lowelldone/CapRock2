@@ -447,31 +447,41 @@ namespace Capstone2.Controllers.AdminControllers
                     return Json(new { success = false, message = $"Error processing package items: {ex.Message}" });
                 }
 
-                // Add free lechon for Package B
-                if (paxQuantity >= 120)
+                // Add free lechons based on package configuration
+                int numberOfFreeLechons = 0;
+                if (packageData.TryGetProperty("numberOfFreeLechons", out var lechonCount))
                 {
-                    System.Diagnostics.Debug.WriteLine($"Adding free lechon for Package B (paxQuantity: {paxQuantity})");
+                    numberOfFreeLechons = lechonCount.GetInt32();
+                }
+
+                if (numberOfFreeLechons > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Adding {numberOfFreeLechons} free lechon(s) for package (numberOfFreeLechons: {numberOfFreeLechons})");
 
                     // Find a valid menu item to use as a placeholder for the free lechon
                     var lechonMenu = await _context.Menu.FirstOrDefaultAsync(m => m.Name.Contains("Lechon") || m.Name.Contains("lechon"));
                     int lechonMenuId = lechonMenu?.MenuId ?? 1; // Use found lechon or default to 1
 
-                    orderDetails.Add(new OrderDetail
+                    // Add each free lechon as a separate order detail
+                    for (int i = 0; i < numberOfFreeLechons; i++)
                     {
-                        OrderId = order.OrderId,
-                        MenuId = lechonMenuId, // Use valid menu ID
-                        Name = "1 Whole Lechon (Package B Bonus)",
-                        Quantity = 1,
-                        Type = "Package Bonus",
-                        MenuPackageId = packageId,
-                        PackagePrice = packagePrice,
-                        PackageTotal = totalPrice,
-                        IsFreeLechon = true
-                    });
+                        orderDetails.Add(new OrderDetail
+                        {
+                            OrderId = order.OrderId,
+                            MenuId = lechonMenuId, // Use valid menu ID
+                            Name = $"{i + 1} Whole Lechon (Package Bonus)",
+                            Quantity = 1,
+                            Type = "Package Bonus",
+                            MenuPackageId = packageId,
+                            PackagePrice = packagePrice,
+                            PackageTotal = totalPrice,
+                            IsFreeLechon = true
+                        });
+                    }
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine($"No free lechon for this package (paxQuantity: {paxQuantity})");
+                    System.Diagnostics.Debug.WriteLine($"No free lechons for this package (numberOfFreeLechons: {numberOfFreeLechons})");
                 }
 
                 // Log the final order details for debugging
@@ -700,9 +710,12 @@ namespace Capstone2.Controllers.AdminControllers
                             });
                         });
 
-                        if (order.OrderDetails.Any(od => od.IsFreeLechon) || order.NoOfPax >= 120)
+                        // Display free lechons dynamically
+                        var freeLechonCount = order.OrderDetails.Count(od => od.IsFreeLechon);
+                        if (freeLechonCount > 0)
                         {
-                            stack.Item().PaddingTop(6).Text("1 Whole Lechon (Package B Bonus)").FontColor(Colors.Orange.Darken2).SemiBold();
+                            var lechonText = freeLechonCount == 1 ? "1 Whole Lechon (Package Bonus)" : $"{freeLechonCount} Whole Lechons (Package Bonus)";
+                            stack.Item().PaddingTop(6).Text(lechonText).FontColor(Colors.Orange.Darken2).SemiBold();
                         }
 
                         // Totals

@@ -166,60 +166,99 @@
             {
                 var dishTypes = new[] { "MAINDISH", "SIDEDISH", "DESSERTS", "RICE", "SOFTDRINKS" }; 
                 var typeTitles = new Dictionary<string, string> { {"MAINDISH","Main Dishes"}, {"SIDEDISH","Side Dishes"}, {"DESSERTS","Desserts"}, {"RICE","Rice"}, {"SOFTDRINKS","Soft Drinks"} }; 
-                var indexCounter = 0; 
+                var indexCounter = 0;
+                var allFreeLechonItems = Model.OrderDetails.Where(od => od.IsFreeLechon == true).ToList();
 
                 @foreach (var dt in dishTypes)
                 {
                     var itemsForType = Model.OrderDetails
-                        .Where(od => (od.Menu?.DishType ?? "") == dt)
+                        .Where(od => (od.Menu?.DishType ?? "") == dt && !od.IsFreeLechon)
                         .OrderBy(od => od.Menu?.Category)
                         .ThenBy(od => od.Name)
                         .ToList();
+                    
+                    // For main dishes, also include free lechons
+                    var regularItems = itemsForType;
+                    var freeLechonItems = dt == "MAINDISH" ? allFreeLechonItems : new List<Capstone2.Models.OrderDetail>();
 
                     <div class="mb-4">
                         <h5 class="fw-bold mb-2 text-primary">@typeTitles[dt]</h5>
                         <table class="table">
                             <tbody class="order-details-body" id="tbody-@dt">
-                                @if (!itemsForType.Any())
+                                @if (!regularItems.Any() && !freeLechonItems.Any())
                                 {
                                     <tr class="text-muted"><td colspan="2"><em>No items.</em></td></tr>
                                 }
                                 else
                                 {
-                                    var groups = itemsForType
-                                        .GroupBy(it => it.Menu?.Category ?? "")
-                                        .OrderBy(g => g.Key);
-                                    foreach (var grp in groups)
+                                    // Display regular items first
+                                    if (regularItems.Any())
                                     {
-                                        <tr class="table-light" data-category-header="@grp.Key">
-                                            <td colspan="2" class="fw-semibold">@grp.Key</td>
-                                        </tr>
-                                        foreach (var item in grp)
+                                        var groups = regularItems
+                                            .GroupBy(it => it.Menu?.Category ?? "")
+                                            .OrderBy(g => g.Key);
+                                        foreach (var grp in groups)
                                         {
-                                            <tr>
-                                                <td>
-                                                    <input type="hidden" name="orderDetails[@indexCounter].OrderDetailId" value="@item.OrderDetailId" />
-                                                    <input type="hidden" name="orderDetails[@indexCounter].MenuId" value="@item.MenuId" />
-                                                    <input type="hidden" name="orderDetails[@indexCounter].Name" value="@item.Name" />
-                                                    <input type="hidden" name="orderDetails[@indexCounter].Quantity" value="1" />
-                                                    <input type="hidden" name="orderDetails[@indexCounter].Type" value="@(string.IsNullOrWhiteSpace(item.Type) ? "Package Item" : item.Type)" />
-                                                    <input type="hidden" name="orderDetails[@indexCounter].IsFreeLechon" value="@(item.IsFreeLechon ? "true" : "false")" />
-                                                    @item.Name @if (item.Type == "Package Extra")
-                                                    {
-                                                        <small class="text-primary ms-2">(newly added to package)</small>
-                                                    }
-                                                </td>
-                                                <td class="action-col text-end">
-                                                    @if (!item.IsFreeLechon)
-                                                    {
+                                            <tr class="table-light" data-category-header="@grp.Key">
+                                                <td colspan="2" class="fw-semibold">@grp.Key</td>
+                                            </tr>
+                                            foreach (var item in grp)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="hidden" name="orderDetails[@indexCounter].OrderDetailId" value="@item.OrderDetailId" />
+                                                        <input type="hidden" name="orderDetails[@indexCounter].MenuId" value="@item.MenuId" />
+                                                        <input type="hidden" name="orderDetails[@indexCounter].Name" value="@item.Name" />
+                                                        <input type="hidden" name="orderDetails[@indexCounter].Quantity" value="1" />
+                                                        <input type="hidden" name="orderDetails[@indexCounter].Type" value="@(string.IsNullOrWhiteSpace(item.Type) ? "Package Item" : item.Type)" />
+                                                        <input type="hidden" name="orderDetails[@indexCounter].IsFreeLechon" value="@(item.IsFreeLechon ? "true" : "false")" />
+                                                        @item.Name @if (item.Type == "Package Extra")
+                                                        {
+                                                            <small class="text-primary ms-2">(newly added to package)</small>
+                                                        }
+                                                    </td>
+                                                    <td class="action-col text-end">
                                                         <button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
                                                             <i class="bi bi-trash me-1"></i>Remove
                                                         </button>
-                                                    }
-                                                </td>
-                                            </tr>
-                                            indexCounter++;
+                                                    </td>
+                                                </tr>
+                                                indexCounter++;
+                                            }
                                         }
+                                    }
+                                    
+                                    // Display merged free lechons
+                                    @if (freeLechonItems.Any())
+                                    {
+                                        var lechonCount = freeLechonItems.Count;
+                                        <tr class="table-light" data-category-header="Package Bonus">
+                                            <td colspan="2" class="fw-semibold">Package Bonus</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                @* Include all free lechon items as hidden fields to preserve them *@
+                                                @foreach (var lechonItem in freeLechonItems)
+                                                {
+                                                    <input type="hidden" name="orderDetails[@indexCounter].OrderDetailId" value="@lechonItem.OrderDetailId" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].MenuId" value="@lechonItem.MenuId" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].Name" value="@lechonItem.Name" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].Quantity" value="1" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].Type" value="@(string.IsNullOrWhiteSpace(lechonItem.Type) ? "Package Item" : lechonItem.Type)" />
+                                                    <input type="hidden" name="orderDetails[@indexCounter].IsFreeLechon" value="true" />
+                                                    indexCounter++;
+                                                }
+                                                @if (lechonCount == 1)
+                                                {
+                                                    <text>1 Whole Lechon (Package Bonus)</text>
+                                                }
+                                                else
+                                                {
+                                                    <text>@lechonCount Whole Lechons (Package Bonus)</text>
+                                                }
+                                                <small class="text-warning ms-2">(Free)</small>
+                                            </td>
+                                        </tr>
                                     }
                                 }
                             </tbody>

@@ -2,7 +2,7 @@
     ViewData["Title"] = "Selected Package Menus";
 }
 <style>
-    #selected-items{
+    #selected-items {
         background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
     }
 </style>
@@ -249,8 +249,8 @@
         // Selected Items
         populateSelectedItems(packageData);
 
-        // Show free lechon banner for Package B (120 pax minimum)
-        if (packageData.paxQuantity >= 120) {
+        // Show free lechon banner if package has free lechons
+        if (packageData.numberOfFreeLechons > 0) {
             document.getElementById('freeLechonBanner').style.display = 'block';
         }
     }
@@ -265,24 +265,32 @@
         // Main Dishes
         if (packageData.mainDish && packageData.mainDish.length > 0) {
             itemsHtml += `
-                        <div class="selected-category">
-                            <h5 class="category-title">
-                                Main Dishes
-                            </h5>
-                    `;
+                            <div class="selected-category">
+                                <h5 class="category-title">
+                                    Main Dishes
+                                </h5>
+                        `;
 
-            packageData.mainDish.forEach(item => {
-                if (item.isLechon) {
-                    itemsHtml += `
+            // Count free lechons
+            const lechonItems = packageData.mainDish.filter(item => item.isLechon);
+            const regularItems = packageData.mainDish.filter(item => !item.isLechon);
+            const lechonCount = lechonItems.length;
+
+            // Display merged free lechons if any
+            if (lechonCount > 0) {
+                itemsHtml += `
                                 <div class="selected-item bonus-item">
                                     <div class="item-details">
-                                        <div class="item-name">1 Free Lechon</div>
+                                        <div class="item-name">${lechonCount} Free Lechon${lechonCount > 1 ? 's' : ''}</div>
                                     </div>
                                     <span class="bonus-badge">FREE!</span>
                                 </div>
                             `;
-                } else {
-                    itemsHtml += `
+            }
+
+            // Display regular main dishes
+            regularItems.forEach(item => {
+                itemsHtml += `
                                 <div class="selected-item">
                                     <div class="item-details">
                                         <div class="item-name">${item.name}</div>
@@ -290,7 +298,6 @@
                                     </div>
                                 </div>
                             `;
-                }
             });
 
             itemsHtml += '</div>';
@@ -299,21 +306,21 @@
         // Side Dishes
         if (packageData.sideDish && packageData.sideDish.length > 0) {
             itemsHtml += `
-                        <div class="selected-category">
-                            <h5 class="category-title">
-                                Side Dishes
-                            </h5>
-                    `;
+                            <div class="selected-category">
+                                <h5 class="category-title">
+                                    Side Dishes
+                                </h5>
+                        `;
 
             packageData.sideDish.forEach(item => {
                 itemsHtml += `
-                            <div class="selected-item">
-                                <div class="item-details">
-                                    <div class="item-name">${item.name}</div>
-                                    <div class="item-category">Side Dish</div>
+                                <div class="selected-item">
+                                    <div class="item-details">
+                                        <div class="item-name">${item.name}</div>
+                                        <div class="item-category">Side Dish</div>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
             });
 
             itemsHtml += '</div>';
@@ -322,21 +329,21 @@
         // Desserts
         if (packageData.dessert && packageData.dessert.length > 0) {
             itemsHtml += `
-                        <div class="selected-category">
-                            <h5 class="category-title">
-                                Desserts
-                            </h5>
-                    `;
+                            <div class="selected-category">
+                                <h5 class="category-title">
+                                    Desserts
+                                </h5>
+                        `;
 
             packageData.dessert.forEach(item => {
                 itemsHtml += `
-                            <div class="selected-item">
-                                <div class="item-details">
-                                    <div class="item-name">${item.name}</div>
-                                    <div class="item-category">Dessert</div>
+                                <div class="selected-item">
+                                    <div class="item-details">
+                                        <div class="item-name">${item.name}</div>
+                                        <div class="item-category">Dessert</div>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
             });
 
             itemsHtml += '</div>';
@@ -345,21 +352,21 @@
         // Rice
         if (packageData.rice && packageData.rice.length > 0) {
             itemsHtml += `
-                        <div class="selected-category">
-                            <h5 class="category-title">
-                                Rice
-                            </h5>
-                    `;
+                            <div class="selected-category">
+                                <h5 class="category-title">
+                                    Rice
+                                </h5>
+                        `;
 
             packageData.rice.forEach(item => {
                 itemsHtml += `
-                            <div class="selected-item">
-                                <div class="item-details">
-                                    <div class="item-name">${item.name}</div>
-                                    <div class="item-category">Rice</div>
+                                <div class="selected-item">
+                                    <div class="item-details">
+                                        <div class="item-name">${item.name}</div>
+                                        <div class="item-category">Rice</div>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
             });
 
             itemsHtml += '</div>';
@@ -368,21 +375,21 @@
         // Soft Drinks
         if (packageData.softDrinks && packageData.softDrinks.length > 0) {
             itemsHtml += `
-                        <div class="selected-category">
-                            <h5 class="category-title">
-                                Soft Drinks
-                            </h5>
-                    `;
+                            <div class="selected-category">
+                                <h5 class="category-title">
+                                    Soft Drinks
+                                </h5>
+                        `;
 
             packageData.softDrinks.forEach(item => {
                 itemsHtml += `
-                            <div class="selected-item">
-                                <div class="item-details">
-                                    <div class="item-name">${item.name}</div>
-                                    <div class="item-category">Soft Drink</div>
+                                <div class="selected-item">
+                                    <div class="item-details">
+                                        <div class="item-name">${item.name}</div>
+                                        <div class="item-category">Soft Drink</div>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
             });
 
             itemsHtml += '</div>';

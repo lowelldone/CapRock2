@@ -176,6 +176,8 @@
                         <th>@Html.DisplayNameFor(model => model.First().NoOfDessert)</th>
                         <th>@Html.DisplayNameFor(model => model.First().NoOfRice)</th>
                         <th>@Html.DisplayNameFor(model => model.First().NoOfSoftDrinks)</th>
+                        <th>Min Pax</th>
+                        <th>Free Lechons</th>
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -190,6 +192,17 @@
                             <td>@item.NoOfDessert</td>
                             <td>@item.NoOfRice</td>
                             <td>@item.NoOfSoftDrinks</td>
+                            <td>@item.MinimumPax</td>
+                            <td>
+                                @if (item.NumberOfFreeLechons > 0)
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-gift"></i> @item.NumberOfFreeLechons</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary"><i class="bi bi-x-circle"></i> 0</span>
+                                }
+                            </td>
                             <td class="text-end">
                                 <a asp-action="Edit" asp-route-id="@item.MenuPackageId" class="btn btn-outline-primary btn-sm action-btn"><i class="bi bi-pencil-square"></i> Edit</a>
                                 <a asp-action="Delete" asp-route-id="@item.MenuPackageId" class="btn btn-outline-danger action-btn" style="min-width: 80px;"><i class="bi bi-trash"></i> Delete</a>

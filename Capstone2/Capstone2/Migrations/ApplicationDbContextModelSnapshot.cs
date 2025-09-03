@@ -262,6 +262,9 @@ namespace Capstone2.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MinimumPax")
+                        .HasColumnType("int");
+
                     b.Property<int?>("NoOfDessert")
                         .HasColumnType("int");
 
@@ -275,6 +278,9 @@ namespace Capstone2.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("NoOfSoftDrinks")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfFreeLechons")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")

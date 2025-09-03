@@ -434,6 +434,8 @@
                         <th style="min-width: 100px;">Desserts</th>
                         <th style="min-width: 80px;">Rice</th>
                         <th style="min-width: 100px;">Soft Drinks</th>
+                        <th style="min-width: 100px;">Min Pax</th>
+                        <th style="min-width: 100px;">Free Lechon(s)</th>
                         <th style="min-width: 150px;" class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -461,6 +463,19 @@
                             </td>
                             <td>
                                 <span class="modern-badge">@item.NoOfSoftDrinks</span>
+                            </td>
+                            <td>
+                                <span class="modern-badge">@item.MinimumPax</span>
+                            </td>
+                            <td>
+                                @if (item.NumberOfFreeLechons > 0)
+                                {
+                                    <span class="modern-badge">@item.NumberOfFreeLechons</span>
+                                }
+                                else
+                                {
+                                    <span class="modern-badge">0</span>
+                                }
                             </td>
                             <td class="text-end">
                                 <div class="modern-table-actions">
