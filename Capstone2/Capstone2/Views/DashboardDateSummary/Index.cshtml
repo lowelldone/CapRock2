@@ -73,26 +73,26 @@
         transform-origin: top center;
     }
     /* Notification dropdown */
-     .notif-wrapper {
+    .notif-wrapper {
         position: relative;
     }
 
     /* Small red dot on bell when there are new notifications */
-     .notif-indicator {
-         position: absolute;
-         top: 2px;
-         right: 2px;
-         width: 10px;
-         height: 10px;
-         background: #ef4444;
-         border: 2px solid #fff;
-         border-radius: 50%;
-         display: none;
-         z-index: 2000;
-         pointer-events: none;
-     }
+    .notif-indicator {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 10px;
+        height: 10px;
+        background: #ef4444;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        display: none;
+        z-index: 2000;
+        pointer-events: none;
+    }
 
-     .notif-dropdown {
+    .notif-dropdown {
         position: absolute;
         right: 0;
         top: 120%;
@@ -105,11 +105,11 @@
         z-index: 1050;
     }
 
-         .notif-dropdown.show {
+        .notif-dropdown.show {
             display: block;
         }
 
-     .notif-header {
+    .notif-header {
         padding: .75rem 1rem;
         border-bottom: 1px solid var(--purple-border);
         font-weight: 700;
@@ -119,12 +119,12 @@
         align-items: center;
     }
 
-     .notif-list {
+    .notif-list {
         max-height: 320px;
         overflow-y: auto;
     }
 
-     .notif-item {
+    .notif-item {
         padding: .75rem 1rem;
         border-bottom: 1px solid #f3e8ff;
         position: relative;
@@ -141,45 +141,48 @@
         border-radius: 8px;
     }
 
-    .notif-item:hover {
-        background: var(--purple-bg-light);
-        color: var(--primary-purple);
-        border-left-color: var(--primary-purple);
-    }
-    .notif-item:hover .notif-title {
-        color: var(--primary-purple);
-    }
-    .notif-item:hover .notif-meta {
-        color: var(--text-purple-light);
-    }
-    .notif-item:last-child {
-        border-bottom: none;
-    }
+        .notif-item:hover {
+            background: var(--purple-bg-light);
+            color: var(--primary-purple);
+            border-left-color: var(--primary-purple);
+        }
+
+            .notif-item:hover .notif-title {
+                color: var(--primary-purple);
+            }
+
+            .notif-item:hover .notif-meta {
+                color: var(--text-purple-light);
+            }
+
+        .notif-item:last-child {
+            border-bottom: none;
+        }
 
     /* Per-item unseen indicator */
-     .notif-new-dot {
-         position: absolute;
-         top: 10px;
-         right: 10px;
-         width: 8px;
-         height: 8px;
-         background: #ef4444;
-         border-radius: 50%;
-         display: inline-block;
-     }
+    .notif-new-dot {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 8px;
+        height: 8px;
+        background: #ef4444;
+        border-radius: 50%;
+        display: inline-block;
+    }
 
-     .notif-title {
+    .notif-title {
         font-weight: 600;
         color: #374151;
         font-size: .95rem;
     }
 
-     .notif-meta {
+    .notif-meta {
         font-size: .8rem;
         color: #6b7280;
     }
 
-     .notif-dot {
+    .notif-dot {
         background: #ef4444;
         color: #fff;
         border-radius: 999px;
@@ -189,9 +192,9 @@
     }
 
     .header-icon:hover {
-            background: var(--purple-bg-light);
-            color: var(--primary-purple);
-        }
+        background: var(--purple-bg-light);
+        color: var(--primary-purple);
+    }
 
     .daily-view-btn {
         background: var(--primary-purple);
@@ -248,15 +251,16 @@
         color: inherit;
     }
 
-    .btn-close:hover {
-        opacity: 1;
-    }
+        .btn-close:hover {
+            opacity: 1;
+        }
 
     @@keyframes slideInDown {
         from {
             transform: translateY(-20px);
             opacity: 0;
         }
+
         to {
             transform: translateY(0);
             opacity: 1;
@@ -268,40 +272,74 @@
             transform: translateY(0);
             opacity: 1;
         }
+
         to {
             transform: translateY(-20px);
             opacity: 0;
         }
     }
     /* Bell ring keyframes */
-     @@keyframes bellRing {
-         0% { transform: rotate(0deg); }
-         10% { transform: rotate(-18deg); }
-         20% { transform: rotate(16deg); }
-         30% { transform: rotate(-14deg); }
-         40% { transform: rotate(12deg); }
-         50% { transform: rotate(-9deg); }
-         60% { transform: rotate(7deg); }
-         70% { transform: rotate(-4deg); }
-         80% { transform: rotate(3deg); }
-         90% { transform: rotate(-2deg); }
-         100% { transform: rotate(0deg); }
-     }
+    @@keyframes bellRing {
+        0% {
+            transform: rotate(0deg);
+        }
 
-     /* Clear all link in notif header */
-     .notif-clear-btn {
-         background: transparent;
-         border: none;
-         color: var(--primary-purple);
-         font-weight: 600;
-         cursor: pointer;
-         font-size: .85rem;
-         padding: 0;
-     }
-         .notif-clear-btn:hover {
-             color: var(--primary-purple-dark);
-             text-decoration: underline;
-         }
+        10% {
+            transform: rotate(-18deg);
+        }
+
+        20% {
+            transform: rotate(16deg);
+        }
+
+        30% {
+            transform: rotate(-14deg);
+        }
+
+        40% {
+            transform: rotate(12deg);
+        }
+
+        50% {
+            transform: rotate(-9deg);
+        }
+
+        60% {
+            transform: rotate(7deg);
+        }
+
+        70% {
+            transform: rotate(-4deg);
+        }
+
+        80% {
+            transform: rotate(3deg);
+        }
+
+        90% {
+            transform: rotate(-2deg);
+        }
+
+        100% {
+            transform: rotate(0deg);
+        }
+    }
+
+    /* Clear all link in notif header */
+    .notif-clear-btn {
+        background: transparent;
+        border: none;
+        color: var(--primary-purple);
+        font-weight: 600;
+        cursor: pointer;
+        font-size: .85rem;
+        padding: 0;
+    }
+
+        .notif-clear-btn:hover {
+            color: var(--primary-purple-dark);
+            text-decoration: underline;
+        }
 
     /* Main Content Grid */
     .content-grid {
@@ -777,19 +815,141 @@
         color: #6b7280;
     }
 
-    /* Responsive Design */
-    @@media (max-width: 768px) {
-        .content-grid {
+    /* Enhanced Responsive Design */
+
+    /* Large Desktop (1400px and up) */
+    @@media (min-width: 1400px) {
+        .dashboard-container {
+            max-width: 1600px;
+            padding: 3rem;
+        }
+
+        .calendar-stats-container {
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 3rem;
+        }
+
+        .orders-grid {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+    }
+
+    /* Desktop (1200px - 1399px) */
+    @@media (max-width: 1399px) and (min-width: 1200px) {
+        .dashboard-container {
+            max-width: 1200px;
+            padding: 2.5rem;
+        }
+
+        .calendar-stats-container {
+            grid-template-columns: 1fr 0.8fr;
+            gap: 2.5rem;
+        }
+    }
+
+    /* Tablet (768px - 1199px) */
+    @@media (max-width: 1199px) and (min-width: 768px) {
+        .dashboard-container {
+            padding: 1.5rem;
+        }
+
+        .calendar-stats-container {
             grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .calendar-panel {
+            padding: 1.5rem;
+        }
+
+        .summary-stats-panel {
+            padding: 1.5rem;
+            min-height: 300px;
         }
 
         .stats-grid {
-            grid-template-columns: 1fr;
+            flex-direction: row;
             gap: 1rem;
+        }
+
+        .stat-item {
+            flex: 1;
+            padding: 0.75rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+
+        .orders-grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .header-section {
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .brand-title {
+            font-size: 2.25rem;
+        }
+
+        .header-controls {
+            gap: 0.75rem;
+        }
+
+        .header-icon {
+            font-size: 1.25rem;
+            padding: 0.4rem;
+        }
+    }
+
+    /* Mobile (max-width: 767px) */
+    @@media (max-width: 767px) {
+        .dashboard-container {
+            padding: 1rem;
+        }
+
+        .content-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .calendar-stats-container {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .calendar-panel {
+            padding: 1rem;
+        }
+
+        .summary-stats-panel {
+            padding: 1rem;
+            min-height: 250px;
+        }
+
+        .stats-grid {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            padding: 0.75rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
         }
 
         .orders-grid {
             grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .order-card {
+            padding: 1rem;
         }
 
         .header-section {
@@ -799,7 +959,255 @@
         }
 
         .brand-title {
-            font-size: 2rem;
+            font-size: 1.75rem;
+        }
+
+        .header-controls {
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            font-size: 1.1rem;
+            padding: 0.5rem;
+        }
+
+        .notif-dropdown {
+            width: 280px;
+            right: -20px;
+        }
+
+        .calendar-grid {
+            gap: 2px;
+        }
+
+        .calendar-day {
+            min-height: 35px;
+            font-size: 0.8rem;
+        }
+
+        .calendar-day-header {
+            font-size: 0.7rem;
+            padding: 0.4rem;
+        }
+
+        .calendar-nav-btn {
+            width: 35px;
+            height: 35px;
+        }
+
+        .calendar-title {
+            font-size: 1.1rem;
+        }
+
+        .filter-btn {
+            top: -40px;
+            right: -50px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .orders-panel {
+            padding: 1rem;
+            top: -20px;
+        }
+
+        .orders-panel-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .order-details {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .order-card-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .pax-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+        }
+    }
+
+    /* Small Mobile (max-width: 480px) */
+    @@media (max-width: 480px) {
+        .dashboard-container {
+            padding: 0.75rem;
+        }
+
+        .calendar-stats-container {
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .calendar-panel {
+            padding: 0.75rem;
+        }
+
+        .summary-stats-panel {
+            padding: 0.75rem;
+            min-height: 200px;
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+        }
+
+        .brand-title {
+            font-size: 1.5rem;
+        }
+
+        .header-icon {
+            font-size: 1rem;
+            padding: 0.4rem;
+        }
+
+        .notif-dropdown {
+            width: 250px;
+            right: -10px;
+        }
+
+        .calendar-day {
+            min-height: 30px;
+            font-size: 0.75rem;
+        }
+
+        .calendar-day-header {
+            font-size: 0.65rem;
+            padding: 0.3rem;
+        }
+
+        .calendar-nav-btn {
+            width: 30px;
+            height: 30px;
+        }
+
+        .calendar-title {
+            font-size: 1rem;
+        }
+
+        .filter-btn {
+            top: -35px;
+            right: -30px;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+        }
+
+        .orders-panel {
+            padding: 0.75rem;
+            top: -15px;
+        }
+
+        .order-card {
+            padding: 0.75rem;
+        }
+
+        .order-date {
+            font-size: 1rem;
+        }
+
+        .order-detail-label {
+            font-size: 0.75rem;
+        }
+
+        .order-detail-value {
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            font-size: 0.8rem;
+        }
+
+        .order-footer-text {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Touch-friendly improvements */
+    @@media (max-width: 768px) {
+        .calendar-day,
+        .calendar-nav-btn,
+        .header-icon,
+        .order-card {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .calendar-day {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .order-card {
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+            .order-card:active {
+                transform: scale(0.98);
+            }
+    }
+
+    /* Landscape mobile orientation */
+    @@media (max-width: 767px) and (orientation: landscape) {
+        .calendar-stats-container {
+            grid-template-columns: 1fr 0.6fr;
+        }
+
+        .summary-stats-panel {
+            min-height: 200px;
+        }
+
+        .stats-grid {
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+
+        .stat-item {
+            padding: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Print styles */
+    @@media print {
+        .dashboard-container {
+            background: white;
+            padding: 1rem;
+        }
+
+        .header-controls,
+        .filter-btn,
+        .calendar-nav-btn {
+            display: none;
+        }
+
+        .calendar-stats-container {
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+
+        .order-card {
+            break-inside: avoid;
+            box-shadow: none;
+            border: 1px solid #ddd;
         }
     }
 </style>
@@ -828,7 +1236,7 @@
         <h1 class="brand-title">GRUSH Catering Services</h1>
         <div class="header-controls">
             <div class="notif-wrapper">
-                <i id="notifBell" class="bi bi-bell header-icon"></i>
+                <i id="notifBell" class="bi bi-bell header-icon" title="Notifications"></i>
                 <span id="notifDot" class="notif-indicator"></span>
                 <div id="notifMenu" class="notif-dropdown">
                     <div class="notif-header">
@@ -841,7 +1249,7 @@
                     </div>
                 </div>
             </div>
-            <i class="bi bi-person-circle header-icon" onclick="openProfileModal()" style="cursor: pointer;"></i>
+            <i class="bi bi-person-circle header-icon" onclick="openProfileModal()" style="cursor: pointer;" title="Profile"></i>
         </div>
     </div>
 
@@ -990,7 +1398,7 @@
 
 <!-- Filter Modal -->
 <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="filterModalLabel">Date Range Filter</h5>
@@ -1001,12 +1409,12 @@
                     <div class="mb-3">
                         <label class="form-label">Start Date:</label>
                         <input type="date" name="startDate" value="@Model.StartDate.ToString("yyyy-MM-dd")"
-                               class="form-control" />
+                               class="form-control" style="font-size: 16px;" />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">End Date:</label>
                         <input type="date" name="endDate" value="@Model.EndDate.ToString("yyyy-MM-dd")"
-                               class="form-control" />
+                               class="form-control" style="font-size: 16px;" />
                     </div>
                 </form>
             </div>
@@ -1020,7 +1428,7 @@
 
 <!-- Profile Modal -->
 <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="profileModalLabel">Update Profile</h5>
@@ -1031,19 +1439,19 @@
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <input type="text" class="form-control" id="username" name="username" required style="font-size: 16px;">
                     </div>
                     <div class="mb-3">
                         <label for="currentPassword" class="form-label">Current Password</label>
-                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+                        <input type="password" class="form-control" id="currentPassword" name="currentPassword" required style="font-size: 16px;">
                     </div>
                     <div class="mb-3">
                         <label for="newPassword" class="form-label">New Password</label>
-                        <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" required style="font-size: 16px;">
                     </div>
                     <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required style="font-size: 16px;">
                     </div>
                 </form>
             </div>
@@ -1175,20 +1583,20 @@
         const countEl = document.getElementById('notifCount');
         const bellDot = document.getElementById('notifDot');
         if (!bell || !menu) return;
-            let latestSeenUtc = null;
-         let lastItems = [];
-         const SEEN_KEY = 'notifSeenIds';
-         function getSeenIds() {
-             try {
-                 const raw = localStorage.getItem(SEEN_KEY);
-                 if (!raw) return new Set();
-                 const arr = JSON.parse(raw);
-                 return new Set((Array.isArray(arr) ? arr : []).map(x => String(x)));
-             } catch { return new Set(); }
-         }
-         function saveSeenIds(seen) {
-             try { localStorage.setItem(SEEN_KEY, JSON.stringify(Array.from(seen))); } catch {}
-         }
+        let latestSeenUtc = null;
+        let lastItems = [];
+        const SEEN_KEY = 'notifSeenIds';
+        function getSeenIds() {
+            try {
+                const raw = localStorage.getItem(SEEN_KEY);
+                if (!raw) return new Set();
+                const arr = JSON.parse(raw);
+                return new Set((Array.isArray(arr) ? arr : []).map(x => String(x)));
+            } catch { return new Set(); }
+        }
+        function saveSeenIds(seen) {
+            try { localStorage.setItem(SEEN_KEY, JSON.stringify(Array.from(seen))); } catch { }
+        }
         async function loadNotifications(onOpen) {
             try {
                 var qs = (!onOpen && latestSeenUtc) ? ('?since=' + encodeURIComponent(latestSeenUtc)) : '';
@@ -1339,5 +1747,135 @@
         // Initial load & background poll (use since)
         loadNotifications(false);
         setInterval(function () { loadNotifications(false); }, 60000);
-     })();
+    })();
+
+    // Enhanced mobile responsiveness
+    document.addEventListener('DOMContentLoaded', function () {
+        // Touch-friendly calendar interactions
+        const calendarDays = document.querySelectorAll('.calendar-day');
+        calendarDays.forEach(day => {
+            day.addEventListener('touchstart', function (e) {
+                this.style.transform = 'scale(0.95)';
+            });
+
+            day.addEventListener('touchend', function (e) {
+                this.style.transform = '';
+            });
+        });
+
+        // Mobile-optimized order card interactions
+        const orderCards = document.querySelectorAll('.order-card');
+        orderCards.forEach(card => {
+            card.addEventListener('touchstart', function (e) {
+                this.style.transform = 'scale(0.98)';
+            });
+
+            card.addEventListener('touchend', function (e) {
+                this.style.transform = '';
+            });
+        });
+
+        // Responsive notification dropdown positioning
+        function adjustNotificationPosition() {
+            const notifDropdown = document.getElementById('notifMenu');
+            const notifBell = document.getElementById('notifBell');
+
+            if (notifDropdown && notifBell) {
+                const rect = notifBell.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+
+                if (viewportWidth <= 480) {
+                    notifDropdown.style.right = '-10px';
+                    notifDropdown.style.width = '250px';
+                } else if (viewportWidth <= 768) {
+                    notifDropdown.style.right = '-20px';
+                    notifDropdown.style.width = '280px';
+                } else {
+                    notifDropdown.style.right = '0';
+                    notifDropdown.style.width = '320px';
+                }
+            }
+        }
+
+        // Adjust notification position on resize
+        window.addEventListener('resize', adjustNotificationPosition);
+        adjustNotificationPosition();
+
+        // Mobile-optimized filter button positioning
+        function adjustFilterButtonPosition() {
+            const filterBtn = document.querySelector('.filter-btn');
+            if (filterBtn) {
+                const viewportWidth = window.innerWidth;
+
+                if (viewportWidth <= 480) {
+                    filterBtn.style.top = '-35px';
+                    filterBtn.style.right = '-30px';
+                    filterBtn.style.fontSize = '0.75rem';
+                    filterBtn.style.padding = '0.3rem 0.6rem';
+                } else if (viewportWidth <= 768) {
+                    filterBtn.style.top = '-40px';
+                    filterBtn.style.right = '-50px';
+                    filterBtn.style.fontSize = '0.8rem';
+                    filterBtn.style.padding = '0.4rem 0.8rem';
+                } else {
+                    filterBtn.style.top = '-50px';
+                    filterBtn.style.right = '-100px';
+                    filterBtn.style.fontSize = '0.9rem';
+                    filterBtn.style.padding = '0.5rem 1rem';
+                }
+            }
+        }
+
+        // Adjust filter button position on resize
+        window.addEventListener('resize', adjustFilterButtonPosition);
+        adjustFilterButtonPosition();
+
+        // Smooth scrolling for mobile
+        if (window.innerWidth <= 768) {
+            document.documentElement.style.scrollBehavior = 'smooth';
+        }
+
+        // Prevent zoom on form inputs for iOS
+        const formInputs = document.querySelectorAll('input[type="date"], input[type="text"], input[type="password"]');
+        formInputs.forEach(input => {
+            if (window.innerWidth <= 768) {
+                input.style.fontSize = '16px';
+            }
+        });
+
+        // Enhanced touch feedback for interactive elements
+        const interactiveElements = document.querySelectorAll('.calendar-nav-btn, .header-icon, .order-card, .calendar-day');
+        interactiveElements.forEach(element => {
+            element.addEventListener('touchstart', function () {
+                this.style.transition = 'all 0.1s ease';
+            });
+
+            element.addEventListener('touchend', function () {
+                this.style.transition = 'all 0.3s ease';
+            });
+        });
+
+        // Mobile-optimized modal handling
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            modal.addEventListener('shown.bs.modal', function () {
+                if (window.innerWidth <= 768) {
+                    this.querySelector('.modal-dialog').style.margin = '1rem';
+                }
+            });
+        });
+
+        // Auto-focus search inputs on mobile
+        if (window.innerWidth <= 768) {
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            dateInputs.forEach(input => {
+                input.addEventListener('focus', function () {
+                    // Ensure the input is visible when focused on mobile
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                });
+            });
+        }
+    });
 </script> 

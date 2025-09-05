@@ -171,7 +171,7 @@
                         var order = item.Order;
                         var dynamicStatus = cs.Status;
                         <tr>
-                            <td>
+                            <td data-label="Order Number">
                                 @if (order?.OrderNumber != null)
                                 {
                                     <span class="modern-badge">@order.OrderNumber</span>
@@ -181,14 +181,14 @@
                                     <span class="text-muted">-</span>
                                 }
                             </td>
-                            <td>
+                            <td data-label="Customer Details">
                                 <div class="modern-name">@item.Name</div>
                                 <div class="modern-address">@item.Address</div>
                             </td>
-                            <td>
+                            <td data-label="Contact">
                                 <div class="modern-info">@item.ContactNo</div>
                             </td>
-                            <td>
+                            <td data-label="Order Status">
                                 @{
                                     var downPayment = (decimal)order.TotalPayment * 0.5m;
                                     var downPaymentRemaining = downPayment - (decimal)order.AmountPaid;
@@ -217,7 +217,7 @@
                                     </span>
                                 }
                             </td>
-                            <td>
+                            <td data-label="Catering Status">
                                 <span class="modern-status-badge @(dynamicStatus.ToLower().Replace(" ", "-"))">
                                     @if (dynamicStatus == "Pending")
                                     {
@@ -238,7 +238,7 @@
                                     @dynamicStatus
                                 </span>
                             </td>
-                            <td>
+                            <td data-label="Head Waiter">
                                 @if (order?.HeadWaiter != null && order.HeadWaiter.User != null)
                                 {
                                     <span class="modern-info">
@@ -254,7 +254,7 @@
                                     </span>
                                 }
                             </td>
-                            <td class="text-end">
+                            <td class="text-end" data-label="Actions">
                                 <div class="modern-table-actions">
                                     <a asp-action="ViewOrder" asp-route-id="@item.CustomerID" class="modern-table-action-btn btn-outline-secondary">
                                         <i class="bi bi-eye"></i>
@@ -601,5 +601,129 @@
                 $(this).removeClass('table-hover');
             }
         );
+
+        // Enhanced mobile table responsiveness
+        function handleTableScroll() {
+            $('.table-responsive').each(function () {
+                const $container = $(this);
+                const container = this;
+
+                function updateScrollIndicators() {
+                    const scrollLeft = container.scrollLeft;
+                    const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+                    $container.removeClass('scroll-left scroll-right');
+
+                    if (scrollLeft > 0) {
+                        $container.addClass('scroll-left');
+                    }
+                    if (scrollLeft < maxScrollLeft) {
+                        $container.addClass('scroll-right');
+                    }
+                }
+
+                // Initial check
+                updateScrollIndicators();
+
+                // Update on scroll
+                $(container).on('scroll', updateScrollIndicators);
+
+                // Update on resize
+                $(window).on('resize', updateScrollIndicators);
+            });
+        }
+
+        // Initialize table scroll handling
+        handleTableScroll();
+
+        // Touch-friendly table interactions
+        if ('ontouchstart' in window) {
+            $('.modern-table tbody tr').on('touchstart', function (e) {
+                $(this).addClass('touch-active');
+            });
+
+            $('.modern-table tbody tr').on('touchend', function (e) {
+                const $row = $(this);
+                setTimeout(() => {
+                    $row.removeClass('touch-active');
+                }, 150);
+            });
+        }
+
+        // Responsive table card layout for very small screens
+        function checkTableLayout() {
+            if (window.innerWidth <= 576) {
+                $('.modern-table').addClass('mobile-card-layout');
+            } else {
+                $('.modern-table').removeClass('mobile-card-layout');
+            }
+        }
+
+        // Check on load and resize
+        checkTableLayout();
+        $(window).on('resize', checkTableLayout);
+
+        // Improved form validation for mobile
+        $('.modern-search-form').on('submit', function (e) {
+            const searchString = $('input[name="searchString"]').val().trim();
+            const cateringStatus = $('select[name="cateringStatus"]').val();
+
+            // Show loading state
+            $(this).find('button[type="submit"]').prop('disabled', true).html('<i class="bi bi-hourglass-split me-2"></i>Searching...');
+        });
+
+        // Auto-focus search input on mobile when page loads
+        if (window.innerWidth <= 768) {
+            setTimeout(() => {
+                $('input[name="searchString"]').focus();
+            }, 500);
+        }
+
+        // Smooth scrolling for mobile navigation
+        $('a[href^="#"]').on('click', function (e) {
+            e.preventDefault();
+            const target = $(this.getAttribute('href'));
+            if (target.length) {
+                $('html, body').animate({
+                    scrollTop: target.offset().top - 80
+                }, 500);
+            }
+        });
+
+        // Add swipe gestures for table navigation on mobile
+        let startX = 0;
+        let startY = 0;
+
+        $('.table-responsive').on('touchstart', function (e) {
+            startX = e.originalEvent.touches[0].clientX;
+            startY = e.originalEvent.touches[0].clientY;
+        });
+
+        $('.table-responsive').on('touchend', function (e) {
+            if (!startX || !startY) return;
+
+            const endX = e.originalEvent.changedTouches[0].clientX;
+            const endY = e.originalEvent.changedTouches[0].clientY;
+
+            const diffX = startX - endX;
+            const diffY = startY - endY;
+
+            // Only handle horizontal swipes
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                const container = this;
+                const scrollAmount = 200;
+
+                if (diffX > 0) {
+                    // Swipe left - scroll right
+                    $(container).animate({ scrollLeft: container.scrollLeft + scrollAmount }, 300);
+                } else {
+                    // Swipe right - scroll left
+                    $(container).animate({ scrollLeft: container.scrollLeft - scrollAmount }, 300);
+                }
+            }
+
+            startX = 0;
+            startY = 0;
+        });
     });
 </script>

@@ -4,6 +4,8 @@
     ViewData["Title"] = "Login";
 }
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <style>
     :root {
         --primary-purple: #7c3aed;
@@ -25,7 +27,8 @@
     html, body {
         height: 100%;
         margin: 0;
-        overflow: hidden; /* prevent scrolling */
+        overflow-x: hidden; /* prevent horizontal scrolling */
+        overflow-y: auto; /* allow vertical scrolling on mobile */
     }
     body, .container, .card, .btn, h2, label, input {
         font-family: 'Segoe UI', sans-serif;
@@ -36,9 +39,17 @@
         align-items: center;
         justify-content: center;
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
+        padding: 1rem;
         position: relative;
-        top: -30px;
-        left: -50px;
+    }
+
+    /* Mobile-first responsive design */
+    @@media (max-width: 767.98px) {
+        .login-bg {
+            padding: 0.5rem;
+            align-items: flex-start;
+            padding-top: 2rem;
+        }
     }
     .login-card {
         background: #fff;
@@ -103,6 +114,25 @@
         box-shadow: 0 8px 32px 0 rgba(124, 58, 237, 0.15);
         max-width: 700px;
         width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
+    /* Mobile responsive - stack vertically */
+    @@media (max-width: 767.98px) {
+        .login-wrapper {
+            flex-direction: column;
+            max-width: 100%;
+            border-radius: 1rem;
+            margin: 0;
+        }
+    }
+
+    /* Tablet responsive */
+    @@media (min-width: 768px) and (max-width: 991.98px) {
+        .login-wrapper {
+            max-width: 90%;
+        }
     }
 
     .login-left {
@@ -117,6 +147,23 @@
         text-align: center; /* center text */
     }
 
+    /* Mobile responsive for left panel */
+    @@media (max-width: 767.98px) {
+        .login-left {
+            padding: 2rem 1.5rem;
+            flex: none;
+            order: 2; /* move to bottom on mobile */
+        }
+    }
+
+    /* Tablet responsive for left panel */
+    @@media (min-width: 768px) and (max-width: 991.98px) {
+        .login-left {
+            padding: 2rem 1.5rem;
+            flex: 1 1 40%;
+        }
+    }
+
         .login-left .brand-title {
             font-size: 1.6rem;
             font-weight: 800;
@@ -127,6 +174,18 @@
             opacity: .95;
             margin-top: 1rem;
             font-size: .95rem;
+        }
+
+        /* Mobile responsive for brand text */
+    @@media (max-width: 767.98px) {
+            .login-left .brand-title {
+                font-size: 1.4rem;
+            }
+
+            .login-left .brand-subcopy {
+                font-size: .9rem;
+                margin-top: 0.75rem;
+            }
         }
 
     .feature-icons {
@@ -150,10 +209,44 @@
             color: #fff;
         }
 
+        /* Mobile responsive for feature icons */
+    @@media (max-width: 767.98px) {
+            .feature-icons {
+                margin-top: 1.25rem;
+                gap: 0.75rem;
+            }
+
+            .feature-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .feature-icon i {
+                font-size: 1rem;
+            }
+        }
+
     .login-right {
         background: #fff;
         padding: 2.5rem;
         flex: 1 1 55%;
+    }
+
+    /* Mobile responsive for right panel */
+    @@media (max-width: 767.98px) {
+        .login-right {
+            padding: 2rem 1.5rem;
+            flex: none;
+            order: 1; /* move to top on mobile */
+        }
+    }
+
+    /* Tablet responsive for right panel */
+    @@media (min-width: 768px) and (max-width: 991.98px) {
+        .login-right {
+            padding: 2rem 1.5rem;
+            flex: 1 1 60%;
+        }
     }
 
     .brand-name {
@@ -172,6 +265,18 @@
         margin-bottom: 1.25rem;
     }
 
+    /* Mobile responsive for brand elements */
+    @@media (max-width: 767.98px) {
+        .brand-name {
+            font-size: 1.5rem;
+        }
+
+        .brand-subtitle {
+            font-size: .85rem;
+            margin-bottom: 1rem;
+        }
+    }
+
     .input-group .input-group-text {
         background: #fff;
         border: 2px solid var(--purple-border);
@@ -183,6 +288,100 @@
     .input-with-icon .form-control {
         border-left: 0;
         border-radius: 0 12px 12px 0;
+    }
+
+    /* Mobile responsive for form elements */
+    @@media (max-width: 767.98px) {
+        .form-control {
+            padding: 10px 14px;
+            font-size: 16px; /* prevent zoom on iOS */
+        }
+
+        .btn-login {
+            font-size: 1rem;
+            padding: 0.7rem 0;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+        }
+
+        .input-group-text {
+            padding: 10px 12px;
+        }
+    }
+
+    /* Extra small devices (phones, 480px and down) */
+    @@media (max-width: 480px) {
+        .login-bg {
+            padding: 0.25rem;
+            padding-top: 1rem;
+        }
+
+        .login-left {
+            padding: 1.5rem 1rem;
+        }
+
+        .login-right {
+            padding: 1.5rem 1rem;
+        }
+
+        .login-left .brand-title {
+            font-size: 1.2rem;
+        }
+
+        .brand-name {
+            font-size: 1.3rem;
+        }
+
+        .feature-icons {
+            gap: 0.5rem;
+        }
+
+        .feature-icon {
+            width: 36px;
+            height: 36px;
+        }
+    }
+
+    /* Landscape orientation on mobile */
+    @@media (max-width: 767.98px) and (orientation: landscape) {
+        .login-bg {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .login-left {
+            padding: 1.5rem 1rem;
+        }
+
+        .login-right {
+            padding: 1.5rem 1rem;
+        }
+
+        .login-left .brand-title {
+            font-size: 1.3rem;
+        }
+
+        .login-left .brand-subcopy {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .feature-icons {
+            margin-top: 1rem;
+        }
+    }
+
+    /* Tablet responsive for form elements */
+    @@media (min-width: 768px) and (max-width: 991.98px) {
+        .form-control {
+            padding: 11px 15px;
+        }
+
+        .btn-login {
+            font-size: 1.05rem;
+        }
     }
 </style>
 
@@ -222,9 +421,9 @@
                     <label class="form-check-label" for="rememberMe">Remember me</label>
                 </div>
                 @if (ViewBag.Error != null)
-                    {
-                       <div class="alert alert-danger">@ViewBag.Error</div>
-                    }
+                {
+                    <div class="alert alert-danger">@ViewBag.Error</div>
+                }
                 <button type="submit" class="btn btn-primary w-100 btn-login mt-2">Login</button>
             </form>
         </div>
