@@ -431,56 +431,83 @@ body, .container-fluid, .card, .table {
     min-width: 90px; /* Ensure minimum width is enforced */
     max-width: 90px; /* Ensure maximum width is enforced */
     touch-action: manipulation; /* Improve touch responsiveness */
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+    user-select: none; /* Prevent text selection on touch */
 }
 
-    .modern-table-action-btn:hover {
-        transform: translateY(-1px);
-        text-decoration: none;
+/* Touch-friendly improvements */
+@media (max-width: 768px) {
+    .modern-table-action-btn {
+        min-height: 44px; /* Minimum touch target size */
+        min-width: 44px;
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
     }
 
-    .modern-table-action-btn.btn-outline-primary {
-        background: rgba(124, 58, 237, 0.1);
-        color: var(--primary-purple);
-        border-color: var(--primary-purple);
+    .modern-action-btn {
+        min-height: 44px;
+        padding: 0.875rem 1.5rem;
     }
 
-        .modern-table-action-btn.btn-outline-primary:hover {
-            background: var(--primary-purple);
-            color: white;
-        }
-
-    .modern-table-action-btn.btn-outline-danger {
-        background: rgba(239, 68, 68, 0.1);
-        color: var(--danger-color);
-        border-color: var(--danger-color);
+    .modern-form-control {
+        min-height: 44px;
+        font-size: 16px; /* Prevent zoom on iOS */
     }
 
-        .modern-table-action-btn.btn-outline-danger:hover {
-            background: var(--danger-color);
-            color: white;
-        }
+    .modern-btn-search {
+        min-height: 44px;
+        padding: 0.875rem 1.5rem;
+    }
+}
 
-    .modern-table-action-btn.btn-outline-success {
-        background: rgba(16, 185, 129, 0.1);
-        color: var(--success-color);
-        border-color: var(--success-color);
+.modern-table-action-btn:hover {
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+.modern-table-action-btn.btn-outline-primary {
+    background: rgba(124, 58, 237, 0.1);
+    color: var(--primary-purple);
+    border-color: var(--primary-purple);
+}
+
+    .modern-table-action-btn.btn-outline-primary:hover {
+        background: var(--primary-purple);
+        color: white;
     }
 
-        .modern-table-action-btn.btn-outline-success:hover {
-            background: var(--success-color);
-            color: white;
-        }
+.modern-table-action-btn.btn-outline-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
 
-    .modern-table-action-btn.btn-outline-info {
-        background: rgba(59, 130, 246, 0.1);
-        color: var(--info-color);
-        border-color: var(--info-color);
+    .modern-table-action-btn.btn-outline-danger:hover {
+        background: var(--danger-color);
+        color: white;
     }
 
-        .modern-table-action-btn.btn-outline-info:hover {
-            background: var(--info-color);
-            color: white;
-        }
+.modern-table-action-btn.btn-outline-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+    .modern-table-action-btn.btn-outline-success:hover {
+        background: var(--success-color);
+        color: white;
+    }
+
+.modern-table-action-btn.btn-outline-info {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--info-color);
+    border-color: var(--info-color);
+}
+
+    .modern-table-action-btn.btn-outline-info:hover {
+        background: var(--info-color);
+        color: white;
+    }
 
 /* Modern Status Badges */
 .modern-status-badge {
@@ -621,8 +648,143 @@ body, .container-fluid, .card, .table {
     border-radius: 4px;
 }
 
-/* Responsive Design */
-@@media (max-width: 768px) {
+/* Enhanced Responsive Design */
+
+/* Large Desktop (1200px and up) */
+@media (min-width: 1200px) {
+    .modern-bg {
+        padding: 2.5rem;
+        margin: 1.5rem;
+    }
+
+    .modern-title {
+        font-size: 3rem;
+    }
+
+    .modern-search-form {
+        grid-template-columns: 3fr 1.5fr auto auto;
+        gap: 1.5rem;
+    }
+}
+
+/* Desktop (992px - 1199px) */
+@media (max-width: 1199px) and (min-width: 992px) {
+    .modern-bg {
+        padding: 2rem;
+        margin: 1rem;
+    }
+
+    .modern-title {
+        font-size: 2.25rem;
+    }
+
+    .modern-search-form {
+        grid-template-columns: 2.5fr 1.2fr auto auto;
+        gap: 1.25rem;
+    }
+}
+
+/* Tablet (768px - 991px) */
+@media (max-width: 991px) and (min-width: 768px) {
+    .modern-bg {
+        padding: 1.5rem;
+        margin: 0.75rem;
+        border-radius: 20px;
+    }
+
+    .modern-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+
+    .modern-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .modern-header-icon {
+        font-size: 2.5rem;
+        padding: 0.875rem;
+    }
+
+    .modern-search-form {
+        grid-template-columns: 2fr 1fr auto auto;
+        gap: 1rem;
+    }
+
+    .modern-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .modern-action-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .modern-action-btn {
+        flex: 1;
+        min-width: 140px;
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+    }
+
+    /* Tablet table adjustments */
+    .modern-table {
+        font-size: 0.85rem;
+    }
+
+        .modern-table thead th {
+            padding: 0.875rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .modern-table tbody td {
+            padding: 0.875rem 1rem;
+            font-size: 0.85rem;
+            max-width: 150px;
+        }
+
+    .modern-table-actions {
+        flex-direction: row;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .modern-table-action-btn {
+        min-width: 85px;
+        max-width: 95px;
+        height: 34px;
+        font-size: 0.8rem;
+        padding: 0.45rem 0.8rem;
+    }
+
+    .modern-status-badge {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.6rem;
+    }
+
+    .modern-badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.6rem;
+    }
+
+    .modern-name {
+        font-size: 0.9rem;
+    }
+
+    .modern-info {
+        font-size: 0.8rem;
+    }
+
+    .modern-address {
+        font-size: 0.75rem;
+    }
+}
+
+/* Mobile (max-width: 767px) */
+@media (max-width: 767px) {
     .modern-bg {
         padding: 1rem;
         margin: 0.5rem;
@@ -760,15 +922,131 @@ body, .container-fluid, .card, .table {
     }
 }
 
-/* Prevent horizontal scrolling */
+/* Enhanced Table Responsiveness */
 .table-responsive {
     overflow-x: auto; /* Allow horizontal scroll on mobile when needed */
     -webkit-overflow-scrolling: touch;
     border-radius: 12px;
+    position: relative;
+}
+
+    /* Responsive table wrapper with scroll indicators */
+    .table-responsive::before,
+    .table-responsive::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 20px;
+        pointer-events: none;
+        z-index: 1;
+        transition: opacity 0.3s ease;
+    }
+
+    .table-responsive::before {
+        left: 0;
+        background: linear-gradient(to right, rgba(255,255,255,0.8), transparent);
+        opacity: 0;
+    }
+
+    .table-responsive::after {
+        right: 0;
+        background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
+        opacity: 0;
+    }
+
+    .table-responsive.scroll-left::before {
+        opacity: 1;
+    }
+
+    .table-responsive.scroll-right::after {
+        opacity: 1;
+    }
+
+/* Touch-friendly table improvements */
+@media (max-width: 768px) {
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+
+    .modern-table {
+        min-width: 600px; /* Ensure minimum width for horizontal scroll */
+    }
+
+        .modern-table tbody tr {
+            border-bottom: 2px solid var(--purple-border);
+        }
+
+            .modern-table tbody tr:last-child {
+                border-bottom: none;
+            }
+}
+
+/* Card-based layout for very small screens */
+@media (max-width: 576px) {
+    .modern-table,
+    .modern-table thead,
+    .modern-table tbody,
+    .modern-table th,
+    .modern-table td,
+    .modern-table tr {
+        display: block;
+    }
+
+        .modern-table thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        .modern-table tbody tr {
+            background: white;
+            border: 1px solid var(--purple-border);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .modern-table tbody td {
+            border: none;
+            position: relative;
+            padding: 0.5rem 0;
+            padding-left: 50%;
+            white-space: normal;
+            max-width: none;
+        }
+
+            .modern-table tbody td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: 600;
+                color: var(--text-purple);
+                font-size: 0.8rem;
+            }
+
+    .modern-table-actions {
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--purple-border);
+    }
+
+    .modern-table-action-btn {
+        flex: 1;
+        max-width: 120px;
+        margin: 0 0.25rem;
+    }
 }
 
 /* Ensure tables don't cause horizontal scroll on desktop */
-@@media (min-width: 769px) {
+@media (min-width: 769px) {
     .table-responsive {
         overflow-x: visible;
     }
@@ -779,7 +1057,7 @@ body, .container-fluid, .card, .table {
 }
 
 /* Additional mobile optimizations */
-@@media (max-width: 576px) {
+@media (max-width: 576px) {
     .modern-bg {
         padding: 0.75rem;
         margin: 0.25rem;
@@ -838,8 +1116,151 @@ body, .container-fluid, .card, .table {
     }
 }
 
+/* Ultra-wide screen optimizations */
+@media (min-width: 1400px) {
+    .modern-bg {
+        max-width: 1400px;
+        margin: 1.5rem auto;
+    }
+
+    .modern-search-form {
+        grid-template-columns: 4fr 1.5fr auto auto;
+        gap: 2rem;
+    }
+
+    .modern-table {
+        font-size: 1rem;
+    }
+
+        .modern-table thead th {
+            padding: 1.25rem 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .modern-table tbody td {
+            padding: 1.25rem 1.5rem;
+            font-size: 1rem;
+        }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .modern-table-action-btn,
+    .modern-action-btn {
+        border-width: 0.5px;
+    }
+
+    .modern-status-badge,
+    .modern-badge {
+        border-width: 0.5px;
+    }
+}
+
+/* Print optimizations */
+@media print {
+    .modern-bg {
+        background: white;
+        box-shadow: none;
+        margin: 0;
+        padding: 1rem;
+    }
+
+    .modern-action-buttons,
+    .modern-table-actions,
+    .modern-search-card {
+        display: none;
+    }
+
+    .modern-table {
+        font-size: 0.8rem;
+    }
+
+        .modern-table thead th {
+            background: #f8f9fa !important;
+            color: #000 !important;
+        }
+
+        .modern-table tbody tr {
+            border-bottom: 1px solid #dee2e6;
+        }
+}
+
+/* Touch and Mobile Enhancements */
+.touch-active {
+    background: rgba(124, 58, 237, 0.1) !important;
+    transform: scale(0.98);
+    transition: all 0.1s ease;
+}
+
+.mobile-card-layout .modern-table tbody tr {
+    display: block;
+    background: white;
+    border: 1px solid var(--purple-border);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-card-layout .modern-table tbody td {
+    display: block;
+    border: none;
+    position: relative;
+    padding: 0.5rem 0;
+    padding-left: 50%;
+    white-space: normal;
+    max-width: none;
+}
+
+    .mobile-card-layout .modern-table tbody td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: 600;
+        color: var(--text-purple);
+        font-size: 0.8rem;
+    }
+
+.mobile-card-layout .modern-table-actions {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--purple-border);
+}
+
+.mobile-card-layout .modern-table-action-btn {
+    flex: 1;
+    max-width: 120px;
+    margin: 0 0.25rem;
+}
+
+/* Loading states for mobile */
+.modern-loading {
+    opacity: 0.7;
+    pointer-events: none;
+    position: relative;
+}
+
+    .modern-loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -10px 0 0 -10px;
+        border: 2px solid var(--primary-purple);
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
 /* Animation Classes */
-@@keyframes shimmer {
+@keyframes shimmer {
     0% {
         background-position: -200px 0;
     }

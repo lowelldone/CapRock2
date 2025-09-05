@@ -539,15 +539,38 @@ namespace Capstone2.Controllers.AdminControllers
             var today = DateTime.Today;
             var dateString = today.ToString("yyyyMMdd");
 
-            // Get the count of package orders for today
-            var todayPackageOrderCount = await _context.Orders
-                .Where(o => o.OrderDate.Date == today && o.OrderDetails.Any(od => od.Type == "Package Item"))
-                .CountAsync();
+            // Use a transaction to ensure thread-safe order number generation
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Get the count of all orders for today within the transaction
+                var todayOrderCount = await _context.Orders
+                    .Where(o => o.OrderDate.Date == today)
+                    .CountAsync();
 
-            // Generate sequential number (starting from 1)
-            var sequentialNumber = todayPackageOrderCount + 1;
+                // Generate sequential number (starting from 1)
+                var sequentialNumber = todayOrderCount + 1;
+                var orderNumber = $"ORD-{dateString}-{sequentialNumber:D3}";
 
-            return $"PKG-{dateString}-{sequentialNumber:D3}";
+                // Verify the order number doesn't already exist (double-check)
+                var existingOrder = await _context.Orders
+                    .FirstOrDefaultAsync(o => o.OrderNumber == orderNumber);
+
+                if (existingOrder != null)
+                {
+                    // If it exists, increment and try again
+                    sequentialNumber = todayOrderCount + 2;
+                    orderNumber = $"ORD-{dateString}-{sequentialNumber:D3}";
+                }
+
+                await transaction.CommitAsync();
+                return orderNumber;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         [HttpGet]

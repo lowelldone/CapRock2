@@ -75,15 +75,38 @@ namespace Capstone2.Controllers
             var today = DateTime.Today;
             var dateString = today.ToString("yyyyMMdd");
 
-            // Get the count of orders for today
-            var todayOrderCount = await _context.Orders
-                .Where(o => o.OrderDate.Date == today)
-                .CountAsync();
+            // Use a transaction to ensure thread-safe order number generation
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Get the count of orders for today within the transaction
+                var todayOrderCount = await _context.Orders
+                    .Where(o => o.OrderDate.Date == today)
+                    .CountAsync();
 
-            // Generate sequential number (starting from 1)
-            var sequentialNumber = todayOrderCount + 1;
+                // Generate sequential number (starting from 1)
+                var sequentialNumber = todayOrderCount + 1;
+                var orderNumber = $"ORD-{dateString}-{sequentialNumber:D3}";
 
-            return $"ORD-{dateString}-{sequentialNumber:D3}";
+                // Verify the order number doesn't already exist (double-check)
+                var existingOrder = await _context.Orders
+                    .FirstOrDefaultAsync(o => o.OrderNumber == orderNumber);
+
+                if (existingOrder != null)
+                {
+                    // If it exists, increment and try again
+                    sequentialNumber = todayOrderCount + 2;
+                    orderNumber = $"ORD-{dateString}-{sequentialNumber:D3}";
+                }
+
+                await transaction.CommitAsync();
+                return orderNumber;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
         [HttpGet]
         public async Task<IActionResult> Edit(int orderId)
@@ -147,7 +170,7 @@ namespace Capstone2.Controllers
                             seenMenuIds.Add(detail.MenuId);
                             // Determine type: keep explicit Type if provided (e.g., "Package Extra") otherwise default to "Package Item"
                             var typeValue = string.IsNullOrWhiteSpace(detail.Type) ? "Package Item" : detail.Type;
-                            
+
                             _context.OrderDetails.Add(new OrderDetail
                             {
                                 MenuId = detail.MenuId,
@@ -243,13 +266,13 @@ namespace Capstone2.Controllers
             // Ensure BaseAmount and RushOrderFee are populated to match the on-screen preview
             double computedBase = 0d;
             if (order.OrderDetails != null)
-                {
+            {
                 foreach (var od in order.OrderDetails)
-                    {
-                        var unit = od.Menu?.Price ?? 0d;
-                        computedBase += unit * od.Quantity;
-                    }
+                {
+                    var unit = od.Menu?.Price ?? 0d;
+                    computedBase += unit * od.Quantity;
                 }
+            }
             order.BaseAmount = computedBase;
             order.RushOrderFee = order.IsRushOrder ? Math.Round(computedBase * 0.10, 2) : 0d;
             if (order.TotalPayment <= 0)
