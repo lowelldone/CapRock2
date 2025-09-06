@@ -174,7 +174,6 @@ namespace Capstone2.Controllers
                             _context.OrderDetails.Add(new OrderDetail
                             {
                                 MenuId = detail.MenuId,
-                                Name = detail.Name,
                                 Quantity = 1,
                                 OrderId = orderId,
                                 Type = typeValue,
@@ -234,7 +233,6 @@ namespace Capstone2.Controllers
                             _context.OrderDetails.Add(new OrderDetail
                             {
                                 MenuId = detail.MenuId,
-                                Name = detail.Name,
                                 Quantity = detail.Quantity,
                                 OrderId = orderId
                             });
@@ -362,7 +360,7 @@ namespace Capstone2.Controllers
                                 {
                                     var unit = item.Menu?.Price ?? 0;
                                     var subtotal = unit * item.Quantity;
-                                    table.Cell().Element(Cell).Text(item.Name);
+                                    table.Cell().Element(Cell).Text(item.Menu?.Name ?? "Unknown Item");
                                     table.Cell().Element(Cell).AlignRight().Text(item.Quantity.ToString());
                                     table.Cell().Element(Cell).AlignRight().Text(Peso(unit));
                                     table.Cell().Element(Cell).AlignRight().Text(Peso(subtotal));

@@ -6,7 +6,7 @@
         items.Select(x => new
         {
             MenuId = x.MenuId,
-            Name = x.Name,
+            Name = x.Menu.Name,
             Quantity = x.Quantity,
             price = x.Menu.Price
         })
@@ -17,17 +17,20 @@
     body, .container, .card, .btn, h1, h2, h3, h4, h5, h6, p, label, input, textarea, select {
         font-family: 'Segoe UI', sans-serif;
     }
+
     .review-bg {
         background: linear-gradient(135deg, var(--purple-bg) 0%, var(--purple-bg-light) 50%, #f8fafc 100%);
         min-height: 100vh;
         border-radius: 12px;
         padding-bottom: 1rem;
     }
+
     .review-header {
         display: flex;
         align-items: center;
         gap: 8px;
     }
+
     .review-header-icon {
         font-size: 1.5rem;
         color: var(--primary-purple);
@@ -36,12 +39,14 @@
         padding: 4px 8px;
         box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
     }
+
     .review-subtitle {
         color: #6c757d;
         font-size: 0.9rem;
         margin-top: -4px;
         margin-bottom: 10px;
     }
+
     .review-card {
         background: #fff;
         border-radius: 12px;
@@ -50,51 +55,60 @@
         margin-bottom: 1rem;
         border: 1px solid var(--purple-border);
     }
+
     .table {
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         border: 1px solid var(--purple-border);
     }
-    .table thead th {
-        background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-        border: none;
-        font-weight: 600;
-        color: #fff;
-        padding: 0.8rem;
-        border-bottom: 2px solid var(--primary-purple-dark);
-        text-align: center;
-    }
-    .table tbody td {
-        padding: 0.8rem;
-        border: none;
-        border-bottom: 1px solid var(--purple-border);
-        text-align: center;
-        vertical-align: middle;
-    }
-    .table tbody tr {
-        background: #fff;
-    }
-    .table tbody tr:hover {
-        background: var(--purple-bg);
-        transition: background-color 0.2s ease;
-    }
-    .table tbody tr:last-child td {
-        border-bottom: none;
-    }
-    .table tfoot td {
-        background: var(--purple-bg-light);
-        font-weight: 600;
-        color: var(--text-purple);
-        padding: 0.8rem;
-        border: none;
-    }
+
+        .table thead th {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            border: none;
+            font-weight: 600;
+            color: #fff;
+            padding: 0.8rem;
+            border-bottom: 2px solid var(--primary-purple-dark);
+            text-align: center;
+        }
+
+        .table tbody td {
+            padding: 0.8rem;
+            border: none;
+            border-bottom: 1px solid var(--purple-border);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .table tbody tr {
+            background: #fff;
+        }
+
+            .table tbody tr:hover {
+                background: var(--purple-bg);
+                transition: background-color 0.2s ease;
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+        .table tfoot td {
+            background: var(--purple-bg-light);
+            font-weight: 600;
+            color: var(--text-purple);
+            padding: 0.8rem;
+            border: none;
+        }
+
     .btn-action {
         font-weight: 500;
         border-radius: 6px;
         padding: 0.4rem 0.8rem;
         font-size: 0.9rem;
     }
+
     .btn-next {
         font-weight: 600;
         font-size: 1rem;
@@ -104,10 +118,12 @@
         background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
         border: 1px solid var(--primary-purple);
     }
-    .btn-next:hover {
-        background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
-    }
+
+        .btn-next:hover {
+            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
     .total-section {
         background: var(--purple-bg-light);
         border-radius: 8px;
@@ -191,15 +207,15 @@
                     const subtotal = item.Quantity * item.price;
                     total += subtotal;
                     $tbody.append(`
-                                            <tr data-id="${item.MenuId}">
-                                                <td>${item.Name}</td>
-                                                <td class="qty">${item.Quantity}</td>
-                                                <td>₱${item.price.toFixed(2)}</td>
-                                                <td class="subtotal">₱${subtotal.toFixed(2)}</td>
-                                                <td>
-                                                </td>
-                                            </tr>
-                                        `);
+                                                    <tr data-id="${item.MenuId}">
+                                                        <td>${item.Menu.Name}</td>
+                                                        <td class="qty">${item.Quantity}</td>
+                                                        <td>₱${item.price.toFixed(2)}</td>
+                                                        <td class="subtotal">₱${subtotal.toFixed(2)}</td>
+                                                        <td>
+                                                        </td>
+                                                    </tr>
+                                                `);
                 });
                 $('#total').text(`₱${total.toFixed(2)}`);
             }
