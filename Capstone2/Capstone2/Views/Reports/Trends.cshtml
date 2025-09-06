@@ -15,23 +15,26 @@
         margin-bottom: 1rem;
     }
 
-    .kpis {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 1rem;
+    .package-item {
+        padding: 0.25rem 0;
+        border-bottom: 1px solid #f0f0f0;
     }
 
-    .kpi {
-        background: #faf5ff;
-        border: 1px solid #e9d5ff;
-        border-radius: 12px;
-        padding: 1rem;
+        .package-item:last-child {
+            border-bottom: none;
+        }
+
+    .package-name {
+        color: #7c3aed;
     }
 </style>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold mb-0">Trends</h2>
+        <div>
+            <h2 class="fw-bold mb-1">Trends</h2>
+            <p class="text-muted mb-0">Track which packages are most frequently chosen by customers</p>
+        </div>
     </div>
 
     <div class="report-card">
@@ -59,56 +62,42 @@
     </div>
 
     <div class="report-card">
-        <div class="kpis">
-            <div class="kpi">
-                <div class="text-muted">Pending</div>
-                <div class="fs-4 fw-bold">@Model.PendingCount</div>
-            </div>
-            <div class="kpi">
-                <div class="text-muted">Accepted</div>
-                <div class="fs-4 fw-bold">@Model.AcceptedCount</div>
-            </div>
-            <div class="kpi">
-                <div class="text-muted">Ongoing</div>
-                <div class="fs-4 fw-bold">@Model.OngoingCount</div>
-            </div>
-            <div class="kpi">
-                <div class="text-muted">Completed</div>
-                <div class="fs-4 fw-bold">@Model.CompletedCount</div>
-            </div>
-            <div class="kpi">
-                <div class="text-muted">Cancelled</div>
-                <div class="fs-4 fw-bold">@Model.CancelledCount</div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="report-card">
-        <h5 class="fw-bold mb-3">Time Series</h5>
-        <div class="row g-3">
-            <div class="col-md-4"><canvas id="ordersChart" height="200"></canvas></div>
-            <div class="col-md-4"><canvas id="paxChart" height="200"></canvas></div>
-            <div class="col-md-4"><canvas id="revenueChart" height="200"></canvas></div>
-        </div>
-        <div class="table-responsive mt-3">
+        <h5 class="fw-bold mb-3">Package Trends</h5>
+        <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Period</th>
+                        <th>Date</th>
                         <th>Orders</th>
-                        <th>Pax</th>
-                        <th>Revenue (payments)</th>
+                        <th>Packages</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var p in Model.Periods)
                     {
                         <tr>
-                            <td>@p.Label</td>
+                            <td><strong>@p.Label</strong></td>
                             <td>@p.OrdersCount</td>
-                            <td>@p.PaxTotal</td>
-                            <td>₱@p.RevenueTotal.ToString("N2")</td>
+                            <td>
+                                @if (p.Packages.Any())
+                                {
+                                    <div class="package-list">
+                                        @foreach (var package in p.Packages)
+                                        {
+                                            <div class="package-item mb-1">
+                                                <span class="package-name fw-semibold">@package.PackageName</span>
+                                                <small class="text-muted ms-2">
+                                                    (@package.OrderCount order@(package.OrderCount != 1 ? "s" : ""), @package.TotalPax pax)
+                                                </small>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No packages ordered</span>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -118,45 +107,11 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         (function () {
             var sel = document.getElementById('trends-groupBy');
             if (sel) { sel.value = '@Model.GroupBy'; }
         })();
-        const labels = @Html.Raw(JsonSerializer.Serialize(Model.Periods.Select(p => p.Label)));
-        const orders = @Html.Raw(JsonSerializer.Serialize(Model.Periods.Select(p => p.OrdersCount)));
-        const pax = @Html.Raw(JsonSerializer.Serialize(Model.Periods.Select(p => p.PaxTotal)));
-        const revenue = @Html.Raw(JsonSerializer.Serialize(Model.Periods.Select(p => Math.Round(p.RevenueTotal, 2))));
-
-        function makeChart(ctxId, label, data, color) {
-            const ctx = document.getElementById(ctxId).getContext('2d');
-            return new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: label,
-                        data: data,
-                        borderColor: color,
-                        backgroundColor: color + '33',
-                        tension: 0.2,
-                        fill: true,
-                        pointRadius: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: true } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-        }
-
-        makeChart('ordersChart', 'Orders', orders, '#7c3aed');
-        makeChart('paxChart', 'Pax', pax, '#10b981');
-        makeChart('revenueChart', 'Revenue', revenue, '#f59e0b');
     </script>
 }
 

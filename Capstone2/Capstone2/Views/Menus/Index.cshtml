@@ -47,6 +47,258 @@
     .btn-close:hover {
         opacity: 1;
     }
+
+    /* Action column alignment fixes */
+    .modern-table-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-end;
+        min-width: 150px;
+    }
+
+    .modern-table-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-width: 80px;
+        white-space: nowrap;
+    }
+
+    .modern-table-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .modern-table-action-btn.btn-outline-primary:hover {
+        background: #7c3aed;
+        border-color: #7c3aed;
+        color: white;
+    }
+
+    .modern-table-action-btn.btn-outline-danger:hover {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: white;
+    }
+
+    /* Responsive table improvements */
+    .modern-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .modern-table th {
+        background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+        color: white;
+        font-weight: 600;
+        padding: 1rem 0.75rem;
+        border: none;
+        text-align: left;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .modern-table td {
+        padding: 1rem 0.75rem;
+        border-bottom: 1px solid #f3e8ff;
+        vertical-align: middle;
+    }
+
+    .modern-table tbody tr:hover {
+        background-color: #faf5ff;
+    }
+
+    /* Mobile responsive adjustments */
+    @@media (max-width: 1200px) {
+        .modern-table-actions {
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 120px;
+        }
+
+        .modern-table-action-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            min-width: 70px;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .modern-table th,
+        .modern-table td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .modern-table-actions {
+            min-width: 100px;
+        }
+
+        .modern-table-action-btn {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.75rem;
+            min-width: 60px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .container-fluid {
+            padding: 0.5rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.5rem 0.25rem;
+            font-size: 0.8rem;
+        }
+
+        .modern-table th:nth-child(1),
+        .modern-table td:nth-child(1) {
+            min-width: 150px;
+        }
+
+        .modern-table th:nth-child(2),
+        .modern-table td:nth-child(2) {
+            min-width: 100px;
+        }
+
+        .modern-table th:nth-child(3),
+        .modern-table td:nth-child(3) {
+            min-width: 80px;
+        }
+
+        .modern-table th:nth-child(4),
+        .modern-table td:nth-child(4) {
+            min-width: 120px;
+        }
+
+        .modern-table-actions {
+            flex-direction: column;
+            gap: 0.2rem;
+            min-width: 80px;
+        }
+
+        .modern-table-action-btn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+            min-width: 50px;
+        }
+
+        .modern-table-action-btn i {
+            font-size: 0.7rem;
+        }
+
+        .modern-status-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+        }
+
+        .modern-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .modern-table th,
+        .modern-table td {
+            padding: 0.4rem 0.2rem;
+            font-size: 0.75rem;
+        }
+
+        .modern-table th:nth-child(1),
+        .modern-table td:nth-child(1) {
+            min-width: 120px;
+        }
+
+        .modern-table th:nth-child(2),
+        .modern-table td:nth-child(2) {
+            min-width: 80px;
+        }
+
+        .modern-table th:nth-child(3),
+        .modern-table td:nth-child(3) {
+            min-width: 60px;
+        }
+
+        .modern-table th:nth-child(4),
+        .modern-table td:nth-child(4) {
+            min-width: 100px;
+        }
+
+        .modern-table-actions {
+            min-width: 70px;
+        }
+
+        .modern-table-action-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.65rem;
+            min-width: 45px;
+        }
+
+        .modern-table-action-btn span {
+            display: none;
+        }
+
+        .modern-table-action-btn i {
+            font-size: 0.8rem;
+        }
+    }
+
+    /* Menu Packages table specific responsive styles */
+    @@media (max-width: 1200px) {
+        .modern-table th:nth-child(5),
+        .modern-table td:nth-child(5),
+        .modern-table th:nth-child(6),
+        .modern-table td:nth-child(6),
+        .modern-table th:nth-child(7),
+        .modern-table td:nth-child(7),
+        .modern-table th:nth-child(8),
+        .modern-table td:nth-child(8),
+        .modern-table th:nth-child(9),
+        .modern-table td:nth-child(9) {
+            min-width: 60px;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .modern-table th:nth-child(5),
+        .modern-table td:nth-child(5),
+        .modern-table th:nth-child(6),
+        .modern-table td:nth-child(6),
+        .modern-table th:nth-child(7),
+        .modern-table td:nth-child(7),
+        .modern-table th:nth-child(8),
+        .modern-table td:nth-child(8),
+        .modern-table th:nth-child(9),
+        .modern-table td:nth-child(9) {
+            min-width: 50px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .modern-table th:nth-child(5),
+        .modern-table td:nth-child(5),
+        .modern-table th:nth-child(6),
+        .modern-table td:nth-child(6),
+        .modern-table th:nth-child(7),
+        .modern-table td:nth-child(7),
+        .modern-table th:nth-child(8),
+        .modern-table td:nth-child(8),
+        .modern-table th:nth-child(9),
+        .modern-table td:nth-child(9) {
+            min-width: 40px;
+        }
+    }
 </style>
 
 <div class="container-fluid modern-bg">
@@ -153,11 +405,11 @@
                                         <div class="modern-table-actions">
                                             <a asp-action="Edit" asp-route-id="@item.MenuId" class="modern-table-action-btn btn-outline-primary">
                                                 <i class="bi bi-pencil-square"></i>
-                                                Edit
+                                                <span>Edit</span>
                                             </a>
                                             <a asp-action="Delete" asp-route-id="@item.MenuId" class="modern-table-action-btn btn-outline-danger">
                                                 <i class="bi bi-trash"></i>
-                                                Delete
+                                                <span>Delete</span>
                                             </a>
                                         </div>
                                     </td>
@@ -221,11 +473,11 @@
                                         <div class="modern-table-actions">
                                             <a asp-action="Edit" asp-route-id="@item.MenuId" class="modern-table-action-btn btn-outline-primary">
                                                 <i class="bi bi-pencil-square"></i>
-                                                Edit
+                                                <span>Edit</span>
                                             </a>
                                             <a asp-action="Delete" asp-route-id="@item.MenuId" class="modern-table-action-btn btn-outline-danger">
                                                 <i class="bi bi-trash"></i>
-                                                Delete
+                                                <span>Delete</span>
                                             </a>
                                         </div>
                                     </td>
@@ -481,11 +733,11 @@
                                 <div class="modern-table-actions">
                                     <a asp-controller="MenuPackages" asp-action="Edit" asp-route-id="@item.MenuPackageId" class="modern-table-action-btn btn-outline-primary">
                                         <i class="bi bi-pencil-square"></i>
-                                        Edit
+                                        <span>Edit</span>
                                     </a>
                                     <a asp-controller="MenuPackages" asp-action="Delete" asp-route-id="@item.MenuPackageId" class="modern-table-action-btn btn-outline-danger">
                                         <i class="bi bi-trash"></i>
-                                        Delete
+                                        <span>Delete</span>
                                     </a>
                                 </div>
                             </td>

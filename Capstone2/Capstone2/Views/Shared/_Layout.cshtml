@@ -726,12 +726,6 @@
                                                             <span>Waiters</span>
                                                         </a>
                                                     </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedules" ? "active" : "")" asp-controller="Schedules" asp-action="Index">
-                                                            <i class="bi bi-calendar-event"></i>
-                                                            <span>Schedules</span>
-                                                        </a>
-                                                    </li>
                                                 </ul>
                                             </div>
                                         </li>
@@ -832,6 +826,12 @@
                                 </div>
                             </li>
                             <li class="nav-item mb-2">
+                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedules" ? "active" : "")" asp-controller="Schedules" asp-action="Index">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span>Schedules</span>
+                                </a>
+                            </li>
+                            <li class="nav-item mb-2">
                                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-controller="Suppliers" asp-action="Index">
                                     <i class="bi bi-truck"></i>
                                     <span>Suppliers</span>
@@ -915,20 +915,20 @@
             var sidebarOverlay = document.getElementById('sidebarOverlay');
 
             if (sidebarToggle && sidebar && sidebarOverlay) {
-                sidebarToggle.addEventListener('click', function() {
+                sidebarToggle.addEventListener('click', function () {
                     sidebar.classList.toggle('show');
                     sidebarOverlay.classList.toggle('show');
                 });
 
-                sidebarOverlay.addEventListener('click', function() {
+                sidebarOverlay.addEventListener('click', function () {
                     sidebar.classList.remove('show');
                     sidebarOverlay.classList.remove('show');
                 });
 
-                // Close sidebar when clicking on nav links on mobile
-                var navLinks = sidebar.querySelectorAll('.nav-link');
-                navLinks.forEach(function(link) {
-                    link.addEventListener('click', function() {
+                // Close sidebar when clicking on nav links on mobile (except all dropdown toggles)
+                var navLinks = sidebar.querySelectorAll('.nav-link:not([data-bs-toggle="collapse"])');
+                navLinks.forEach(function (link) {
+                    link.addEventListener('click', function () {
                         if (window.innerWidth <= 767) {
                             sidebar.classList.remove('show');
                             sidebarOverlay.classList.remove('show');

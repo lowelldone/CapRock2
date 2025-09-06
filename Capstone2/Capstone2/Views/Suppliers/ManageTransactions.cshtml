@@ -6,6 +6,190 @@
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
+<style>
+    /* Desktop styles - keep original layout */
+    .modern-bg {
+        padding: 2rem;
+    }
+
+    .modern-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .modern-action-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    .modern-action-btn {
+        width: auto;
+        justify-content: center;
+    }
+
+    .modern-table {
+        font-size: 0.9rem;
+    }
+
+    .modern-table th,
+    .modern-table td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .modern-table-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-width: 80px;
+        white-space: nowrap;
+    }
+
+    .modern-table-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .modern-table-action-btn.btn-outline-success:hover {
+        background: var(--success-color);
+        border-color: var(--success-color);
+        color: white;
+    }
+
+    .row-delivered-qty {
+        width: 100%;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    .inline-receive-form {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .btn-inline-receive {
+        width: auto;
+        justify-content: center;
+    }
+
+    /* Mobile responsive adjustments */
+    @@media (max-width: 768px) {
+        .modern-bg {
+            padding: 0.5rem;
+        }
+
+        .modern-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .modern-action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .modern-action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .modern-title {
+            font-size: 1.5rem;
+        }
+
+        .modern-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .modern-table {
+            font-size: 0.8rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.5rem 0.25rem;
+        }
+
+        .modern-table-action-btn {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            min-width: 70px;
+        }
+
+        .row-delivered-qty {
+            font-size: 16px;
+            padding: 0.5rem;
+        }
+
+        .inline-receive-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            align-items: stretch;
+        }
+
+        .btn-inline-receive {
+            width: 100%;
+            justify-content: center;
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .modern-bg {
+            padding: 0.25rem;
+        }
+
+        .modern-table {
+            font-size: 0.75rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.4rem 0.2rem;
+        }
+
+        .modern-table-action-btn {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            min-width: 60px;
+        }
+
+        .modern-title {
+            font-size: 1.25rem;
+        }
+
+        .modern-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .row-delivered-qty {
+            font-size: 16px;
+            padding: 0.4rem;
+        }
+
+        .btn-inline-receive {
+            font-size: 0.65rem;
+            padding: 0.25rem 0.5rem;
+        }
+    }
+</style>
+
 <div class="container-fluid modern-bg">
     <!-- Alerts Section -->
     @if (TempData["SupplierSuccess"] != null)
@@ -135,7 +319,8 @@
                             <input type="hidden" name="purchaseOrderId" value="${po.purchaseOrderId}" />
                             <input type="number" name="deliveredQuantity" min="1" step="1" inputmode="numeric" class="modern-form-control d-inline-block row-delivered-qty" data-po-id="${po.purchaseOrderId}" style="width:90px" value="${po.quantity}" oninput="document.getElementById('batchqty-${po.purchaseOrderId}').value = this.value" />
                             <button type="button" class="modern-table-action-btn btn-outline-success ms-1 btn-inline-receive">
-                                <i class="bi bi-box-arrow-in-down"></i>Receive
+                                <i class="bi bi-box-arrow-in-down"></i>
+                                <span>Receive</span>
                             </button>
                         </form>
                         <input type="hidden" name="purchaseOrderIds" form="batchReceiveForm" value="${po.purchaseOrderId}" />

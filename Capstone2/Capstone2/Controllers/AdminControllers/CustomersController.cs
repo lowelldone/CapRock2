@@ -32,10 +32,10 @@ namespace Capstone2.Controllers.AdminControllers
 
             do
             {
-                // Generate transaction number with format: TXN-YYYYMMDD-HHMMSS-XXXX
+                // Generate transaction number with format: TXN-YYYYMMDD-XXXX
                 var now = DateTime.Now;
                 var randomSuffix = new Random().Next(1000, 9999);
-                transactionNumber = $"TXN-{now:yyyyMMdd}-{now:HHmmss}-{randomSuffix}";
+                transactionNumber = $"TXN-{now:yyyyMMdd}-{randomSuffix}";
 
                 // Check if transaction number already exists
                 isUnique = !await _context.Payments.AnyAsync(p => p.TransactionNumber == transactionNumber);

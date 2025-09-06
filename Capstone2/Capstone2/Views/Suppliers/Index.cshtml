@@ -6,6 +6,236 @@
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
+<style>
+    /* Desktop styles - keep original layout */
+    .modern-bg {
+        padding: 2rem;
+    }
+
+    .modern-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .modern-action-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    .modern-action-btn {
+        width: auto;
+        justify-content: center;
+    }
+
+    .modern-form-control {
+        font-size: 16px;
+    }
+
+    .modern-table {
+        font-size: 0.9rem;
+    }
+
+    .modern-table th,
+    .modern-table td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .modern-table-actions {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: flex-end;
+        min-width: 200px;
+    }
+
+    .modern-table-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-width: 80px;
+        white-space: nowrap;
+    }
+
+    .modern-table-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .modern-table-action-btn.btn-outline-primary:hover {
+        background: var(--primary-purple);
+        border-color: var(--primary-purple);
+        color: white;
+    }
+
+    .modern-table-action-btn.btn-outline-info:hover {
+        background: var(--info-color);
+        border-color: var(--info-color);
+        color: white;
+    }
+
+    .modern-table-action-btn.btn-outline-danger:hover {
+        background: var(--danger-color);
+        border-color: var(--danger-color);
+        color: white;
+    }
+
+    .modern-search-form {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        align-items: end;
+    }
+
+    .modern-search-form > div {
+        width: auto;
+    }
+
+    /* Mobile responsive adjustments */
+    @@media (max-width: 768px) {
+        .modern-bg {
+            padding: 0.5rem;
+        }
+
+        .modern-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .modern-action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .modern-action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .modern-title {
+            font-size: 1.5rem;
+        }
+
+        .modern-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .modern-table {
+            font-size: 0.8rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.5rem 0.25rem;
+        }
+
+        .modern-table-actions {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .modern-table-action-btn {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            min-width: 70px;
+        }
+
+        .modern-search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .modern-search-form > div {
+            width: 100%;
+        }
+
+        .modern-form-control {
+            font-size: 16px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .modern-bg {
+            padding: 0.25rem;
+        }
+
+        .modern-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .modern-action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .modern-action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .modern-table {
+            font-size: 0.75rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.4rem 0.2rem;
+        }
+
+        .modern-table-actions {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+        }
+
+        .modern-table-action-btn {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            min-width: 60px;
+        }
+
+        .modern-search-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .modern-search-form > div {
+            width: 100%;
+        }
+
+        .modern-title {
+            font-size: 1.25rem;
+        }
+
+        .modern-subtitle {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
 <div class="container-fluid modern-bg">
     <!-- Alerts Section -->
     @if (TempData["SupplierSuccess"] != null)
@@ -117,15 +347,15 @@
                                 <div class="modern-table-actions">
                                     <a asp-action="Edit" asp-route-id="@item.SupplierId" class="modern-table-action-btn btn-outline-primary">
                                         <i class="bi bi-pencil-square"></i>
-                                        Edit
+                                        <span>Edit</span>
                                     </a>
                                     <a asp-action="ViewTransactions" asp-route-id="@item.SupplierId" class="modern-table-action-btn btn-outline-info">
                                         <i class="bi bi-receipt"></i>
-                                        View
+                                        <span>View</span>
                                     </a>
                                     <a asp-action="Delete" asp-route-id="@item.SupplierId" class="modern-table-action-btn btn-outline-danger">
                                         <i class="bi bi-trash"></i>
-                                        Delete
+                                        <span>Delete</span>
                                     </a>
                                 </div>
                             </td>

@@ -206,40 +206,57 @@ namespace Capstone2.Controllers
             var orders = await _context.Orders
                 .Where(o => !o.isDeleted)
                 .Where(o => o.CateringDate.Date >= start && o.CateringDate.Date <= end)
-                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.MenuPackage)
                 .ToListAsync();
-
-            var payments = await _context.Payments
-                .Where(p => p.Date.Date >= start && p.Date.Date <= end)
-                .ToListAsync();
-
-            var additionalChargesByOrder = await _context.MaterialReturns
-                .GroupBy(r => r.OrderId)
-                .Select(g => new { OrderId = g.Key, TotalCharge = g.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem) })
-                .ToDictionaryAsync(x => x.OrderId, x => (double)x.TotalCharge);
 
             var periods = new Dictionary<DateTime, TrendsPeriodItem>();
 
-            foreach (var o in orders)
+            foreach (var order in orders)
             {
-                var key = Truncate(o.CateringDate);
+                var key = Truncate(order.CateringDate);
                 if (!periods.TryGetValue(key, out var item))
                 {
                     item = new TrendsPeriodItem { PeriodStart = key, Label = LabelFor(key) };
                     periods[key] = item;
                 }
                 item.OrdersCount += 1;
-                item.PaxTotal += o.NoOfPax;
+
+                // Track package usage for this order
+                var packageGroups = order.OrderDetails
+                    .Where(od => od.Type == "Package Item" && od.MenuPackage != null)
+                    .GroupBy(od => od.MenuPackageId)
+                    .ToList();
+
+                foreach (var packageGroup in packageGroups)
+                {
+                    var package = packageGroup.First().MenuPackage;
+                    var existingPackage = item.Packages.FirstOrDefault(p => p.PackageName == package.MenuPackageName);
+
+                    if (existingPackage != null)
+                    {
+                        existingPackage.OrderCount += 1;
+                        existingPackage.TotalPax += order.NoOfPax;
+                    }
+                    else
+                    {
+                        item.Packages.Add(new PackageFrequency
+                        {
+                            PackageName = package.MenuPackageName,
+                            OrderCount = 1,
+                            TotalPax = order.NoOfPax
+                        });
+                    }
+                }
             }
 
-            foreach (var g in payments.GroupBy(p => Truncate(p.Date)))
+            // Sort packages by order count (most frequent first) for each period
+            foreach (var period in periods.Values)
             {
-                if (!periods.TryGetValue(g.Key, out var item))
-                {
-                    item = new TrendsPeriodItem { PeriodStart = g.Key, Label = LabelFor(g.Key) };
-                    periods[g.Key] = item;
-                }
-                item.RevenueTotal += g.Sum(x => x.Amount);
+                period.Packages = period.Packages
+                    .OrderByDescending(p => p.OrderCount)
+                    .ThenByDescending(p => p.TotalPax)
+                    .ToList();
             }
 
             var model = new TrendsReportViewModel
@@ -247,12 +264,7 @@ namespace Capstone2.Controllers
                 StartDate = start,
                 EndDate = end,
                 GroupBy = groupBy,
-                Periods = periods.Values.OrderBy(p => p.PeriodStart).ToList(),
-                PendingCount = orders.Count(o => o.Status == "Pending"),
-                AcceptedCount = orders.Count(o => o.Status == "Accepted"),
-                OngoingCount = orders.Count(o => o.Status == "Ongoing"),
-                CompletedCount = orders.Count(o => o.Status == "Completed"),
-                CancelledCount = orders.Count(o => o.Status == "Cancelled"),
+                Periods = periods.Values.OrderBy(p => p.PeriodStart).ToList()
             };
 
             return View(model);
@@ -404,43 +416,65 @@ namespace Capstone2.Controllers
                     foreach (var pullOutItem in pullOut.Items)
                     {
                         var material = materials.FirstOrDefault(m => m.Name == pullOutItem.MaterialName);
-                        if (material != null)
+                        if (material != null && periodsDict.ContainsKey(periodKey))
                         {
-                            if (periodsDict.ContainsKey(periodKey))
+                            var period = periodsDict[periodKey];
+
+                            // Add to total consumed
+                            period.Consumed += pullOutItem.Quantity;
+
+                            // Track by consumable vs non-consumable
+                            if (material.IsConsumable)
                             {
-                                var period = periodsDict[periodKey];
-                                period.Consumed += pullOutItem.Quantity;
+                                period.ConsumableConsumed += pullOutItem.Quantity;
+                            }
+                            else
+                            {
+                                period.NonConsumableConsumed += pullOutItem.Quantity;
+                            }
 
-                                // Find corresponding return data for this specific material and order
-                                var returnData = materialReturns.FirstOrDefault(r =>
-                                    r.OrderId == order.OrderId && r.MaterialName == pullOutItem.MaterialName);
+                            // Find corresponding return data for this specific material and order
+                            var returnData = materialReturns.FirstOrDefault(r =>
+                                r.OrderId == order.OrderId && r.MaterialName == pullOutItem.MaterialName);
 
-                                if (returnData != null)
+                            if (returnData != null)
+                            {
+                                // Add returned, lost, and damaged items based on material type
+                                if (material.IsConsumable)
                                 {
-                                    // Add returned, lost, and damaged items
-                                    // For return materials calculation: only count consumable materials
-                                    if (material.IsConsumable)
-                                    {
-                                        period.Returned += returnData.Returned;
-                                    }
-                                    period.Lost += returnData.Lost;
-                                    period.Damaged += returnData.Damaged;
+                                    // For consumables, everything pulled out is consumed
+                                    // Return data for consumables represents items that were actually returned (rare case)
+                                    period.ConsumableLost += returnData.Lost;
+                                    period.ConsumableDamaged += returnData.Damaged;
+                                    period.Returned += returnData.Returned; // Keep for backward compatibility
                                 }
                                 else
                                 {
-                                    // If no return data exists, check if it's a consumable
-                                    if (material.IsConsumable)
-                                    {
-                                        // For consumables with no return data, everything pulled out is consumed
-                                        // No items returned, lost, or damaged (they were all consumed)
-                                        // Don't add anything to period.Returned, period.Lost, or period.Damaged
-                                    }
-                                    else
-                                    {
-                                        // For non-consumables with no return data, assume everything was returned
-                                        // But don't count in return materials calculation since they're non-consumable
-                                        // Don't add anything to period.Returned, period.Lost, or period.Damaged
-                                    }
+                                    // For non-consumables, track returned, lost, and damaged separately
+                                    period.NonConsumableReturned += returnData.Returned;
+                                    period.NonConsumableLost += returnData.Lost;
+                                    period.NonConsumableDamaged += returnData.Damaged;
+                                    period.Returned += returnData.Returned; // Keep for backward compatibility
+                                }
+
+                                // Add to total lost and damaged for backward compatibility
+                                period.Lost += returnData.Lost;
+                                period.Damaged += returnData.Damaged;
+                            }
+                            else
+                            {
+                                // If no return data exists
+                                if (material.IsConsumable)
+                                {
+                                    // For consumables with no return data, everything pulled out is consumed
+                                    // No items returned, lost, or damaged (they were all consumed)
+                                }
+                                else
+                                {
+                                    // For non-consumables with no return data, assume everything was returned
+                                    // This is a business rule assumption
+                                    period.NonConsumableReturned += pullOutItem.Quantity;
+                                    period.Returned += pullOutItem.Quantity; // Keep for backward compatibility
                                 }
                             }
                         }
@@ -462,11 +496,22 @@ namespace Capstone2.Controllers
                         if (!alreadyProcessed)
                         {
                             // This material has return data but no pull-out data
-                            // Add returned, lost, and damaged items
+                            // Add returned, lost, and damaged items based on material type
                             if (material.IsConsumable)
                             {
-                                period.Returned += returnData.Returned;
+                                period.ConsumableLost += returnData.Lost;
+                                period.ConsumableDamaged += returnData.Damaged;
+                                period.Returned += returnData.Returned; // Keep for backward compatibility
                             }
+                            else
+                            {
+                                period.NonConsumableReturned += returnData.Returned;
+                                period.NonConsumableLost += returnData.Lost;
+                                period.NonConsumableDamaged += returnData.Damaged;
+                                period.Returned += returnData.Returned; // Keep for backward compatibility
+                            }
+
+                            // Add to total lost and damaged for backward compatibility
                             period.Lost += returnData.Lost;
                             period.Damaged += returnData.Damaged;
                         }

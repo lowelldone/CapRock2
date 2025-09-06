@@ -28,8 +28,14 @@ namespace Capstone2.Models
         public DateTime PeriodStart { get; set; }
         public string Label { get; set; } = string.Empty;
         public int OrdersCount { get; set; }
-        public int PaxTotal { get; set; }
-        public double RevenueTotal { get; set; }
+        public List<PackageFrequency> Packages { get; set; } = new List<PackageFrequency>();
+    }
+
+    public class PackageFrequency
+    {
+        public string PackageName { get; set; } = string.Empty;
+        public int OrderCount { get; set; }
+        public int TotalPax { get; set; }
     }
 
     public class TrendsReportViewModel
@@ -38,13 +44,6 @@ namespace Capstone2.Models
         public DateTime EndDate { get; set; }
         public string GroupBy { get; set; } = "day";
         public List<TrendsPeriodItem> Periods { get; set; } = new List<TrendsPeriodItem>();
-        public int PendingCount { get; set; }
-        public int AcceptedCount { get; set; }
-        public int OngoingCount { get; set; }
-        public int CompletedCount { get; set; }
-        public int CancelledCount { get; set; }
-        public double AcceptanceRate => (PendingCount + AcceptedCount) == 0 ? 0 : (double)AcceptedCount / (PendingCount + AcceptedCount);
-        public double CompletionRate => (AcceptedCount == 0) ? 0 : (double)CompletedCount / AcceptedCount;
     }
 
     public class PreferencesItem
