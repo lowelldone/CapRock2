@@ -130,6 +130,7 @@
         text-align: right;
         white-space: nowrap;
     }
+
     .table td.action-col, .table th.action-col {
         vertical-align: middle;
     }
@@ -164,19 +165,19 @@
         <form asp-action="Edit" asp-route-orderId="@Model.OrderId" method="post">
             @if (isPackageOrder)
             {
-                var dishTypes = new[] { "MAINDISH", "SIDEDISH", "DESSERTS", "RICE", "SOFTDRINKS" }; 
-                var typeTitles = new Dictionary<string, string> { {"MAINDISH","Main Dishes"}, {"SIDEDISH","Side Dishes"}, {"DESSERTS","Desserts"}, {"RICE","Rice"}, {"SOFTDRINKS","Soft Drinks"} }; 
+                var dishTypes = new[] { "MAINDISH", "SIDEDISH", "DESSERTS", "RICE", "SOFTDRINKS" };
+                var typeTitles = new Dictionary<string, string> { { "MAINDISH", "Main Dishes" }, { "SIDEDISH", "Side Dishes" }, { "DESSERTS", "Desserts" }, { "RICE", "Rice" }, { "SOFTDRINKS", "Soft Drinks" } };
                 var indexCounter = 0;
                 var allFreeLechonItems = Model.OrderDetails.Where(od => od.IsFreeLechon == true).ToList();
 
                 @foreach (var dt in dishTypes)
                 {
                     var itemsForType = Model.OrderDetails
-                        .Where(od => (od.Menu?.DishType ?? "") == dt && !od.IsFreeLechon)
-                        .OrderBy(od => od.Menu?.Category)
-                        .ThenBy(od => od.Name)
-                        .ToList();
-                    
+                    .Where(od => (od.Menu?.DishType ?? "") == dt && !od.IsFreeLechon)
+                    .OrderBy(od => od.Menu?.Category)
+                    .ThenBy(od => od.Menu?.Name)
+                    .ToList();
+
                     // For main dishes, also include free lechons
                     var regularItems = itemsForType;
                     var freeLechonItems = dt == "MAINDISH" ? allFreeLechonItems : new List<Capstone2.Models.OrderDetail>();
@@ -195,8 +196,8 @@
                                     if (regularItems.Any())
                                     {
                                         var groups = regularItems
-                                            .GroupBy(it => it.Menu?.Category ?? "")
-                                            .OrderBy(g => g.Key);
+                                        .GroupBy(it => it.Menu?.Category ?? "")
+                                        .OrderBy(g => g.Key);
                                         foreach (var grp in groups)
                                         {
                                             <tr class="table-light" data-category-header="@grp.Key">
@@ -208,11 +209,10 @@
                                                     <td>
                                                         <input type="hidden" name="orderDetails[@indexCounter].OrderDetailId" value="@item.OrderDetailId" />
                                                         <input type="hidden" name="orderDetails[@indexCounter].MenuId" value="@item.MenuId" />
-                                                        <input type="hidden" name="orderDetails[@indexCounter].Name" value="@item.Name" />
                                                         <input type="hidden" name="orderDetails[@indexCounter].Quantity" value="1" />
                                                         <input type="hidden" name="orderDetails[@indexCounter].Type" value="@(string.IsNullOrWhiteSpace(item.Type) ? "Package Item" : item.Type)" />
                                                         <input type="hidden" name="orderDetails[@indexCounter].IsFreeLechon" value="@(item.IsFreeLechon ? "true" : "false")" />
-                                                        @item.Name @if (item.Type == "Package Extra")
+                                                        @item.Menu.Name @if (item.Type == "Package Extra")
                                                         {
                                                             <small class="text-primary ms-2">(newly added to package)</small>
                                                         }
@@ -227,7 +227,7 @@
                                             }
                                         }
                                     }
-                                    
+
                                     // Display merged free lechons
                                     @if (freeLechonItems.Any())
                                     {
@@ -242,7 +242,6 @@
                                                 {
                                                     <input type="hidden" name="orderDetails[@indexCounter].OrderDetailId" value="@lechonItem.OrderDetailId" />
                                                     <input type="hidden" name="orderDetails[@indexCounter].MenuId" value="@lechonItem.MenuId" />
-                                                    <input type="hidden" name="orderDetails[@indexCounter].Name" value="@lechonItem.Name" />
                                                     <input type="hidden" name="orderDetails[@indexCounter].Quantity" value="1" />
                                                     <input type="hidden" name="orderDetails[@indexCounter].Type" value="@(string.IsNullOrWhiteSpace(lechonItem.Type) ? "Package Item" : lechonItem.Type)" />
                                                     <input type="hidden" name="orderDetails[@indexCounter].IsFreeLechon" value="true" />
@@ -283,8 +282,7 @@
                                 <td>
                                     <input type="hidden" name="orderDetails[@i].OrderDetailId" value="@Model.OrderDetails[i].OrderDetailId" />
                                     <input type="hidden" name="orderDetails[@i].MenuId" value="@Model.OrderDetails[i].MenuId" />
-                                    <input type="hidden" name="orderDetails[@i].Name" value="@Model.OrderDetails[i].Name" />
-                                    @Model.OrderDetails[i].Name
+                                    @Model.OrderDetails[i].Menu.Name
                                 </td>
                                 <td>
                                     <input type="number" name="orderDetails[@i].Quantity" value="@Model.OrderDetails[i].Quantity" min="1" class="form-control" />
@@ -309,10 +307,10 @@
                             <option value="">-- Select Menu --</option>
                             @{
                                 var groupedMenus = menus
-                                    .OrderBy(m => m.DishType)
-                                    .ThenBy(m => m.Category)
-                                    .ThenBy(m => m.Name)
-                                    .GroupBy(m => new { m.DishType, m.Category });
+                                .OrderBy(m => m.DishType)
+                                .ThenBy(m => m.Category)
+                                .ThenBy(m => m.Name)
+                                .GroupBy(m => new { m.DishType, m.Category });
                             }
                             @foreach (var group in groupedMenus)
                             {
@@ -416,7 +414,7 @@
                     '<td>' +
                     '<input type="hidden" name="orderDetails[' + index + '].OrderDetailId" value="0" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].MenuId" value="' + menuId + '" />' +
-                    '<input type="hidden" name="orderDetails[' + index + '].Name" value="' + menuName + '" />' +
+                    +
                     '<input type="hidden" name="orderDetails[' + index + '].Quantity" value="1" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].Type" value="Package Extra" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].IsFreeLechon" value="false" />' +
@@ -434,25 +432,25 @@
             }
 
             // Non-package: allow duplicates by merging quantity
-                var existing = $('#orderDetailsBody input[name*=".MenuId"][value="' + menuId + '"]');
-                if (existing.length) {
-                    var $row = existing.closest('tr');
-                    var $qty = $row.find('input[name*=".Quantity"]');
-                    var addQty = parseInt($('#menuQuantity').val(), 10) || 1;
-                    var cur = parseInt($qty.val(), 10) || 0;
-                    $qty.val(cur + addQty);
-                    $('#menuSelect').val('');
-                    $('#menuQuantity').val(1);
-                    recalculateTotal();
-                    return;
-                }
+            var existing = $('#orderDetailsBody input[name*=".MenuId"][value="' + menuId + '"]');
+            if (existing.length) {
+                var $row = existing.closest('tr');
+                var $qty = $row.find('input[name*=".Quantity"]');
+                var addQty = parseInt($('#menuQuantity').val(), 10) || 1;
+                var cur = parseInt($qty.val(), 10) || 0;
+                $qty.val(cur + addQty);
+                $('#menuSelect').val('');
+                $('#menuQuantity').val(1);
+                recalculateTotal();
+                return;
+            }
             var idx = $('#orderDetailsBody tr').length;
             var qtyCell = '<td><input type="number" name="orderDetails[' + idx + '].Quantity" value="' + (parseInt($("#menuQuantity").val(), 10) || 1) + '" min="1" class="form-control" /></td>';
             var row2 = '<tr>' +
                 '<td>' +
                 '<input type="hidden" name="orderDetails[' + idx + '].OrderDetailId" value="0" />' +
                 '<input type="hidden" name="orderDetails[' + idx + '].MenuId" value="' + menuId + '" />' +
-                '<input type="hidden" name="orderDetails[' + idx + '].Name" value="' + menuName + '" />' +
+                +
                 '<input type="hidden" name="orderDetails[' + idx + '].IsFreeLechon" value="false" />' +
                 menuName +
                 '</td>' +
@@ -462,10 +460,10 @@
                 '</button></td>' +
                 '</tr>';
             $('#orderDetailsBody').append(row2);
-                $('#menuSelect').val('');
-                $('#menuQuantity').val(1);
-                recalculateTotal();
-            }
+            $('#menuSelect').val('');
+            $('#menuQuantity').val(1);
+            recalculateTotal();
+        }
 
         // Create menu data object
         var menuData = {};

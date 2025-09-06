@@ -287,7 +287,7 @@ namespace Capstone2.Controllers
 
             var topMenusByQty = orders
                 .SelectMany(o => o.OrderDetails)
-                .GroupBy(od => od.Menu?.Name ?? od.Name)
+                .GroupBy(od => od.Menu?.Name ?? "Unknown Item")
                 .Select(g => new PreferencesItem { Name = g.Key, Quantity = g.Sum(x => x.Quantity), Revenue = g.Sum(x => (x.Menu?.Price ?? 0) * x.Quantity) })
                 .OrderByDescending(x => x.Quantity)
                 .Take(10)

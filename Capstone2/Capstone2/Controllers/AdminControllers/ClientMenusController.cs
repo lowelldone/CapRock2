@@ -410,7 +410,6 @@ namespace Capstone2.Controllers.AdminControllers
                                         {
                                             OrderId = order.OrderId,
                                             MenuId = menuId,
-                                            Name = nameProp.GetString() ?? "Unknown Item",
                                             Quantity = 1,
                                             Type = "Package Item",
                                             MenuPackageId = packageId,
@@ -469,7 +468,6 @@ namespace Capstone2.Controllers.AdminControllers
                         {
                             OrderId = order.OrderId,
                             MenuId = lechonMenuId, // Use valid menu ID
-                            Name = $"{i + 1} Whole Lechon (Package Bonus)",
                             Quantity = 1,
                             Type = "Package Bonus",
                             MenuPackageId = packageId,
@@ -488,7 +486,7 @@ namespace Capstone2.Controllers.AdminControllers
                 System.Diagnostics.Debug.WriteLine($"Created {orderDetails.Count} order details:");
                 foreach (var detail in orderDetails)
                 {
-                    System.Diagnostics.Debug.WriteLine($"  OrderDetail: MenuId={detail.MenuId}, Name={detail.Name}, Type={detail.Type}, MenuPackageId={detail.MenuPackageId}");
+                    System.Diagnostics.Debug.WriteLine($"  OrderDetail: MenuId={detail.MenuId}, Type={detail.Type}, MenuPackageId={detail.MenuPackageId}");
                 }
 
                 if (orderDetails.Any())
@@ -724,7 +722,7 @@ namespace Capstone2.Controllers.AdminControllers
                                 foreach (var item in order.OrderDetails)
                                 {
                                     if (item.IsFreeLechon) continue; // Bonus displayed separately
-                                    table.Cell().Element(Cell).Text(item.Name);
+                                    table.Cell().Element(Cell).Text(item.Menu?.Name ?? "Unknown Item");
                                 }
 
                                 static IContainer Cell(IContainer container) =>
