@@ -16,6 +16,332 @@
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
+<style>
+    /* Responsive improvements for PaidOrders Index */
+    .modern-bg {
+        padding: 1rem;
+    }
+
+    .modern-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .modern-action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .modern-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .modern-form-control {
+        font-size: 16px;
+    }
+
+    .modern-table {
+        font-size: 0.9rem;
+    }
+
+    .modern-table th,
+    .modern-table td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .modern-table-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-end;
+        min-width: 150px;
+    }
+
+    .modern-table-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-width: 80px;
+        white-space: nowrap;
+    }
+
+    .modern-table-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .modern-table-action-btn.btn-outline-primary:hover {
+        background: #7c3aed;
+        border-color: #7c3aed;
+        color: white;
+    }
+
+    .modern-table-action-btn.btn-outline-warning:hover {
+        background: #f59e0b;
+        border-color: #f59e0b;
+        color: white;
+    }
+
+    .modern-table-action-btn.btn-outline-info:hover {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+    }
+
+    .modern-table-action-btn.btn-outline-danger:hover {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: white;
+    }
+
+    .modern-status-badge {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .modern-name {
+        font-size: 1rem;
+    }
+
+    .modern-info {
+        font-size: 0.9rem;
+    }
+
+    /* Mobile responsive adjustments */
+    @@media (max-width: 768px) {
+        .container-fluid {
+            padding: 0.5rem;
+        }
+
+        .modern-header {
+            text-align: center;
+        }
+
+        .modern-title {
+            font-size: 1.5rem;
+        }
+
+        .modern-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .modern-status-card {
+            margin-bottom: 1rem;
+        }
+
+        .modern-card-body {
+            padding: 1rem;
+        }
+
+        .modern-table {
+            font-size: 0.8rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.5rem 0.25rem;
+        }
+
+        .modern-table th:nth-child(1),
+        .modern-table td:nth-child(1) {
+            min-width: 120px;
+        }
+
+        .modern-table th:nth-child(2),
+        .modern-table td:nth-child(2) {
+            min-width: 100px;
+        }
+
+        .modern-table th:nth-child(3),
+        .modern-table td:nth-child(3) {
+            min-width: 100px;
+        }
+
+        .modern-table th:nth-child(4),
+        .modern-table td:nth-child(4) {
+            min-width: 100px;
+        }
+
+        .modern-table th:nth-child(5),
+        .modern-table td:nth-child(5) {
+            min-width: 80px;
+        }
+
+        .modern-table th:nth-child(6),
+        .modern-table td:nth-child(6) {
+            min-width: 80px;
+        }
+
+        .modern-table th:nth-child(7),
+        .modern-table td:nth-child(7) {
+            min-width: 100px;
+        }
+
+        .modern-table th:nth-child(8),
+        .modern-table td:nth-child(8) {
+            min-width: 120px;
+        }
+
+        .modern-table-actions {
+            flex-direction: column;
+            gap: 0.25rem;
+            min-width: 100px;
+        }
+
+        .modern-table-action-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+            min-width: 70px;
+        }
+
+        .modern-status-badge {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+        }
+
+        .modern-name {
+            font-size: 0.9rem;
+        }
+
+        .modern-info {
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .modern-title {
+            font-size: 1.25rem;
+        }
+
+        .modern-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .modern-form-label {
+            font-size: 0.9rem;
+        }
+
+        .modern-action-btn {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .modern-table {
+            font-size: 0.75rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.4rem 0.2rem;
+        }
+
+        .modern-table th:nth-child(1),
+        .modern-table td:nth-child(1) {
+            min-width: 100px;
+        }
+
+        .modern-table th:nth-child(2),
+        .modern-table td:nth-child(2) {
+            min-width: 80px;
+        }
+
+        .modern-table th:nth-child(3),
+        .modern-table td:nth-child(3) {
+            min-width: 80px;
+        }
+
+        .modern-table th:nth-child(4),
+        .modern-table td:nth-child(4) {
+            min-width: 80px;
+        }
+
+        .modern-table th:nth-child(5),
+        .modern-table td:nth-child(5) {
+            min-width: 60px;
+        }
+
+        .modern-table th:nth-child(6),
+        .modern-table td:nth-child(6) {
+            min-width: 60px;
+        }
+
+        .modern-table th:nth-child(7),
+        .modern-table td:nth-child(7) {
+            min-width: 80px;
+        }
+
+        .modern-table th:nth-child(8),
+        .modern-table td:nth-child(8) {
+            min-width: 100px;
+        }
+
+        .modern-table-actions {
+            min-width: 80px;
+        }
+
+        .modern-table-action-btn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+            min-width: 60px;
+        }
+
+        .modern-table-action-btn span {
+            display: none;
+        }
+
+        .modern-table-action-btn i {
+            font-size: 0.8rem;
+        }
+
+        .modern-status-badge {
+            font-size: 0.65rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .modern-name {
+            font-size: 0.8rem;
+        }
+
+        .modern-info {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Modal responsive adjustments */
+    @@media (max-width: 768px) {
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            padding: 1rem;
+        }
+
+        .modal-body {
+            padding: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1rem;
+        }
+    }
+</style>
+
 <div class="container-fluid modern-bg">
     @if (TempData["ProfileError"] != null)
     {
@@ -237,7 +563,7 @@
                                             <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
                                                class="modern-table-action-btn btn-outline-warning">
                                                 <i class="bi bi-person-plus"></i>
-                                                Assign
+                                                <span>Assign</span>
                                             </a>
                                         }
                                         else
@@ -245,7 +571,7 @@
                                             <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
                                                class="modern-table-action-btn btn-outline-warning">
                                                 <i class="bi bi-person-plus"></i>
-                                                Assign
+                                                <span>Assign</span>
                                             </a>
                                         }
                                     }
@@ -256,7 +582,7 @@
                                             <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
                                                class="modern-table-action-btn btn-outline-warning">
                                                 <i class="bi bi-person-plus"></i>
-                                                Assign
+                                                <span>Assign</span>
                                             </a>
                                         }
                                         else
@@ -264,7 +590,7 @@
                                             <a asp-controller="PaidOrders" asp-action="DeployWaiter" asp-route-id="@item.CustomerID"
                                                class="modern-table-action-btn btn-outline-warning">
                                                 <i class="bi bi-person-plus"></i>
-                                                Assign
+                                                <span>Assign</span>
                                             </a>
                                         }
                                     }
@@ -272,13 +598,13 @@
                                     {
                                         <a asp-action="PullOutMaterials" asp-route-id="@item.CustomerID" class="modern-table-action-btn btn-outline-primary">
                                             <i class="bi bi-box-arrow-up"></i>
-                                            Pull Out
+                                            <span>Pull Out</span>
                                         </a>
                                         @if (hasPullOut && !hasReturn)
                                         {
                                             <a asp-action="ReturnMaterials" asp-route-id="@item.CustomerID" class="modern-table-action-btn btn-outline-warning">
                                                 <i class="bi bi-arrow-counterclockwise"></i>
-                                                Return
+                                                <span>Return</span>
                                             </a>
                                         }
                                     }
@@ -287,7 +613,7 @@
                                         <a asp-action="Details" asp-route-id="@item.CustomerID" asp-route-headWaiterId="@headWaiterId"
                                            class="modern-table-action-btn btn-outline-info">
                                             <i class="bi bi-info-circle"></i>
-                                            Details
+                                            <span>Details</span>
                                         </a>
                                     }
                                     else
@@ -295,7 +621,7 @@
                                         <a asp-action="Details" asp-route-id="@item.CustomerID"
                                            class="modern-table-action-btn btn-outline-info">
                                             <i class="bi bi-info-circle"></i>
-                                            Details
+                                            <span>Details</span>
                                         </a>
                                     }
                                     @* Headwaiter remove-from-view for Completed orders *@
@@ -305,7 +631,7 @@
                                             @Html.AntiForgeryToken()
                                             <button type="submit" class="modern-table-action-btn btn-outline-danger" onclick="return confirm('Remove this completed order from your view?');">
                                                 <i class="bi bi-eye-slash"></i>
-                                                Remove
+                                                <span>Remove</span>
                                             </button>
                                         </form>
                                     }

@@ -8,6 +8,136 @@
 
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
+<style>
+    /* Desktop styles - keep original layout */
+    .modern-bg {
+        padding: 2rem;
+    }
+
+    .modern-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .modern-action-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    .modern-action-btn {
+        width: auto;
+        justify-content: center;
+    }
+
+    .modern-table {
+        font-size: 0.9rem;
+    }
+
+    .modern-table th,
+    .modern-table td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .modern-status-badge {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+        white-space: nowrap;
+    }
+
+    .modern-name,
+    .modern-info {
+        font-size: 0.9rem;
+    }
+
+    /* Mobile responsive adjustments */
+    @@media (max-width: 768px) {
+        .modern-bg {
+            padding: 0.5rem;
+        }
+
+        .modern-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .modern-action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .modern-action-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .modern-title {
+            font-size: 1.5rem;
+        }
+
+        .modern-subtitle {
+            font-size: 0.9rem;
+        }
+
+        .modern-table {
+            font-size: 0.8rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.5rem 0.25rem;
+        }
+
+        .modern-status-badge {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+        }
+
+        .modern-name,
+        .modern-info {
+            font-size: 0.8rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .modern-bg {
+            padding: 0.25rem;
+        }
+
+        .modern-table {
+            font-size: 0.75rem;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.4rem 0.2rem;
+        }
+
+        .modern-status-badge {
+            font-size: 0.65rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        .modern-title {
+            font-size: 1.25rem;
+        }
+
+        .modern-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .modern-name,
+        .modern-info {
+            font-size: 0.75rem;
+        }
+    }
+</style>
+
 <div class="container-fluid modern-bg">
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-start mb-4">
@@ -22,7 +152,8 @@
         </div>
         <div class="modern-action-buttons">
             <a asp-action="TransactionHistory" asp-route-id="@supplierId" class="modern-action-btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i>Back
+                <i class="bi bi-arrow-left"></i>
+                <span>Back</span>
             </a>
         </div>
     </div>

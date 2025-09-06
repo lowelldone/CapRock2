@@ -12,8 +12,6 @@ namespace Capstone2.Models
         public InventorySummary Summary { get; set; } = new InventorySummary();
     }
 
-
-
     public class ConsumptionPeriod
     {
         public DateTime PeriodStart { get; set; }
@@ -22,7 +20,18 @@ namespace Capstone2.Models
         public int Returned { get; set; }
         public int Lost { get; set; }
         public int Damaged { get; set; }
-        public int ReturnMaterials => Math.Max(0, Consumed - (Lost + Damaged));
+
+        // Separate tracking for consumable vs non-consumable materials
+        public int ConsumableConsumed { get; set; }
+        public int ConsumableLost { get; set; }
+        public int ConsumableDamaged { get; set; }
+        public int NonConsumableConsumed { get; set; }
+        public int NonConsumableLost { get; set; }
+        public int NonConsumableDamaged { get; set; }
+        public int NonConsumableReturned { get; set; }
+
+        // Return Materials should only include non-consumable materials
+        public int ReturnMaterials => Math.Max(0, NonConsumableConsumed - (NonConsumableLost + NonConsumableDamaged));
     }
 
     public class InventorySummary
