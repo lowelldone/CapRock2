@@ -228,6 +228,7 @@
         margin-bottom: 1rem;
         border: 2px solid #e0f2fe;
         transition: all 0.3s ease;
+        padding-bottom: 1.5rem; /* Normal padding since buttons are now fixed positioned */
     }
 
         .package-card:hover {
@@ -319,10 +320,19 @@
     }
 
     .selection-title {
-        color: #344767;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        font-size: 1rem;
+        color: #1e293b;
+        font-weight: 800;
+        margin-bottom: 2rem;
+        font-size: 1.5rem;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+        border: 3px solid #7c3aed;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.2);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .selection-category {
@@ -337,24 +347,35 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        color: #64748b;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        font-size: 0.95rem;
+        color: #1e293b;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 1rem 1.5rem;
+        background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+        color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .selection-counter {
-        background: #e2e8f0;
-        color: #64748b;
-        padding: 0.2rem 0.6rem;
-        border-radius: 12px;
-        font-size: 0.8rem;
-        font-weight: 600;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
     }
 
         .selection-counter.complete {
             background: #10b981;
             color: #fff;
+            border-color: #10b981;
         }
 
     .selection-grid {
@@ -541,12 +562,52 @@
         display: flex;
         gap: 1rem;
         align-items: center;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #fff 0%, #faf5ff 100%);
+        padding: 1rem 1.5rem;
+        border: 2px solid #7c3aed;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(124, 58, 237, 0.2);
+        backdrop-filter: blur(10px);
+        z-index: 1050;
     }
 
         .package-actions .btn {
             font-size: 0.9rem;
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
+            font-weight: 600;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
         }
+
+            .package-actions .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+            }
+
+    /* Mobile responsiveness for package actions */
+    @@media (max-width: 768px) {
+        .package-actions {
+            right: 10px;
+            bottom: 10px;
+            padding: 0.8rem 1rem;
+            gap: 0.8rem;
+        }
+
+            .package-actions .btn {
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
+                min-height: 36px;
+            }
+    }
 
     .menu-section {
         background: linear-gradient(135deg, #fff 0%, #faf5ff 100%);
@@ -611,6 +672,7 @@
         border-radius: 16px;
         padding: 1.5rem;
         width: 220px;
+        min-height: 380px; /* Fixed minimum height for consistent card alignment */
         text-align: center;
         background: linear-gradient(135deg, #fff 0%, #faf5ff 100%);
         box-shadow: 0 4px 16px rgba(124,58,237,0.08);
@@ -618,6 +680,9 @@
         margin-bottom: 1.5rem;
         position: relative;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
         .menu-card::before {
@@ -648,6 +713,13 @@
         font-size: 1rem;
         margin-bottom: 1rem;
         line-height: 1.3;
+        height: 2.6rem; /* Fixed height for consistent alignment */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
     }
 
     .menu-item-image {
@@ -678,6 +750,7 @@
     .quantity-selector {
         max-width: 140px;
         margin: 1rem auto 0 auto;
+        margin-top: auto; /* Push to bottom of card */
     }
 
         .quantity-selector .btn {
@@ -1757,40 +1830,40 @@
             }
 
             let html = `
-                            <div class="package-card" data-package-id="${packageId}">
-                                <div class="package-info">
-                                    <h5 class="package-info-title">Package Details</h5>
-                                    <div class="package-details">
-                                        <div class="package-detail-item">
-                                            <span class="detail-label">Package:</span>
-                                            <span class="detail-value">${selectedPackageData.menuPackageName || 'Package'}</span>
-                                        </div>
-                                        <div class="package-detail-item">
-                                            <span class="detail-label">Number of People:</span>
-                                            <span class="detail-value">${minPax} pax (minimum)</span>
-                                            <div class="package-reminder-small">
-                                                <strong><small class="reminder-text-small">You can adjust this later in the order form</small></strong>
+                                <div class="package-card" data-package-id="${packageId}">
+                                    <div class="package-info">
+                                        <h5 class="package-info-title">Package Details</h5>
+                                        <div class="package-details">
+                                            <div class="package-detail-item">
+                                                <span class="detail-label">Package:</span>
+                                                <span class="detail-value">${selectedPackageData.menuPackageName || 'Package'}</span>
+                                            </div>
+                                            <div class="package-detail-item">
+                                                <span class="detail-label">Number of People:</span>
+                                                <span class="detail-value">${minPax} pax (minimum)</span>
+                                                <div class="package-reminder-small">
+                                                    <strong><small class="reminder-text-small">You can adjust this later in the order form</small></strong>
+                                                </div>
+                                            </div>
+                                            <div class="package-detail-item">
+                                                <span class="detail-label">Price per Person:</span>
+                                                <span class="detail-value">₱${packagePrice}</span>
                                             </div>
                                         </div>
-                                        <div class="package-detail-item">
-                                            <span class="detail-label">Price per Person:</span>
-                                            <span class="detail-value">₱${packagePrice}</span>
-                                        </div>
+
+                                        <!-- Hidden PAX input for internal use -->
+                                        <input type="hidden" id="paxQuantity" value="${minPax}" data-package-id="${packageId}">
                                     </div>
 
-                                    <!-- Hidden PAX input for internal use -->
-                                    <input type="hidden" id="paxQuantity" value="${minPax}" data-package-id="${packageId}">
-                                </div>
-
-                                <div class="package-requirements">
-                                    <h5 class="requirements-title">Package Inclusions:</h5>
-                                    <div class="requirements-grid">
-                                        ${numberOfFreeLechons > 0 ? `
-                                            <div class="requirement-item requirement-bonus">
-                                                <span class="requirement-text">${numberOfFreeLechons} Whole Lechon${numberOfFreeLechons > 1 ? 's' : ''} (Automatically Included)</span>
-                                            </div>
-                                        ` : ''}
-                        `;
+                                    <div class="package-requirements">
+                                        <h5 class="requirements-title">Package Inclusions:</h5>
+                                        <div class="requirements-grid">
+                                            ${numberOfFreeLechons > 0 ? `
+                                                <div class="requirement-item requirement-bonus">
+                                                    <span class="requirement-text">${numberOfFreeLechons} Whole Lechon${numberOfFreeLechons > 1 ? 's' : ''} (Automatically Included)</span>
+                                                </div>
+                                            ` : ''}
+                            `;
 
             if (selectedPackageData.noOfMainDish > 0) {
                 const mainDishText = numberOfFreeLechons > 0 ?
@@ -1798,47 +1871,47 @@
                     `Choose ${selectedPackageData.noOfMainDish} Main Dish(es)`;
 
                 html += `
-                                <div class="requirement-item">
-                                    <span class="requirement-text">${mainDishText}</span>
-                                </div>
-                            `;
+                                    <div class="requirement-item">
+                                        <span class="requirement-text">${mainDishText}</span>
+                                    </div>
+                                `;
             }
             if (selectedPackageData.noOfSideDish > 0) {
                 html += `
-                                <div class="requirement-item">
-                                    <span class="requirement-text">Choose ${selectedPackageData.noOfSideDish} Side Dish(es)</span>
-                                </div>
-                            `;
+                                    <div class="requirement-item">
+                                        <span class="requirement-text">Choose ${selectedPackageData.noOfSideDish} Side Dish(es)</span>
+                                    </div>
+                                `;
             }
             if (selectedPackageData.noOfDessert > 0) {
                 html += `
-                                <div class="requirement-item">
-                                    <span class="requirement-text">Choose ${selectedPackageData.noOfDessert} Dessert(s)</span>
-                                </div>
-                            `;
+                                    <div class="requirement-item">
+                                        <span class="requirement-text">Choose ${selectedPackageData.noOfDessert} Dessert(s)</span>
+                                    </div>
+                                `;
             }
             if (selectedPackageData.noOfRice > 0) {
                 html += `
-                                <div class="requirement-item">
-                                    <span class="requirement-text">Choose ${selectedPackageData.noOfRice} Rice</span>
-                                </div>
-                            `;
+                                    <div class="requirement-item">
+                                        <span class="requirement-text">Choose ${selectedPackageData.noOfRice} Rice</span>
+                                    </div>
+                                `;
             }
             if (selectedPackageData.noOfSoftDrinks > 0) {
                 html += `
-                                <div class="requirement-item">
-                                    <span class="requirement-text">Choose ${selectedPackageData.noOfSoftDrinks} Soft Drink(s)</span>
-                                </div>
-                            `;
+                                    <div class="requirement-item">
+                                        <span class="requirement-text">Choose ${selectedPackageData.noOfSoftDrinks} Soft Drink(s)</span>
+                                    </div>
+                                `;
             }
 
             html += `
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="package-selection">
-                                    <h5 class="selection-title">Select Your Dishes:</h5>
-                        `;
+                                    <div class="package-selection">
+                                        <h5 class="selection-title">Select Your Dishes:</h5>
+                            `;
 
             // Main Dishes Selection
             if (selectedPackageData.noOfMainDish > 0) {
@@ -1846,12 +1919,12 @@
                 const userSelectableMainDishes = selectedPackageData.noOfMainDish;
 
                 html += `
-                                <div class="selection-category">
-                                    <h6 class="category-title">
-                                        Main Dishes
-                                        <span class="selection-counter" data-category="mainDish" data-max="${userSelectableMainDishes}">0/${userSelectableMainDishes}</span>
-                                    </h6>
-                            `;
+                                    <div class="selection-category">
+                                        <h6 class="category-title">
+                                            Main Dishes
+                                            <span class="selection-counter" data-category="mainDish" data-max="${userSelectableMainDishes}">0/${userSelectableMainDishes}</span>
+                                        </h6>
+                                `;
 
                 const mainDishes = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "MAINDISH").ToList()));
                 const mainDishCategories = {};
@@ -1870,43 +1943,43 @@
                 // Display each category
                 Object.keys(mainDishCategories).forEach(category => {
                     html += `
-                                    <div class="package-category-section">
-                                        <h7 class="package-category-header">${category}</h7>
-                                        <div class="selection-grid">
-                            `;
+                                        <div class="package-category-section">
+                                            <h7 class="package-category-header">${category}</h7>
+                                            <div class="selection-grid">
+                                `;
 
                     mainDishCategories[category].forEach(dish => {
                         html += `
-                                        <div class="selection-item" data-category="mainDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                            <div class="selection-item-content">
-                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                                <div class="selection-item-name">${dish.name}</div>
+                                            <div class="selection-item" data-category="mainDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                                <div class="selection-item-content">
+                                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                    <div class="selection-item-name">${dish.name}</div>
+                                                </div>
+                                              <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                             </div>
-                                          <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                        </div>
-                                    `;
+                                        `;
                     });
 
                     html += `
+                                            </div>
                                         </div>
-                                    </div>
-                            `;
+                                `;
                 });
 
                 html += `
-                                </div>
-                            `;
+                                    </div>
+                                `;
             }
 
             // Side Dishes Selection
             if (selectedPackageData.noOfSideDish > 0) {
                 html += `
-                                <div class="selection-category">
-                                    <h6 class="category-title">
-                                        Side Dishes
-                                        <span class="selection-counter" data-category="sideDish" data-max="${selectedPackageData.noOfSideDish}">0/${selectedPackageData.noOfSideDish}</span>
-                                    </h6>
-                            `;
+                                    <div class="selection-category">
+                                        <h6 class="category-title">
+                                            Side Dishes
+                                            <span class="selection-counter" data-category="sideDish" data-max="${selectedPackageData.noOfSideDish}">0/${selectedPackageData.noOfSideDish}</span>
+                                        </h6>
+                                `;
 
                 const sideDishes = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "SIDEDISH").ToList()));
                 const sideDishCategories = {};
@@ -1922,43 +1995,43 @@
                 // Display each category
                 Object.keys(sideDishCategories).forEach(category => {
                     html += `
-                                    <div class="package-category-section">
-                                        <h7 class="package-category-header">${category}</h7>
-                                        <div class="selection-grid">
-                            `;
+                                        <div class="package-category-section">
+                                            <h7 class="package-category-header">${category}</h7>
+                                            <div class="selection-grid">
+                                `;
 
                     sideDishCategories[category].forEach(dish => {
                         html += `
-                                        <div class="selection-item" data-category="sideDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                            <div class="selection-item-content">
-                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                                <div class="selection-item-name">${dish.name}</div>
+                                            <div class="selection-item" data-category="sideDish" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                                <div class="selection-item-content">
+                                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                    <div class="selection-item-name">${dish.name}</div>
+                                                </div>
+                                               <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                             </div>
-                                           <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                        </div>
-                                    `;
+                                        `;
                     });
 
                     html += `
+                                            </div>
                                         </div>
-                                    </div>
-                            `;
+                                `;
                 });
 
                 html += `
-                                </div>
-                            `;
+                                    </div>
+                                `;
             }
 
             // Desserts Selection
             if (selectedPackageData.noOfDessert > 0) {
                 html += `
-                                <div class="selection-category">
-                                    <h6 class="category-title">
-                                        Desserts
-                                        <span class="selection-counter" data-category="dessert" data-max="${selectedPackageData.noOfDessert}">0/${selectedPackageData.noOfDessert}</span>
-                                    </h6>
-                            `;
+                                    <div class="selection-category">
+                                        <h6 class="category-title">
+                                            Desserts
+                                            <span class="selection-counter" data-category="dessert" data-max="${selectedPackageData.noOfDessert}">0/${selectedPackageData.noOfDessert}</span>
+                                        </h6>
+                                `;
 
                 const desserts = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "DESSERTS").ToList()));
                 const dessertCategories = {};
@@ -1974,43 +2047,43 @@
                 // Display each category
                 Object.keys(dessertCategories).forEach(category => {
                     html += `
-                                    <div class="package-category-section">
-                                        <h7 class="package-category-header">${category}</h7>
-                                        <div class="selection-grid">
-                            `;
+                                        <div class="package-category-section">
+                                            <h7 class="package-category-header">${category}</h7>
+                                            <div class="selection-grid">
+                                `;
 
                     dessertCategories[category].forEach(dish => {
                         html += `
-                                        <div class="selection-item" data-category="dessert" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                            <div class="selection-item-content">
-                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                                <div class="selection-item-name">${dish.name}</div>
+                                            <div class="selection-item" data-category="dessert" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                                <div class="selection-item-content">
+                                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                    <div class="selection-item-name">${dish.name}</div>
+                                                </div>
+                                               <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                             </div>
-                                           <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                        </div>
-                                    `;
+                                        `;
                     });
 
                     html += `
+                                            </div>
                                         </div>
-                                    </div>
-                            `;
+                                `;
                 });
 
                 html += `
-                                </div>
-                            `;
+                                    </div>
+                                `;
             }
 
             // Rice Selection
             if (selectedPackageData.noOfRice > 0) {
                 html += `
-                                <div class="selection-category">
-                                    <h6 class="category-title">
-                                        Rice
-                                        <span class="selection-counter" data-category="rice" data-max="${selectedPackageData.noOfRice}">0/${selectedPackageData.noOfRice}</span>
-                                    </h6>
-                            `;
+                                    <div class="selection-category">
+                                        <h6 class="category-title">
+                                            Rice
+                                            <span class="selection-counter" data-category="rice" data-max="${selectedPackageData.noOfRice}">0/${selectedPackageData.noOfRice}</span>
+                                        </h6>
+                                `;
 
                 const riceItems = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "RICE").ToList()));
                 const riceCategories = {};
@@ -2026,43 +2099,43 @@
                 // Display each category
                 Object.keys(riceCategories).forEach(category => {
                     html += `
-                                    <div class="package-category-section">
-                                        <h7 class="package-category-header">${category}</h7>
-                                        <div class="selection-grid">
-                            `;
+                                        <div class="package-category-section">
+                                            <h7 class="package-category-header">${category}</h7>
+                                            <div class="selection-grid">
+                                `;
 
                     riceCategories[category].forEach(dish => {
                         html += `
-                                        <div class="selection-item" data-category="rice" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                            <div class="selection-item-content">
-                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                                <div class="selection-item-name">${dish.name}</div>
+                                            <div class="selection-item" data-category="rice" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                                <div class="selection-item-content">
+                                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                    <div class="selection-item-name">${dish.name}</div>
+                                                </div>
+                                               <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                             </div>
-                                           <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                        </div>
-                                    `;
+                                        `;
                     });
 
                     html += `
+                                            </div>
                                         </div>
-                                    </div>
-                            `;
+                                `;
                 });
 
                 html += `
-                                </div>
-                            `;
+                                    </div>
+                                `;
             }
 
             // Soft Drinks Selection
             if (selectedPackageData.noOfSoftDrinks > 0) {
                 html += `
-                                <div class="selection-category">
-                                    <h6 class="category-title">
-                                        Soft Drinks
-                                        <span class="selection-counter" data-category="softDrinks" data-max="${selectedPackageData.noOfSoftDrinks}">0/${selectedPackageData.noOfSoftDrinks}</span>
-                                    </h6>
-                            `;
+                                    <div class="selection-category">
+                                        <h6 class="category-title">
+                                            Soft Drinks
+                                            <span class="selection-counter" data-category="softDrinks" data-max="${selectedPackageData.noOfSoftDrinks}">0/${selectedPackageData.noOfSoftDrinks}</span>
+                                        </h6>
+                                `;
 
                 const softDrinks = @Html.Raw(Json.Serialize(Model.Where(m => m.DishType == "SOFTDRINKS").ToList()));
                 const softDrinkCategories = {};
@@ -2078,59 +2151,59 @@
                 // Display each category
                 Object.keys(softDrinkCategories).forEach(category => {
                     html += `
-                                    <div class="package-category-section">
-                                        <h7 class="package-category-header">${category}</h7>
-                                        <div class="selection-grid">
-                            `;
+                                        <div class="package-category-section">
+                                            <h7 class="package-category-header">${category}</h7>
+                                            <div class="selection-grid">
+                                `;
 
                     softDrinkCategories[category].forEach(dish => {
                         html += `
-                                        <div class="selection-item" data-category="softDrinks" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
-                                            <div class="selection-item-content">
-                                                ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
-                                                <div class="selection-item-name">${dish.name}</div>
+                                            <div class="selection-item" data-category="softDrinks" data-dish-id="${dish.menuId}" data-dish-name="${dish.name}">
+                                                <div class="selection-item-content">
+                                                    ${dish.imagePath ? `<img src="${dish.imagePath}" alt="${dish.name}" class="selection-item-image" />` : ''}
+                                                    <div class="selection-item-name">${dish.name}</div>
+                                                </div>
+                                               <div class="selection-item-check"><i class="bi bi-check2"></i></div>
                                             </div>
-                                           <div class="selection-item-check"><i class="bi bi-check2"></i></div>
-                                        </div>
-                                    `;
+                                        `;
                     });
 
                     html += `
+                                            </div>
                                         </div>
-                                    </div>
-                            `;
+                                `;
                 });
 
                 html += `
-                                </div>
-                            `;
+                                    </div>
+                                `;
             }
 
             html += `
-                                </div>
+                                    </div>
 
-                                <div class="package-summary">
-                                    <div class="package-status" data-package-id="${packageId}">
-                                        <span class="status-text">Package incomplete</span>
-                                        <span class="status-icon text-warning"><i class="bi bi-exclamation-triangle"></i></span>
+                                    <div class="package-summary">
+                                        <div class="package-status" data-package-id="${packageId}">
+                                            <span class="status-text">Package incomplete</span>
+                                            <span class="status-icon text-warning"><i class="bi bi-exclamation-triangle"></i></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="package-actions">
+                                        <button class="btn btn-primary add-package-to-order"
+                                                data-package-id="${packageId}"
+                                                data-package-name="${selectedPackageData.menuPackageName}"
+                                                data-package-price="${packagePrice}"
+                                                disabled>
+                                            <i class="bi bi-arrow-right me-2"></i>Proceed
+                                        </button>
+                                        <button class="btn btn-outline-secondary clear-package"
+                                                data-package-id="${packageId}">
+                                            <i class="bi bi-arrow-clockwise me-2"></i>Clear Selection
+                                        </button>
                                     </div>
                                 </div>
-
-                                <div class="package-actions">
-                                    <button class="btn btn-primary add-package-to-order"
-                                            data-package-id="${packageId}"
-                                            data-package-name="${selectedPackageData.menuPackageName}"
-                                            data-package-price="${packagePrice}"
-                                            disabled>
-                                        <i class="bi bi-arrow-right me-2"></i>Proceed
-                                    </button>
-                                    <button class="btn btn-outline-secondary clear-package"
-                                            data-package-id="${packageId}">
-                                        <i class="bi bi-arrow-clockwise me-2"></i>Clear Selection
-                                    </button>
-                                </div>
-                            </div>
-                        `;
+                            `;
 
             $('#packageFoodSelectionContent').html(html);
 
@@ -2379,7 +2452,7 @@
         <text>
                     try {
                         let prevOrder = JSON.parse('@Html.Raw(orderItemsJson)');
-                                        prevOrder.forEach(item => {
+                                                prevOrder.forEach(item => {
                         // Always use the latest price from the menu card
                         let $input = $("#food" + item.MenuId);
                     let $card = $input.closest(".quantity-selector").parent();
@@ -2393,13 +2466,13 @@
                             price: price,
                             quantity: item.Quantity
                         };
-                                                setTimeout(() => {
+                                                        setTimeout(() => {
                         let $input = $("#food" + item.MenuId);
                     if ($input.length) $input.val(item.Quantity);
-                                                }, 0);
-                                            }
-                                        });
-                                    } catch (e) { }
+                                                        }, 0);
+                                                    }
+                                                });
+                                            } catch (e) { }
                     refreshOrderList();
         </text>
     }
@@ -2471,45 +2544,45 @@
                     grandTotal += item.totalPrice;
 
                     $orderList.append(`
-                                    <li class="summary-item" data-id="${id}">
-                                        <div class="summary-item-details">
-                                            <span class="summary-item-name">${item.name}</span>
-                                            <span class="summary-item-pax">${item.quantity} pax × ₱${item.packagePrice}</span>
-                                            ${item.PackageId && item.numberOfFreeLechons > 0 ? `<span class="summary-item-bonus text-success"><i class="bi bi-gift"></i> ${item.numberOfFreeLechons} Free Lechon${item.numberOfFreeLechons > 1 ? 's' : ''} Included</span>` : ''}
-                                        </div>
-                                        <div class="summary-item-total">₱${item.totalPrice.toLocaleString()}</div>
-                                        <div class="summary-item-actions">
-                                            <button class="btn btn-danger btn-sm btn-summary summary-remove">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </li>
-                                `);
+                                        <li class="summary-item" data-id="${id}">
+                                            <div class="summary-item-details">
+                                                <span class="summary-item-name">${item.name}</span>
+                                                <span class="summary-item-pax">${item.quantity} pax × ₱${item.packagePrice}</span>
+                                                ${item.PackageId && item.numberOfFreeLechons > 0 ? `<span class="summary-item-bonus text-success"><i class="bi bi-gift"></i> ${item.numberOfFreeLechons} Free Lechon${item.numberOfFreeLechons > 1 ? 's' : ''} Included</span>` : ''}
+                                            </div>
+                                            <div class="summary-item-total">₱${item.totalPrice.toLocaleString()}</div>
+                                            <div class="summary-item-actions">
+                                                <button class="btn btn-danger btn-sm btn-summary summary-remove">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    `);
                 } else {
                     // Handle individual food items
                     const total = item.quantity * item.price;
                     grandTotal += total;
 
                     $orderList.append(`
-                                    <li class="summary-item" data-id="${id}">
-                                        <div class="summary-item-details">
-                                            <span class="summary-item-name">${item.name}</span>
-                                            <span class="summary-item-quantity">× ${item.quantity}</span>
-                                        </div>
-                                        <div class="summary-item-total">₱${total.toFixed(2)}</div>
-                                        <div class="summary-item-actions">
-                                            <button class="btn btn-warning btn-sm btn-summary summary-minus">
-                                                <i class="bi bi-dash"></i>
-                                            </button>
-                                            <button class="btn btn-success btn-sm btn-summary summary-plus">
-                                                <i class="bi bi-plus"></i>
-                                            </button>
-                                            <button class="btn btn-danger btn-sm btn-summary summary-remove">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-                                    </li>
-                                `);
+                                        <li class="summary-item" data-id="${id}">
+                                            <div class="summary-item-details">
+                                                <span class="summary-item-name">${item.name}</span>
+                                                <span class="summary-item-quantity">× ${item.quantity}</span>
+                                            </div>
+                                            <div class="summary-item-total">₱${total.toFixed(2)}</div>
+                                            <div class="summary-item-actions">
+                                                <button class="btn btn-warning btn-sm btn-summary summary-minus">
+                                                    <i class="bi bi-dash"></i>
+                                                </button>
+                                                <button class="btn btn-success btn-sm btn-summary summary-plus">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                                <button class="btn btn-danger btn-sm btn-summary summary-remove">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </li>
+                                    `);
                 }
             });
 

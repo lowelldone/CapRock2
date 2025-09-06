@@ -19,12 +19,25 @@ namespace Capstone2.Controllers
         [HttpPost]
         public IActionResult Index(string OrderItemsJson, Order? order, bool isConfirmed = false)
         {
-            List<OrderDetail> selectedItems = JsonSerializer.Deserialize<List<OrderDetail>>(OrderItemsJson);
+            // Create a DTO class to match the JSON structure
+            var jsonItems = JsonSerializer.Deserialize<List<OrderItemDto>>(OrderItemsJson);
+            List<OrderDetail> selectedItems = new List<OrderDetail>();
 
-            selectedItems.ForEach(x =>
+            foreach (var jsonItem in jsonItems)
             {
-                _context.Entry(x).Reference(x => x.Menu).Load();
-            });
+                // Create OrderDetail and load Menu data
+                var orderDetail = new OrderDetail
+                {
+                    MenuId = jsonItem.MenuId,
+                    Quantity = jsonItem.Quantity
+                };
+
+                // Load the Menu navigation property
+                _context.Entry(orderDetail).Reference(x => x.Menu).Load();
+
+                selectedItems.Add(orderDetail);
+            }
+
             // Step 1: From ClientMenus
             if (!isConfirmed)
             {
@@ -36,6 +49,15 @@ namespace Capstone2.Controllers
             order.OrderDetails.ForEach(x => order.TotalPayment += x.subTotal);
             TempData["Order"] = JsonSerializer.Serialize(order);
             return Json(new { success = true });
+        }
+
+        // DTO class to match the JSON structure from ClientMenus
+        public class OrderItemDto
+        {
+            public int MenuId { get; set; }
+            public string Name { get; set; }
+            public double Price { get; set; }
+            public int Quantity { get; set; }
         }
     }
 }

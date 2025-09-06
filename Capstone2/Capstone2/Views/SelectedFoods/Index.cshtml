@@ -6,9 +6,9 @@
         items.Select(x => new
         {
             MenuId = x.MenuId,
-            Name = x.Menu.Name,
+            Name = x.Menu?.Name ?? "Unknown Item",
             Quantity = x.Quantity,
-            price = x.Menu.Price
+            price = x.Menu?.Price ?? 0
         })
     );
 }
@@ -207,15 +207,15 @@
                     const subtotal = item.Quantity * item.price;
                     total += subtotal;
                     $tbody.append(`
-                                                    <tr data-id="${item.MenuId}">
-                                                        <td>${item.Menu.Name}</td>
-                                                        <td class="qty">${item.Quantity}</td>
-                                                        <td>₱${item.price.toFixed(2)}</td>
-                                                        <td class="subtotal">₱${subtotal.toFixed(2)}</td>
-                                                        <td>
-                                                        </td>
-                                                    </tr>
-                                                `);
+                                                            <tr data-id="${item.MenuId}">
+                                                                <td>${item.Name}</td>
+                                                                <td class="qty">${item.Quantity}</td>
+                                                                <td>₱${item.price.toFixed(2)}</td>
+                                                                <td class="subtotal">₱${subtotal.toFixed(2)}</td>
+                                                                <td>
+                                                                </td>
+                                                            </tr>
+                                                        `);
                 });
                 $('#total').text(`₱${total.toFixed(2)}`);
             }
