@@ -31,15 +31,54 @@
 
     .modern-table {
         font-size: 0.9rem;
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        table-layout: auto !important;
     }
 
-    .modern-table th,
-    .modern-table td {
-        padding: 0.75rem 0.5rem;
-    }
+        .modern-table th,
+        .modern-table td {
+            padding: 0.75rem 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--purple-border);
+            max-width: none !important;
+            overflow: visible !important;
+            text-overflow: unset !important;
+            word-wrap: normal !important;
+        }
+
+            .modern-table td:last-child {
+                min-width: 200px;
+                width: auto;
+                max-width: none !important;
+                overflow: visible !important;
+                text-overflow: unset !important;
+                word-wrap: normal !important;
+            }
+
+        .modern-table th {
+            background: linear-gradient(135deg, var(--purple-bg-light) 0%, var(--purple-bg) 100%);
+            color: var(--text-purple);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .modern-table tbody tr:hover {
+            background: rgba(124, 58, 237, 0.05);
+        }
+
+        .modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
 
     .modern-table-action-btn {
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
@@ -49,20 +88,22 @@
         font-weight: 500;
         text-decoration: none;
         transition: all 0.3s ease;
-        min-width: 80px;
         white-space: nowrap;
+        min-width: fit-content;
+        width: auto;
+        flex-shrink: 0;
     }
 
-    .modern-table-action-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
+        .modern-table-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
 
-    .modern-table-action-btn.btn-outline-success:hover {
-        background: var(--success-color);
-        border-color: var(--success-color);
-        color: white;
-    }
+        .modern-table-action-btn.btn-outline-success:hover {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
 
     .row-delivered-qty {
         width: 100%;
@@ -80,6 +121,121 @@
     .btn-inline-receive {
         width: auto;
         justify-content: center;
+        min-width: fit-content;
+        flex-shrink: 0;
+    }
+
+        .btn-inline-receive span {
+            white-space: nowrap;
+            overflow: visible;
+        }
+
+    /* Status Badge Styles */
+    .modern-status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+    }
+
+        .modern-status-badge.ordered {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .modern-status-badge.delivered {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .modern-status-badge.pending {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info-color);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .modern-status-badge.cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+    /* Form Input Styling */
+    .row-delivered-qty {
+        width: 90px;
+        text-align: center;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+        border: 2px solid var(--purple-border);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+    }
+
+        .row-delivered-qty:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+            background: white;
+        }
+
+    /* Card Body Styling */
+    .modern-card-body {
+        padding: 1.5rem;
+    }
+
+    /* Info Text Styling */
+    .modern-info {
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+
+    .modern-name {
+        color: var(--text-purple);
+        font-weight: 600;
+    }
+
+    /* Alert/Toast Styling */
+    .modern-alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        animation: slideInDown 0.3s ease-out;
+    }
+
+    .modern-alert-success {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+        color: var(--success-color);
+        border-left: 4px solid var(--success-color);
+    }
+
+    .modern-alert-danger {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+        color: var(--danger-color);
+        border-left: 4px solid var(--danger-color);
+    }
+
+    @@keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* Mobile responsive adjustments */
@@ -119,34 +275,40 @@
             font-size: 0.8rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.5rem 0.25rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.5rem 0.25rem;
+            }
 
         .modern-table-action-btn {
             font-size: 0.75rem;
             padding: 0.4rem 0.8rem;
-            min-width: 70px;
         }
 
         .row-delivered-qty {
             font-size: 16px;
             padding: 0.5rem;
+            width: 80px;
         }
 
         .inline-receive-form {
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 0.5rem;
             align-items: stretch;
         }
 
         .btn-inline-receive {
             width: 100%;
             justify-content: center;
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        .modern-table-action-btn {
             font-size: 0.7rem;
             padding: 0.3rem 0.6rem;
+            min-width: 60px;
         }
     }
 
@@ -159,10 +321,10 @@
             font-size: 0.75rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.4rem 0.2rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.4rem 0.2rem;
+            }
 
         .modern-table-action-btn {
             font-size: 0.7rem;
@@ -181,11 +343,17 @@
         .row-delivered-qty {
             font-size: 16px;
             padding: 0.4rem;
+            width: 70px;
         }
 
         .btn-inline-receive {
             font-size: 0.65rem;
-            padding: 0.25rem 0.5rem;
+            padding: 0.3rem 0.6rem;
+        }
+
+        .modern-table-action-btn {
+            font-size: 0.65rem;
+            padding: 0.3rem 0.6rem;
         }
     }
 </style>
@@ -231,8 +399,8 @@
             @{
                 bool isReadOnly = ViewBag.IsReadOnly as bool? ?? false;
                 string returnUrl = ViewBag.ReturnUrl as string ?? Url.Action("ViewTransactions", new { id = supplierId })!;
-             }
-             <a href="@returnUrl" class="modern-action-btn btn-outline-secondary">
+            }
+            <a href="@returnUrl" class="modern-action-btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i>Back
             </a>
         </div>
@@ -251,8 +419,8 @@
                         </h5>
                         @{
                             bool isReadOnlyHeader = ViewBag.IsReadOnly as bool? ?? false;
-                            
-                         }
+
+                        }
                         @if (!isReadOnlyHeader)
                         {
                             <button type="button" id="btnReceiveAll" class="modern-action-btn btn-outline-success">
@@ -277,11 +445,11 @@
                                         <th>Status</th>
                                         @{
                                             bool isReadOnlyHeader2 = ViewBag.IsReadOnly as bool? ?? false;
-                                         }
-                                         @if (!isReadOnlyHeader2)
-                                         {
+                                        }
+                                        @if (!isReadOnlyHeader2)
+                                        {
                                             <th>Actions</th>
-                                         }
+                                        }
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -314,38 +482,38 @@
                 let actionsCol = '';
                 if (!isReadOnly && po.status === 'Ordered') {
                     actionsCol = `<td>
-                        <form class="inline-receive-form" data-action="/Suppliers/ReceivePurchaseOrder">
-                            <input type="hidden" name="__RequestVerificationToken" value="${afToken}" />
-                            <input type="hidden" name="purchaseOrderId" value="${po.purchaseOrderId}" />
-                            <input type="number" name="deliveredQuantity" min="1" step="1" inputmode="numeric" class="modern-form-control d-inline-block row-delivered-qty" data-po-id="${po.purchaseOrderId}" style="width:90px" value="${po.quantity}" oninput="document.getElementById('batchqty-${po.purchaseOrderId}').value = this.value" />
-                            <button type="button" class="modern-table-action-btn btn-outline-success ms-1 btn-inline-receive">
-                                <i class="bi bi-box-arrow-in-down"></i>
-                                <span>Receive</span>
-                            </button>
-                        </form>
-                        <input type="hidden" name="purchaseOrderIds" form="batchReceiveForm" value="${po.purchaseOrderId}" />
-                        <input type="hidden" id="batchqty-${po.purchaseOrderId}" name="deliveredQuantities" form="batchReceiveForm" value="${po.quantity}" />
-                    </td>`;
+                                <form class="inline-receive-form" data-action="/Suppliers/ReceivePurchaseOrder">
+                                    <input type="hidden" name="__RequestVerificationToken" value="${afToken}" />
+                                    <input type="hidden" name="purchaseOrderId" value="${po.purchaseOrderId}" />
+                                    <input type="number" name="deliveredQuantity" min="1" step="1" inputmode="numeric" class="row-delivered-qty" data-po-id="${po.purchaseOrderId}" value="${po.quantity}" oninput="document.getElementById('batchqty-${po.purchaseOrderId}').value = this.value" />
+                                <button type="button" class="modern-table-action-btn btn-outline-success btn-inline-receive" title="Receive Order">
+                                    <i class="bi bi-box-arrow-in-down"></i>
+                                    <span>Receive</span>
+                                </button>
+                                </form>
+                                <input type="hidden" name="purchaseOrderIds" form="batchReceiveForm" value="${po.purchaseOrderId}" />
+                                <input type="hidden" id="batchqty-${po.purchaseOrderId}" name="deliveredQuantities" form="batchReceiveForm" value="${po.quantity}" />
+                            </td>`;
                 }
                 tr.innerHTML = `<td>
-                                        <div class="modern-name">${po.materialName}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-info">${po.quantity}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-info">${rec}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-info">${new Date(po.createdAt).toLocaleDateString()}</div>
-                                    </td>
-                                    <td>
-                                        <div class="modern-info">${po.deliveredDate ? new Date(po.deliveredDate).toLocaleDateString() : '-'}</div>
-                                    </td>
-                                    <td>
-                                        <span class="modern-status-badge ${po.status.toLowerCase()}">${po.status}</span>
-                                    </td>
-                                    ${actionsCol}`;
+                                                <div class="modern-name">${po.materialName}</div>
+                                            </td>
+                                            <td>
+                                                <div class="modern-info">${po.quantity}</div>
+                                            </td>
+                                            <td>
+                                                <div class="modern-info">${rec}</div>
+                                            </td>
+                                            <td>
+                                                <div class="modern-info">${new Date(po.createdAt).toLocaleDateString()}</div>
+                                            </td>
+                                            <td>
+                                                <div class="modern-info">${po.deliveredDate ? new Date(po.deliveredDate).toLocaleDateString() : '-'}</div>
+                                            </td>
+                                            <td>
+                                                <span class="modern-status-badge ${po.status.toLowerCase()}">${po.status}</span>
+                                            </td>
+                                            ${actionsCol}`;
                 poTableBody.appendChild(tr);
             });
         }
@@ -364,10 +532,10 @@
                 const parsed = parseInt(qtyInput.value, 10);
                 if (isNaN(parsed) || parsed <= 0) {
                     qtyInput.value = 1;
-                    } else {
+                } else {
                     qtyInput.value = parsed;
-                    }
                 }
+            }
             const action = form.getAttribute('data-action');
             const fd = new FormData(form);
             const res = await fetch(action, {
@@ -388,7 +556,7 @@
             form.querySelectorAll('input[id^="batchqty-"]').forEach(inp => {
                 const parsed = parseInt(inp.value, 10);
                 inp.value = (!isNaN(parsed) && parsed > 0) ? parsed : 1;
-                });
+            });
             const fd = new FormData(form);
             const res = await fetch(form.getAttribute('action') || '/Suppliers/ReceiveAllPurchaseOrders', {
                 method: 'POST',
@@ -405,7 +573,7 @@
             if (!input) return;
             input.value = input.value.replace(/[^0-9]/g, '');
             if (input.value === '' || input.value === '0') input.value = '1';
-            });
+        });
     })();
 </script>
 

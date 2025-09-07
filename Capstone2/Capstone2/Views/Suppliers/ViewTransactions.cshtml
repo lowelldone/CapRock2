@@ -29,10 +29,10 @@
         font-size: 0.9rem;
     }
 
-    .modern-table th,
-    .modern-table td {
-        padding: 0.75rem 0.5rem;
-    }
+        .modern-table th,
+        .modern-table td {
+            padding: 0.75rem 0.5rem;
+        }
 
     .modern-table-actions {
         display: flex;
@@ -41,6 +41,18 @@
         align-items: center;
         justify-content: flex-end;
         min-width: 120px;
+    }
+
+    /* Override global modern-ui.css styles */
+    .modern-table-actions {
+        justify-content: flex-end !important;
+    }
+
+    .modern-table-action-btn {
+        width: auto !important;
+        min-width: 80px !important;
+        max-width: none !important;
+        height: auto !important;
     }
 
     .modern-table-action-btn {
@@ -58,15 +70,15 @@
         white-space: nowrap;
     }
 
-    .modern-table-action-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
+        .modern-table-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
 
-    .modern-table-action-btn.btn-primary:hover {
-        background: var(--primary-purple-dark);
-        border-color: var(--primary-purple-dark);
-    }
+        .modern-table-action-btn.btn-primary:hover {
+            background: var(--primary-purple-dark);
+            border-color: var(--primary-purple-dark);
+        }
 
     .modal-dialog.modal-xl {
         max-width: 95%;
@@ -133,21 +145,30 @@
             font-size: 0.8rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.5rem 0.25rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.5rem 0.25rem;
+            }
 
         .modern-table-actions {
             flex-direction: column;
             align-items: stretch;
+            justify-content: center;
             min-width: 100px;
+        }
+
+        .modern-table-action-btn {
+            width: 100% !important;
+            min-width: unset !important;
+            max-width: none !important;
+            height: auto !important;
         }
 
         .modern-table-action-btn {
             font-size: 0.75rem;
             padding: 0.4rem 0.8rem;
             min-width: 70px;
+            width: 100%;
         }
 
         .modal-dialog.modal-xl {
@@ -175,15 +196,16 @@
             font-size: 0.75rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.4rem 0.2rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.4rem 0.2rem;
+            }
 
         .modern-table-action-btn {
             font-size: 0.7rem;
             padding: 0.3rem 0.6rem;
             min-width: 60px;
+            width: 100%;
         }
 
         .modern-title {
@@ -246,7 +268,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                       <div class="row g-3 align-items-end"></div>
+                        <div class="row g-3 align-items-end"></div>
                         <div class="table-responsive mt-3">
                             <table class="modern-table">
                                 <thead>
@@ -288,7 +310,7 @@
                             <th>PO Number</th>
                             <th>Ordered Date</th>
                             <th>Status</th>
-                            <th class="text-end">Action</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -306,7 +328,7 @@
                                         @item.Status
                                     </span>
                                 </td>
-                                <td class="text-end">
+                                <td class="text-center">
                                     <div class="modern-table-actions">
                                         <a asp-action="ManageTransactions" asp-route-id="@ViewBag.SupplierId" asp-route-view="po" asp-route-vtId="@item.ViewTransactionId" class="modern-table-action-btn btn-primary">
                                             <i class="bi bi-box"></i>
@@ -346,13 +368,13 @@
                 const note = isLow ? '<span class="modern-status-badge pending ms-2"><i class="bi bi-exclamation-triangle"></i> Low Stock</span>' : '';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `<td>
-                                        <div class="modern-name">${name}</div>
-                                            ${note}
-                                    </td>
-                                    <td>
-                                        <input type="hidden" name="materialIds" value="${id}" />
-                                        <input class="modern-form-control qty-input" type="number" name="quantities" min="0" step="1" value="0" />
-                                    </td>`;
+                                            <div class="modern-name">${name}</div>
+                                                ${note}
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="materialIds" value="${id}" />
+                                            <input class="modern-form-control qty-input" type="number" name="quantities" min="0" step="1" value="0" />
+                                        </td>`;
                 tbody.appendChild(tr);
             });
         }

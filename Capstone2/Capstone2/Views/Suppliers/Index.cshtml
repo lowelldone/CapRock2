@@ -37,10 +37,10 @@
         font-size: 0.9rem;
     }
 
-    .modern-table th,
-    .modern-table td {
-        padding: 0.75rem 0.5rem;
-    }
+        .modern-table th,
+        .modern-table td {
+            padding: 0.75rem 0.5rem;
+        }
 
     .modern-table-actions {
         display: flex;
@@ -49,6 +49,18 @@
         align-items: center;
         justify-content: flex-end;
         min-width: 200px;
+    }
+
+    /* Override global modern-ui.css styles */
+    .modern-table-actions {
+        justify-content: flex-end !important;
+    }
+
+    .modern-table-action-btn {
+        width: auto !important;
+        min-width: 80px !important;
+        max-width: none !important;
+        height: auto !important;
     }
 
     .modern-table-action-btn {
@@ -66,28 +78,28 @@
         white-space: nowrap;
     }
 
-    .modern-table-action-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
+        .modern-table-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
 
-    .modern-table-action-btn.btn-outline-primary:hover {
-        background: var(--primary-purple);
-        border-color: var(--primary-purple);
-        color: white;
-    }
+        .modern-table-action-btn.btn-outline-primary:hover {
+            background: var(--primary-purple);
+            border-color: var(--primary-purple);
+            color: white;
+        }
 
-    .modern-table-action-btn.btn-outline-info:hover {
-        background: var(--info-color);
-        border-color: var(--info-color);
-        color: white;
-    }
+        .modern-table-action-btn.btn-outline-info:hover {
+            background: var(--info-color);
+            border-color: var(--info-color);
+            color: white;
+        }
 
-    .modern-table-action-btn.btn-outline-danger:hover {
-        background: var(--danger-color);
-        border-color: var(--danger-color);
-        color: white;
-    }
+        .modern-table-action-btn.btn-outline-danger:hover {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+            color: white;
+        }
 
     .modern-search-form {
         display: flex;
@@ -96,9 +108,9 @@
         align-items: end;
     }
 
-    .modern-search-form > div {
-        width: auto;
-    }
+        .modern-search-form > div {
+            width: auto;
+        }
 
     /* Mobile responsive adjustments */
     @@media (max-width: 768px) {
@@ -137,22 +149,30 @@
             font-size: 0.8rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.5rem 0.25rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.5rem 0.25rem;
+            }
 
         .modern-table-actions {
             flex-direction: column;
-            align-items: center;
+            align-items: stretch;
             justify-content: center;
             min-width: 120px;
+        }
+
+        .modern-table-action-btn {
+            width: 100% !important;
+            min-width: unset !important;
+            max-width: none !important;
+            height: auto !important;
         }
 
         .modern-table-action-btn {
             font-size: 0.75rem;
             padding: 0.4rem 0.8rem;
             min-width: 70px;
+            width: 100%;
         }
 
         .modern-search-form {
@@ -161,9 +181,9 @@
             gap: 0.75rem;
         }
 
-        .modern-search-form > div {
-            width: 100%;
-        }
+            .modern-search-form > div {
+                width: 100%;
+            }
 
         .modern-form-control {
             font-size: 16px;
@@ -198,22 +218,30 @@
             font-size: 0.75rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.4rem 0.2rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.4rem 0.2rem;
+            }
 
         .modern-table-actions {
             flex-direction: column;
-            align-items: center;
+            align-items: stretch;
             justify-content: center;
             min-width: 100px;
+        }
+
+        .modern-table-action-btn {
+            width: 100% !important;
+            min-width: unset !important;
+            max-width: none !important;
+            height: auto !important;
         }
 
         .modern-table-action-btn {
             font-size: 0.7rem;
             padding: 0.3rem 0.6rem;
             min-width: 60px;
+            width: 100%;
         }
 
         .modern-search-form {
@@ -222,9 +250,9 @@
             gap: 0.5rem;
         }
 
-        .modern-search-form > div {
-            width: 100%;
-        }
+            .modern-search-form > div {
+                width: 100%;
+            }
 
         .modern-title {
             font-size: 1.25rem;
@@ -327,7 +355,7 @@
                         <th>Company Name</th>
                         <th>Contact Person</th>
                         <th>Contact Number</th>
-                        <th class="text-end">Actions</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -343,7 +371,7 @@
                             <td>
                                 <div class="modern-info">@Html.DisplayFor(modelItem => item.ContactNo)</div>
                             </td>
-                            <td class="text-end">
+                            <td class="text-center">
                                 <div class="modern-table-actions">
                                     <a asp-action="Edit" asp-route-id="@item.SupplierId" class="modern-table-action-btn btn-outline-primary">
                                         <i class="bi bi-pencil-square"></i>

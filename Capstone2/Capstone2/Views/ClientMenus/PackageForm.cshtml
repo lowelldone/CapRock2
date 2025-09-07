@@ -183,17 +183,6 @@
                 </div>
             </div>
 
-            <!-- Total Price Display -->
-            <div class="row mb-3">
-                <div class="col-12">
-                    <div class="alert alert-info">
-                        <i class="bi bi-calculator me-2"></i>
-                        <strong>Total Package Price: <span id="totalPriceDisplay">₱0.00</span></strong>
-                        <small class="d-block mt-1">Price updates automatically when you change the number of PAX</small>
-                    </div>
-                </div>
-            </div>
-
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="Occasion" class="form-label fw-semibold">Occasion</label>
@@ -202,6 +191,17 @@
                 <div class="col-md-6 mb-3">
                     <label asp-for="Motif" class="form-label fw-semibold">Theme</label>
                     <input asp-for="Motif" class="form-control" placeholder="Enter Theme" required />
+                </div>
+            </div>
+
+            <!-- Total Price Display -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="bi bi-calculator me-2"></i>
+                        <strong>Total Package Price: <span id="totalPriceDisplay">₱0.00</span></strong>
+                        <small class="d-block mt-1">Price updates automatically when you change the number of PAX</small>
+                    </div>
                 </div>
             </div>
 
