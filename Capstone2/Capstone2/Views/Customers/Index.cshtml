@@ -218,7 +218,13 @@
                                 }
                             </td>
                             <td data-label="Catering Status">
-                                <span class="modern-status-badge @(dynamicStatus.ToLower().Replace(" ", "-"))">
+                                <span class="modern-status-badge @(dynamicStatus switch {
+                                    "Pending" => "pending",
+                                    "Accepted" => "accepted",
+                                    "Ongoing" => "ongoing",
+                                    "Settling Balance" => "settling",
+                                    _ => "inactive"
+                                })">
                                     @if (dynamicStatus == "Pending")
                                     {
                                         <i class="bi bi-clock"></i>

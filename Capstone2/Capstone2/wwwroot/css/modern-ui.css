@@ -541,6 +541,12 @@ body, .container-fluid, .card, .table {
         border: 1px solid rgba(239, 68, 68, 0.2);
     }
 
+    .modern-status-badge.settling-balance {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger-color);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
     .modern-status-badge.ongoing {
         background: rgba(59, 130, 246, 0.1);
         color: var(--info-color);
@@ -1321,7 +1327,7 @@ body, .container-fluid, .card, .table {
         animation: spin 1s linear infinite;
     }
 
-@@keyframes spin {
+@keyframes spin {
     0% {
         transform: rotate(0deg);
     }
