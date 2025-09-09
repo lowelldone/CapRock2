@@ -462,7 +462,18 @@
         document.getElementById('venue').textContent = venue;
         document.getElementById('noOfPax').textContent = noOfPax;
         document.getElementById('orderDate').textContent = new Date().toLocaleDateString();
-        document.getElementById('cateringDate').textContent = cateringDate;
+
+        // Format catering date to match order date format (MM/DD/YYYY)
+        if (cateringDate !== '-') {
+            try {
+                const cateringDateObj = new Date(cateringDate);
+                document.getElementById('cateringDate').textContent = cateringDateObj.toLocaleDateString();
+            } catch (e) {
+                document.getElementById('cateringDate').textContent = cateringDate;
+            }
+        } else {
+            document.getElementById('cateringDate').textContent = '-';
+        }
 
         // Format time to 12-hour format
         if (timeOfServing !== '-') {
@@ -555,55 +566,55 @@
 
         const summaryContainer = document.getElementById('packageSummaryContent');
         summaryContainer.innerHTML = `
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="confirm-row">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <span class="confirm-label">Package Name:</span>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="confirm-row">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <span class="confirm-label">Package Name:</span>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <span class="confirm-value">${packageData.packageName || 'N/A'}</span>
+                                            </div>
                                         </div>
-                                        <div class="col-md-8">
-                                            <span class="confirm-value">${packageData.packageName || 'N/A'}</span>
+                                    </div>
+                                    <div class="confirm-row">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <span class="confirm-label">Package Price:</span>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <span class="confirm-value">₱${packageData.packagePrice || 0} per person</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="confirm-row">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <span class="confirm-label">Package Price:</span>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <span class="confirm-value">₱${packageData.packagePrice || 0} per person</span>
+                                <div class="col-md-6">
+                                    <div class="confirm-row">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <span class="confirm-label">Total Package:</span>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <span class="confirm-value">₱${(packageData.totalPrice || 0).toLocaleString()}</span>
+                                            </div>
                                         </div>
                                     </div>
+                                    ${(packageData.numberOfFreeLechons || 0) > 0 ? `
+                                    <div class="confirm-row">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <span class="confirm-label">Free Lechons:</span>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <span class="confirm-value">${packageData.numberOfFreeLechons} Whole Lechon${packageData.numberOfFreeLechons > 1 ? 's' : ''} (Included)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    ` : ''}
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="confirm-row">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <span class="confirm-label">Total Package:</span>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <span class="confirm-value">₱${(packageData.totalPrice || 0).toLocaleString()}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                ${(packageData.numberOfFreeLechons || 0) > 0 ? `
-                                <div class="confirm-row">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <span class="confirm-label">Free Lechons:</span>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <span class="confirm-value">${packageData.numberOfFreeLechons} Whole Lechon${packageData.numberOfFreeLechons > 1 ? 's' : ''} (Included)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                    `;
+                        `;
     }
 
     // Populate order items table
@@ -626,10 +637,10 @@
                     console.log(`Processing item:`, item);
                     if (!item.isLechon) {
                         tableHtml += `
-                                         <tr>
-                                             <td style="text-align: left; font-weight: 500; color: var(--text-purple);">${item.name}</td>
-                                         </tr>
-                                     `;
+                                             <tr>
+                                                 <td style="text-align: left; font-weight: 500; color: var(--text-purple);">${item.name}</td>
+                                             </tr>
+                                         `;
                     }
                 });
             }
@@ -638,13 +649,13 @@
         // Add free lechons if any
         if (packageData.numberOfFreeLechons > 0) {
             tableHtml += `
-                            <tr class="package-bonus-item">
-                                <td style="text-align: left; font-weight: 500; color: var(--text-purple);">
-                                    ${packageData.numberOfFreeLechons} Whole Lechon${packageData.numberOfFreeLechons > 1 ? 's' : ''} (Package Bonus)
-                                    <span class="package-bonus-badge ms-2">FREE!</span>
-                                </td>
-                            </tr>
-                        `;
+                                <tr class="package-bonus-item">
+                                    <td style="text-align: left; font-weight: 500; color: var(--text-purple);">
+                                        ${packageData.numberOfFreeLechons} Whole Lechon${packageData.numberOfFreeLechons > 1 ? 's' : ''} (Package Bonus)
+                                        <span class="package-bonus-badge ms-2">FREE!</span>
+                                    </td>
+                                </tr>
+                            `;
         }
 
         tableBody.innerHTML = tableHtml;
@@ -808,26 +819,26 @@
 
         // Build invoice HTML for package
         var invoiceHtml = `
-                            <div style="text-align: left; max-width: 800px; margin: 0 auto;">
-                                <!-- Header -->
-                                <div style="text-align: center; margin-bottom: 20px;">
-                                    <h2 style="color: #7c3aed; margin: 0; font-size: 24px;">GRUSH Catering</h2>
-                                    <p style="color: #6b7280; margin: 5px 0;">Package Order Invoice</p>
-                                </div>
-
-                                <!-- Order Details -->
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-                                    <div style="flex: 1;">
-                                        <h4 style="color: #374151; margin: 0 0 10px 0;">Billed To</h4>
-                                        <p style="margin: 5px 0; font-weight: 600;">${orderData['Customer.Name'] || 'Customer'}</p>
-                                        <p style="margin: 5px 0;">${orderData['Customer.ContactNo'] || 'Contact'}</p>
-                                        <p style="margin: 5px 0;">${orderData['Customer.Address'] || 'Address'}</p>
+                                <div style="text-align: left; max-width: 800px; margin: 0 auto;">
+                                    <!-- Header -->
+                                    <div style="text-align: center; margin-bottom: 20px;">
+                                        <h2 style="color: #7c3aed; margin: 0; font-size: 24px;">GRUSH Catering</h2>
+                                        <p style="color: #6b7280; margin: 5px 0;">Package Order Invoice</p>
                                     </div>
-                                    <div style="text-align: right; flex: 1;">
-                                        <p style="margin: 5px 0;"><strong>Order No:</strong> ${orderNumber}</p>
-                                                                     <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
-                                         <p style="margin: 5px 0;"><strong>Catering Date:</strong> ${new Date(orderData.CateringDate).toLocaleDateString('en-GB')}</p>
-                                         <p style="margin: 5px 0;"><strong>Time of Food Serving:</strong> ${(() => {
+
+                                    <!-- Order Details -->
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                                        <div style="flex: 1;">
+                                            <h4 style="color: #374151; margin: 0 0 10px 0;">Billed To</h4>
+                                            <p style="margin: 5px 0; font-weight: 600;">${orderData['Customer.Name'] || 'Customer'}</p>
+                                            <p style="margin: 5px 0;">${orderData['Customer.ContactNo'] || 'Contact'}</p>
+                                            <p style="margin: 5px 0;">${orderData['Customer.Address'] || 'Address'}</p>
+                                        </div>
+                                        <div style="text-align: right; flex: 1;">
+                                            <p style="margin: 5px 0;"><strong>Order No:</strong> ${orderNumber}</p>
+                                            <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date().toLocaleDateString()}</p>
+                                            <p style="margin: 5px 0;"><strong>Catering Date:</strong> ${new Date(orderData.CateringDate).toLocaleDateString()}</p>
+                                             <p style="margin: 5px 0;"><strong>Time of Food Serving:</strong> ${(() => {
                 const timeOfServing = orderData.timeOfFoodServing || '-';
                 if (timeOfServing !== '-') {
                     try {
@@ -843,32 +854,32 @@
                 }
                 return '-';
             })()}</p>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Package Summary -->
-                                <div style="margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px;">
-                                    <h4 style="color: #374151; margin: 0 0 10px 0;">Package Details</h4>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                        <span><strong>Package:</strong> ${packageData.packageName}</span>
-                                        <span><strong>PAX:</strong> ${packageData.paxQuantity}</span>
+                                    <!-- Package Summary -->
+                                    <div style="margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px;">
+                                        <h4 style="color: #374151; margin: 0 0 10px 0;">Package Details</h4>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span><strong>Package:</strong> ${packageData.packageName}</span>
+                                            <span><strong>PAX:</strong> ${packageData.paxQuantity}</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span><strong>Price per Person:</strong> ₱${packageData.packagePrice}</span>
+                                            <span><strong>Total Package:</strong> ₱${packageData.totalPrice.toFixed(2)}</span>
+                                        </div>
+                                        ${packageData.numberOfFreeLechons > 0 ? `<div style="text-align: center; color: #f59e0b; font-weight: 600; margin-top: 10px;">🎉 ${packageData.numberOfFreeLechons} FREE LECHON${packageData.numberOfFreeLechons > 1 ? 'S' : ''} INCLUDED! 🎉</div>` : ''}
                                     </div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                                        <span><strong>Price per Person:</strong> ₱${packageData.packagePrice}</span>
-                                        <span><strong>Total Package:</strong> ₱${packageData.totalPrice.toFixed(2)}</span>
-                                    </div>
-                                    ${packageData.numberOfFreeLechons > 0 ? `<div style="text-align: center; color: #f59e0b; font-weight: 600; margin-top: 10px;">🎉 ${packageData.numberOfFreeLechons} FREE LECHON${packageData.numberOfFreeLechons > 1 ? 'S' : ''} INCLUDED! 🎉</div>` : ''}
-                                </div>
 
-                                <!-- Menu Items Table -->
-                                <div style="margin-bottom: 20px;">
-                                                             <table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb;">
-                                         <thead>
-                                             <tr style="background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); color: white;">
-                                                 <th style="padding: 12px; text-align: left; border: 1px solid #e5e7eb;">Menu</th>
-                                             </tr>
-                                         </thead>
-                                         <tbody>`;
+                                    <!-- Menu Items Table -->
+                                    <div style="margin-bottom: 20px;">
+                                                                 <table style="width: 100%; border-collapse: collapse; border: 1px solid #e5e7eb;">
+                                             <thead>
+                                                 <tr style="background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); color: white;">
+                                                     <th style="padding: 12px; text-align: left; border: 1px solid #e5e7eb;">Menu</th>
+                                                 </tr>
+                                             </thead>
+                                             <tbody>`;
 
         // Add package items
         Object.keys(packageData).forEach(category => {
@@ -876,9 +887,9 @@
                 packageData[category].forEach(item => {
                     if (!item.isLechon) {
                         invoiceHtml += `
-                                             <tr style="background: white;">
-                                                 <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">${item.name}</td>
-                                             </tr>`;
+                                                 <tr style="background: white;">
+                                                     <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">${item.name}</td>
+                                                 </tr>`;
                     }
                 });
             }
@@ -887,9 +898,9 @@
         // Add free lechons if any
         if (packageData.numberOfFreeLechons > 0) {
             invoiceHtml += `
-                                 <tr style="background: #fef3c7;">
-                                     <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">${packageData.numberOfFreeLechons} Whole Lechon${packageData.numberOfFreeLechons > 1 ? 's' : ''} (Package Bonus)</td>
-                                 </tr>`;
+                                     <tr style="background: #fef3c7;">
+                                         <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">${packageData.numberOfFreeLechons} Whole Lechon${packageData.numberOfFreeLechons > 1 ? 's' : ''} (Package Bonus)</td>
+                                     </tr>`;
         }
 
         // Add totals
@@ -899,29 +910,29 @@
         const totalPayment = baseTotal + rushFee;
 
         invoiceHtml += `
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
 
-                                    <!-- Totals -->
-                                    <div style="text-align: right; margin-bottom: 20px;">`;
+                                        <!-- Totals -->
+                                        <div style="text-align: right; margin-bottom: 20px;">`;
 
         if (isRushOrder) {
             invoiceHtml += `
-                                        <p style="margin: 5px 0;"><strong>Base Total:</strong> ₱${baseTotal.toFixed(2)}</p>
-                                        <p style="margin: 5px 0; color: #dc2626;"><strong>Rush Order Fee (10%):</strong> ₱${rushFee.toFixed(2)}</p>`;
+                                            <p style="margin: 5px 0;"><strong>Base Total:</strong> ₱${baseTotal.toFixed(2)}</p>
+                                            <p style="margin: 5px 0; color: #dc2626;"><strong>Rush Order Fee (10%):</strong> ₱${rushFee.toFixed(2)}</p>`;
         }
 
         invoiceHtml += `
-                                        <p style="margin: 5px 0; font-size: 18px;"><strong>Total Payment:</strong> ₱${totalPayment.toFixed(2)}</p>
-                                        <p style="margin: 5px 0; color: #3b82f6;"><strong>50% Downpayment Required:</strong> ₱${(totalPayment * 0.5).toFixed(2)}</p>
-                                    </div>
+                                            <p style="margin: 5px 0; font-size: 18px;"><strong>Total Payment:</strong> ₱${totalPayment.toFixed(2)}</p>
+                                            <p style="margin: 5px 0; color: #3b82f6;"><strong>50% Downpayment Required:</strong> ₱${(totalPayment * 0.5).toFixed(2)}</p>
+                                        </div>
 
-                                    <!-- Footer -->
-                                    <div style="text-align: center; color: #6b7280; font-style: italic;">
-                                        Thank you for choosing our business!
-                                    </div>
-                                </div>`;
+                                        <!-- Footer -->
+                                        <div style="text-align: center; color: #6b7280; font-style: italic;">
+                                            Thank you for choosing our business!
+                                        </div>
+                                    </div>`;
 
         Swal.fire({
             title: "Package Invoice Preview",
