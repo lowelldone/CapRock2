@@ -30,14 +30,15 @@
 
     .modern-action-buttons {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         gap: 0.5rem;
-        width: 100%;
+        width: auto;
     }
 
     .modern-action-btn {
-        width: 100%;
+        width: auto;
         justify-content: center;
+        padding: 0.75rem 1.5rem;
     }
 
     .modern-form-control {
@@ -46,11 +47,22 @@
 
     .modern-table {
         font-size: 0.9rem;
+        /* Override global fixed layout to allow natural column widths */
+        table-layout: auto;
     }
 
         .modern-table th,
         .modern-table td {
             padding: 0.75rem 0.5rem;
+        }
+
+        /* Let cell content display fully on this page */
+        .modern-table tbody td {
+            max-width: none;
+            overflow: visible;
+            text-overflow: clip;
+            white-space: normal;
+            word-wrap: normal;
         }
 
     .modern-table-actions {
@@ -74,6 +86,9 @@
         transition: all 0.3s ease;
         min-width: 80px;
         white-space: nowrap;
+        width: 90px;
+        height: 36px;
+        max-width: 90px;
     }
 
         .modern-table-action-btn:hover {
@@ -126,6 +141,15 @@
 
         .modern-header {
             text-align: center;
+        }
+
+        .modern-action-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .modern-action-btn {
+            width: 100%;
         }
 
         .modern-title {
@@ -321,7 +345,7 @@
     /* Modal responsive adjustments */
     @@media (max-width: 768px) {
         .modal-dialog {
-            margin: 0.5rem;
+            margin: 0.5rem auto;
         }
 
         .modal-content {
@@ -339,6 +363,15 @@
         .modal-footer {
             padding: 1rem;
         }
+    }
+
+    /* Center profile modal and match sizing across pages */
+    .modal-dialog {
+        margin: 1.75rem auto;
+        display: flex;
+        align-items: center;
+        min-height: calc(100% - 3.5rem);
+        max-width: 500px;
     }
 </style>
 

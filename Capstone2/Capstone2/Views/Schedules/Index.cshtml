@@ -37,6 +37,13 @@
         font-weight: 700 !important;
     }
 
+    .modern-status-badge.settling {
+        background: rgba(239, 68, 68, 0.15) !important;
+        color: #ef4444 !important;
+        border: 2px solid rgba(239, 68, 68, 0.3) !important;
+        font-weight: 700 !important;
+    }
+
     /* Desktop styles - keep original layout */
     .modern-bg {
         padding: 2rem;
@@ -61,12 +68,21 @@
 
     .modern-table {
         font-size: 0.9rem;
+        table-layout: auto;
     }
 
-    .modern-table th,
-    .modern-table td {
-        padding: 0.75rem 0.5rem;
-    }
+        .modern-table tbody td {
+            max-width: none;
+            overflow: visible;
+            text-overflow: clip;
+            white-space: normal;
+            word-wrap: normal;
+        }
+
+        .modern-table th,
+        .modern-table td {
+            padding: 0.75rem 0.5rem;
+        }
 
     .modern-status-badge {
         font-size: 0.8rem;
@@ -75,8 +91,11 @@
     }
 
     .modal-dialog {
-        margin: 1rem;
+        margin: 1.75rem auto;
         max-width: 500px;
+        display: flex;
+        align-items: center;
+        min-height: calc(100% - 3.5rem);
     }
 
     .modal-content {
@@ -103,9 +122,9 @@
         opacity: 0.8;
     }
 
-    .btn-close:hover {
-        opacity: 1;
-    }
+        .btn-close:hover {
+            opacity: 1;
+        }
 
     .modal-body {
         padding: 2rem;
@@ -131,10 +150,10 @@
         transition: all 0.3s ease;
     }
 
-    .form-control:focus {
-        border-color: var(--primary-purple);
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-    }
+        .form-control:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
 
     .btn {
         padding: 0.75rem 1.5rem;
@@ -148,22 +167,22 @@
         border-color: var(--primary-purple);
     }
 
-    .btn-primary:hover {
-        background: var(--primary-purple-dark);
-        border-color: var(--primary-purple-dark);
-        transform: translateY(-2px);
-    }
+        .btn-primary:hover {
+            background: var(--primary-purple-dark);
+            border-color: var(--primary-purple-dark);
+            transform: translateY(-2px);
+        }
 
     .btn-secondary {
         background: #6b7280;
         border-color: #6b7280;
     }
 
-    .btn-secondary:hover {
-        background: #4b5563;
-        border-color: #4b5563;
-        transform: translateY(-2px);
-    }
+        .btn-secondary:hover {
+            background: #4b5563;
+            border-color: #4b5563;
+            transform: translateY(-2px);
+        }
 
     /* Mobile responsive adjustments */
     @@media (max-width: 768px) {
@@ -202,10 +221,10 @@
             font-size: 0.8rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.5rem 0.25rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.5rem 0.25rem;
+            }
 
         .modern-status-badge {
             font-size: 0.7rem;
@@ -274,10 +293,10 @@
             font-size: 0.75rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.4rem 0.2rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.4rem 0.2rem;
+            }
 
         .modern-status-badge {
             font-size: 0.65rem;
@@ -382,15 +401,15 @@
                         <thead>
                             <tr>
                                 <th>Head Waiter</th>
+                                @if ((ViewBag.Role as string) != "WAITER")
+                                {
+                                    <th>Waiters</th>
+                                }
                                 <th>Customer Name</th>
                                 <th>Catering Date</th>
                                 <th>Venue</th>
                                 <th>Occasion</th>
                                 <th>Food Serving Time</th>
-                                @if ((ViewBag.Role as string) != "WAITER")
-                                {
-                                    <th>Waiters</th>
-                                }
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -451,6 +470,13 @@
                                         {
                                             <span class="modern-status-badge ongoing">
                                                 <i class="bi bi-play-circle"></i>
+                                                @order.Status
+                                            </span>
+                                        }
+                                        else if (status == "SETTLING BALANCE")
+                                        {
+                                            <span class="modern-status-badge settling">
+                                                <i class="bi bi-calculator"></i>
                                                 @order.Status
                                             </span>
                                         }
@@ -554,6 +580,13 @@
                                         {
                                             <span class="modern-status-badge ongoing">
                                                 <i class="bi bi-play-circle"></i>
+                                                @order.Status
+                                            </span>
+                                        }
+                                        else if (status == "SETTLING BALANCE")
+                                        {
+                                            <span class="modern-status-badge settling">
+                                                <i class="bi bi-calculator"></i>
                                                 @order.Status
                                             </span>
                                         }
