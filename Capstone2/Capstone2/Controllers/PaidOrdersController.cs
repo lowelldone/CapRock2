@@ -897,18 +897,15 @@ namespace Capstone2.Controllers
                 }
                 _context.Orders.Update(order);
 
-                // Set waiters back to Available only if completed
-                if (order.Status == "Completed")
+                // After returning materials, set all assigned waiters back to Available
+                var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).ToList();
+                foreach (var ow in orderWaiters)
                 {
-                    var orderWaiters = _context.OrderWaiters.Where(ow => ow.OrderId == order.OrderId).ToList();
-                    foreach (var ow in orderWaiters)
+                    var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == ow.WaiterId);
+                    if (waiter != null)
                     {
-                        var waiter = _context.Waiters.FirstOrDefault(w => w.WaiterId == ow.WaiterId);
-                        if (waiter != null)
-                        {
-                            waiter.Availability = "Available";
-                            _context.Waiters.Update(waiter);
-                        }
+                        waiter.Availability = "Available";
+                        _context.Waiters.Update(waiter);
                     }
                 }
             }
