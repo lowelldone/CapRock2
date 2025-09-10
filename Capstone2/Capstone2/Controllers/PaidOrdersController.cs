@@ -442,14 +442,18 @@ namespace Capstone2.Controllers
             try
             {
                 var username = HttpContext.Session.GetString("Username");
+                var waiterRecord = _context.Waiters
+                    .Include(w => w.User)
+                    .FirstOrDefault(w => w.WaiterId == waiterId);
+                var waiterUsername = waiterRecord?.User?.Username ?? $"Waiter {waiterId}";
+
                 _context.AuditLogs.Add(new AuditLog
                 {
                     Username = username,
                     Role = role,
                     Action = nameof(RemoveAssignedWaiter),
                     OrderNumber = order.OrderNumber,
-                    WaiterId = waiterId,
-                    Details = $"Removed waiter {waiterId} from order {order.OrderId}"
+                    Details = $"Removed waiter {waiterUsername} from order {order.OrderId}"
                 });
                 _context.SaveChanges();
             }
@@ -582,7 +586,15 @@ namespace Capstone2.Controllers
             try
             {
                 var username = HttpContext.Session.GetString("Username");
-                var details = $"Deployed waiters: [{string.Join(",", waiterIds)}]";
+
+                // Get waiter usernames instead of IDs
+                var waiters = _context.Waiters
+                    .Include(w => w.User)
+                    .Where(w => waiterIds.Contains(w.WaiterId))
+                    .ToList();
+                var waiterUsernames = waiters.Select(w => w.User?.Username ?? $"Waiter {w.WaiterId}").ToList();
+
+                var details = $"Deployed waiters: [{string.Join(",", waiterUsernames)}]";
                 _context.AuditLogs.Add(new AuditLog
                 {
                     Username = username,
@@ -947,6 +959,7 @@ namespace Capstone2.Controllers
             return View(returns);
         }
 
+
         // POST: PaidOrders/UpdateProfile
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -1057,7 +1070,6 @@ namespace Capstone2.Controllers
                         Username = sessionUsername,
                         Role = role,
                         Action = "UpdateProfile",
-                        WaiterId = waiterId,
                         Details = changes.Any() ?
                             $"Profile updated ({string.Join(", ", changes)})" :
                             "Profile updated (no changes detected)"

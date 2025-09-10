@@ -58,20 +58,6 @@ namespace Capstone2.Controllers.AdminControllers
                 .Take(pageSize)
                 .ToListAsync();
 
-            // Map WaiterId -> Waiter Full Name for display
-            var waiterIds = items.Where(i => i.WaiterId.HasValue).Select(i => i.WaiterId!.Value).Distinct().ToList();
-            if (waiterIds.Any())
-            {
-                var waiters = await _context.Waiters
-                    .Include(w => w.User)
-                    .Where(w => waiterIds.Contains(w.WaiterId))
-                    .ToListAsync();
-                var waiterNames = waiters.ToDictionary(
-                    w => w.WaiterId,
-                    w => w.User != null ? ($"{w.User.FirstName} {w.User.LastName}") : ($"Waiter #{w.WaiterId}")
-                );
-                ViewBag.WaiterNames = waiterNames;
-            }
 
             // Map HeadWaiterId -> HeadWaiter Full Name for display (used when details contain "head waiter <id>")
             var headWaiters = await _context.HeadWaiters

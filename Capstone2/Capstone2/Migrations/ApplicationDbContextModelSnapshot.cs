@@ -48,9 +48,6 @@ namespace Capstone2.Migrations
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("WaiterId")
-                        .HasColumnType("int");
-
                     b.HasKey("AuditLogId");
 
                     b.ToTable("AuditLogs");

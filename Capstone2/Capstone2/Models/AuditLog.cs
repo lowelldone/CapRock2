@@ -17,7 +17,6 @@ namespace Capstone2.Models
         public string? Details { get; set; }
 
         public string? OrderNumber { get; set; }
-        public int? WaiterId { get; set; }
     }
 }
 
