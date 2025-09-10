@@ -96,30 +96,30 @@ namespace Capstone2.Controllers.AdminControllers
         }
 
         [HttpGet]
-         public async Task<IActionResult> RecentLogs(DateTime? since = null, int take = 5)
-         {
-             var role = HttpContext.Session.GetString("Role");
-             if (role != "ADMIN")
-             {
-                 return Forbid();
-             }
- 
-             var baseQuery = _context.AuditLogs
-                 .Where(l => l.Action != "Logout");
+        public async Task<IActionResult> RecentLogs(DateTime? since = null, int take = 5)
+        {
+            var role = HttpContext.Session.GetString("Role");
+            if (role != "ADMIN")
+            {
+                return Forbid();
+            }
 
-             var latestItems = await baseQuery
-                 .OrderByDescending(l => l.Timestamp)
-                 .Take(Math.Max(1, Math.Min(20, take)))
-                 .Select(l => new
-                 {
+            var baseQuery = _context.AuditLogs
+                .Where(l => l.Action != "Logout");
+
+            var latestItems = await baseQuery
+                .OrderByDescending(l => l.Timestamp)
+                .Take(Math.Max(1, Math.Min(20, take)))
+                .Select(l => new
+                {
                     l.AuditLogId,
                     l.Timestamp,
                     l.Username,
                     l.Role,
                     l.Action,
                     l.OrderNumber
-                 })
-                 .ToListAsync();
+                })
+                .ToListAsync();
 
             int newCount = 0;
             if (since.HasValue)
@@ -136,21 +136,21 @@ namespace Capstone2.Controllers.AdminControllers
                 newCount,
                 latestUtc
             });
-         }
+        }
 
         [HttpGet]
-         public async Task<IActionResult> RecentOrders(DateTime? since = null, int take = 5)
-         {
+        public async Task<IActionResult> RecentOrders(DateTime? since = null, int take = 5)
+        {
             var role = HttpContext.Session.GetString("Role");
             if (role != "ADMIN")
             {
                 return Forbid();
             }
- 
+
             var baseQuery = _context.Orders
                 .Include(o => o.Customer)
                 .Where(o => !o.isDeleted && !o.Customer.isDeleted);
- 
+
             if (since.HasValue)
             {
                 var s = since.Value;
@@ -171,7 +171,7 @@ namespace Capstone2.Controllers.AdminControllers
                     o.NoOfPax
                 })
                 .ToListAsync();
-                
+
             int newCount = 0;
             if (since.HasValue)
             {
@@ -180,15 +180,16 @@ namespace Capstone2.Controllers.AdminControllers
                     .Where(o => !o.isDeleted && o.OrderDate > s)
                     .CountAsync();
             }
-                
+
             var latestUtc = latestItems.FirstOrDefault()?.Timestamp;
-                
+
             return Ok(new
             {
                 items = latestItems,
                 newCount,
                 latestUtc
             });
-         }
+        }
+
     }
 }

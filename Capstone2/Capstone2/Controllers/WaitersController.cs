@@ -167,12 +167,12 @@ namespace Capstone2.Controllers
                             changes.Add($"availability: '{existingWaiter.Availability}' to '{waiter.Availability}'");
 
                         details = changes.Any() ?
-                            $"Updated waiter {waiter.WaiterId} ({string.Join(", ", changes)})" :
-                            $"Updated waiter {waiter.WaiterId} (Credentials Changed.)";
+                            $"Updated waiter {waiter.User?.Username ?? $"Waiter {waiter.WaiterId}"} ({string.Join(", ", changes)})" :
+                            $"Updated waiter {waiter.User?.Username ?? $"Waiter {waiter.WaiterId}"} (Credentials Changed.)";
                     }
                     else
                     {
-                        details = $"Updated waiter {waiter.WaiterId} credentials for username '{waiter.User?.Username}'";
+                        details = $"Updated waiter {waiter.User?.Username ?? $"Waiter {waiter.WaiterId}"} credentials";
                     }
                 }
 
@@ -181,7 +181,6 @@ namespace Capstone2.Controllers
                     Username = username,
                     Role = role,
                     Action = nameof(UpSert),
-                    WaiterId = waiter.WaiterId,
                     Details = details
                 });
                 _context.SaveChanges();
@@ -240,8 +239,7 @@ namespace Capstone2.Controllers
                     Username = username,
                     Role = role,
                     Action = nameof(Delete),
-                    WaiterId = id,
-                    Details = $"Deactivated waiter {id} with username '{waiter.User?.Username}' (Name: {waiter.User?.FirstName} {waiter.User?.LastName})"
+                    Details = $"Deactivated waiter {waiter.User?.Username ?? $"Waiter {id}"} (Name: {waiter.User?.FirstName} {waiter.User?.LastName})"
                 });
                 _context.SaveChanges();
             }

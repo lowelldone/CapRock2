@@ -120,7 +120,7 @@ namespace Capstone2.Controllers.AdminControllers
                 string details;
                 if (isCreateAction)
                 {
-                    details = $"Created head waiter {headWaiter.HeadWaiterId} with username '{headWaiter.User?.Username}'";
+                    details = $"Created head waiter {headWaiter.User?.Username ?? $"HeadWaiter {headWaiter.HeadWaiterId}"}";
                 }
                 else
                 {
@@ -147,12 +147,12 @@ namespace Capstone2.Controllers.AdminControllers
                             changes.Add($"active status: {existingHeadWaiter.isActive} to {headWaiter.isActive}");
 
                         details = changes.Any() ?
-                            $"Updated head waiter {headWaiter.HeadWaiterId} ({string.Join(", ", changes)})" :
-                            $"Updated head waiter {headWaiter.HeadWaiterId} (Credentials Changed.)";
+                            $"Updated head waiter {headWaiter.User?.Username ?? $"HeadWaiter {headWaiter.HeadWaiterId}"} ({string.Join(", ", changes)})" :
+                            $"Updated head waiter {headWaiter.User?.Username ?? $"HeadWaiter {headWaiter.HeadWaiterId}"} (Credentials Changed.)";
                     }
                     else
                     {
-                        details = $"Updated head waiter {headWaiter.HeadWaiterId} credentials for username '{headWaiter.User?.Username}'";
+                        details = $"Updated head waiter {headWaiter.User?.Username ?? $"HeadWaiter {headWaiter.HeadWaiterId}"} credentials";
                     }
                 }
 
@@ -161,7 +161,6 @@ namespace Capstone2.Controllers.AdminControllers
                     Username = username,
                     Role = role,
                     Action = nameof(UpSert),
-                    WaiterId = null, // Head waiters don't have WaiterId
                     Details = details
                 });
                 _context.SaveChanges();
@@ -222,8 +221,7 @@ namespace Capstone2.Controllers.AdminControllers
                     Username = username,
                     Role = role,
                     Action = nameof(Delete),
-                    WaiterId = null, // Head waiters don't have WaiterId
-                    Details = $"Deactivated head waiter {id} with username '{headWaiter.User?.Username}'"
+                    Details = $"Deactivated head waiter {headWaiter.User?.Username ?? $"HeadWaiter {id}"}"
                 });
                 _context.SaveChanges();
             }

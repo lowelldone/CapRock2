@@ -163,6 +163,7 @@ namespace Capstone2.Controllers
             return View(orderWaiter.Order);
         }
 
+
         // POST: Schedules/UpdateProfile
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -237,7 +238,6 @@ namespace Capstone2.Controllers
                         Username = sessionUsername,
                         Role = role,
                         Action = "UpdateProfile",
-                        WaiterId = waiterId,
                         Details = changes.Any() ?
                             $"Profile updated ({string.Join(", ", changes)})" :
                             "Profile updated (no changes detected)"
