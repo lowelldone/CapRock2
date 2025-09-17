@@ -329,13 +329,13 @@
         @if (fromPast)
         {
             <a asp-action="PastOrders" class="modern-action-btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Back to Past Orders
+                <i class="bi bi-arrow-left me-2"></i>Back
             </a>
         }
         else
         {
             <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Back to Customers
+                <i class="bi bi-arrow-left me-2"></i>Back
             </a>
         }
         @if (Model.Status != "Accepted" && Model.Status != "Ongoing" && Model.Status != "Completed" && Model.Status != "Settling Balance")

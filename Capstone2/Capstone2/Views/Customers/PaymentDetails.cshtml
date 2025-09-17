@@ -438,7 +438,7 @@
     <!-- Action Buttons -->
     <div class="d-flex gap-3 mt-4">
         <a asp-controller="Customers" asp-action="ViewOrder" asp-route-id="@Model.CustomerID" class="modern-action-btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Back to Order
+            <i class="bi bi-arrow-left me-2"></i>Back
         </a>
         @if (order != null && downPaymentRemaining <= 0 && order.HeadWaiterId == null && order.Status != "Accepted")
         {

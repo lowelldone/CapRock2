@@ -89,13 +89,13 @@
         @if (!string.IsNullOrEmpty(fromPastOrders))
         {
             <a asp-action="ViewOrder" asp-route-id="@Model.Customer.CustomerID" asp-route-fromPastOrders="true" class="modern-action-btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Back to Order Details
+                <i class="bi bi-arrow-left me-2"></i>Back
             </a>
         }
         else
         {
             <a asp-action="ViewOrder" asp-route-id="@Model.Customer.CustomerID" class="modern-action-btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-2"></i>Back to Order Details
+                <i class="bi bi-arrow-left me-2"></i>Back
             </a>
         }
     </div>
