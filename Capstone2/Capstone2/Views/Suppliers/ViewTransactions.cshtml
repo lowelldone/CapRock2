@@ -80,11 +80,6 @@
             border-color: var(--primary-purple-dark);
         }
 
-    .modal-dialog.modal-xl {
-        max-width: 95%;
-        margin: 1rem auto;
-    }
-
     .modal-content {
         border-radius: 12px;
     }
@@ -171,11 +166,6 @@
             width: 100%;
         }
 
-        .modal-dialog.modal-xl {
-            max-width: 98%;
-            margin: 0.5rem auto;
-        }
-
         .modal-header,
         .modal-body,
         .modal-footer {
@@ -217,9 +207,14 @@
         }
 
         .modal-dialog.modal-xl {
-            max-width: 100%;
-            margin: 0.25rem auto;
+            max-width: 60%;
+            margin: 2rem auto;
         }
+        @@media (max-width: 992px) {
+            .modal-dialog.modal-xl {
+            max-width: 90%; /* wider on tablets/mobiles */
+    }
+}
 
         .modal-header,
         .modal-body,
