@@ -205,6 +205,7 @@ namespace Capstone2.Controllers
 
             var orders = await _context.Orders
                 .Where(o => !o.isDeleted)
+                .Where(o => o.Status == "Completed")
                 .Where(o => o.CateringDate.Date >= start && o.CateringDate.Date <= end)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.MenuPackage)
