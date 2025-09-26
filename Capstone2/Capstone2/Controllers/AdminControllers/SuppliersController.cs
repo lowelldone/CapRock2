@@ -198,9 +198,9 @@ namespace Capstone2.Controllers.AdminControllers
             return View();
         }
 
-        // GET: Suppliers/ViewTransactions (shows only Ordered)
+        // GET: Suppliers/SupplierTransactions (shows only Ordered)
         [HttpGet]
-        public async Task<IActionResult> ViewTransactions(int id)
+        public async Task<IActionResult> SupplierTransactions(int id)
         {
             var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null) return NotFound();

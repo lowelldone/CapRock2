@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<Capstone2.Models.ViewTransaction>
- 
+
+@{
+    ViewData["Title"] = "Transaction History";
+}
+
 <link rel="stylesheet" href="~/css/modern-ui.css" />
 
 <style>
@@ -191,7 +195,7 @@
              </div>
          </div>
          <div class="modern-action-buttons">
-             <a asp-action="ViewTransactions" asp-route-id="@ViewBag.SupplierId" class="modern-action-btn btn-outline-secondary">
+            <a asp-action="SupplierTransactions" asp-route-id="@ViewBag.SupplierId" class="modern-action-btn btn-outline-secondary">
                  <i class="bi bi-arrow-left"></i>Back
              </a>
          </div>

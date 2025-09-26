@@ -398,7 +398,7 @@
         <div class="modern-action-buttons">
             @{
                 bool isReadOnly = ViewBag.IsReadOnly as bool? ?? false;
-                string returnUrl = ViewBag.ReturnUrl as string ?? Url.Action("ViewTransactions", new { id = supplierId })!;
+                string returnUrl = ViewBag.ReturnUrl as string ?? Url.Action("SupplierTransactions", new { id = supplierId })!;
             }
             <a href="@returnUrl" class="modern-action-btn btn-outline-secondary">
                 <i class="bi bi-arrow-left"></i>Back
