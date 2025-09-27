@@ -549,6 +549,13 @@ namespace Capstone2.Controllers.AdminControllers
                 return RedirectToAction("PaymentDetails", new { id = customerId });
             }
 
+            // Check if payment amount exceeds the order total
+            if (paymentAmount > customer.Order.TotalPayment)
+            {
+                TempData["PaymentError"] = $"Payment amount cannot exceed the order total of {customer.Order.TotalPayment:C}.";
+                return RedirectToAction("PaymentDetails", new { id = customerId });
+            }
+
             // Generate unique transaction number
             var transactionNumber = await GenerateTransactionNumber();
 
