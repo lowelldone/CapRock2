@@ -45,26 +45,26 @@
         gap: 1rem !important;
     }
 
-    .d-flex.gap-3 .modern-action-btn {
-        width: auto;
-    }
+        .d-flex.gap-3 .modern-action-btn {
+            width: auto;
+        }
 
     .row.g-3 {
         margin: 0;
     }
 
-    .row.g-3 > [class*="col-"] {
-        padding: 0.5rem;
-    }
+        .row.g-3 > [class*="col-"] {
+            padding: 0.5rem;
+        }
 
     .modern-table {
         font-size: 0.9rem;
     }
 
-    .modern-table th,
-    .modern-table td {
-        padding: 0.75rem 0.5rem;
-    }
+        .modern-table th,
+        .modern-table td {
+            padding: 0.75rem 0.5rem;
+        }
 
     .modern-status-badge {
         font-size: 0.8rem;
@@ -109,9 +109,9 @@
             gap: 1rem !important;
         }
 
-        .d-flex.gap-3 .modern-action-btn {
-            width: 100%;
-        }
+            .d-flex.gap-3 .modern-action-btn {
+                width: 100%;
+            }
 
         .modern-title {
             font-size: 1.5rem;
@@ -141,30 +141,30 @@
             font-size: 0.8rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.5rem 0.25rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.5rem 0.25rem;
+            }
 
-        .modern-table th:nth-child(1),
-        .modern-table td:nth-child(1) {
-            min-width: 80px;
-        }
+                .modern-table th:nth-child(1),
+                .modern-table td:nth-child(1) {
+                    min-width: 80px;
+                }
 
-        .modern-table th:nth-child(2),
-        .modern-table td:nth-child(2) {
-            min-width: 120px;
-        }
+                .modern-table th:nth-child(2),
+                .modern-table td:nth-child(2) {
+                    min-width: 120px;
+                }
 
-        .modern-table th:nth-child(3),
-        .modern-table td:nth-child(3) {
-            min-width: 80px;
-        }
+                .modern-table th:nth-child(3),
+                .modern-table td:nth-child(3) {
+                    min-width: 80px;
+                }
 
-        .modern-table th:nth-child(4),
-        .modern-table td:nth-child(4) {
-            min-width: 100px;
-        }
+                .modern-table th:nth-child(4),
+                .modern-table td:nth-child(4) {
+                    min-width: 100px;
+                }
     }
 
     @@media (max-width: 576px) {
@@ -189,10 +189,10 @@
             font-size: 0.75rem;
         }
 
-        .modern-table th,
-        .modern-table td {
-            padding: 0.4rem 0.2rem;
-        }
+            .modern-table th,
+            .modern-table td {
+                padding: 0.4rem 0.2rem;
+            }
 
         .modern-status-badge {
             font-size: 0.7rem;
@@ -363,7 +363,7 @@
                 <input type="hidden" name="customerId" value="@Model.CustomerID" />
                 <div class="col-md-4">
                     <label class="modern-form-label">Payment Amount</label>
-                    <input type="number" name="paymentAmount" min="1" step="0.01" class="modern-form-control" placeholder="Amount" required />
+                    <input type="number" name="paymentAmount" min="0.01" max="@orderTotal" step="0.01" class="modern-form-control" placeholder="Amount" value="@downPayment.ToString("F2")" required />
                 </div>
                 <div class="col-md-4">
                     <label class="modern-form-label">Payment Type</label>
@@ -499,4 +499,4 @@
             </div>
         </div>
     </div>
-} 
+}

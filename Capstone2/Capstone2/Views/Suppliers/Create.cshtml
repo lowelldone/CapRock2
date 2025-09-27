@@ -49,7 +49,7 @@
                 </div>
                 <div class="modern-form-group">
                     <label asp-for="ContactNo" class="modern-form-label">Contact Number</label>
-                    <input asp-for="ContactNo" class="modern-form-control" placeholder="Enter contact number" />
+                    <input asp-for="ContactNo" class="modern-form-control" maxlength="11" pattern="[0-9]*" inputmode="numeric" placeholder="Enter contact number" />
                     <span asp-validation-for="ContactNo" class="text-danger"></span>
                 </div>
                 <div class="d-flex gap-3 mt-4">
@@ -69,4 +69,11 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        document.querySelector('input[name="ContactNo"]').onkeypress = function(e) {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        };
+    </script>
 }

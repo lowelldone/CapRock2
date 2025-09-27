@@ -695,6 +695,17 @@ namespace Capstone2.Controllers
                 .Include(p => p.Items)
                 .FirstOrDefaultAsync(p => p.OrderId == order.OrderId);
 
+            // If not first pull-out, validate that at least one item has value >= 1
+            if (existingPullOut != null)
+            {
+                var hasValidQuantity = model.Materials.Any(m => m.PullOutQuantity >= 1);
+                if (!hasValidQuantity)
+                {
+                    TempData["PullOutError"] = "It should have at least one material with a value of 1 or more, otherwise just cancel it.";
+                    return RedirectToAction(nameof(PullOutMaterials), new { id = model.CustomerId });
+                }
+            }
+
             if (existingPullOut != null)
             {
                 // Update existing pull-out items
