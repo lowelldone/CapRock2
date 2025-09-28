@@ -440,7 +440,7 @@
                 var subtotal = unitPrice * item.quantity;
                 invoiceHtml += `
                                 <tr style="background: white;">
-                                    <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">${item.name}</td>
+                                    <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">${item.menu ? item.menu.name : 'undefined'}</td>
                                     <td style="padding: 12px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600; color: #7c3aed;">${item.quantity}</td>
                                     <td style="padding: 12px; border: 1px solid #e5e7eb; text-align: right; color: #7c3aed;">₱${unitPrice.toFixed(2)}</td>
                                     <td style="padding: 12px; border: 1px solid #e5e7eb; text-align: right; font-weight: 700; color: #7c3aed;">₱${subtotal.toFixed(2)}</td>

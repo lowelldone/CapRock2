@@ -85,7 +85,7 @@
     <div class="edit-card">
         <form asp-action="Edit" asp-route-id="@Model.OrderId" method="post">
             @Html.AntiForgeryToken()
-            <div asp-validation-summary="All" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="OrderId" />
             <input type="hidden" asp-for="Status" />
             <input type="hidden" asp-for="OrderDate" />
@@ -144,15 +144,14 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="NoOfPax" class="form-label fw-semibold">No. Of Pax</label>
-                    <input asp-for="NoOfPax" type="number" class="form-control" id="noOfPax" min="60" />
+                    <input asp-for="NoOfPax" type="number" class="form-control" id="noOfPax" min="@ViewBag.PackageMinPax" />
                     <span asp-validation-for="NoOfPax" class="text-danger"></span>
                 </div>
-            </div>
-
-            <div class="mb-4">
-                <label asp-for="Motif" class="form-label fw-semibold">Motif</label>
-                <input asp-for="Motif" class="form-control" placeholder="Enter motif" />
-                <span asp-validation-for="Motif" class="text-danger"></span>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Motif" class="form-label fw-semibold">Motif</label>
+                    <input asp-for="Motif" class="form-control" placeholder="Enter motif" />
+                    <span asp-validation-for="Motif" class="text-danger"></span>
+                </div>
             </div>
 
             <div class="d-flex gap-3">
@@ -225,6 +224,9 @@
 
             // NoOfPax client validation matching create form
             if (noOfPaxInput) {
+                // Get package minimum pax from server-side data
+                const packageMinPax = @ViewBag.PackageMinPax;
+
                 noOfPaxInput.addEventListener('focus', function () {
                     if (this.value === '0' || this.value === '') {
                         this.value = '';
@@ -236,8 +238,8 @@
                     }
                 });
                 noOfPaxInput.addEventListener('blur', function () {
-                    if (this.value === '' || this.value === '0' || parseInt(this.value) < 60) {
-                        this.setCustomValidity('Please enter a valid number of people (minimum 60)');
+                    if (this.value === '' || this.value === '0' || parseInt(this.value) < packageMinPax) {
+                        this.setCustomValidity(`Please enter a valid number of people (minimum ${packageMinPax})`);
                     }
                     else if (this.value === '' || this.value === '0' || parseInt(this.value) > 1500) {
                         this.setCustomValidity('Please enter a valid number of people (maximum 1500)');
@@ -320,4 +322,4 @@
             cateringDateInput.addEventListener('change', applyRushOrderRules);
         });
     </script>
-} 
+}
