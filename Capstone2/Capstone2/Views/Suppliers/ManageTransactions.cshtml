@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Supplier Transactions";
+    ViewData["Title"] = "Manage Transactions";
     var supplierId = (int)ViewBag.SupplierId;
     int? viewTransactionId = ViewBag.ViewTransactionId as int?;
 }
@@ -391,7 +391,7 @@
                 <i class="bi bi-receipt"></i>
             </div>
             <div>
-                <h1 class="modern-title">Supplier Transactions</h1>
+                <h1 class="modern-title">Manage Transactions</h1>
                 <p class="modern-subtitle">Manage purchase orders and transactions</p>
             </div>
         </div>
@@ -415,7 +415,7 @@
                 <div class="modern-status-card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="modern-status-card-title">
-                            <i class="bi bi-box"></i>Purchase Orders
+                            <i class="bi bi-box"></i>Material Orders
                         </h5>
                         @{
                             bool isReadOnlyHeader = ViewBag.IsReadOnly as bool? ?? false;

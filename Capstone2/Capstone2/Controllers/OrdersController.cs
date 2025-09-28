@@ -104,16 +104,29 @@ namespace Capstone2.Controllers
                         .FirstOrDefault();
                     ViewBag.PackagePrice = storedPackagePrice;
                 }
+
+                // Get package minimum pax requirement
+                var packageMinPax = order.OrderDetails
+                    .Where(od => od.MenuPackageId != null)
+                    .Select(od => od.MenuPackage != null ? od.MenuPackage.MinimumPax : 60)
+                    .FirstOrDefault();
+                ViewBag.PackageMinPax = packageMinPax;
+
                 // Sum of existing extras
                 double extrasTotal = 0d;
                 foreach (var od in order.OrderDetails)
-                    {
+                {
                     if (!od.IsFreeLechon && string.Equals(od.Type, "Package Extra", StringComparison.OrdinalIgnoreCase))
-                        {
+                    {
                         extrasTotal += od.Menu?.Price ?? 0d;
-                        }
                     }
+                }
                 ViewBag.PackageExtrasTotal = extrasTotal;
+            }
+            else
+            {
+                // For non-package orders, use default minimum of 60
+                ViewBag.PackageMinPax = 60;
             }
             return View(order);
         }
@@ -124,8 +137,8 @@ namespace Capstone2.Controllers
         {
             ModelState.Remove("Customer.Order");
             ModelState.Remove("OrderNumber");
-            if (!ModelState.IsValid) return View(model);
 
+            // Get the order with package information for validation
             var order = await _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
@@ -134,6 +147,48 @@ namespace Capstone2.Controllers
                     .ThenInclude(od => od.MenuPackage)
                 .FirstOrDefaultAsync(o => o.OrderId == id);
             if (order == null) return NotFound();
+
+            // Validate NoOfPax against package minimum requirement BEFORE ModelState.IsValid check
+            bool isPackageOrder = order.OrderDetails != null && order.OrderDetails.Any(od => od.MenuPackageId != null);
+            if (isPackageOrder)
+            {
+                var packageMinPax = order.OrderDetails
+                    .Where(od => od.MenuPackageId != null)
+                    .Select(od => od.MenuPackage != null ? od.MenuPackage.MinimumPax : 60)
+                    .FirstOrDefault();
+
+                if (model.NoOfPax < packageMinPax)
+                {
+                    ModelState.AddModelError("NoOfPax", $"Number of people must be at least {packageMinPax} for this package.");
+                }
+            }
+            else
+            {
+                // For non-package orders, use default minimum of 60
+                if (model.NoOfPax < 60)
+                {
+                    ModelState.AddModelError("NoOfPax", "Number of people must be at least 60.");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                // Re-populate ViewBag data for the view
+                ViewBag.IsPackageOrder = isPackageOrder;
+                if (isPackageOrder)
+                {
+                    var packageMinPax = order.OrderDetails
+                        .Where(od => od.MenuPackageId != null)
+                        .Select(od => od.MenuPackage != null ? od.MenuPackage.MinimumPax : 60)
+                        .FirstOrDefault();
+                    ViewBag.PackageMinPax = packageMinPax;
+                }
+                else
+                {
+                    ViewBag.PackageMinPax = 60;
+                }
+                return View(model);
+            }
 
             // Update order fields
             order.Venue = model.Venue;

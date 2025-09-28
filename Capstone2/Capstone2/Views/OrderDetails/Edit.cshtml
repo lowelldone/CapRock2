@@ -185,6 +185,11 @@
                     <div class="mb-4">
                         <h5 class="fw-bold mb-2 text-primary">@typeTitles[dt]</h5>
                         <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Menu</th>
+                                </tr>
+                            </thead>
                             <tbody class="order-details-body" id="tbody-@dt">
                                 @if (!regularItems.Any() && !freeLechonItems.Any())
                                 {
@@ -218,9 +223,12 @@
                                                         }
                                                     </td>
                                                     <td class="action-col text-end">
-                                                        <button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
-                                                            <i class="bi bi-trash me-1"></i>Remove
-                                                        </button>
+                                                        @if (item.Type == "Package Extra")
+                                                        {
+                                                            <button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">
+                                                                <i class="bi bi-trash me-1"></i>Remove
+                                                            </button>
+                                                        }
                                                     </td>
                                                 </tr>
                                                 indexCounter++;
@@ -320,7 +328,7 @@
                                     {
                                         if (!isPackageOrder || (isPackageOrder && !existingMenuIds.Contains(menu.MenuId)))
                                         {
-                                            <option value="@menu.MenuId" data-name="@menu.Name" data-type="@menu.DishType">@menu.Name</option>
+                                            <option value="@menu.MenuId" data-name="@menu.Name" data-type="@menu.DishType" data-category="@menu.Category">@menu.Name</option>
                                         }
                                     }
                                 </optgroup>
@@ -360,14 +368,23 @@
         var isRush = @(isRush.ToString().ToLower());
         var packageUnitPrice = @((isPackageOrder ? packagePrice : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
         function removeRow(btn) {
-            $(btn).closest('tr').remove();
+            var $row = $(btn).closest('tr');
+
+            // Check if this is a newly added item (Package Extra) that can be removed
+            var typeValue = $row.find('input[name*=".Type"]').val();
+            if (isPackage && typeValue !== 'Package Extra') {
+                return false; // Disable removal for original package items
+            }
+
+            $row.remove();
+
             // Re-index all rows
             if (isPackage) {
                 var idx = 0;
                 $('tbody.order-details-body tr').each(function () {
-                    var $row = $(this);
-                    if ($row.attr('data-category-header')) return; // skip category headers
-                    $row.find('input, select').each(function () {
+                    var $currentRow = $(this);
+                    if ($currentRow.attr('data-category-header')) return; // skip category headers
+                    $currentRow.find('input, select').each(function () {
                         var name = $(this).attr('name');
                         if (name) {
                             var newName = name.replace(/orderDetails\[\d+\]/, 'orderDetails[' + idx + ']');
@@ -377,6 +394,7 @@
                     idx++;
                 });
             } else {
+                // Re-index all rows for non-package orders
                 $('#orderDetailsBody tr').each(function (i, row) {
                     $(row).find('input, select').each(function () {
                         var name = $(this).attr('name');
@@ -395,11 +413,21 @@
             var menuName = $opt.data('name');
             if (!menuId) return;
 
+            // Get the price of the newly added item
+            var itemPrice = parseFloat(menuData[menuId]) || 0;
+            var numberOfPax = @Model.NoOfPax;
+
+            // Calculate additional cost: (Item Price ÷ 10) × Number of Pax
+            var additionalCost = (itemPrice / 10) * numberOfPax;
+
             if (isPackage) {
                 // Determine target table based on dish type of selected menu
                 var dishType = $opt.data('type');
+                var category = $opt.data('category');
+                console.log('Selected menu dish type:', dishType, 'category:', category); // Debug log
                 var $targetBody = $('#tbody-' + dishType);
                 if ($targetBody.length === 0) {
+                    console.log('No target body found for dish type:', dishType); // Debug log
                     $('#menuSelect').val('');
                     return;
                 }
@@ -409,29 +437,48 @@
                     $('#menuSelect').val('');
                     return;
                 }
+
+                // Find the correct category section within the dish type table
+                var $categoryHeader = $targetBody.find('tr[data-category-header="' + category + '"]');
                 var index = $('tbody.order-details-body tr').filter(function () { return !$(this).attr('data-category-header'); }).length; // global index excluding headers
+
                 var row = '<tr>' +
                     '<td>' +
                     '<input type="hidden" name="orderDetails[' + index + '].OrderDetailId" value="0" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].MenuId" value="' + menuId + '" />' +
-                    +
                     '<input type="hidden" name="orderDetails[' + index + '].Quantity" value="1" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].Type" value="Package Extra" />' +
                     '<input type="hidden" name="orderDetails[' + index + '].IsFreeLechon" value="false" />' +
+                    '<input type="hidden" name="orderDetails[' + index + '].AdditionalCost" value="' + additionalCost + '" />' +
                     menuName + ' <small class="text-primary ms-2">(newly added to package)</small>' +
                     '</td>' +
-                    '<td class="action-col text-end"><button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">' +
+                    '<td class="action-col text-end">' +
+                    '<button type="button" class="btn btn-danger btn-remove" onclick="removeRow(this)">' +
                     '<i class="bi bi-trash me-1"></i>Remove' +
-                    '</button></td>' +
+                    '</button>' +
+                    '</td>' +
                     '</tr>';
+
                 $targetBody.find('tr.text-muted').remove();
-                $targetBody.append(row);
+
+                // If category header exists, add after it; otherwise add to end
+                if ($categoryHeader.length > 0) {
+                    $categoryHeader.after(row);
+                } else {
+                    // Create category header if it doesn't exist
+                    var categoryHeader = '<tr class="table-light" data-category-header="' + category + '">' +
+                        '<td colspan="2" class="fw-semibold">' + category + '</td>' +
+                        '</tr>';
+                    $targetBody.append(categoryHeader);
+                    $targetBody.append(row);
+                }
+
                 $('#menuSelect').val('');
                 recalculateTotal();
                 return;
             }
 
-            // Non-package: allow duplicates by merging quantity
+            // Non-package: allow duplicates by merging quantity (no additional cost calculation)
             var existing = $('#orderDetailsBody input[name*=".MenuId"][value="' + menuId + '"]');
             if (existing.length) {
                 var $row = existing.closest('tr');
@@ -450,7 +497,6 @@
                 '<td>' +
                 '<input type="hidden" name="orderDetails[' + idx + '].OrderDetailId" value="0" />' +
                 '<input type="hidden" name="orderDetails[' + idx + '].MenuId" value="' + menuId + '" />' +
-                +
                 '<input type="hidden" name="orderDetails[' + idx + '].IsFreeLechon" value="false" />' +
                 menuName +
                 '</td>' +
@@ -469,19 +515,20 @@
         var menuData = {};
         @foreach (var menu in menus)
         {
-            <text>
-                    menuData[@menu.MenuId] = @menu.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            </text>
+                <text>
+                        menuData[@menu.MenuId] = @menu.Price.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                </text>
         }
 
             function recalculateTotal() {
                 var base = @((isPackageOrder ? 0m : 0m).ToString(System.Globalization.CultureInfo.InvariantCulture));
                 var rushFee = 0;
                 if (@(isPackageOrder.ToString().ToLower())) {
-                    // Package orders: (package price per pax * current pax) + rush (if same-day) + extras
+                    // Package orders: (package price per pax * current pax) + rush (if same-day) + extras + additional costs
                     var pax = parseInt($('#noOfPaxLive').val(), 10) || @Model.NoOfPax;
                     base = (packageUnitPrice * pax);
                     var extras = 0;
+                    var additionalCosts = 0;
                     $('tbody.order-details-body tr').each(function () {
                         var $row = $(this);
                         if ($row.attr('data-category-header')) return; // skip category headers
@@ -490,13 +537,18 @@
                             var mid = parseInt($row.find('input[name*=".MenuId"]').val(), 10);
                             var price = parseFloat(menuData[mid]) || 0;
                             extras += price;
+
+                            // Add additional cost for newly added items
+                            var additionalCost = parseFloat($row.find('input[name*=".AdditionalCost"]').val()) || 0;
+                            additionalCosts += additionalCost;
                         }
                     });
                     // Rush fee displayed on ViewOrder only; just compute total here
                     var isSameDay = @(isRush.ToString().ToLower());
                     rushFee = isSameDay ? (base * 0.10) : 0;
-                    var totalPkg = base + rushFee + extras;
-                    // No UI display here per requirements
+                    var totalPkg = base + rushFee + extras + additionalCosts;
+                    // Display total for package orders
+                    $('#totalPayment').text(totalPkg.toFixed(2));
                     return;
                 }
                 var total = 0;
@@ -524,4 +576,4 @@
         });
         // No local pax editor here; pax is edited on Orders/Edit
     </script>
-} 
+}
