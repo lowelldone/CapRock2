@@ -819,7 +819,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link sub-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "InventoryTrends" && ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")" asp-controller="Reports" asp-action="InventoryTrends">
                                                 <i class="bi bi-box-seam"></i>
-                                                <span>Inventory Consumptions</span>
+                                                <span>Inventory Trends</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -835,12 +835,6 @@
                                 <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Suppliers" ? "active" : "")" asp-controller="Suppliers" asp-action="Index">
                                     <i class="bi bi-truck"></i>
                                     <span>Suppliers</span>
-                                </a>
-                            </li>
-                            <li class="nav-item mb-2">
-                                <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active" : "")" asp-controller="Account" asp-action="Index">
-                                    <i class="bi bi-person-circle"></i>
-                                    <span>Account</span>
                                 </a>
                             </li>
                         }
@@ -859,24 +853,12 @@
                                 <span>Payments</span>
                             </a>
                         </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active" : "")" asp-controller="Account" asp-action="Index">
-                                <i class="bi bi-person-circle"></i>
-                                <span>Account</span>
-                            </a>
-                        </li>
                         break;
                     default:
                         <li class="nav-item mb-2">
                             <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Schedules" ? "active" : "")" asp-controller="Schedules" asp-action="Index">
                                 <i class="bi bi-calendar-event"></i>
                                 <span>Schedules</span>
-                            </a>
-                        </li>
-                        <li class="nav-item mb-2">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Account" ? "active" : "")" asp-controller="Account" asp-action="Index">
-                                <i class="bi bi-person-circle"></i>
-                                <span>Account</span>
                             </a>
                         </li>
                         break;
@@ -898,7 +880,6 @@
                 <a class="navbar-brand" id="grush" asp-controller="Home" asp-action="Homepage">GRUSH Catering Services</a>
                 <div class="order-login">
                     <a class="btn btn-primary" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
-                    <a class="btn btn-primary" asp-controller="Home" asp-action="LogIn">Login</a>
                     <div class="order-login">
                         <a class="btn btn-primary" asp-controller="Home" asp-action="LogIn">Login</a>
                     </div>
