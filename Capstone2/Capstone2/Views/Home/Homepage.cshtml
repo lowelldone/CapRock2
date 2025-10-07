@@ -143,11 +143,37 @@
             font-weight: 500;
         }
         
-        /* Services Section */
-        .services-section {
-            padding: 6rem 0;
-        }
-        
+        /*SERVICES SECTION*/
+       .services-section {
+    position: relative;
+    padding: 6rem 0;
+    background: url('images/SERVICES-BG.jpg') no-repeat center center/cover;
+    z-index: 1;
+}
+
+            .services-section::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0.3); /* 30% white background overlay */
+                z-index: 0;
+            }
+
+            /* Keeps the actual content above the overlay */
+            .services-section > * {
+                position: relative;
+                z-index: 2;
+            }
+
+            /* Keeps the actual content above the overlay */
+            .services-section > * {
+                position: relative;
+                z-index: 2;
+            }
+
         .section-title {
             text-align: center;
             margin-bottom: 3.5rem;
@@ -160,7 +186,7 @@
         }
         
         .section-title p {
-            color: #718096;
+            color: #61329c;
             max-width: 600px;
             margin: 0 auto;
             font-size: 1.1rem;
@@ -231,17 +257,75 @@
         .service-link:hover i {
             transform: translateX(5px);
         }
+
+      
         
-        /* Testimonials */
-        .testimonial-section {
-            background: var(--purple-bg);
-            padding: 6rem 0;
+        #service-images-modal {
+            background-image: url('images/your-background.jpg');
+            background-size: cover;
+            background-position: center; 
+            background-repeat: no-repeat;
+            background-blend-mode: overlay; 
+            background-color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1050;
         }
-        
-        .testimonial-card {
+
+            #service-images-modal.show {
+                visibility: visible;
+                opacity: 1;
+            }
+
+        #modal-image-container img {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+            #modal-image-container img.show {
+                opacity: 1;
+            }
+       /* REVIEW SECTION */
+.testimonial-section {
+    background-image:     
+        url('images/TESTIMONIAL-BG.jpg'); 
+    background-size: cover;   
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 6rem 0;
+    color: #fff; 
+}
+
+.Text-title p {
+    font-size: 1.5rem;   
+    color: #a452f1;     
+    font-weight: 600;   
+    text-align: center; 
+    margin-top: -1.5rem;      
+    margin-bottom: 1.8rem; 
+
+    background-color: rgba(255, 255, 255, 0.5);
+    display: inline-block;    
+    padding: 0.3rem 0.8rem;   
+    border-radius: 1.5rem;    
+}    
+.Text-title {
+    text-align: center;
+}
+.testimonial-card {
             background: #fff;
             border-radius: 1.2rem;
-            padding: 2.5rem;
+            padding: 2rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             margin: 1rem;
             height: 100%;
@@ -249,9 +333,9 @@
         
         .testimonial-text {
             font-size: 1.1rem;
-            line-height: 1.8;
-            color: #4a5568;
-            margin-bottom: 2rem;
+            line-height: 1.5;
+            color: #353232;
+            margin-bottom: 1.8rem;
             position: relative;
         }
         
@@ -265,10 +349,24 @@
             font-family: Georgia, serif;
             line-height: 1;
         }
-        
+
+       .section-title h2 {
+    font-size: 2.2rem; 
+    font-weight: 800;
+    margin-bottom: 0.4rem; 
+    text-align: center;
+    color: #8335e4;
+}
         .testimonial-author {
             display: flex;
             align-items: center;
+        }
+
+          .testimonial-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            gap: 1rem; 
         }
         
         .author-img {
@@ -295,51 +393,449 @@
             color: #718096;
             margin: 0;
         }
-        
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-            padding: 6rem 0;
-            color: white;
+        /*MENU SECTION*/ 
+       
+
+          
+        .menu-navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 5;
+        }
+        .menu-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.5); 
+            z-index: 0;
+        }
+
+        .menu-section .container {
+            position: relative;
+            z-index: 2; 
+        }
+
+       .menu-section {
+    position: relative;
+    background: url('../images/MENU-BG.jpg') no-repeat center center/cover;
+    min-height: 8in;   
+    padding: 4rem 1rem; 
+    z-index: 1;
+    padding: 2rem 0;
+}
+        .menu-section {
+            padding: 2rem 0;
+        }
+
+        .section-title h2 {
+            font-size:5rem;
             text-align: center;
+            margin-bottom: 2rem;
         }
-        
-        .cta-title {
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            font-size: 2.5rem;
+
+        .category-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
         }
-        
-        .cta-text {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 2.5rem;
-            opacity: 0.9;
-        }
-        
-        .btn-light {
-            background: white;
-            color: var(--primary-purple);
+
+        .category {
+            padding: 0.6rem 1.2rem;
             border: none;
-            border-radius: 50px;
-            padding: 0.8rem 2.5rem;
-            font-weight: 700;
-            transition: all 0.3s ease;
+            border-radius: 8px;
+            background: #f2f2f2;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
         }
-        
-        .btn-light:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+            .category.active {
+                background-color: #5f3094;
+                color: white;
+            }
+
+        .menu-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
         }
+
+            .menu-grid.active {
+                display: grid;
+            }
         
-        /* Footer */
-        .footer {
-            background: #1a202c;
-            color: white;
-            padding: 5rem 0 2rem;
+
+.menu-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+    text-align: center;
+    padding: 0.75rem;
+    display: none; 
+    width: 4in;
+    height: auto;
+    margin: auto;   
+    margin-bottom: 2rem; 
+}
+
+
+.menu-card img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+.menu-card h4 {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.menu-card p {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.75rem;
+}
+
+        .menu-cards-row {
+            display: flex;
+            gap: 2rem;
+            width: 100%;
+            justify-content: center;
         }
+            .menu-card.best-seller {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 2rem;
+                width: 100%;
+                max-width: none;
+                margin: 0 auto;
+                box-sizing: border-box;             
+            }
+
+            .menu-card.best-seller1 {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 2rem;
+                width: 100%;
+                max-width: none;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+            .menu-card.best-seller2 {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 2rem;
+                width: 100%;
+                max-width: none;
+                margin: 0 auto;
+                box-sizing: border-box;
+            }
+
+        .menu-card.best-seller3 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2rem;
+            width: 100%;
+            max-width: none;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+          
+        .best-seller-card {
+            position: relative;
+            aspect-ratio: 3 / 2;
+            width: 3in;
+            height: 2in;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .best-seller-card1 {
+            position: relative;
+            aspect-ratio: 3 / 2;
+            width: 3in;
+            height: 2in;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .best-seller-card2 {
+            position: relative;
+            aspect-ratio: 3 / 2;
+            width: 3in;
+            height: 2in;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .best-seller-card3 {
+            position: relative;
+            aspect-ratio: 3 / 2;
+            width: 3in;
+            height: 2in;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+
+        .best-seller-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            position: relative;
+            z-index: 1;  
+             transition: transform 0.3s ease;
+        }
+
+        .best-seller-card1 img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            position: relative;
+            z-index: 1;  
+             transition: transform 0.3s ease;
+        }
+
+        .best-seller-card2 img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .best-seller-card3 img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        .price-overlay {
+            position: absolute;
+            top: 0;
+            right: -50%; /* start completely outside on the right */
+            width: 50%; /* only half width */
+            height: 100%;
+            background: rgba(255, 255, 255, 0.65); /* 65% opacity white */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2; /* above image */
+            transition: right 0.8s ease, opacity 0.5s ease;
+            opacity: 0;
+            pointer-events: none;
+            border-radius: 15px 0 0 15px;
+        }
+
+            .price-overlay p {
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: #5f3094;
+                opacity: 0;
+                transition: opacity 0.4s ease 0.3s;
+                text-align: center
+            }
+
+        .best-seller-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .best-seller-card1:hover img {
+            transform: scale(1.05);
+        }
+
+        .best-seller-card2:hover img {
+            transform: scale(1.05);
+        }
+
+        .best-seller-card3:hover img {
+            transform: scale(1.05);
+        }
+
+        .best-seller-card:hover .price-overlay {
+            right: 0; /* slides into view */
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .best-seller-card1:hover .price-overlay {
+            right: 0; /* slides into view */
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .best-seller-card2:hover .price-overlay {
+            right: 0; /* slides into view */
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .best-seller-card3:hover .price-overlay {
+            right: 0; /* slides into view */
+            opacity: 1;
+            pointer-events: auto;
+        }
+            .best-seller-card:hover .price-overlay p {
+                opacity: 1;
+            }
+
+        .best-seller-card1:hover .price-overlay p {
+            opacity: 1;
+        }
+
+        .best-seller-card2:hover .price-overlay p {
+            opacity: 1;
+        }
+
+        .best-seller-card3:hover .price-overlay p {
+            opacity: 1;
+        }
+       
+
+        /*ABOUT SECTION*/
+        .about-section {
+            background: url('../images/about-bj.jpg') no-repeat center center/cover;
+            padding: 3rem 1rem;
+            min-height: 400px;
+            position: relative;
+            z-index: 1;
+        }
+
+            .about-section::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0.3);
+                z-index: 0;
+            }
+
+      .vmv-card {
+    width: 7in;
+    height: 4in;              
+    background: rgba(167, 139, 250, 0.85);
+    border-radius: 12px;
+    overflow: hidden;         
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.vmv-card img {
+    width: 100%;              
+    height: 100%;             
+    object-fit: fill;     
+    display: block;
+}
+
+.vmv-card:hover {
+    box-shadow: 0 8px 14px #8b5cf6;
+}
+
+.vmv-card.active {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 7.5in;               
+    height: 5.5in;            
+    transform: translate(-50%, -50%) scale(1.05);
+    z-index: 999;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    background: rgba(167, 139, 250, 0.95);
+}
+
+
+        .about-images {
+            position: relative;
+            z-index: 2;
+            display: flex; 
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: nowrap; 
+        }   
+           
+            .about-section::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(255, 255, 255, 0.3);
+                z-index: 0;
+            }
+
+   .cta-section {
+  background-image:
+    linear-gradient( rgba(241, 7, 163, 0.2) 0%),
+    url('images/contact-BG.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;               
+  flex-direction: column;      
+  justify-content: center;    
+  align-items: center;        
+
+  min-height: 360px;
+  padding: 2rem 1rem;        
+  text-align: center;
+}
+
+.cta-title {
+  font-weight: 800;
+  margin-bottom: 1rem; 
+  font-size: 3.5rem;
+  color: #fff;
+}
+.cta-text {
+  font-size: 1.2rem;
+  max-width: 700px;
+  margin: 0 auto 2.5rem;
+  opacity: 0.9;
+  color: #fff;
+}
         
+        /* FOOTER */
+        #contact-section {
+            background-color: #2f2f2f; 
+            color: white; 
+            padding: 2rem 0;
+        }  
+     .footer {
+    background: #1a202c;
+    color: white;
+    padding: 2rem 0 1rem;  
+}
+
         .footer-title {
             font-weight: 700;
             margin-bottom: 1.5rem;
@@ -366,7 +862,7 @@
         }
         
         .footer-contact {
-            color: #a0aec0;
+            color: white;
             margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
@@ -399,13 +895,13 @@
             transform: translateY(-3px);
         }
         
-        .footer-bottom {
-            border-top: 1px solid #2d3748;
-            margin-top: 4rem;
-            padding-top: 2rem;
-            text-align: center;
-            color: #a0aec0;
-        }
+      .footer-bottom {
+    border-top: 1px solid #2d3748;
+    margin-top: 1.8rem;   
+    margin-bottom: -1.5rem; 
+    text-align: center;
+    color: #a0aec0;
+}
         
         /* Responsive Adjustments */
         @@media (max-width: 768px) {
@@ -450,26 +946,25 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
+                        <a class="nav-link active" href="#hero-section">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="#services-section">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Services</a>
+                        <a class="nav-link" href="#menu-section">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Menus</a>
+                        <a class="nav-link" href="#testimonial-section">Reviews</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Gallery</a>
-                    </li>
+                        <a class="nav-link" href="#about-section">About</a>
+                    </li>                
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
+                        <a class="nav-link" href="#contact-section">Contact</a>
                     </li>
                 </ul>
                 <div class = "order-login">
-                    <a class="btn btn-primary" asp-controller = "ClientMenus" asp-action = "Index">Order Now</a>
                     <a class="btn btn-primary" id="login-btn" asp-controller = "Home" asp-action = "LogIn">Login</a>
                 </div>
             </div>
@@ -477,7 +972,7 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section id="hero-section" class="hero-section">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 hero-content">
@@ -485,8 +980,7 @@
                     <h1 class="hero-title">Exquisite Catering for Unforgettable Events</h1>
                     <p class="hero-subtitle">From intimate gatherings to grand celebrations, we create culinary experiences that delight your guests and elevate your special occasions.</p>
                     <div class="d-flex flex-wrap gap-3">
-                        <a href="#" class="btn btn-primary btn-lg">View Our Menus</a>
-                        <a href="#" class="btn btn-outline-primary btn-lg">Contact Us</a>
+                        <a class="btn btn-primary" asp-controller="ClientMenus" asp-action="Index">Order Now</a>
                     </div>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block">
@@ -496,60 +990,30 @@
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-3 col-6 mb-4 mb-md-0">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="500">0</div>
-                        <div class="stat-label">Events Catered</div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6 mb-4 mb-md-0">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="120">0</div>
-                        <div class="stat-label">Menu Options</div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="98">0</div>
-                        <div class="stat-label">Client Satisfaction</div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-6">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="15">0</div>
-                        <div class="stat-label">Years Experience</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Services Section -->
-    <section class="services-section">
+    <section id="services-section" class="services-section">
         <div class="container">
             <div class="section-title">
                 <h2>Our Catering Services</h2>
                 <p>We offer comprehensive catering solutions for all types of events, ensuring exceptional food and service every time.</p>
             </div>
-            
+
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
                         <div class="service-img">
-                            <img src="https://images.unsplash.com/photo-1522728323383-63f3f32df11e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Wedding Catering">
+                            <img src="https://plus.unsplash.com/premium_photo-1664790560098-1fac17eb495e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDF8fHdlZGRpbmclMjBidWZmZXR8ZW58MHx8MHx8fDA%3D" alt="Wedding Dinner ">
+                            " alt="Wedding Catering">
+
                         </div>
                         <div class="service-content">
                             <h3 class="service-title">Wedding Catering</h3>
                             <p class="service-desc">Create unforgettable wedding experiences with our customized menus and impeccable service for your special day.</p>
-                            <a href="#" class="service-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                            <a href="#" class="service-link" data-service="wedding">Show More <i class="bi bi-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
                         <div class="service-img">
@@ -558,11 +1022,11 @@
                         <div class="service-content">
                             <h3 class="service-title">Corporate Events</h3>
                             <p class="service-desc">Impress clients and colleagues with professional catering services for meetings, conferences, and corporate functions.</p>
-                            <a href="#" class="service-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                            <a href="#" class="service-link" data-service="corporate">Show More <i class="bi bi-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
                         <div class="service-img">
@@ -571,7 +1035,7 @@
                         <div class="service-content">
                             <h3 class="service-title">Social Gatherings</h3>
                             <p class="service-desc">From birthdays to anniversaries, we make your celebrations special with delicious food and attentive service.</p>
-                            <a href="#" class="service-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                            <a href="#" class="service-link" data-service="social">Show More <i class="bi bi-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
@@ -579,54 +1043,381 @@
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonial-section">
+  
+    <section id="menu-section" class="menu-section">
         <div class="container">
             <div class="section-title">
-                <h2>What Our Clients Say</h2>
-                <p>Don't just take our word for it - hear from some of our satisfied clients</p>
+                <h2>Catering Menu</h2>
+            </div>
+
+            <div class="category-buttons">
+                <button class="category" data-category="best-seller">Best Seller</button>
+                <button class="category" data-category="main-dish">Main Dish</button>
+                <button class="category" data-category="side-dish">Side Dish</button>
+                <button class="category" data-category="beverage">Beverage</button>
+                <button class="category" data-category="dessert">Dessert</button>
+                <button class="category" data-category="rice">Rice</button>             
             </div>
             
+            <div class="menu-grid active" data-category="best-seller">
+
+                <div class="best-seller-card">
+                    <img src="images/Broccoli.jpg" alt="Beef Broccoli">
+                    <div class="price-overlay"><p>Beef Broccoli</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/Thirmidor.jpg" alt="Seafood Thermidor">
+                    <div class="price-overlay"><p>Seafood Thermidor</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/BEEF-SALPICAO.jpg" alt="Beef Salpicao">
+                    <div class="price-overlay"><p>Beef Salpicao</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/BEEF-ONION.jpg" alt="Beef with Onion">
+                    <div class="price-overlay"><p>Beef with Onion</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/GARLIC-SHRIMP.jpg" alt="Butter and Garlic Shrimp ">
+                    <div class="price-overlay"><p>Butter and Garlic Shrimp</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/BEEF-CALDERETA.jpg" alt="Beef Caldereta">
+                    <div class="price-overlay"><p>Beef Caldereta</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/SPICY-PORK-RIBS.jpg" alt="Spicy Pork Ribs">
+                    <div class="price-overlay"><p>Spicy Pork Ribs</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/CHICKEN-LOLLIPOP.jpg" alt="Chicken Lollipop">
+                    <div class="price-overlay"><p>Chicken Lollipop</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/CHICKEN-CORDON.jpg" alt="Chicken Cordon Bleu">
+                    <div class="price-overlay"><p>Chicken Cordon Bleu</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/SHRIMP-TEMPURA.jpg" alt="Shrimp Tempura">
+                    <div class="price-overlay"><p>Shrimp Tempura</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/SWEET&SOURFISH.jpg" alt="Sweet & Sour Fish Fillet">
+                    <div class="price-overlay"><p>Sweet & Sour Fish Fillet</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/Pancit-Canton.jpg" alt="Pancit Canton">
+                    <div class="price-overlay"><p>Pancit Canton</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/CALAMARIS.jpg" alt="Calamaris">
+                    <div class="price-overlay"><p>Calamaris</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/LECHON.jpg" alt="Lechon">
+                    <div class="price-overlay"><p>Lechon</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/HUMBA.jpg" alt="Humba">
+                    <div class="price-overlay"><p>Humba</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/PORK-STEAK.jpg" alt="Pork Steak">
+                    <div class="price-overlay"><p>Pork Steak</p></div>
+                </div>
+               
+              
+            </div>
+
+    
+            <div class="menu-grid" data-category="main-dish">
+                <div class="best-seller-card">
+                    <img src="images/FISH-FILLET.jpg" alt="Fish Fillet">
+                    <div class="price-overlay"><p>Fish Fillet with Chips</p></div>
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/BANGUS.jpg" alt="Bangus">
+                    <div class="price-overlay"><p>Crispy Fry Bangus</p></div>
+
+                </div>
+
+                <div class="best-seller-card">
+                    <img src="images/CHICKEN-CURRY.jpg" alt="Chicken Curry">
+                    <div class="price-overlay"><p>Chicken Curry</p></div>
+
+                </div>
+                <div class="best-seller-card">
+                    <img src="images/BUTTER-CHICKEN.jpg" alt="Buttered Chicken">
+                    <div class="price-overlay"><p>Buttered Chicken</p></div>
+
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/ROASTED-CHICKEN.jpg" alt="Roasted Chicken">
+                    <div class="price-overlay"><p>Roasted Chicken</p></div>
+
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/BEEF-KARE-KARE.jpg" alt="Beef Kare-Kare">
+                    <div class="price-overlay"><p>Beef  Kare-Kare</p></div>
+
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/BEEF-MENUDO.jpg" alt="Beef Menudo">
+                    <div class="price-overlay"><p>Beef Menudo</p></div>
+
+                </div>
+                <div class="best-seller-card">
+                    <img src="images/BEEF-STEAK.jpg" alt="Beef Steak">
+                    <div class="price-overlay"><p>Beef Steak</p></div>
+
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/BEEF-STEW.jpg" alt="Beef Stew">
+                    <div class="price-overlay"><p>Beef Stew</p></div>
+
+                </div>
+                <div class="best-seller-card">
+                    <img src="images/STIR-FRY.jpg" alt="Stir Fry Pork">
+                    <div class="price-overlay"><p>Stir Fry Pork</p></div>
+
+                </div>
+                <div class="best-seller-card">
+                    <img src="images/SWEET-SOUR-PORK.jpg" alt="Sweet & Sour Pork">
+                    <div class="price-overlay"><p>Sweet & Sour Pork</p></div>
+
+                </div>
+                <div class="best-seller-card">
+                    <img src="images/BREADED-PORK.jpg" alt="Breaded Pork Chop">
+                    <div class="price-overlay"><p>Breaded Pork Chop</p></div>
+
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/PORK-SISIG.jpg" alt="Spicy Pork Sisig">
+                    <div class="price-overlay"><p>Spicy Pork Sisig</p></div>
+
+                </div>
+                <div class="best-seller-card">
+                    <img src="images/PORK-TOCINO.jpg" alt="Pork Tocino">
+                    <div class="price-overlay"><p>Pork Tocino</p></div>
+
+                </div>
+                <div class="best-seller-card">
+                    <img src="images/PORK-BBQ.jpg" alt="Pork BBQ">
+                    <div class="price-overlay"><p>Pork BBQ</p></div>
+
+                </div>
+              
+
+                </div>
+            </div>
+        </div>
+
+           
+               <div class="menu-grid" data-category="side-dish">
+            <div class="best-seller-card">
+                    <img src="images/BIHON.jpg" alt="Bihon">
+                    <div class="price-overlay"><p>Bihon</p></div>
+                </div>
+            <div class="best-seller-card">
+                    <img src="images/SOTANGHON.jpg" alt="Sotanghon Guisado">
+                    <div class="price-overlay"><p>Sotanghon Guisado</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/SPAGHETTI.jpg" alt="Spaghetti">
+                    <div class="price-overlay"><p>Spaghetti</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/BAM-E.jpg" alt="Bam-e">
+                    <div class="price-overlay"><p>Bam-e</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/BAKED-MACARONI.jpg" alt="Baked Macaroni">
+                    <div class="price-overlay"><p>Baked Macaroni</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/CARBONARA.jpg" alt="">
+                    <div class="price-overlay"><p>Carbonara</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/LASAGNA.jpg" alt="Lasagna with Noodles">
+                    <div class="price-overlay"><p>Lasagna with Noodles</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/ZEN-SALAD.jpg" alt="Zen Salad">
+                    <div class="price-overlay"><p>Zen Salad</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/CAESAR-SALAD.jpg" alt="Caesar Salad">s
+                    <div class="price-overlay"><p>Caesar Salad</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/THOUSAND-ISLAND.jpg" alt="Thousand Island">
+                    <div class="price-overlay"><p>Thousand Island</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/POTATO-SALAD.jpg" alt="Potato Salad">
+                    <div class="price-overlay"><p>Potato Salad</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/CHAO.jpg" alt="Lasagna with Noodles">
+                    <div class="price-overlay"><p>Lasagna with Noodles</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/CHOPSUEY.jpg" alt="Chopsuey">
+                    <div class="price-overlay"><p>Chopsuey</p></div>
+                </div>
+                 <div class="best-seller-card">
+                    <img src="images/MIX.jpg" alt="Mixed Seafood Vegetables">
+                    <div class="price-overlay"><p>Mixed Seafood Vegetables</p></div>
+                </div>
+                
+              </div>
+           
+      
+           
+                <div class="menu-grid" data-category="dessert">
+                    <div class="best-seller-card">
+                        <img src="images/MANGO-FLOAT.jpg" alt="Mango Float">
+                        <div class="price-overlay"><p>Mango Float</p></div>
+                    </div>
+                    <div class="best-seller-card">
+                        <img src="images/MAJA-BLANCA.jpg" alt="Maja Blanca">
+                        <div class="price-overlay"><p>Maja Blanca</p></div>
+                    </div>
+                    <div class="best-seller-card">
+                        <img src="images/BUKO-PANDAN.jpg" alt="Buko Pandan">
+                        <div class="price-overlay"><p>Buko Pandan</p></div>
+                    </div>
+                    <div class="best-seller-card">
+                        <img src="images/MANGO-TAPIOCA.jpg" alt="Mango Tapioca">
+                        <div class="price-overlay"><p>Mango Tapioca</p></div>
+                    </div>
+                  <div class="best-seller-card">
+                    <img src="images/CAKE.jpg" alt="Cake">
+                    <div class="price-overlay"><p>Cake</p></div>
+                 </div>
+                  <div class="best-seller-card">
+                    <img src="images/PENNE-SALAD.jpg" alt="Halo-Halo">
+                    <div class="price-overlay"><p>Halo-Halo</p></div>
+                 </div>
+                  <div class="best-seller-card">
+                    <img src="images/FRUIT-SALAD.jpg" alt="Fruit Salad">
+                    <div class="price-overlay"><p>Fruit Salad</p></div>
+                 </div>
+                 <div class="best-seller-card">
+                    <img src="images/FRESH-FRUITS.jpg" alt="Fresh Fruits">
+                    <div class="price-overlay"><p>Fresh Fruits</p></div>
+                 </div>
+                </div>
+        
+
+                <div class="menu-grid" data-category="beverage">
+                    <div class="best-seller-card">
+                        <img src="images/COKE.jpg" alt="Coke">
+                        <div class="price-overlay"><p>Coke</p></div>
+                    </div>
+                    <div class="best-seller-card">
+                        <img src="images/ROYAL.jpg" alt="Royal">
+                        <div class="price-overlay"><p>Royal</p></div>
+                     </div>
+                    <div class="best-seller-card">
+                        <img src="images/7UP.jpg" alt="7up">
+                        <div class="price-overlay"><p>7up</p></div>
+                     </div>
+                    <div class="best-seller-card">
+                        <img src="images/SPRITE.jpg" alt="Sprite">
+                        <div class="price-overlay"><p>Sprite</p></div>
+                     </div>
+                </div>
+         
+              <div class="menu-grid" data-category="rice">
+                <div class="best-seller-card">
+                    <img src="images/PLAIN-RICE.jpg" alt="Plain Rice">
+                    <div class="price-overlay"><p>Plain Rice</p></div>
+                </div>
+                <div class="best-seller-card">
+                    <img src="images/GARLIC-RICE.jpg" alt="Garlic Rice">
+                    <div class="price-overlay"><p>Garlic Rice</p></div>
+                </div>
+                <div class="best-seller-card">
+                    <img src="images/FRIED-RICE.jpg" alt="Fried Rice">
+                    <div class="price-overlay"><p>Fried Rice</p></div>
+                </div>
+              </div>
+    </section>
+    
+   
+    
+    <!-- Testimonials Section -->
+    <section id="testimonial-section" class="testimonial-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>What Our Clients Say</h2>             
+            </div>          
+            <div class="Text-title">
+                <p>"Don't just take our word for it - hear from some of our satisfied clients"</p>             
+            </div>
+
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">Grush Catering made our wedding day absolutely perfect. The food was exquisite and the service was impeccable. Our guests are still talking about it!</p>
+                        <p class="testimonial-text">Thank you GRUSH Catering Services.. Akong guests really enjoyed the food and although akong guests kay wala nag dungan ug pangabot, we still had enough food. It turned out really great. 5  gyud. Thanks again for everything! You really helped make our daughter 1st Birthday celebration a success.</p>
                         <div class="testimonial-author">
                             <div class="author-img">
-                                <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Sarah Johnson">
+                                <img src="images/client1.jpg" alt="Niña Decena - Batuto">
                             </div>
                             <div class="author-info">
-                                <h5>Sarah Johnson</h5>
-                                <p>Wedding Client</p>
-                            </div>
+                                <h5>Niña Decena - Batuto</h5>
+                                <p>Social Gathering Client</p>
+                            </div>s
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">We've used Grush Catering for three corporate events now, and they consistently deliver exceptional food and professional service. Highly recommended!</p>
+                        <p class="testimonial-text">Thank you Grush Catering for accommodating my last minute order. Thank you for your superb catering service, from the wonderful set up, affordable and delicious food to your hardworking staff. I will definitely avail your service in my future events and would recommend it to my friends and acquaintances.</p>
                         <div class="testimonial-author">
                             <div class="author-img">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen">
+                                <img src="images/client2.jpg" alt="Jeje Eyas">
                             </div>
                             <div class="author-info">
-                                <h5>Michael Chen</h5>
+                                <h5>Jeje Eyas</h5>
                                 <p>Corporate Client</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">The team at Grush Catering went above and beyond for our anniversary party. The customized menu was perfect, and the presentation was stunning.</p>
+                        <p class="testimonial-text">
+                            Thank you Ma'am Gracia of GRUSH Catering Services and to the rest of the team.. You made our day extra special..
+                            Thank you for the sumptuous food and for the decors.. Two thumbs up!!
+                            HIGHLY RECOMMENDED!!
+                        </p>
                         <div class="testimonial-author">
                             <div class="author-img">
-                                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Elena Rodriguez">
+                                <img src="images/client3.jpg" alt="Yam Sears Flores">
                             </div>
                             <div class="author-info">
-                                <h5>Elena Rodriguez</h5>
+                                <h5>Yam Sears Flores</h5>
                                 <p>Private Event Client</p>
                             </div>
                         </div>
@@ -636,22 +1427,57 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
+    <!-- About Section -->
+    <section id="about-section" class="about-section">
+       
         <div class="container">
-            <h2 class="cta-title">Ready to Plan Your Event?</h2>
-            <p class="cta-text">Contact us today for a personalized consultation and let us create a memorable culinary experience for your next event.</p>
-            <a href="#" class="btn btn-light btn-lg">Get a Free Quote</a>
+            <div class="section-title">
+                
+                <h2>Catering Services Provider in Cebu Since 2016</h2>
+                <p>"Elegant in Presentation, Excellent in Taste, Exceptional in Service."</p>
+                <h5>"Fidel Bas, Talisay City, Talisay, Philippines, 6045"</h5>
+            </div>
+
+            <div class="about-images">
+                <div class="vmv-card">
+                 <img src="images/Vision.jpg" alt="Vision" />            
+                </div>
+
+                <div class="vmv-card">
+                    <img src="images/Mission.jpg" alt="Mission" />                 
+                </div>
+
+                <div class="vmv-card">
+                  <img src="images/Values.jpg" alt="Values" />         
+                </div>
+            </div>
+           
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
+   
+   <!-- CTA Section -->
+<section class="cta-section">
+  <div class="container">
+    <h2 class="cta-title">Ready to Plan Your Event?</h2>
+    <p class="cta-text">Contact us today for a personalized consultation...</p>
+  </div>
+</section>
+
+    <!-- Contact Us-->
+    <footer id="contact-section" class="footer-contact" style="
+    background-image: url('images/CONTACT BG.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    padding: 3rem 1rem;">
+
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 mb-5 mb-lg-0">
                     <h4 class="footer-title">Grush Catering</h4>
-                    <p>Providing exceptional catering services for all occasions since 2008. We pride ourselves on quality, creativity, and outstanding service.</p>
+                    <p>Providing exceptional catering services for all occasions since 2016. We pride ourselves on quality, creativity, and outstanding service.</p>
                     <div class="social-links">
                         <a href="#"><i class="bi bi-facebook"></i></a>
                         <a href="#"><i class="bi bi-instagram"></i></a>
@@ -686,15 +1512,15 @@
                     <h4 class="footer-title">Contact Us</h4>
                     <div class="footer-contact">
                         <i class="bi bi-geo-alt-fill"></i>
-                        <span>123 Catering Street, Food City, FC 12345</span>
+                        <span>Fidel Bas, Talisay City, Cebu, Philippines, 6045</span>
                     </div>
                     <div class="footer-contact">
                         <i class="bi bi-telephone-fill"></i>
-                        <span>(555) 123-4567</span>
+                        <span>0956 849 0226</span>s
                     </div>
                     <div class="footer-contact">
                         <i class="bi bi-envelope-fill"></i>
-                        <span>info@grushcatering.com</span>
+                        <span>grazellabajo@yahoo.com</span>
                     </div>
                     <div class="footer-contact">
                         <i class="bi bi-clock-fill"></i>
@@ -707,11 +1533,22 @@
                 <p>&copy; 2023 Grush Catering. All Rights Reserved.</p>
             </div>
         </div>
+
     </footer>
+
+ 
+    <div id="service-images-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:1050; justify-content:center; align-items:center;">
+        <div style="position:relative; max-width:90vw; max-height:90vh; overflow:auto; background:#fff; border-radius:12px; padding:1rem;">
+            <button id="modal-close-btn" style="position:absolute; top:10px; right:10px; background:#c084fc; border:none; color:#fff; font-size:1.5rem; border-radius:50%; width:35px; height:35px; cursor:pointer;">&times;</button>
+            <div id="modal-image-container" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+              
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Simple counter animation for stats
+       
         document.addEventListener('DOMContentLoaded', function() {
             const counters = document.querySelectorAll('.stat-number');
             const speed = 200;
@@ -736,5 +1573,155 @@
             });
         });
     </script>
+    @*   CATERING MENU SCRIPT *@
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const buttons = document.querySelectorAll(".category");
+          const grids = document.querySelectorAll(".menu-grid");
+
+          function activateCategory(category) {
+            buttons.forEach(b => b.classList.toggle("active", b.dataset.category === category));
+            grids.forEach(g => g.classList.toggle("active", g.dataset.category === category));
+          }
+
+          // Handle clicks
+          buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+              const category = btn.dataset.category;
+              activateCategory(category);
+            });
+          });
+
+          // ✅ Make sure Best Seller shows by default
+          activateCategory("best-seller");
+        });
+    </script>
+
+  @*  ABOUT SECTION SCRIPT *@
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cards = document.querySelectorAll(".vmv-card");
+            const overlay = document.createElement("div");
+            overlay.classList.add("vmv-overlay");
+            document.body.appendChild(overlay);
+
+            cards.forEach(card => {
+                card.addEventListener("click", () => {
+                   
+                    if (card.classList.contains("active")) {
+                        card.classList.remove("active");
+                        overlay.classList.remove("active");
+                    } else {
+                     
+                        document.querySelectorAll(".vmv-card.active").forEach(c => c.classList.remove("active"));
+
+                        card.classList.add("active");
+                        overlay.classList.add("active");
+                    }
+                });
+            });
+
+          
+            overlay.addEventListener("click", () => {
+                document.querySelectorAll(".vmv-card.active").forEach(c => c.classList.remove("active"));
+                overlay.classList.remove("active");
+            });
+        });
+    </script>
+   @*  CATERING SERVICES SCRIPT *@
+     <script>
+                 document.addEventListener("DOMContentLoaded", () => {
+          const modal = document.getElementById("service-images-modal");
+          const modalImageContainer = document.getElementById("modal-image-container");
+          const closeBtn = document.getElementById("modal-close-btn");
+          const serviceLinks = document.querySelectorAll(".service-link");
+
+          const serviceImages = {
+            wedding: [
+                 "images/W1.jpg",
+                 "images/W2.jpg",
+                 "images/W3.jpg",
+                 "images/W4.jpg",
+                 "images/W5.jpg",
+                 "images/W6.jpg",
+                 "images/W7.jpg",
+                 "images/W8.jpg",
+                 "images/W9.jpg",
+                 "images/W10.jpg"
+                
+            ],
+             
+        corporate: [
+          "images/C1.jpg",
+          "images/C2.jpg",
+          "images/C3.jpg",
+          "images/C4.jpg",
+          "images/C5.jpg",
+          "images/c6.jpg",
+          "images/C7.jpg",
+          "images/C8.jpg",
+          "images/C9.jpg",
+          "images/C10.jpg"
+         
+        ],
+        social: [
+          "images/s1.jpg",
+          "images/S2.jpg",
+          "images/S3.jpg",
+          "images/S4.jpg",
+          "images/S5.jpg",
+          "images/s6.jpg",
+          "images/S7.jpg",
+          "images/S8.jpg",
+          "images/s9.jpg",
+          "images/S10.jpg"
+         
+        ]
+          };
+                        serviceLinks.forEach(link => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const service = link.getAttribute("data-service");
+            console.log('Clicked service:', service);
+            if(serviceImages[service]){
+              modalImageContainer.innerHTML = "";
+
+              modal.style.display = "flex";  
+              modal.classList.remove("show"); 
+
+              const imgs = serviceImages[service].map(src => {
+                const img = document.createElement("img");
+                img.src = src;
+                img.alt = `${service} setup`;
+                img.style.maxWidth = "200px";
+                img.style.borderRadius = "8px";
+                img.style.margin = "0.5rem";
+                modalImageContainer.appendChild(img);
+                return img;
+              });
+
+             
+              requestAnimationFrame(() => {
+                imgs.forEach(img => img.classList.add("show"));
+                modal.classList.add("show");
+              });
+            }
+          });
+        });
+
+        closeBtn.addEventListener("click", () => {
+          modal.classList.remove("show");
+          setTimeout(() => { modal.style.display = "none"; }, 400);
+        });
+
+        modal.addEventListener("click", (e) => {
+          if(e.target === modal){
+            modal.classList.remove("show");
+            setTimeout(() => { modal.style.display = "none"; }, 400); 
+          }
+        });
+          
+     });
+     </script>
 </body>
 </html>
