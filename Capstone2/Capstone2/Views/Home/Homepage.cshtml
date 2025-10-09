@@ -37,7 +37,8 @@
             color: #333;
             overflow-x: hidden;
         }
-        
+
+       
         /* Header & Navigation */
         .navbar {
             padding: .5rem 0;
@@ -144,6 +145,16 @@
         }
         
         /*SERVICES SECTION*/
+        .section-title.S {
+            text-align: center; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            flex-direction: column;
+            margin: 1rem auto;
+            max-width: 900px; 
+            padding: 0.5rem 1rem;
+        }
        .services-section {
     position: relative;
     padding: 6rem 0;
@@ -158,17 +169,10 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(255, 255, 255, 0.3); /* 30% white background overlay */
+                background: rgba(255, 255, 255, 0.3); 
                 z-index: 0;
             }
-
-            /* Keeps the actual content above the overlay */
-            .services-section > * {
-                position: relative;
-                z-index: 2;
-            }
-
-            /* Keeps the actual content above the overlay */
+  
             .services-section > * {
                 position: relative;
                 z-index: 2;
@@ -183,14 +187,19 @@
             font-weight: 800;
             color: var(--text-purple);
             margin-bottom: 1rem;
+            border-radius: 40px;
         }
         
         .section-title p {
-            color: #61329c;
+                color: #6a17eb;
             max-width: 600px;
             margin: 0 auto;
-            font-size: 1.1rem;
-        }
+            font-size: 1.2rem;
+                display: inline-block; 
+                padding: 0.4rem 1rem; 
+                border-radius: 30px; 
+                text-align: center;
+            }
         
         .service-card {
             background: #fff;
@@ -306,19 +315,20 @@
     color: #fff; 
 }
 
-.Text-title p {
-    font-size: 1.5rem;   
-    color: #a452f1;     
-    font-weight: 600;   
-    text-align: center; 
-    margin-top: -1.5rem;      
-    margin-bottom: 1.8rem; 
+        .Text-title p {
+            font-size: 2rem;
+            color: #6a17eb;
+            font-weight: 800;
+            text-align: center;
+            margin-top: -1.5rem;
+            margin-bottom: 1.8rem;
+            display: inline-block;
+            padding: 0.5rem 2rem;
+            border-radius: 2rem;          
+            text-shadow: 0 0 12px #ffffff, 0 0 18px #ffffff, 0 4px 10px rgba(255, 255, 255, 0.7);
+        }
 
-    background-color: rgba(255, 255, 255, 0.5);
-    display: inline-block;    
-    padding: 0.3rem 0.8rem;   
-    border-radius: 1.5rem;    
-}    
+   
 .Text-title {
     text-align: center;
 }
@@ -350,13 +360,22 @@
             line-height: 1;
         }
 
-       .section-title h2 {
-    font-size: 2.2rem; 
-    font-weight: 800;
-    margin-bottom: 0.4rem; 
-    text-align: center;
-    color: #8335e4;
-}
+        .section-title h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.4rem;
+            text-align: center;
+            color: #6a17eb;
+           
+            text-stroke: 1.2px #ffffff;
+          
+            text-shadow: 0 0 12px #fff, 0 0 20px #fff, 0 0 34px #fff, 0 0 46px #fff, 0 0 58px #fff;
+            border-radius: 25px;
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            max-width: 80%;
+            margin: 0 auto;
+        }
         .testimonial-author {
             display: flex;
             align-items: center;
@@ -402,7 +421,7 @@
             justify-content: center;
             align-items: center;
             gap: 2rem;
-            margin-top: 2rem;
+            margin-top: 3rem;
             position: relative;
             z-index: 5;
         }
@@ -425,7 +444,8 @@
        .menu-section {
     position: relative;
     background: url('../images/MENU-BG.jpg') no-repeat center center/cover;
-    min-height: 8in;   
+    min-height: 8in;
+    padding: 8rem 1rem 5rem; 
     padding: 4rem 1rem; 
     z-index: 1;
     padding: 2rem 0;
@@ -436,6 +456,7 @@
 
         .section-title h2 {
             font-size:5rem;
+            font-weight: 900;
             text-align: center;
             margin-bottom: 2rem;
         }
@@ -638,14 +659,14 @@
         .price-overlay {
             position: absolute;
             top: 0;
-            right: -50%; /* start completely outside on the right */
-            width: 50%; /* only half width */
+            right: -50%; 
+            width: 50%; 
             height: 100%;
-            background: rgba(255, 255, 255, 0.65); /* 65% opacity white */
+            background: rgba(255, 255, 255, 0.65); 
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 2; /* above image */
+            z-index: 2; 
             transition: right 0.8s ease, opacity 0.5s ease;
             opacity: 0;
             pointer-events: none;
@@ -678,25 +699,25 @@
         }
 
         .best-seller-card:hover .price-overlay {
-            right: 0; /* slides into view */
+            right: 0;
             opacity: 1;
             pointer-events: auto;
         }
 
         .best-seller-card1:hover .price-overlay {
-            right: 0; /* slides into view */
+            right: 0; 
             opacity: 1;
             pointer-events: auto;
         }
 
         .best-seller-card2:hover .price-overlay {
-            right: 0; /* slides into view */
+            right: 0; 
             opacity: 1;
             pointer-events: auto;
         }
 
         .best-seller-card3:hover .price-overlay {
-            right: 0; /* slides into view */
+            right: 0; 
             opacity: 1;
             pointer-events: auto;
         }
@@ -718,6 +739,45 @@
        
 
         /*ABOUT SECTION*/
+
+        .section-title.T h2 {
+            font-size: 4rem;
+            font-weight: 900;
+            text-align: center;
+            color: #6a17eb;
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 34px #fff, 0 0 44px #fff, 0 0 56px #fff;
+            border-radius: 25px;
+            display: inline-block;
+            padding: 0.2rem 1rem; 
+            max-width: 80%;
+            margin: 0.1rem auto 0;
+            line-height: 1;
+        }
+
+        .section-title.P {
+            text-align: center; 
+            
+        }
+
+
+        .section-title p {
+            display: inline-block;
+            white-space: nowrap;
+            font-size: 1.2rem;
+            font-weight: 500;
+            font-family: 'Georgia', serif;
+            color: #6a17eb;
+            margin: 0 auto;
+            margin-bottom: 0rem; 
+            line-height: 1.1; 
+        }
+            .section-title.P h5 {
+                font-size: 1.1rem;
+                font-weight: 400;
+                font-family: Arial, sans-serif;
+            color: #2c1b41;
+            margin-bottom: 0.3rem;
+            }
         .about-section {
             background: url('../images/about-bj.jpg') no-repeat center center/cover;
             padding: 3rem 1rem;
@@ -733,7 +793,7 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(255, 255, 255, 0.3);
+             /*    background: rgba(255, 255, 255, 0.3); */
                 z-index: 0;
             }
 
@@ -747,7 +807,7 @@
     cursor: pointer;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
-
+      
 .vmv-card img {
     width: 100%;              
     height: 100%;             
@@ -780,6 +840,7 @@
             gap: 1.5rem;
             flex-wrap: nowrap; 
         }   
+     
            
             .about-section::before {
                 content: "";
@@ -788,7 +849,7 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(255, 255, 255, 0.3);
+              /*   background: rgba(255, 255, 255, 0.3); */
                 z-index: 0;
             }
 
@@ -994,9 +1055,7 @@
         <div class="container">
             <div class="section-title">
                 <h2>Our Catering Services</h2>
-                <p>We offer comprehensive catering solutions for all types of events, ensuring exceptional food and service every time.</p>
             </div>
-
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="service-card">
@@ -1140,7 +1199,7 @@
                     <div class="price-overlay"><p>Pork Steak</p></div>
                 </div>
                
-              
+           
             </div>
 
     
@@ -1225,15 +1284,15 @@
 
                 </div>
             </div>
-        </div>
+        
 
            
                <div class="menu-grid" data-category="side-dish">
-            <div class="best-seller-card">
+                <div class="best-seller-card">
                     <img src="images/BIHON.jpg" alt="Bihon">
                     <div class="price-overlay"><p>Bihon</p></div>
                 </div>
-            <div class="best-seller-card">
+                 <div class="best-seller-card">
                     <img src="images/SOTANGHON.jpg" alt="Sotanghon Guisado">
                     <div class="price-overlay"><p>Sotanghon Guisado</p></div>
                 </div>
@@ -1376,7 +1435,7 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="testimonial-card">
-                        <p class="testimonial-text">Thank you GRUSH Catering Services.. Akong guests really enjoyed the food and although akong guests kay wala nag dungan ug pangabot, we still had enough food. It turned out really great. 5  gyud. Thanks again for everything! You really helped make our daughter 1st Birthday celebration a success.</p>
+                        <p class="testimonial-text">Thank you GRUSH Catering Services.. Akong guests really enjoyed the food and although akong guests kay wala nag dungan ug pangabot, we still had enough food. It turned out really great. 5 star gyud. Thanks again for everything! You really helped make our daughter 1st Birthday celebration a success.</p>
                         <div class="testimonial-author">
                             <div class="author-img">
                                 <img src="images/client1.jpg" alt="Niña Decena - Batuto">
@@ -1430,9 +1489,14 @@
     <section id="about-section" class="about-section">
        
         <div class="container">
-            <div class="section-title">
+            <div class="section-title T">
+
+                <h2> Catering Services Provider in Cebu Since 2016</h2>
+               
+            </div>
+            <div class="section-title P">
                 
-                <h2>Catering Services Provider in Cebu Since 2016</h2>
+               
                 <p>"Elegant in Presentation, Excellent in Taste, Exceptional in Service."</p>
                 <h5>"Fidel Bas, Talisay City, Talisay, Philippines, 6045"</h5>
             </div>
