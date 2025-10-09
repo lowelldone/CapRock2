@@ -31,14 +31,14 @@
             --danger-color: #ef4444;
             --info-color: #3b82f6;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             color: #333;
             overflow-x: hidden;
         }
 
-       
+
         /* Header & Navigation */
         .navbar {
             padding: .5rem 0;
@@ -46,27 +46,28 @@
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
         }
-        
+
         .navbar-brand {
             font-weight: 700;
             color: var(--primary-purple);
             font-size: 1.8rem;
         }
-        .navbar-brand:hover{
-            color: var(--primary-purple);
-        }
-        
+
+            .navbar-brand:hover {
+                color: var(--primary-purple);
+            }
+
         .nav-link {
             font-weight: 500;
             color: #4a5568;
             margin: 0 0.5rem;
             transition: all 0.3s ease;
         }
-        
-        .nav-link:hover, .nav-link.active {
-            color: var(--primary-purple);
-        }
-        
+
+            .nav-link:hover, .nav-link.active {
+                color: var(--primary-purple);
+            }
+
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
             border: none;
@@ -75,13 +76,13 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
-        }
-        
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, var(--primary-purple-dark) 0%, var(--primary-purple) 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+            }
+
         /* Hero Section */
         .hero-section {
             background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(250, 245, 255, 0.9)), url('https://images.unsplash.com/photo-1495195134817-aeb325a55b65?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80');
@@ -90,12 +91,12 @@
             padding: 7rem 0 5rem;
             position: relative;
         }
-        
+
         .hero-content {
             position: relative;
             z-index: 2;
         }
-        
+
         .hero-title {
             font-weight: 800;
             font-size: 3.5rem;
@@ -103,14 +104,14 @@
             margin-bottom: 1.5rem;
             line-height: 1.2;
         }
-        
+
         .hero-subtitle {
             font-size: 1.25rem;
             color: #4a5568;
             margin-bottom: 2.5rem;
             line-height: 1.6;
         }
-        
+
         .hero-badge {
             background: var(--purple-bg);
             color: var(--primary-purple);
@@ -121,46 +122,47 @@
             margin-bottom: 1.5rem;
             font-size: 0.9rem;
         }
-        
+
         /* Stats Section */
         .stats-section {
             background: var(--purple-bg);
             padding: 4rem 0;
         }
-        
+
         .stat-item {
             text-align: center;
         }
-        
+
         .stat-number {
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary-purple);
             margin-bottom: 0.5rem;
         }
-        
+
         .stat-label {
             color: #4a5568;
             font-weight: 500;
         }
-        
+
         /*SERVICES SECTION*/
         .section-title.S {
-            text-align: center; 
-            display: flex; 
-            justify-content: center; 
+            text-align: center;
+            display: flex;
+            justify-content: center;
             align-items: center;
             flex-direction: column;
             margin: 1rem auto;
-            max-width: 900px; 
+            max-width: 900px;
             padding: 0.5rem 1rem;
         }
-       .services-section {
-    position: relative;
-    padding: 6rem 0;
-    background: url('images/SERVICES-BG.jpg') no-repeat center center/cover;
-    z-index: 1;
-}
+
+        .services-section {
+            position: relative;
+            padding: 6rem 0;
+            background: url('images/SERVICES-BG.jpg') no-repeat center center/cover;
+            z-index: 1;
+        }
 
             .services-section::before {
                 content: "";
@@ -169,10 +171,10 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(255, 255, 255, 0.3); 
+                background: rgba(255, 255, 255, 0.3);
                 z-index: 0;
             }
-  
+
             .services-section > * {
                 position: relative;
                 z-index: 2;
@@ -182,25 +184,25 @@
             text-align: center;
             margin-bottom: 3.5rem;
         }
-        
-        .section-title h2 {
-            font-weight: 800;
-            color: var(--text-purple);
-            margin-bottom: 1rem;
-            border-radius: 40px;
-        }
-        
-        .section-title p {
+
+            .section-title h2 {
+                font-weight: 800;
+                color: var(--text-purple);
+                margin-bottom: 1rem;
+                border-radius: 40px;
+            }
+
+            .section-title p {
                 color: #6a17eb;
-            max-width: 600px;
-            margin: 0 auto;
-            font-size: 1.2rem;
-                display: inline-block; 
-                padding: 0.4rem 1rem; 
-                border-radius: 30px; 
+                max-width: 600px;
+                margin: 0 auto;
+                font-size: 1.2rem;
+                display: inline-block;
+                padding: 0.4rem 1rem;
+                border-radius: 30px;
                 text-align: center;
             }
-        
+
         .service-card {
             background: #fff;
             border-radius: 1.2rem;
@@ -209,43 +211,43 @@
             transition: all 0.3s ease;
             height: 100%;
         }
-        
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.15);
-        }
-        
+
+            .service-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(124, 58, 237, 0.15);
+            }
+
         .service-img {
             height: 220px;
             overflow: hidden;
         }
-        
-        .service-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-        
+
+            .service-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+
         .service-card:hover .service-img img {
             transform: scale(1.05);
         }
-        
+
         .service-content {
             padding: 1.8rem;
         }
-        
+
         .service-title {
             font-weight: 700;
             color: var(--text-purple);
             margin-bottom: 1rem;
         }
-        
+
         .service-desc {
             color: #718096;
             margin-bottom: 1.5rem;
         }
-        
+
         .service-link {
             color: var(--primary-purple);
             font-weight: 600;
@@ -253,28 +255,28 @@
             display: inline-flex;
             align-items: center;
         }
-        
-        .service-link i {
-            margin-left: 0.5rem;
-            transition: transform 0.3s ease;
-        }
-        
-        .service-link:hover {
-            color: var(--primary-purple-dark);
-        }
-        
-        .service-link:hover i {
-            transform: translateX(5px);
-        }
 
-      
-        
+            .service-link i {
+                margin-left: 0.5rem;
+                transition: transform 0.3s ease;
+            }
+
+            .service-link:hover {
+                color: var(--primary-purple-dark);
+            }
+
+                .service-link:hover i {
+                    transform: translateX(5px);
+                }
+
+
+
         #service-images-modal {
             background-image: url('images/your-background.jpg');
             background-size: cover;
-            background-position: center; 
+            background-position: center;
             background-repeat: no-repeat;
-            background-blend-mode: overlay; 
+            background-blend-mode: overlay;
             background-color: rgba(0, 0, 0, 0.7);
             opacity: 0;
             visibility: hidden;
@@ -304,16 +306,15 @@
             #modal-image-container img.show {
                 opacity: 1;
             }
-       /* REVIEW SECTION */
-.testimonial-section {
-    background-image:     
-        url('images/TESTIMONIAL-BG.jpg'); 
-    background-size: cover;   
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 6rem 0;
-    color: #fff; 
-}
+        /* REVIEW SECTION */
+        .testimonial-section {
+            background-image: url('images/TESTIMONIAL-BG.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 6rem 0;
+            color: #fff;
+        }
 
         .Text-title p {
             font-size: 2rem;
@@ -324,15 +325,16 @@
             margin-bottom: 1.8rem;
             display: inline-block;
             padding: 0.5rem 2rem;
-            border-radius: 2rem;          
+            border-radius: 2rem;
             text-shadow: 0 0 12px #ffffff, 0 0 18px #ffffff, 0 4px 10px rgba(255, 255, 255, 0.7);
         }
 
-   
-.Text-title {
-    text-align: center;
-}
-.testimonial-card {
+
+        .Text-title {
+            text-align: center;
+        }
+
+        .testimonial-card {
             background: #fff;
             border-radius: 1.2rem;
             padding: 2rem;
@@ -340,7 +342,7 @@
             margin: 1rem;
             height: 100%;
         }
-        
+
         .testimonial-text {
             font-size: 1.1rem;
             line-height: 1.5;
@@ -348,17 +350,16 @@
             margin-bottom: 1.8rem;
             position: relative;
         }
-        
-        .testimonial-text:before {
-            content: """;
-            font-size: 5rem;
-            color: var(--purple-border);
-            position: absolute;
-            top: -1.5rem;
-            left: -1rem;
-            font-family: Georgia, serif;
-            line-height: 1;
-        }
+
+            .testimonial-text:before {
+                content: """; font-size: 5rem;
+                color: var(--purple-border);
+                position: absolute;
+                top: -1.5rem;
+                left: -1rem;
+                font-family: Georgia, serif;
+                line-height: 1;
+            }
 
         .section-title h2 {
             font-size: 2.2rem;
@@ -366,9 +367,7 @@
             margin-bottom: 0.4rem;
             text-align: center;
             color: #6a17eb;
-           
             text-stroke: 1.2px #ffffff;
-          
             text-shadow: 0 0 12px #fff, 0 0 20px #fff, 0 0 34px #fff, 0 0 46px #fff, 0 0 58px #fff;
             border-radius: 25px;
             display: inline-block;
@@ -376,18 +375,19 @@
             max-width: 80%;
             margin: 0 auto;
         }
+
         .testimonial-author {
             display: flex;
             align-items: center;
         }
 
-          .testimonial-container {
+        .testimonial-container {
             display: flex;
-            flex-direction: column; 
-            align-items: center; 
-            gap: 1rem; 
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
-        
+
         .author-img {
             width: 60px;
             height: 60px;
@@ -395,27 +395,27 @@
             overflow: hidden;
             margin-right: 1rem;
         }
-        
-        .author-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
+
+            .author-img img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
         .author-info h5 {
             font-weight: 700;
             margin-bottom: 0.2rem;
             color: var(--text-purple);
         }
-        
+
         .author-info p {
             color: #718096;
             margin: 0;
         }
-        /*MENU SECTION*/ 
-       
+        /*MENU SECTION*/
 
-          
+
+
         .menu-navigation {
             display: flex;
             justify-content: center;
@@ -425,6 +425,7 @@
             position: relative;
             z-index: 5;
         }
+
         .menu-section::before {
             content: "";
             position: absolute;
@@ -432,30 +433,31 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255,255,255,0.5); 
+            background: rgba(255,255,255,0.5);
             z-index: 0;
         }
 
         .menu-section .container {
             position: relative;
-            z-index: 2; 
+            z-index: 2;
         }
 
-       .menu-section {
-    position: relative;
-    background: url('../images/MENU-BG.jpg') no-repeat center center/cover;
-    min-height: 8in;
-    padding: 8rem 1rem 5rem; 
-    padding: 4rem 1rem; 
-    z-index: 1;
-    padding: 2rem 0;
-}
+        .menu-section {
+            position: relative;
+            background: url('../images/MENU-BG.jpg') no-repeat center center/cover;
+            min-height: 8in;
+            padding: 8rem 1rem 5rem;
+            padding: 4rem 1rem;
+            z-index: 1;
+            padding: 2rem 0;
+        }
+
         .menu-section {
             padding: 2rem 0;
         }
 
         .section-title h2 {
-            font-size:5rem;
+            font-size: 5rem;
             font-weight: 900;
             text-align: center;
             margin-bottom: 2rem;
@@ -486,46 +488,68 @@
 
         .menu-grid {
             display: none;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            justify-content: center;
+            justify-items: center;
         }
 
             .menu-grid.active {
                 display: grid;
             }
-        
 
-.menu-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    overflow: hidden;
-    text-align: center;
-    padding: 0.75rem;
-    display: none; 
-    width: 4in;
-    height: auto;
-    margin: auto;   
-    margin-bottom: 2rem; 
-}
+            /* Center grids with fewer items */
+            .menu-grid[data-category="rice"] {
+                grid-template-columns: repeat(3, 1fr);
+                justify-content: center;
+                max-width: 900px;
+            }
+
+            .menu-grid[data-category="beverage"] {
+                grid-template-columns: repeat(4, 1fr);
+                justify-content: center;
+            }
+
+            .menu-grid[data-category="dessert"] {
+                grid-template-columns: repeat(4, 1fr);
+                justify-content: center;
+            }
 
 
-.menu-card img {
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  object-fit: cover;
-}
-.menu-card h4 {
-    margin: 0.5rem 0;
-    font-size: 1.1rem;
-}
+        .menu-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+            padding: 0.75rem;
+            display: none;
+            width: 4in;
+            height: auto;
+            margin: auto;
+            margin-bottom: 2rem;
+        }
 
-.menu-card p {
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 0.75rem;
-}
+
+            .menu-card img {
+                width: 100%;
+                height: 100%;
+                border-radius: 10px;
+                object-fit: cover;
+            }
+
+            .menu-card h4 {
+                margin: 0.5rem 0;
+                font-size: 1.1rem;
+            }
+
+            .menu-card p {
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 0.75rem;
+            }
 
         .menu-cards-row {
             display: flex;
@@ -533,34 +557,36 @@
             width: 100%;
             justify-content: center;
         }
-            .menu-card.best-seller {
-                display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 2rem;
-                width: 100%;
-                max-width: none;
-                margin: 0 auto;
-                box-sizing: border-box;             
-            }
 
-            .menu-card.best-seller1 {
-                display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 2rem;
-                width: 100%;
-                max-width: none;
-                margin: 0 auto;
-                box-sizing: border-box;
-            }
-            .menu-card.best-seller2 {
-                display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 2rem;
-                width: 100%;
-                max-width: none;
-                margin: 0 auto;
-                box-sizing: border-box;
-            }
+        .menu-card.best-seller {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2rem;
+            width: 100%;
+            max-width: none;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .menu-card.best-seller1 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2rem;
+            width: 100%;
+            max-width: none;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .menu-card.best-seller2 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2rem;
+            width: 100%;
+            max-width: none;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
 
         .menu-card.best-seller3 {
             display: grid;
@@ -571,16 +597,15 @@
             margin: 0 auto;
             box-sizing: border-box;
         }
-          
+
         .best-seller-card {
             position: relative;
             aspect-ratio: 3 / 2;
-            width: 3in;
-            height: 2in;
+            width: 100%;
+            height: auto;
             border-radius: 15px;
             overflow: hidden;
-            margin-top: 1rem;
-            margin-bottom: 1rem;
+            margin: 0;
         }
 
         .best-seller-card1 {
@@ -623,8 +648,8 @@
             object-fit: cover;
             border-radius: 15px;
             position: relative;
-            z-index: 1;  
-             transition: transform 0.3s ease;
+            z-index: 1;
+            transition: transform 0.3s ease;
         }
 
         .best-seller-card1 img {
@@ -633,8 +658,8 @@
             object-fit: cover;
             border-radius: 15px;
             position: relative;
-            z-index: 1;  
-             transition: transform 0.3s ease;
+            z-index: 1;
+            transition: transform 0.3s ease;
         }
 
         .best-seller-card2 img {
@@ -656,17 +681,18 @@
             z-index: 1;
             transition: transform 0.3s ease;
         }
+
         .price-overlay {
             position: absolute;
             top: 0;
-            right: -50%; 
-            width: 50%; 
+            right: -50%;
+            width: 50%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.65); 
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.9) 0%, rgba(139, 92, 246, 0.8) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 2; 
+            z-index: 2;
             transition: right 0.8s ease, opacity 0.5s ease;
             opacity: 0;
             pointer-events: none;
@@ -676,10 +702,11 @@
             .price-overlay p {
                 font-size: 1.5rem;
                 font-weight: bold;
-                color: #5f3094;
+                color: white;
                 opacity: 0;
                 transition: opacity 0.4s ease 0.3s;
-                text-align: center
+                text-align: center;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
             }
 
         .best-seller-card:hover img {
@@ -705,25 +732,26 @@
         }
 
         .best-seller-card1:hover .price-overlay {
-            right: 0; 
+            right: 0;
             opacity: 1;
             pointer-events: auto;
         }
 
         .best-seller-card2:hover .price-overlay {
-            right: 0; 
+            right: 0;
             opacity: 1;
             pointer-events: auto;
         }
 
         .best-seller-card3:hover .price-overlay {
-            right: 0; 
+            right: 0;
             opacity: 1;
             pointer-events: auto;
         }
-            .best-seller-card:hover .price-overlay p {
-                opacity: 1;
-            }
+
+        .best-seller-card:hover .price-overlay p {
+            opacity: 1;
+        }
 
         .best-seller-card1:hover .price-overlay p {
             opacity: 1;
@@ -736,7 +764,7 @@
         .best-seller-card3:hover .price-overlay p {
             opacity: 1;
         }
-       
+
 
         /*ABOUT SECTION*/
 
@@ -748,15 +776,14 @@
             text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 34px #fff, 0 0 44px #fff, 0 0 56px #fff;
             border-radius: 25px;
             display: inline-block;
-            padding: 0.2rem 1rem; 
+            padding: 0.2rem 1rem;
             max-width: 80%;
             margin: 0.1rem auto 0;
             line-height: 1;
         }
 
         .section-title.P {
-            text-align: center; 
-            
+            text-align: center;
         }
 
 
@@ -768,16 +795,18 @@
             font-family: 'Georgia', serif;
             color: #6a17eb;
             margin: 0 auto;
-            margin-bottom: 0rem; 
-            line-height: 1.1; 
+            margin-bottom: 0rem;
+            line-height: 1.1;
         }
-            .section-title.P h5 {
-                font-size: 1.1rem;
-                font-weight: 400;
-                font-family: Arial, sans-serif;
+
+        .section-title.P h5 {
+            font-size: 1.1rem;
+            font-weight: 400;
+            font-family: Arial, sans-serif;
             color: #2c1b41;
             margin-bottom: 0.3rem;
-            }
+        }
+
         .about-section {
             background: url('../images/about-bj.jpg') no-repeat center center/cover;
             padding: 3rem 1rem;
@@ -793,206 +822,224 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-             /*    background: rgba(255, 255, 255, 0.3); */
+                /*    background: rgba(255, 255, 255, 0.3); */
                 z-index: 0;
             }
 
-      .vmv-card {
-    width: 7in;
-    height: 4in;              
-    background: rgba(167, 139, 250, 0.85);
-    border-radius: 12px;
-    overflow: hidden;         
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-      
-.vmv-card img {
-    width: 100%;              
-    height: 100%;             
-    object-fit: fill;     
-    display: block;
-}
+        .vmv-card {
+            width: 7in;
+            height: 4in;
+            background: rgba(167, 139, 250, 0.85);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
 
-.vmv-card:hover {
-    box-shadow: 0 8px 14px #8b5cf6;
-}
+            .vmv-card img {
+                width: 100%;
+                height: 100%;
+                object-fit: fill;
+                display: block;
+            }
 
-.vmv-card.active {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 7.5in;               
-    height: 5.5in;            
-    transform: translate(-50%, -50%) scale(1.05);
-    z-index: 999;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    background: rgba(167, 139, 250, 0.95);
-}
+            .vmv-card:hover {
+                box-shadow: 0 8px 14px #8b5cf6;
+            }
+
+            .vmv-card.active {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                width: 7.5in;
+                height: 5.5in;
+                transform: translate(-50%, -50%) scale(1.05);
+                z-index: 999;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+                background: rgba(167, 139, 250, 0.95);
+            }
 
 
         .about-images {
             position: relative;
             z-index: 2;
-            display: flex; 
+            display: flex;
             justify-content: center;
             gap: 1.5rem;
-            flex-wrap: nowrap; 
-        }   
-     
-           
-            .about-section::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-              /*   background: rgba(255, 255, 255, 0.3); */
-                z-index: 0;
-            }
+            flex-wrap: nowrap;
+        }
 
-   .cta-section {
-  background-image:
-    linear-gradient( rgba(241, 7, 163, 0.2) 0%),
-    url('images/contact-BG.jpg'); 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
 
-  display: flex;               
-  flex-direction: column;      
-  justify-content: center;    
-  align-items: center;        
+        .about-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /*   background: rgba(255, 255, 255, 0.3); */
+            z-index: 0;
+        }
 
-  min-height: 360px;
-  padding: 2rem 1rem;        
-  text-align: center;
-}
+        .cta-section {
+            background-image: linear-gradient( rgba(241, 7, 163, 0.2) 0%), url('images/contact-BG.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 360px;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
 
-.cta-title {
-  font-weight: 800;
-  margin-bottom: 1rem; 
-  font-size: 3.5rem;
-  color: #fff;
-}
-.cta-text {
-  font-size: 1.2rem;
-  max-width: 700px;
-  margin: 0 auto 2.5rem;
-  opacity: 0.9;
-  color: #fff;
-}
-        
+        .cta-title {
+            font-weight: 800;
+            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            color: #fff;
+        }
+
+        .cta-text {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.9;
+            color: #fff;
+        }
+
         /* FOOTER */
         #contact-section {
-            background-color: #2f2f2f; 
-            color: white; 
+            background-color: #2f2f2f;
+            color: white;
             padding: 2rem 0;
-        }  
-     .footer {
-    background: #1a202c;
-    color: white;
-    padding: 2rem 0 1rem;  
-}
+        }
+
+        .footer {
+            background: #1a202c;
+            color: white;
+            padding: 2rem 0 1rem;
+        }
 
         .footer-title {
             font-weight: 700;
             margin-bottom: 1.5rem;
             color: white;
         }
-        
+
         .footer-links {
             list-style: none;
             padding: 0;
         }
-        
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
-        
-        .footer-links a {
-            color: #a0aec0;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        
-        .footer-links a:hover {
-            color: white;
-        }
-        
+
+            .footer-links li {
+                margin-bottom: 0.8rem;
+            }
+
+            .footer-links a {
+                color: #a0aec0;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+                .footer-links a:hover {
+                    color: white;
+                }
+
         .footer-contact {
             color: white;
             margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
         }
-        
-        .footer-contact i {
-            margin-right: 0.8rem;
-            color: var(--primary-purple-light);
-        }
-        
+
+            .footer-contact i {
+                margin-right: 0.8rem;
+                color: var(--primary-purple-light);
+            }
+
         .social-links {
             display: flex;
             margin-top: 1.5rem;
         }
-        
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-            transition: all 0.3s ease;
+
+            .social-links a {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 1rem;
+                transition: all 0.3s ease;
+            }
+
+                .social-links a:hover {
+                    background: var(--primary-purple);
+                    transform: translateY(-3px);
+                }
+
+        .footer-bottom {
+            border-top: 1px solid #2d3748;
+            margin-top: 1.8rem;
+            margin-bottom: -1.5rem;
+            text-align: center;
+            color: #a0aec0;
         }
-        
-        .social-links a:hover {
-            background: var(--primary-purple);
-            transform: translateY(-3px);
-        }
-        
-      .footer-bottom {
-    border-top: 1px solid #2d3748;
-    margin-top: 1.8rem;   
-    margin-bottom: -1.5rem; 
-    text-align: center;
-    color: #a0aec0;
-}
-        
+
         /* Responsive Adjustments */
+        @@media (max-width: 1200px) {
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
         @@media (max-width: 768px) {
             .hero-title {
                 font-size: 2.5rem;
             }
-            
+
             .service-card {
                 margin-bottom: 2rem;
             }
 
-            .order-login{
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .order-login {
                 flex-direction: column;
                 width: 100%;
             }
 
-            .order-login .btn{
-                width: 100%;
+                .order-login .btn {
+                    width: 100%;
+                }
+        }
+
+        @@media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
             }
         }
 
-        .order-login{
+        .order-login {
             display: flex;
             gap: 1rem;
         }
 
-        .order-login .btn{
-            width: 10rem;
-            padding: 1rem 1rem;
-        }
+            .order-login .btn {
+                width: 10rem;
+                padding: 1rem 1rem;
+            }
 
     </style>
 </head>
@@ -1000,7 +1047,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand" asp-controller = "Home" asp-action="Homepage">GRUSH Catering Services</a>
+            <a class="navbar-brand" asp-controller="Home" asp-action="Homepage">GRUSH Catering Services</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -1020,13 +1067,13 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#about-section">About</a>
-                    </li>                
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#contact-section">Contact</a>
                     </li>
                 </ul>
-                <div class = "order-login">
-                    <a class="btn btn-primary" id="login-btn" asp-controller = "Home" asp-action = "LogIn">Login</a>
+                <div class="order-login">
+                    <a class="btn btn-primary" id="login-btn" asp-controller="Home" asp-action="LogIn">Login</a>
                 </div>
             </div>
         </div>
@@ -1101,7 +1148,7 @@
         </div>
     </section>
 
-  
+
     <section id="menu-section" class="menu-section">
         <div class="container">
             <div class="section-title">
@@ -1114,9 +1161,9 @@
                 <button class="category" data-category="side-dish">Side Dish</button>
                 <button class="category" data-category="beverage">Beverage</button>
                 <button class="category" data-category="dessert">Dessert</button>
-                <button class="category" data-category="rice">Rice</button>             
+                <button class="category" data-category="rice">Rice</button>
             </div>
-            
+
             <div class="menu-grid active" data-category="best-seller">
 
                 <div class="best-seller-card">
@@ -1198,11 +1245,11 @@
                     <img src="images/PORK-STEAK.jpg" alt="Pork Steak">
                     <div class="price-overlay"><p>Pork Steak</p></div>
                 </div>
-               
-           
+
+
             </div>
 
-    
+
             <div class="menu-grid" data-category="main-dish">
                 <div class="best-seller-card">
                     <img src="images/FISH-FILLET.jpg" alt="Fish Fillet">
@@ -1225,17 +1272,17 @@
                     <div class="price-overlay"><p>Buttered Chicken</p></div>
 
                 </div>
-                 <div class="best-seller-card">
+                <div class="best-seller-card">
                     <img src="images/ROASTED-CHICKEN.jpg" alt="Roasted Chicken">
                     <div class="price-overlay"><p>Roasted Chicken</p></div>
 
                 </div>
-                 <div class="best-seller-card">
+                <div class="best-seller-card">
                     <img src="images/BEEF-KARE-KARE.jpg" alt="Beef Kare-Kare">
                     <div class="price-overlay"><p>Beef  Kare-Kare</p></div>
 
                 </div>
-                 <div class="best-seller-card">
+                <div class="best-seller-card">
                     <img src="images/BEEF-MENUDO.jpg" alt="Beef Menudo">
                     <div class="price-overlay"><p>Beef Menudo</p></div>
 
@@ -1245,7 +1292,7 @@
                     <div class="price-overlay"><p>Beef Steak</p></div>
 
                 </div>
-                 <div class="best-seller-card">
+                <div class="best-seller-card">
                     <img src="images/BEEF-STEW.jpg" alt="Beef Stew">
                     <div class="price-overlay"><p>Beef Stew</p></div>
 
@@ -1265,7 +1312,7 @@
                     <div class="price-overlay"><p>Breaded Pork Chop</p></div>
 
                 </div>
-                 <div class="best-seller-card">
+                <div class="best-seller-card">
                     <img src="images/PORK-SISIG.jpg" alt="Spicy Pork Sisig">
                     <div class="price-overlay"><p>Spicy Pork Sisig</p></div>
 
@@ -1280,156 +1327,173 @@
                     <div class="price-overlay"><p>Pork BBQ</p></div>
 
                 </div>
-              
 
-                </div>
+
             </div>
-        
+        </div>
 
-           
-               <div class="menu-grid" data-category="side-dish">
-                <div class="best-seller-card">
-                    <img src="images/BIHON.jpg" alt="Bihon">
-                    <div class="price-overlay"><p>Bihon</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/SOTANGHON.jpg" alt="Sotanghon Guisado">
-                    <div class="price-overlay"><p>Sotanghon Guisado</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/SPAGHETTI.jpg" alt="Spaghetti">
-                    <div class="price-overlay"><p>Spaghetti</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/BAM-E.jpg" alt="Bam-e">
-                    <div class="price-overlay"><p>Bam-e</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/BAKED-MACARONI.jpg" alt="Baked Macaroni">
-                    <div class="price-overlay"><p>Baked Macaroni</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/CARBONARA.jpg" alt="">
-                    <div class="price-overlay"><p>Carbonara</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/LASAGNA.jpg" alt="Lasagna with Noodles">
-                    <div class="price-overlay"><p>Lasagna with Noodles</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/ZEN-SALAD.jpg" alt="Zen Salad">
-                    <div class="price-overlay"><p>Zen Salad</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/CAESAR-SALAD.jpg" alt="Caesar Salad">s
-                    <div class="price-overlay"><p>Caesar Salad</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/THOUSAND-ISLAND.jpg" alt="Thousand Island">
-                    <div class="price-overlay"><p>Thousand Island</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/POTATO-SALAD.jpg" alt="Potato Salad">
-                    <div class="price-overlay"><p>Potato Salad</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/CHAO.jpg" alt="Lasagna with Noodles">
-                    <div class="price-overlay"><p>Lasagna with Noodles</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/CHOPSUEY.jpg" alt="Chopsuey">
-                    <div class="price-overlay"><p>Chopsuey</p></div>
-                </div>
-                 <div class="best-seller-card">
-                    <img src="images/MIX.jpg" alt="Mixed Seafood Vegetables">
-                    <div class="price-overlay"><p>Mixed Seafood Vegetables</p></div>
-                </div>
-                
-              </div>
-           
-      
-           
-                <div class="menu-grid" data-category="dessert">
-                    <div class="best-seller-card">
-                        <img src="images/MANGO-FLOAT.jpg" alt="Mango Float">
-                        <div class="price-overlay"><p>Mango Float</p></div>
-                    </div>
-                    <div class="best-seller-card">
-                        <img src="images/MAJA-BLANCA.jpg" alt="Maja Blanca">
-                        <div class="price-overlay"><p>Maja Blanca</p></div>
-                    </div>
-                    <div class="best-seller-card">
-                        <img src="images/BUKO-PANDAN.jpg" alt="Buko Pandan">
-                        <div class="price-overlay"><p>Buko Pandan</p></div>
-                    </div>
-                    <div class="best-seller-card">
-                        <img src="images/MANGO-TAPIOCA.jpg" alt="Mango Tapioca">
-                        <div class="price-overlay"><p>Mango Tapioca</p></div>
-                    </div>
-                  <div class="best-seller-card">
-                    <img src="images/CAKE.jpg" alt="Cake">
-                    <div class="price-overlay"><p>Cake</p></div>
-                 </div>
-                  <div class="best-seller-card">
-                    <img src="images/PENNE-SALAD.jpg" alt="Halo-Halo">
-                    <div class="price-overlay"><p>Halo-Halo</p></div>
-                 </div>
-                  <div class="best-seller-card">
-                    <img src="images/FRUIT-SALAD.jpg" alt="Fruit Salad">
-                    <div class="price-overlay"><p>Fruit Salad</p></div>
-                 </div>
-                 <div class="best-seller-card">
-                    <img src="images/FRESH-FRUITS.jpg" alt="Fresh Fruits">
-                    <div class="price-overlay"><p>Fresh Fruits</p></div>
-                 </div>
-                </div>
-        
 
-                <div class="menu-grid" data-category="beverage">
-                    <div class="best-seller-card">
-                        <img src="images/COKE.jpg" alt="Coke">
-                        <div class="price-overlay"><p>Coke</p></div>
-                    </div>
-                    <div class="best-seller-card">
-                        <img src="images/ROYAL.jpg" alt="Royal">
-                        <div class="price-overlay"><p>Royal</p></div>
-                     </div>
-                    <div class="best-seller-card">
-                        <img src="images/7UP.jpg" alt="7up">
-                        <div class="price-overlay"><p>7up</p></div>
-                     </div>
-                    <div class="best-seller-card">
-                        <img src="images/SPRITE.jpg" alt="Sprite">
-                        <div class="price-overlay"><p>Sprite</p></div>
-                     </div>
-                </div>
-         
-              <div class="menu-grid" data-category="rice">
-                <div class="best-seller-card">
-                    <img src="images/PLAIN-RICE.jpg" alt="Plain Rice">
-                    <div class="price-overlay"><p>Plain Rice</p></div>
-                </div>
-                <div class="best-seller-card">
-                    <img src="images/GARLIC-RICE.jpg" alt="Garlic Rice">
-                    <div class="price-overlay"><p>Garlic Rice</p></div>
-                </div>
-                <div class="best-seller-card">
-                    <img src="images/FRIED-RICE.jpg" alt="Fried Rice">
-                    <div class="price-overlay"><p>Fried Rice</p></div>
-                </div>
-              </div>
+        <div class="menu-grid" data-category="side-dish">
+            <div class="best-seller-card">
+                <img src="images/BIHON.jpg" alt="Bihon">
+                <div class="price-overlay"><p>Bihon</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/SOTANGHON.jpg" alt="Sotanghon Guisado">
+                <div class="price-overlay"><p>Sotanghon Guisado</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/SPAGHETTI.jpg" alt="Spaghetti">
+                <div class="price-overlay"><p>Spaghetti</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/BAM-E.jpg" alt="Bam-e">
+                <div class="price-overlay"><p>Bam-e</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/BAKED-MACARONI.jpg" alt="Baked Macaroni">
+                <div class="price-overlay"><p>Baked Macaroni</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/CARBONARA.jpg" alt="Carbonara">
+                <div class="price-overlay"><p>Carbonara</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/LASAGNA.jpg" alt="Lasagna with Noodles">
+                <div class="price-overlay"><p>Lasagna with Noodles</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/ZEN-SALAD.jpg" alt="Zen Salad">
+                <div class="price-overlay"><p>Zen Salad</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/CAESAR-SALAD.jpg" alt="Caesar Salad">
+                <div class="price-overlay"><p>Caesar Salad</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/THOUSAND-ISLAND.jpg" alt="Thousand Island">
+                <div class="price-overlay"><p>Thousand Island</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/POTATO-SALAD.jpg" alt="Potato Salad">
+                <div class="price-overlay"><p>Potato Salad</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/CHAO.jpg" alt="Chao">
+                <div class="price-overlay"><p>Chao</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/CHOPSUEY.jpg" alt="Chopsuey">
+                <div class="price-overlay"><p>Chopsuey</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/MIX.jpg" alt="Mixed Seafood Vegetables">
+                <div class="price-overlay"><p>Mixed Seafood Vegetables</p></div>
+            </div>
+        </div>
+        <div class="menu-grid" data-category="dessert">
+            <div class="best-seller-card">
+                <img src="images/MANGO-FLOAT.jpg" alt="Mango Float">
+                <div class="price-overlay"><p>Mango Float</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/MAJA-BLANCA.jpg" alt="Maja Blanca">
+                <div class="price-overlay"><p>Maja Blanca</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/BUKO-PANDAN.jpg" alt="Buko Pandan">
+                <div class="price-overlay"><p>Buko Pandan</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/MANGO-TAPIOCA.jpg" alt="Mango Tapioca">
+                <div class="price-overlay"><p>Mango Tapioca</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/CAKE.jpg" alt="Cake">
+                <div class="price-overlay"><p>Cake</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/PENNE-SALAD.jpg" alt="Halo-Halo">
+                <div class="price-overlay"><p>Halo-Halo</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/FRUIT-SALAD.jpg" alt="Fruit Salad">
+                <div class="price-overlay"><p>Fruit Salad</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/FRESH-FRUITS.jpg" alt="Fresh Fruits">
+                <div class="price-overlay"><p>Fresh Fruits</p></div>
+            </div>
+        </div>
+        <div class="menu-grid" data-category="beverage">
+            <div class="best-seller-card">
+                <img src="images/COKE.jpg" alt="Coke">
+                <div class="price-overlay"><p>Coke</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/ROYAL.jpg" alt="Royal">
+                <div class="price-overlay"><p>Royal</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/7UP.jpg" alt="7up">
+                <div class="price-overlay"><p>7up</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/SPRITE.jpg" alt="Sprite">
+                <div class="price-overlay"><p>Sprite</p></div>
+            </div>
+        </div>
+        <div class="menu-grid" data-category="rice">
+            <div class="best-seller-card">
+                <img src="images/PLAIN-RICE.jpg" alt="Plain Rice">
+                <div class="price-overlay"><p>Plain Rice</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/GARLIC-RICE.jpg" alt="Garlic Rice">
+                <div class="price-overlay"><p>Garlic Rice</p></div>
+            </div>
+
+            <div class="best-seller-card">
+                <img src="images/FRIED-RICE.jpg" alt="Fried Rice">
+                <div class="price-overlay"><p>Fried Rice</p></div>
+            </div>
+        </div>
     </section>
-    
-   
-    
+
+
+
     <!-- Testimonials Section -->
     <section id="testimonial-section" class="testimonial-section">
         <div class="container">
             <div class="section-title">
-                <h2>What Our Clients Say</h2>             
-            </div>          
+                <h2>What Our Clients Say</h2>
+            </div>
             <div class="Text-title">
-                <p>"Don't just take our word for it - hear from some of our satisfied clients"</p>             
+                <p>"Don't just take our word for it - hear from some of our satisfied clients"</p>
             </div>
 
             <div class="row">
@@ -1487,45 +1551,45 @@
 
     <!-- About Section -->
     <section id="about-section" class="about-section">
-       
+
         <div class="container">
             <div class="section-title T">
 
                 <h2> Catering Services Provider in Cebu Since 2016</h2>
-               
+
             </div>
             <div class="section-title P">
-                
-               
+
+
                 <p>"Elegant in Presentation, Excellent in Taste, Exceptional in Service."</p>
                 <h5>"Fidel Bas, Talisay City, Talisay, Philippines, 6045"</h5>
             </div>
 
             <div class="about-images">
                 <div class="vmv-card">
-                 <img src="images/Vision.jpg" alt="Vision" />            
+                    <img src="images/Vision.jpg" alt="Vision" />
                 </div>
 
                 <div class="vmv-card">
-                    <img src="images/Mission.jpg" alt="Mission" />                 
+                    <img src="images/Mission.jpg" alt="Mission" />
                 </div>
 
                 <div class="vmv-card">
-                  <img src="images/Values.jpg" alt="Values" />         
+                    <img src="images/Values.jpg" alt="Values" />
                 </div>
             </div>
-           
+
         </div>
     </section>
 
-   
-   <!-- CTA Section -->
-<section class="cta-section">
-  <div class="container">
-    <h2 class="cta-title">Ready to Plan Your Event?</h2>
-    <p class="cta-text">Contact us today for a personalized consultation...</p>
-  </div>
-</section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Ready to Plan Your Event?</h2>
+            <p class="cta-text">Contact us today for a personalized consultation...</p>
+        </div>
+    </section>
 
     <!-- Contact Us-->
     <footer id="contact-section" class="footer-contact" style="
@@ -1548,7 +1612,7 @@
                         <a href="#"><i class="bi bi-linkedin"></i></a>
                     </div>
                 </div>
-                
+
                 <div class="col-lg-2 col-md-4 mb-5 mb-md-0">
                     <h4 class="footer-title">Quick Links</h4>
                     <ul class="footer-links">
@@ -1558,7 +1622,7 @@
                         <li><a href="#menu-section">Menus</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="col-lg-2 col-md-4 mb-5 mb-md-0">
                     <h4 class="footer-title">Services</h4>
                     <ul class="footer-links">
@@ -1569,7 +1633,7 @@
                         <li><a href="#services-section">Drop-off Catering</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="col-lg-4 col-md-4">
                     <h4 class="footer-title">Contact Us</h4>
                     <div class="footer-contact">
@@ -1590,7 +1654,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-bottom">
                 <p>&copy; 2023 Grush Catering. All Rights Reserved.</p>
             </div>
@@ -1598,28 +1662,27 @@
 
     </footer>
 
- 
+
     <div id="service-images-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:1050; justify-content:center; align-items:center;">
         <div style="position:relative; max-width:90vw; max-height:90vh; overflow:auto; background:#fff; border-radius:12px; padding:1rem;">
             <button id="modal-close-btn" style="position:absolute; top:10px; right:10px; background:#c084fc; border:none; color:#fff; font-size:1.5rem; border-radius:50%; width:35px; height:35px; cursor:pointer;">&times;</button>
             <div id="modal-image-container" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
-              
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-       
+
         document.addEventListener('DOMContentLoaded', function() {
             const counters = document.querySelectorAll('.stat-number');
             const speed = 200;
-            
+
             counters.forEach(counter => {
                 const target = +counter.getAttribute('data-count');
                 const count = +counter.innerText;
                 const increment = Math.ceil(target / speed);
-                
+
                 if (count < target) {
                     let current = count;
                     const updateCount = () => {
@@ -1659,7 +1722,7 @@
         });
     </script>
 
-  @*  ABOUT SECTION SCRIPT *@
+    @*  ABOUT SECTION SCRIPT *@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const cards = document.querySelectorAll(".vmv-card");
@@ -1669,12 +1732,12 @@
 
             cards.forEach(card => {
                 card.addEventListener("click", () => {
-                   
+
                     if (card.classList.contains("active")) {
                         card.classList.remove("active");
                         overlay.classList.remove("active");
                     } else {
-                     
+
                         document.querySelectorAll(".vmv-card.active").forEach(c => c.classList.remove("active"));
 
                         card.classList.add("active");
@@ -1683,107 +1746,107 @@
                 });
             });
 
-          
+
             overlay.addEventListener("click", () => {
                 document.querySelectorAll(".vmv-card.active").forEach(c => c.classList.remove("active"));
                 overlay.classList.remove("active");
             });
         });
     </script>
-   @*  CATERING SERVICES SCRIPT *@
-     <script>
-                 document.addEventListener("DOMContentLoaded", () => {
-          const modal = document.getElementById("service-images-modal");
-          const modalImageContainer = document.getElementById("modal-image-container");
-          const closeBtn = document.getElementById("modal-close-btn");
-          const serviceLinks = document.querySelectorAll(".service-link");
+    @*  CATERING SERVICES SCRIPT *@
+    <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+             const modal = document.getElementById("service-images-modal");
+             const modalImageContainer = document.getElementById("modal-image-container");
+             const closeBtn = document.getElementById("modal-close-btn");
+             const serviceLinks = document.querySelectorAll(".service-link");
 
-          const serviceImages = {
-            wedding: [
-                 "images/W1.jpg",
-                 "images/W2.jpg",
-                 "images/W3.jpg",
-                 "images/W4.jpg",
-                 "images/W5.jpg",
-                 "images/W6.jpg",
-                 "images/W7.jpg",
-                 "images/W8.jpg",
-                 "images/W9.jpg",
-                 "images/W10.jpg"
-                
-            ],
-             
-        corporate: [
-          "images/C1.jpg",
-          "images/C2.jpg",
-          "images/C3.jpg",
-          "images/C4.jpg",
-          "images/C5.jpg",
-          "images/c6.jpg",
-          "images/C7.jpg",
-          "images/C8.jpg",
-          "images/C9.jpg",
-          "images/C10.jpg"
-         
-        ],
-        social: [
-          "images/s1.jpg",
-          "images/S2.jpg",
-          "images/S3.jpg",
-          "images/S4.jpg",
-          "images/S5.jpg",
-          "images/s6.jpg",
-          "images/S7.jpg",
-          "images/S8.jpg",
-          "images/s9.jpg",
-          "images/S10.jpg"
-         
-        ]
-          };
-                        serviceLinks.forEach(link => {
-          link.addEventListener("click", (e) => {
-            e.preventDefault();
-            const service = link.getAttribute("data-service");
-            console.log('Clicked service:', service);
-            if(serviceImages[service]){
-              modalImageContainer.innerHTML = "";
+             const serviceImages = {
+               wedding: [
+                    "images/W1.jpg",
+                    "images/W2.jpg",
+                    "images/W3.jpg",
+                    "images/W4.jpg",
+                    "images/W5.jpg",
+                    "images/W6.jpg",
+                    "images/W7.jpg",
+                    "images/W8.jpg",
+                    "images/W9.jpg",
+                    "images/W10.jpg"
 
-              modal.style.display = "flex";  
-              modal.classList.remove("show"); 
+               ],
 
-              const imgs = serviceImages[service].map(src => {
-                const img = document.createElement("img");
-                img.src = src;
-                img.alt = `${service} setup`;
-                img.style.maxWidth = "200px";
-                img.style.borderRadius = "8px";
-                img.style.margin = "0.5rem";
-                modalImageContainer.appendChild(img);
-                return img;
-              });
+           corporate: [
+             "images/C1.jpg",
+             "images/C2.jpg",
+             "images/C3.jpg",
+             "images/C4.jpg",
+             "images/C5.jpg",
+             "images/c6.jpg",
+             "images/C7.jpg",
+             "images/C8.jpg",
+             "images/C9.jpg",
+             "images/C10.jpg"
 
-             
-              requestAnimationFrame(() => {
-                imgs.forEach(img => img.classList.add("show"));
-                modal.classList.add("show");
-              });
-            }
-          });
+           ],
+           social: [
+             "images/s1.jpg",
+             "images/S2.jpg",
+             "images/S3.jpg",
+             "images/S4.jpg",
+             "images/S5.jpg",
+             "images/s6.jpg",
+             "images/S7.jpg",
+             "images/S8.jpg",
+             "images/s9.jpg",
+             "images/S10.jpg"
+
+           ]
+             };
+                           serviceLinks.forEach(link => {
+             link.addEventListener("click", (e) => {
+               e.preventDefault();
+               const service = link.getAttribute("data-service");
+               console.log('Clicked service:', service);
+               if(serviceImages[service]){
+                 modalImageContainer.innerHTML = "";
+
+                 modal.style.display = "flex";
+                 modal.classList.remove("show");
+
+                 const imgs = serviceImages[service].map(src => {
+                   const img = document.createElement("img");
+                   img.src = src;
+                   img.alt = `${service} setup`;
+                   img.style.maxWidth = "200px";
+                   img.style.borderRadius = "8px";
+                   img.style.margin = "0.5rem";
+                   modalImageContainer.appendChild(img);
+                   return img;
+                 });
+
+
+                 requestAnimationFrame(() => {
+                   imgs.forEach(img => img.classList.add("show"));
+                   modal.classList.add("show");
+                 });
+               }
+             });
+           });
+
+           closeBtn.addEventListener("click", () => {
+             modal.classList.remove("show");
+             setTimeout(() => { modal.style.display = "none"; }, 400);
+           });
+
+           modal.addEventListener("click", (e) => {
+             if(e.target === modal){
+               modal.classList.remove("show");
+               setTimeout(() => { modal.style.display = "none"; }, 400);
+             }
+           });
+
         });
-
-        closeBtn.addEventListener("click", () => {
-          modal.classList.remove("show");
-          setTimeout(() => { modal.style.display = "none"; }, 400);
-        });
-
-        modal.addEventListener("click", (e) => {
-          if(e.target === modal){
-            modal.classList.remove("show");
-            setTimeout(() => { modal.style.display = "none"; }, 400); 
-          }
-        });
-          
-     });
-     </script>
+    </script>
 </body>
 </html>
