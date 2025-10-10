@@ -652,7 +652,7 @@
                                         </a>
                                     }
                                     @* Headwaiter remove-from-view for Completed orders *@
-                                    @if (!isAdmin && item?.Order?.Status == "Completed")
+                                    @* @if (!isAdmin && item?.Order?.Status == "Completed")
                                     {
                                         <form asp-controller="PaidOrders" asp-action="HideFromView" asp-route-id="@item.CustomerID" method="post" class="d-inline">
                                             @Html.AntiForgeryToken()
@@ -661,7 +661,7 @@
                                                 <span>Remove</span>
                                             </button>
                                         </form>
-                                    }
+                                    } *@
                                 </div>
                             </td>
                         </tr>

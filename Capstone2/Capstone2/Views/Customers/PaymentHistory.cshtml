@@ -39,9 +39,9 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Transaction Number</th>
-                                <th>Amount</th>
                                 <th>Payment Type</th>
-                                <th>Running Total</th>
+                                <th>Amount</th>
+                                @* <th>Running Total</th> *@
                             </tr>
                         </thead>
                         <tbody>
@@ -59,14 +59,14 @@
                                         <span class="modern-status-badge accepted">@payment.TransactionNumber</span>
                                     </td>
                                     <td>
-                                        <div class="modern-name">₱@payment.Amount.ToString("F2")</div>
-                                    </td>
-                                    <td>
                                         <span class="modern-status-badge accepted">@payment.PaymentType</span>
                                     </td>
                                     <td>
-                                        <div class="modern-name text-success">₱@runningTotal.ToString("F2")</div>
+                                        <div class="modern-name">₱@payment.Amount.ToString("F2")</div>
                                     </td>
+                                    @* <td>
+                                        <div class="modern-name text-success">₱@runningTotal.ToString("F2")</div>
+                                    </td> *@
                                 </tr>
                             }
                         </tbody>
