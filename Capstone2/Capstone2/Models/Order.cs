@@ -51,6 +51,7 @@ namespace Capstone2.Models
         public int? HeadWaiterId { get; set; }
         public HeadWaiter? HeadWaiter { get; set; }
         public bool isDeleted { get; set; } = false;
+        public string? AdditionalNotes { get; set; } // Customer's additional notes/requests
     }
 }
 

@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="modern-action-buttons">
-            @if (Model.Customer.IsPaid && Model.Status == "Completed")
+            @if (Model.Status == "Accepted" || Model.Status == "Ongoing" || Model.Status == "Settling Balance" || Model.Status == "Completed")
             {
                 <button type="button" class="modern-action-btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#invoicePreviewModal">
                     <i class="bi bi-file-earmark-pdf me-1"></i> Generate Invoice
@@ -92,6 +92,21 @@
                     </div>
                 </div>
             </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.AdditionalNotes))
+            {
+                <div class="row g-4 mt-2">
+                    <div class="col-12">
+                        <div class="modern-form-group">
+                            <label class="modern-form-label">
+                                <i class="bi bi-sticky me-1"></i>
+                                Additional Notes
+                            </label>
+                            <div class="modern-info" style="white-space: pre-wrap; background: var(--purple-bg-light); padding: 12px; border-radius: 8px; border: 1px solid var(--purple-border);">@Model.AdditionalNotes</div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 

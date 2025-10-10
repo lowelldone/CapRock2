@@ -197,6 +197,7 @@ namespace Capstone2.Controllers
             order.Occasion = model.Occasion;
             order.Motif = model.Motif;
             order.NoOfPax = model.NoOfPax;
+            order.AdditionalNotes = model.AdditionalNotes;
 
             // Update customer fields
             order.Customer.Name = model.Customer.Name;

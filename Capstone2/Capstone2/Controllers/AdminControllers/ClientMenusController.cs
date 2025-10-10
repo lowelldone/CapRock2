@@ -226,7 +226,8 @@ namespace Capstone2.Controllers.AdminControllers
                     TotalPayment = orderData.GetProperty("TotalPayment").ValueKind == JsonValueKind.Number ?
                                    orderData.GetProperty("TotalPayment").GetDouble() :
                                    double.Parse(orderData.GetProperty("TotalPayment").GetString()),
-                    Status = "Pending"
+                    Status = "Pending",
+                    AdditionalNotes = orderData.TryGetProperty("AdditionalNotes", out var notesValue) ? notesValue.GetString() : null
                 };
 
                 System.Diagnostics.Debug.WriteLine($"Created Order with ID: {order.OrderId}, CustomerID: {order.CustomerID}, OrderNumber: {order.OrderNumber}");
