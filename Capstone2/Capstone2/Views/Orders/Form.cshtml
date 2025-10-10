@@ -196,6 +196,12 @@
                 <strong>Reminder:</strong> You need to pay at least a <strong>50% down payment</strong> for your catering order to proceed.
             </div>
 
+            <div class="mb-4">
+                <label asp-for="AdditionalNotes" class="form-label fw-semibold">Additional Notes (Optional)</label>
+                <textarea asp-for="AdditionalNotes" class="form-control" rows="4" placeholder="Enter any special requests or additional information here..."></textarea>
+                <small class="text-muted">You can add special requests, dietary restrictions, or any other important information.</small>
+            </div>
+
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-primary btn-submit">
                     <i class="bi bi-check-lg me-2"></i>Place Order

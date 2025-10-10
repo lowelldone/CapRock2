@@ -537,6 +537,77 @@ namespace Capstone2.Controllers
 
             return View(model);
         }
+
+        // BUSINESS PERFORMANCE DASHBOARD -----------------------------------------
+        public async Task<IActionResult> Performance(int months = 12)
+        {
+            // Limit months to reasonable range
+            if (months < 1) months = 1;
+            if (months > 36) months = 36;
+
+            var endDate = DateTime.Today;
+            var startDate = new DateTime(endDate.Year, endDate.Month, 1).AddMonths(-months + 1);
+
+            // Get all completed orders within the date range
+            var orders = await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Menu)
+                .Where(o => !o.isDeleted && o.Status == "Completed")
+                .Where(o => o.CateringDate >= startDate && o.CateringDate <= endDate)
+                .ToListAsync();
+
+            // Get all payments within the date range
+            var payments = await _context.Payments
+                .Include(p => p.Order)
+                .Where(p => p.Date >= startDate && p.Date <= endDate)
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+
+            // Group by month
+            var monthlyData = new List<MonthlyPerformance>();
+            var currentMonth = startDate;
+
+            while (currentMonth <= endDate)
+            {
+                var monthEnd = currentMonth.AddMonths(1).AddDays(-1);
+
+                var monthOrders = orders.Where(o =>
+                    o.CateringDate.Year == currentMonth.Year &&
+                    o.CateringDate.Month == currentMonth.Month).ToList();
+
+                var monthPayments = payments.Where(p =>
+                    p.Date.Year == currentMonth.Year &&
+                    p.Date.Month == currentMonth.Month).ToList();
+
+                var monthlyPerformance = new MonthlyPerformance
+                {
+                    Month = currentMonth,
+                    MonthLabel = currentMonth.ToString("MMM yyyy"),
+                    TotalOrders = monthOrders.Count,
+                    TotalRevenue = monthPayments.Sum(p => p.Amount),
+                    TotalPax = monthOrders.Sum(o => o.NoOfPax),
+                    AveragePaxPerOrder = monthOrders.Any() ? monthOrders.Average(o => o.NoOfPax) : 0,
+                    AverageRevenuePerOrder = monthOrders.Any() ? monthPayments.Sum(p => p.Amount) / monthOrders.Count : 0
+                };
+
+                monthlyData.Add(monthlyPerformance);
+                currentMonth = currentMonth.AddMonths(1);
+            }
+
+            var model = new PerformanceViewModel
+            {
+                MonthsDisplayed = months,
+                MonthlyData = monthlyData,
+                TotalOrders = monthlyData.Sum(m => m.TotalOrders),
+                TotalRevenue = monthlyData.Sum(m => m.TotalRevenue),
+                TotalPax = monthlyData.Sum(m => m.TotalPax),
+                AverageMonthlyRevenue = monthlyData.Any() ? monthlyData.Average(m => m.TotalRevenue) : 0,
+                AverageMonthlyOrders = monthlyData.Any() ? monthlyData.Average(m => m.TotalOrders) : 0
+            };
+
+            return View(model);
+        }
     }
 }
 

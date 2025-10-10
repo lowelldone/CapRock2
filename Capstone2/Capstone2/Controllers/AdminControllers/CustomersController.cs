@@ -338,8 +338,9 @@ namespace Capstone2.Controllers.AdminControllers
             if (order == null)
                 return NotFound();
 
-            // Optional guard: only allow when paid and completed
-            if (!(order.Customer.IsPaid && order.Status == "Completed"))
+            // Allow invoice generation for Accepted, Ongoing, Settling Balance, and Completed orders
+            var allowedStatuses = new[] { "Accepted", "Ongoing", "Settling Balance", "Completed" };
+            if (!allowedStatuses.Contains(order.Status))
             {
                 return RedirectToAction(nameof(ViewOrder), new { id });
             }

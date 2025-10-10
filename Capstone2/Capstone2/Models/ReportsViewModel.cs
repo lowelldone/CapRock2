@@ -75,6 +75,28 @@ namespace Capstone2.Models
         public List<AveragePaxItem> AveragePaxByVenue { get; set; } = new List<AveragePaxItem>();
         public List<RepeatCustomerItem> RepeatCustomers { get; set; } = new List<RepeatCustomerItem>();
     }
+
+    public class MonthlyPerformance
+    {
+        public DateTime Month { get; set; }
+        public string MonthLabel { get; set; } = string.Empty;
+        public int TotalOrders { get; set; }
+        public double TotalRevenue { get; set; }
+        public int TotalPax { get; set; }
+        public double AveragePaxPerOrder { get; set; }
+        public double AverageRevenuePerOrder { get; set; }
+    }
+
+    public class PerformanceViewModel
+    {
+        public int MonthsDisplayed { get; set; }
+        public List<MonthlyPerformance> MonthlyData { get; set; } = new List<MonthlyPerformance>();
+        public int TotalOrders { get; set; }
+        public double TotalRevenue { get; set; }
+        public int TotalPax { get; set; }
+        public double AverageMonthlyRevenue { get; set; }
+        public double AverageMonthlyOrders { get; set; }
+    }
 }
 
 
