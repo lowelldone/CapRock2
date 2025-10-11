@@ -212,5 +212,43 @@ namespace Capstone2.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("ViewOrder", "Customers", new { id = order.CustomerID });
         }
+
+        [HttpGet]
+        public IActionResult TrackOrder()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TrackOrder(string orderNumber)
+        {
+            if (string.IsNullOrWhiteSpace(orderNumber))
+            {
+                ViewBag.ErrorMessage = "Please enter an order number.";
+                return View();
+            }
+
+            var order = await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Menu)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.MenuPackage)
+                .FirstOrDefaultAsync(o => o.OrderNumber == orderNumber.Trim());
+
+            if (order == null)
+            {
+                ViewBag.ErrorMessage = "Order not found. Please check your order number and try again.";
+                return View();
+            }
+
+            // Calculate base amount and rush order fee for display using proper OrderPricing helper
+            var pricing = Capstone2.Helpers.OrderPricing.Compute(order, _context);
+            order.BaseAmount = pricing.BaseTotal;
+            order.RushOrderFee = pricing.RushFee;
+            order.TotalPayment = pricing.Total; // Make sure TotalPayment includes the rush fee
+
+            return View(order);
+        }
     }
 }
