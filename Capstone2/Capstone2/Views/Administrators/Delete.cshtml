@@ -1,0 +1,111 @@
+﻿@model Capstone2.Models.User
+
+@{
+    ViewData["Title"] = "Delete Administrator";
+}
+
+<link rel="stylesheet" href="~/css/modern-ui.css" />
+
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <div>
+                <h1 class="modern-title">Delete Administrator</h1>
+                <p class="modern-subtitle">Are you sure you want to delete this administrator?</p>
+            </div>
+        </div>
+        <div class="modern-action-buttons">
+            <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Confirmation Card -->
+    <div class="modern-status-card">
+        <div class="modern-status-card-header">
+            <h5 class="modern-status-card-title text-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Warning: This action will permanently delete the administrator
+            </h5>
+        </div>
+        <div class="modern-card-body">
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="modern-info-group">
+                        <label class="modern-form-label">First Name</label>
+                        <div class="modern-info">@Model.FirstName</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-info-group">
+                        <label class="modern-form-label">Last Name</label>
+                        <div class="modern-info">@Model.LastName</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="modern-info-group">
+                        <label class="modern-form-label">Username</label>
+                        <div class="modern-info">@Model.Username</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-info-group">
+                        <label class="modern-form-label">Phone Number</label>
+                        <div class="modern-info">@(string.IsNullOrEmpty(Model.UserNumber) ? "N/A" : Model.UserNumber)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="modern-info-group">
+                        <label class="modern-form-label">Role</label>
+                        <div class="modern-info">@Model.Role</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="modern-info-group">
+                        <label class="modern-form-label">Status</label>
+                        <div class="modern-info">
+                            <span class="modern-status-badge accepted">
+                                <i class="bi bi-check-circle"></i>
+                                Active
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Notice -->
+            <div class="alert alert-warning mt-4">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Important:</strong> This action will permanently delete the administrator account. The user will no longer be able to log in or access the system. This action cannot be undone.
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-end gap-3 mt-4">
+                <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i>
+                    Cancel
+                </a>
+                <form asp-action="Delete" method="post" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="UserId" />
+                    <button type="submit" class="modern-action-btn btn-danger">
+                        <i class="bi bi-trash"></i>
+                        Confirm Deletion
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

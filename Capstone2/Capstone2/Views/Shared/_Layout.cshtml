@@ -564,7 +564,7 @@
             .main-content {
                 margin-left: 0;
                 padding: 0 10px;
-                padding-top: 60px; 
+                padding-top: 60px;
             }
 
             .soft-sidebar:hover {
@@ -714,6 +714,12 @@
                                             </a>
                                             <div class="collapse" id="personnelCollapse">
                                                 <ul class="nav flex-column">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Administrators" ? "active" : "")" asp-controller="Administrators" asp-action="Index">
+                                                            <i class="bi bi-shield-fill-check"></i>
+                                                            <span>Administrators</span>
+                                                        </a>
+                                                    </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link sub-sub-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "HeadWaiters" ? "active" : "")" asp-controller="HeadWaiters" asp-action="Index">
                                                             <i class="bi bi-person-badge"></i>
