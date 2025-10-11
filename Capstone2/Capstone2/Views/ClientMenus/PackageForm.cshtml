@@ -567,7 +567,7 @@
                 if (hoursDiff < 9.95) {
                     const minTimeStr = minDateTime.getHours().toString().padStart(2, '0') + ':' + minDateTime.getMinutes().toString().padStart(2, '0');
                     const minDateStr = minDateTime.toISOString().split('T')[0];
-                    rushOrderAlert.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation required.</strong> Your catering must be at least 10 hours from now. Earliest available: ${minDateStr} at ${minTimeStr}. Current gap: ${hoursDiff.toFixed(1)} hours.`;
+                    rushOrderAlert.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation required.</strong> Your catering must be at least 10 hours from now.`;
                     rushOrderAlert.className = 'alert alert-danger mb-4';
                     rushOrderAlert.style.display = 'block';
                     if (submitBtn) {
@@ -636,6 +636,129 @@
         // Prevent drag and drop of non-numeric characters
         contactNoInput.addEventListener('drop', function (e) {
             e.preventDefault();
+        });
+
+        // Handle Customer Name validation - prevent any numbers
+        const customerNameInput = document.querySelector('input[name="Customer.Name"]');
+
+        function preventAnyNumbers(input, fieldName) {
+            const value = input.value.trim();
+
+            // If the value contains any numbers, clear it and show error
+            if (value && /\d/.test(value)) {
+                input.value = '';
+                input.setCustomValidity(`${fieldName} cannot contain any numbers. Please enter a valid ${fieldName.toLowerCase()}.`);
+                input.reportValidity();
+                return;
+            }
+
+            // Check minimum length
+            if (value && value.length < 2) {
+                input.setCustomValidity(`${fieldName} must be at least 2 characters long.`);
+            } else {
+                input.setCustomValidity('');
+            }
+        }
+
+        function preventNumericOnlyInput(input, fieldName) {
+            const value = input.value.trim();
+
+            // If the value is only numbers, clear it and show error
+            if (value && /^\d+$/.test(value)) {
+                input.value = '';
+                input.setCustomValidity(`${fieldName} cannot contain only numbers. Please enter a valid ${fieldName.toLowerCase()}.`);
+                input.reportValidity();
+                return;
+            }
+
+            // Check minimum length
+            if (value && value.length < 2) {
+                input.setCustomValidity(`${fieldName} must be at least 2 characters long.`);
+            } else {
+                input.setCustomValidity('');
+            }
+        }
+
+        // Customer Name - no numbers at all
+        customerNameInput.addEventListener('input', function () {
+            preventAnyNumbers(this, 'Customer Name');
+        });
+
+        customerNameInput.addEventListener('blur', function () {
+            preventAnyNumbers(this, 'Customer Name');
+        });
+
+        customerNameInput.addEventListener('keypress', function (e) {
+            // Prevent any number keys from being entered
+            if (/\d/.test(String.fromCharCode(e.which))) {
+                e.preventDefault();
+                this.setCustomValidity('Customer Name cannot contain any numbers. Please enter a valid customer name.');
+                this.reportValidity();
+            }
+        });
+
+        // Handle Occasion validation - prevent any numbers
+        const occasionInput = document.querySelector('input[name="Occasion"]');
+
+        occasionInput.addEventListener('input', function () {
+            preventAnyNumbers(this, 'Occasion');
+        });
+
+        occasionInput.addEventListener('blur', function () {
+            preventAnyNumbers(this, 'Occasion');
+        });
+
+        occasionInput.addEventListener('keypress', function (e) {
+            // Prevent any number keys from being entered
+            if (/\d/.test(String.fromCharCode(e.which))) {
+                e.preventDefault();
+                this.setCustomValidity('Occasion cannot contain any numbers. Please enter a valid occasion.');
+                this.reportValidity();
+            }
+        });
+
+        // Handle Theme (Motif) validation - prevent any numbers
+        const themeInput = document.querySelector('input[name="Motif"]');
+
+        themeInput.addEventListener('input', function () {
+            preventAnyNumbers(this, 'Theme');
+        });
+
+        themeInput.addEventListener('blur', function () {
+            preventAnyNumbers(this, 'Theme');
+        });
+
+        themeInput.addEventListener('keypress', function (e) {
+            // Prevent any number keys from being entered
+            if (/\d/.test(String.fromCharCode(e.which))) {
+                e.preventDefault();
+                this.setCustomValidity('Theme cannot contain any numbers. Please enter a valid theme.');
+                this.reportValidity();
+            }
+        });
+
+        // Handle Venue validation - prevent numeric-only input (but allow numbers in venue names)
+        const venueInput = document.querySelector('input[name="Venue"]');
+
+        venueInput.addEventListener('input', function () {
+            preventNumericOnlyInput(this, 'Venue');
+        });
+
+        venueInput.addEventListener('blur', function () {
+            preventNumericOnlyInput(this, 'Venue');
+        });
+
+        venueInput.addEventListener('keypress', function (e) {
+            const currentValue = this.value;
+            const newChar = String.fromCharCode(e.which);
+
+            // If current value + new character would be only numbers, prevent it
+            const wouldBeOnlyNumbers = /^\d+$/.test(currentValue + newChar);
+            if (wouldBeOnlyNumbers) {
+                e.preventDefault();
+                this.setCustomValidity('Venue cannot contain only numbers. Please enter a valid venue.');
+                this.reportValidity();
+            }
         });
     });
 

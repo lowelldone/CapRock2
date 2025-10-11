@@ -773,9 +773,30 @@
                                 // Step 2: Show Order Number Confirmation
                                 Swal.fire({
                                     title: "Package Order Confirmed!",
-                                    html: `Your package order has been successfully submitted.<br><br><strong>Order Number: ${responseData.orderNumber}</strong><br><br>Please take a note/screenshot and go to their office to make the payment and present this number for your reference.`,
+                                    html: `Your package order has been successfully submitted.<br><br>
+                                        <div style="display: inline-flex; align-items: center; gap: 8px;">
+                                            <strong>Order Number: ${responseData.orderNumber}</strong>
+                                            <button id="copyPackageOrderNumber" style="background: #7c3aed; color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;" title="Copy order number">
+                                                <i class="bi bi-clipboard"></i> Copy
+                                            </button>
+                                        </div>
+                                        <br><br>Please take a note/screenshot and go to their office to make the payment and present this number for your reference.`,
                                     icon: "success",
-                                    confirmButtonText: "View Invoice"
+                                    confirmButtonText: "View Invoice",
+                                    didOpen: () => {
+                                        const copyBtn = document.getElementById('copyPackageOrderNumber');
+                                        const orderNumber = responseData.orderNumber;
+                                        copyBtn.addEventListener('click', () => {
+                                            navigator.clipboard.writeText(orderNumber).then(() => {
+                                                copyBtn.innerHTML = '<i class="bi bi-check"></i> Copied!';
+                                                copyBtn.style.background = '#10b981';
+                                                setTimeout(() => {
+                                                    copyBtn.innerHTML = '<i class="bi bi-clipboard"></i> Copy';
+                                                    copyBtn.style.background = '#7c3aed';
+                                                }, 2000);
+                                            });
+                                        });
+                                    }
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         // Step 3: Show Invoice Modal
