@@ -337,19 +337,29 @@
         window.location.href = '/ClientMenus/SelectedPackageMenus';
     }
 
-    // Immediate fallback to set current time
-    function setCurrentTime() {
+    // Set time to 10 hours from now (minimum preparation time)
+    function setMinimumTime() {
         const timeInput = document.getElementById('timeOfFoodServing');
-        if (timeInput) {
+        const dateInput = document.getElementById('cateringDate');
+        if (timeInput && dateInput) {
             const now = new Date();
-            const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-            console.log('Immediate fallback - Setting time to:', currentTime);
-            timeInput.value = currentTime;
+            const minDateTime = new Date(now.getTime() + (10 * 60 * 60 * 1000)); // Add 10 hours
+
+            const minimumTime = minDateTime.getHours().toString().padStart(2, '0') + ':' + minDateTime.getMinutes().toString().padStart(2, '0');
+            const minimumDate = minDateTime.toISOString().split('T')[0];
+
+            console.log('Setting minimum time (10 hours from now):', minimumTime, 'on date:', minimumDate);
+
+            // Set the date if it crosses to next day
+            if (!dateInput.value) {
+                dateInput.value = minimumDate;
+            }
+            timeInput.value = minimumTime;
         }
     }
 
     // Try to set time immediately
-    setCurrentTime();
+    setMinimumTime();
 
     // Test function to manually set package data (for debugging)
     function setTestPackageData() {
@@ -417,15 +427,21 @@
         const todayPH = formatManilaDateYYYYMMDD(new Date());
         cateringDateInput.setAttribute('min', todayPH);
 
-        // Set default time of food serving to current time (backup)
+        // Set default time of food serving to 10 hours from now (backup)
         setTimeout(() => {
             const timeOfFoodServingInput = document.getElementById('timeOfFoodServing');
+            const cateringDateInput = document.getElementById('cateringDate');
             console.log('DOMContentLoaded backup - Time input found:', timeOfFoodServingInput);
-            if (timeOfFoodServingInput) {
+            if (timeOfFoodServingInput && !timeOfFoodServingInput.value) {
                 const now = new Date();
-                const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-                console.log('DOMContentLoaded backup - Setting time to:', currentTime);
-                timeOfFoodServingInput.value = currentTime;
+                const minDateTime = new Date(now.getTime() + (10 * 60 * 60 * 1000));
+                const minimumTime = minDateTime.getHours().toString().padStart(2, '0') + ':' + minDateTime.getMinutes().toString().padStart(2, '0');
+                const minimumDate = minDateTime.toISOString().split('T')[0];
+                console.log('DOMContentLoaded backup - Setting time to:', minimumTime, 'on date:', minimumDate);
+                if (!cateringDateInput.value) {
+                    cateringDateInput.value = minimumDate;
+                }
+                timeOfFoodServingInput.value = minimumTime;
             }
         }, 100);
 
@@ -488,9 +504,27 @@
             const timeInput = document.getElementById('timeOfFoodServing');
             const submitBtn = document.querySelector('button[type="submit"]');
 
+            if (!cateringDateInput.value || !timeInput.value) {
+                return; // Wait until both date and time are set
+            }
+
             const manilaNow = getManilaNowParts();
             const todayPHStr = `${manilaNow.y}-${manilaNow.m}-${manilaNow.d}`;
-            const isSameDay = (cateringDateInput.value && cateringDateInput.value === todayPHStr);
+            const isSameDay = (cateringDateInput.value === todayPHStr);
+
+            // Create full datetime objects for comparison
+            const now = new Date();
+            const cateringDateTime = new Date(`${cateringDateInput.value}T${timeInput.value}:00`);
+            const minDateTime = new Date(now.getTime() + (10 * 60 * 60 * 1000)); // Current time + 10 hours
+
+            // Calculate hours difference - use 9.95 threshold to account for minor time differences
+            const hoursDiff = (cateringDateTime - now) / (1000 * 60 * 60);
+
+            // Debug logging
+            console.log('Current time:', now);
+            console.log('Catering datetime:', cateringDateTime);
+            console.log('Minimum datetime:', minDateTime);
+            console.log('Hours difference:', hoursDiff);
 
             if (isSameDay) {
                 const isAM = manilaNow.h < 12;
@@ -504,38 +538,24 @@
                         submitBtn.disabled = true;
                         submitBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Order Restricted';
                     }
-                    if (timeInput) {
-                        timeInput.removeAttribute('min');
-                    }
                     return;
                 }
 
-                const hourPlusTen = manilaNow.h + 10;
-
-                // If adding 10 hours spills into next day in Manila, block same-day selection
-                if (hourPlusTen >= 24) {
-                    rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation if rush order.</strong> No available time slots remain today. Please select a later date.';
+                // Check if catering datetime is at least 10 hours from now (use 9.95 threshold for minor differences)
+                if (hoursDiff < 9.95) {
+                    const minTimeStr = minDateTime.getHours().toString().padStart(2, '0') + ':' + minDateTime.getMinutes().toString().padStart(2, '0');
+                    rushOrderAlert.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation required.</strong> Please select a time at least 10 hours from now.`;
                     rushOrderAlert.className = 'alert alert-danger mb-4';
                     rushOrderAlert.style.display = 'block';
                     if (submitBtn) {
                         submitBtn.disabled = true;
                         submitBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Order Restricted';
                     }
-                    if (timeInput) {
-                        timeInput.removeAttribute('min');
-                    }
                     return;
                 }
 
-                const minTime = `${String(hourPlusTen).padStart(2, '0')}:${String(manilaNow.min).padStart(2, '0')}`;
-                if (timeInput) {
-                    timeInput.setAttribute('min', minTime);
-                    if (!timeInput.value || timeInput.value < minTime) {
-                        timeInput.value = minTime;
-                    }
-                }
-
-                rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation if rush order.</strong> Since your catering date is the same as your order date, a <strong>10% rush order fee</strong> has been added to your total amount.';
+                // Valid same-day rush order
+                rushOrderAlert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation required.</strong> Since your catering date is the same as your order date, a <strong>10% rush order fee</strong> has been added to your total amount.';
                 rushOrderAlert.className = 'alert alert-warning mb-4';
                 rushOrderAlert.style.display = 'block';
                 if (submitBtn) {
@@ -543,13 +563,24 @@
                     submitBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Place Package Order';
                 }
             } else {
-                rushOrderAlert.style.display = 'none';
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Place Package Order';
-                }
-                if (timeInput) {
-                    timeInput.removeAttribute('min');
+                // Future date order - check if catering datetime is at least 10 hours from now (use 9.95 threshold)
+                if (hoursDiff < 9.95) {
+                    const minTimeStr = minDateTime.getHours().toString().padStart(2, '0') + ':' + minDateTime.getMinutes().toString().padStart(2, '0');
+                    const minDateStr = minDateTime.toISOString().split('T')[0];
+                    rushOrderAlert.innerHTML = `<i class="bi bi-exclamation-triangle me-2"></i><strong>10 hours preparation required.</strong> Your catering must be at least 10 hours from now. Earliest available: ${minDateStr} at ${minTimeStr}. Current gap: ${hoursDiff.toFixed(1)} hours.`;
+                    rushOrderAlert.className = 'alert alert-danger mb-4';
+                    rushOrderAlert.style.display = 'block';
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Order Restricted';
+                    }
+                } else {
+                    // Valid future order
+                    rushOrderAlert.style.display = 'none';
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Place Package Order';
+                    }
                 }
             }
         }
@@ -559,6 +590,16 @@
 
         // Check when catering date changes
         cateringDateInput.addEventListener('change', checkRushOrder);
+
+        // Validate time input to ensure catering datetime is at least 10 hours from now
+        const timeOfFoodServingInput = document.getElementById('timeOfFoodServing');
+        timeOfFoodServingInput.addEventListener('input', function() {
+            checkRushOrder();
+        });
+
+        timeOfFoodServingInput.addEventListener('change', function() {
+            checkRushOrder();
+        });
 
         // Update total price when PAX changes (when user finishes editing)
         noOfPaxInput.addEventListener('change', updateTotalPrice);
