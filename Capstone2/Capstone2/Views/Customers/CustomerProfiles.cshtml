@@ -1,0 +1,140 @@
+﻿@model IEnumerable<Capstone2.Models.CustomerProfileViewModel>
+
+@{
+    ViewData["Title"] = "Customer Profiles";
+}
+
+<link rel="stylesheet" href="~/css/modern-ui.css" />
+
+<div class="container-fluid modern-bg">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div class="modern-header">
+            <div class="modern-header-icon">
+                <i class="bi bi-person-circle"></i>
+            </div>
+            <div>
+                <h1 class="modern-title">Customer Profiles</h1>
+                <p class="modern-subtitle">Track customer information and completed order history</p>
+            </div>
+        </div>
+        <div class="modern-action-buttons">
+            <a asp-action="Index" class="modern-action-btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Back to Orders
+            </a>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="modern-search-card">
+        <form asp-controller="Customers" asp-action="CustomerProfiles" method="get" class="modern-search-form">
+            <div>
+                <label class="modern-form-label">Search Customers</label>
+                <input type="text" name="searchString" class="modern-form-control" placeholder="Search by Name, Contact Number, or Address..." value="@ViewBag.SearchString" />
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="modern-btn-search">
+                    <i class="bi bi-search me-2"></i>Search
+                </button>
+                <a asp-action="CustomerProfiles" class="modern-action-btn btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Clear
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Customer Profiles Table -->
+    <div class="modern-table-card">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Contact Number</th>
+                            <th>Address</th>
+                            <th class="text-center">Completed Orders</th>
+                            <th>Latest Order Date</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var profile in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="modern-avatar">
+                                            @profile.Name.Substring(0, 1).ToUpper()
+                                        </div>
+                                        <div class="ms-2">
+                                            <strong>@profile.Name</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@(string.IsNullOrEmpty(profile.ContactNo) ? "N/A" : profile.ContactNo)</td>
+                                <td>@(string.IsNullOrEmpty(profile.Address) ? "N/A" : profile.Address)</td>
+                                <td class="text-center">
+                                    <span class="modern-badge-lg badge bg-primary">
+                                        @profile.TotalOrders
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (profile.Orders.Any())
+                                    {
+                                        <span>@profile.Orders.First().OrderDate.ToString("MMM dd, yyyy")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No orders</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <a asp-action="CustomerProfileDetails"
+                                       asp-route-name="@profile.Name"
+                                       asp-route-contactNo="@profile.ContactNo"
+                                       class="modern-btn-icon btn-primary"
+                                       title="View Profile">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="modern-empty-state">
+                <i class="bi bi-person-x"></i>
+                <h3>No Customer Profiles Found</h3>
+                <p>@(string.IsNullOrWhiteSpace(ViewBag.SearchString) ? "No customers with completed orders yet." : "No customers match your search criteria.")</p>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .modern-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .modern-badge-lg {
+        font-size: 16px;
+        padding: 6px 12px;
+        border-radius: 8px;
+    }
+</style>
+

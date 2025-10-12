@@ -5,6 +5,9 @@
     var chargedItems = ViewBag.ChargedItems as IEnumerable<dynamic>;
     bool isAdmin = ViewBag.IsAdmin ?? false;
     bool fromPast = ViewBag.FromPastOrders ?? false;
+    bool fromProfile = ViewBag.FromProfile ?? false;
+    string customerName = ViewBag.CustomerName ?? "";
+    string customerContact = ViewBag.CustomerContact ?? "";
     bool hasPackageItems = Model?.OrderDetails?.Any(od => !string.IsNullOrEmpty(od.Type)) == true;
 }
 
@@ -341,7 +344,13 @@
             </a>
         }
 
-        @if (fromPast)
+        @if (fromProfile)
+        {
+            <a asp-action="CustomerProfileDetails" asp-route-name="@customerName" asp-route-contactNo="@customerContact" class="modern-action-btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Profile
+            </a>
+        }
+        else if (fromPast)
         {
             <a asp-action="PastOrders" class="modern-action-btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-2"></i>Back

@@ -238,7 +238,7 @@ namespace Capstone2.Controllers.AdminControllers
             return _context.Customers.Any(e => e.CustomerID == id && !e.isDeleted);
         }
 
-        public async Task<IActionResult> ViewOrder(int? id, bool? fromPastOrders, bool? showInvoiceModal)
+        public async Task<IActionResult> ViewOrder(int? id, bool? fromPastOrders, bool? showInvoiceModal, bool? fromProfile, string customerName, string customerContact)
         {
             if (id == null)
                 return BadRequest();
@@ -323,6 +323,9 @@ namespace Capstone2.Controllers.AdminControllers
 
             ViewBag.FromPastOrders = fromPastOrders ?? false;
             ViewBag.ShowInvoiceModal = showInvoiceModal ?? false;
+            ViewBag.FromProfile = fromProfile ?? false;
+            ViewBag.CustomerName = customerName;
+            ViewBag.CustomerContact = customerContact;
             return View(order);
         }
 
@@ -1155,6 +1158,149 @@ namespace Capstone2.Controllers.AdminControllers
             ViewBag.AdditionalCharges = additionalCharges;
 
             return View(order);
+        }
+
+        // GET: Customers/CustomerProfiles
+        public async Task<IActionResult> CustomerProfiles(string searchString)
+        {
+            // Get all non-deleted customers with their completed orders
+            var allCustomers = await _context.Customers
+                .Include(c => c.Order)
+                .Where(c => !c.isDeleted && c.Order != null && !c.Order.isDeleted && c.Order.Status == "Completed")
+                .ToListAsync();
+
+            // Group customers by Name and ContactNo to create profiles
+            var customerProfiles = allCustomers
+                .GroupBy(c => new { Name = c.Name.Trim().ToLower(), ContactNo = c.ContactNo?.Trim().ToLower() ?? "" })
+                .Select(g => {
+                    var firstCustomer = g.First();
+                    var orders = g.Where(c => c.Order != null).Select(c => c.Order).ToList();
+
+                    return new CustomerProfileViewModel
+                    {
+                        CustomerID = firstCustomer.CustomerID,
+                        Name = firstCustomer.Name,
+                        ContactNo = firstCustomer.ContactNo,
+                        Address = firstCustomer.Address,
+                        TotalOrders = orders.Count,
+                        Orders = orders.Select(o => new OrderSummary
+                        {
+                            OrderId = o.OrderId,
+                            OrderNumber = o.OrderNumber,
+                            OrderDate = o.OrderDate,
+                            CateringDate = o.CateringDate,
+                            Venue = o.Venue,
+                            NoOfPax = o.NoOfPax,
+                            Status = o.Status,
+                            TotalPayment = o.TotalPayment,
+                            AmountPaid = o.AmountPaid,
+                            Balance = o.TotalPayment - o.AmountPaid,
+                            Occasion = o.Occasion
+                        }).OrderByDescending(o => o.OrderDate).ToList()
+                    };
+                })
+                .OrderBy(p => p.Name)
+                .ToList();
+
+            // Apply search filter
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var searchTerm = searchString.Trim().ToLower();
+                customerProfiles = customerProfiles
+                    .Where(p => p.Name.ToLower().Contains(searchTerm) ||
+                               (p.ContactNo != null && p.ContactNo.ToLower().Contains(searchTerm)) ||
+                               (p.Address != null && p.Address.ToLower().Contains(searchTerm)))
+                    .ToList();
+            }
+
+            ViewBag.SearchString = searchString;
+            return View(customerProfiles);
+        }
+
+        // GET: Customers/CustomerProfileDetails/name/contactno
+        public async Task<IActionResult> CustomerProfileDetails(string name, string contactNo)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return NotFound();
+
+            // Normalize search parameters
+            var normalizedName = name.Trim().ToLower();
+            var normalizedContact = contactNo?.Trim().ToLower() ?? "";
+
+            // Find all customers with matching name and contact - only completed orders
+            var matchingCustomers = await _context.Customers
+                .Include(c => c.Order)
+                    .ThenInclude(o => o.OrderDetails)
+                        .ThenInclude(od => od.Menu)
+                .Include(c => c.Order)
+                    .ThenInclude(o => o.HeadWaiter)
+                        .ThenInclude(hw => hw.User)
+                .Where(c => !c.isDeleted &&
+                           c.Name.Trim().ToLower() == normalizedName &&
+                           (c.ContactNo == null || c.ContactNo.Trim().ToLower() == normalizedContact) &&
+                           c.Order != null && !c.Order.isDeleted && c.Order.Status == "Completed")
+                .ToListAsync();
+
+            if (!matchingCustomers.Any())
+                return NotFound();
+
+            var firstCustomer = matchingCustomers.First();
+            var orders = matchingCustomers
+                .Where(c => c.Order != null)
+                .Select(c => c.Order)
+                .OrderByDescending(o => o.OrderDate)
+                .ToList();
+
+            // Get order IDs for payment calculations
+            var orderIds = orders.Select(o => o.OrderId).ToList();
+
+            // Calculate additional charges per order
+            var materialReturnsByOrder = await _context.MaterialReturns
+                .Where(r => orderIds.Contains(r.OrderId))
+                .GroupBy(r => r.OrderId)
+                .Select(g => new { OrderId = g.Key, TotalCharge = g.Sum(r => (r.Lost + r.Damaged) * r.ChargePerItem) })
+                .ToListAsync();
+            var additionalChargesDict = materialReturnsByOrder.ToDictionary(x => x.OrderId, x => (double)x.TotalCharge);
+
+            // Get all payments
+            var paymentsAll = await _context.Payments
+                .Where(p => orderIds.Contains(p.OrderId))
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+            var paymentsByOrder = paymentsAll.GroupBy(p => p.OrderId).ToDictionary(g => g.Key, g => g.ToList());
+
+            var profile = new CustomerProfileViewModel
+            {
+                CustomerID = firstCustomer.CustomerID,
+                Name = firstCustomer.Name,
+                ContactNo = firstCustomer.ContactNo,
+                Address = firstCustomer.Address,
+                TotalOrders = orders.Count,
+                Orders = orders.Select(o => {
+                    var extra = additionalChargesDict.TryGetValue(o.OrderId, out var total) ? total : 0d;
+                    var plist = paymentsByOrder.TryGetValue(o.OrderId, out var list) ? list : new List<Payment>();
+                    var allocation = AllocatePaymentsToBaseThenCharges(o, plist);
+                    var remainingBase = Math.Max(0d, o.TotalPayment - allocation.baseAllocated);
+                    var remainingCharges = Math.Max(0d, extra - allocation.chargesAllocated);
+
+                    return new OrderSummary
+                    {
+                        OrderId = o.OrderId,
+                        OrderNumber = o.OrderNumber,
+                        OrderDate = o.OrderDate,
+                        CateringDate = o.CateringDate,
+                        Venue = o.Venue,
+                        NoOfPax = o.NoOfPax,
+                        Status = o.Status,
+                        TotalPayment = o.TotalPayment + extra,
+                        AmountPaid = plist.Sum(p => p.Amount),
+                        Balance = remainingBase + remainingCharges,
+                        Occasion = o.Occasion
+                    };
+                }).ToList()
+            };
+
+            return View(profile);
         }
     }
 }
