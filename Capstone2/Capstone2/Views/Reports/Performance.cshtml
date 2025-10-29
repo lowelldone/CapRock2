@@ -166,47 +166,6 @@
         </div>
     </div>
 
-    <!-- Summary Metrics -->
-    <div class="performance-card">
-        <div class="metric-grid">
-            <div class="metric-box">
-                <div class="metric-label">
-                    <i class="bi bi-receipt"></i> Total Orders
-                </div>
-                <div class="metric-value">@Model.TotalOrders</div>
-                <div class="metric-subtext">Last @Model.MonthsDisplayed months</div>
-            </div>
-            <div class="metric-box">
-                <div class="metric-label">
-                    <i class="bi bi-currency-peso"></i> Total Revenue
-                </div>
-                <div class="metric-value">₱@Model.TotalRevenue.ToString("N0")</div>
-                <div class="metric-subtext">Last @Model.MonthsDisplayed months</div>
-            </div>
-            <div class="metric-box">
-                <div class="metric-label">
-                    <i class="bi bi-people"></i> Total PAX
-                </div>
-                <div class="metric-value">@Model.TotalPax.ToString("N0")</div>
-                <div class="metric-subtext">Total guests served</div>
-            </div>
-            <div class="metric-box">
-                <div class="metric-label">
-                    <i class="bi bi-graph-up"></i> Avg Monthly Revenue
-                </div>
-                <div class="metric-value">₱@Model.AverageMonthlyRevenue.ToString("N0")</div>
-                <div class="metric-subtext">Per month average</div>
-            </div>
-            <div class="metric-box">
-                <div class="metric-label">
-                    <i class="bi bi-calendar-check"></i> Avg Monthly Orders
-                </div>
-                <div class="metric-value">@Model.AverageMonthlyOrders.ToString("F1")</div>
-                <div class="metric-subtext">Per month average</div>
-            </div>
-        </div>
-    </div>
-
     <!-- Revenue Chart -->
     <div class="performance-card">
         <div class="section-title">
@@ -228,20 +187,9 @@
             <canvas id="ordersChart"></canvas>
         </div>
     </div>
-
-    <!-- Combined Chart -->
-    <div class="performance-card">
-        <div class="section-title">
-            <span class="icon-badge"><i class="bi bi-diagram-3"></i></span>
-            Combined Performance Overview
-        </div>
-        <div class="chart-container">
-            <canvas id="combinedChart"></canvas>
-        </div>
-    </div>
 </div>
 
-@@section Scripts {
+@section Scripts {
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Prepare data

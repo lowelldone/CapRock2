@@ -1,0 +1,70 @@
+﻿@model List<string>
+
+@{
+    ViewData["Title"] = "Recovery Codes";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">One-time Recovery Codes</h5>
+                    <small class="text-muted">@ViewBag.Generated</small>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        User: <strong>@ViewBag.Username</strong>
+                    </p>
+                    <div class="alert alert-warning">
+                        These codes are shown only once. Store them securely. Each code can be used only once.
+                    </div>
+
+                    <ol class="mb-3">
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <li><code>@Model[i]</code></li>
+                        }
+                    </ol>
+
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button id="downloadBtn" class="btn btn-secondary">
+                            <i class="bi bi-download"></i> Download .txt
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-4 mb-4">
+        <a asp-controller="@ViewBag.ReturnController" asp-action="@ViewBag.ReturnAction" class="btn btn-outline-primary btn-lg px-4 py-2" style="font-size: 1.1rem; border-width: 2px; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <i class="bi bi-arrow-left-circle me-2"></i>
+            Back to @(ViewBag.ReturnController == "Administrators" ? "Administrators" : ViewBag.ReturnController == "HeadWaiters" ? "Head Waiters" : "Waiters")
+        </a>
+    </div>
+    <style>
+        .btn-outline-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+        }
+    </style>
+    <script>
+        (function(){
+            const codes = Array.from(document.querySelectorAll('ol li code')).map(c => c.textContent).join('\n');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            downloadBtn.addEventListener('click', function() {
+                const blob = new Blob([codes], { type: 'text/plain' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'recovery-codes-@ViewBag.Username' + '.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+            });
+        })();
+    </script>
+</div>
+
+

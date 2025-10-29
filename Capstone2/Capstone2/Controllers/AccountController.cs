@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Capstone2.Data;
 using Capstone2.Models;
+using Capstone2.Helpers;
+using Microsoft.AspNetCore.Http;
 
 namespace Capstone2.Controllers
 {
@@ -16,6 +19,19 @@ namespace Capstone2.Controllers
         public AccountController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            // Allow Recovery action without session (for password reset)
+            if (context.ActionDescriptor.RouteValues["action"] == "Recovery")
+            {
+                // Skip session check - allow anonymous access for password recovery
+                return;
+            }
+
+            // For other actions, require session (inherit from GenericController)
+            base.OnActionExecuting(context);
         }
 
         // GET: Account
@@ -91,6 +107,68 @@ namespace Capstone2.Controllers
                 TempData["ProfileError"] = $"Error updating account: {ex.Message}";
                 return RedirectToAction("Index");
             }
+        }
+
+        [HttpGet]
+        public IActionResult Recovery()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Recovery(string Username, string RecoveryCode, string NewPassword, string ConfirmPassword)
+        {
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(RecoveryCode) || string.IsNullOrWhiteSpace(NewPassword))
+            {
+                ViewBag.Error = "All fields are required.";
+                return View();
+            }
+            if (NewPassword != ConfirmPassword)
+            {
+                ViewBag.Error = "Passwords do not match.";
+                return View();
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == Username);
+            if (user == null)
+            {
+                ViewBag.Error = "User not found.";
+                return View();
+            }
+
+            var codes = await _context.UserRecoveryCodes
+                .Where(c => c.UserId == user.UserId && !c.IsUsed)
+                .ToListAsync();
+
+            var matched = codes.FirstOrDefault(c => RecoveryCodes.Verify(RecoveryCode, c.CodeHash, c.Salt));
+            if (matched == null)
+            {
+                ViewBag.Error = "Invalid or already used recovery code.";
+                return View();
+            }
+
+            matched.IsUsed = true;
+            matched.UsedUtc = DateTime.UtcNow;
+            user.Password = NewPassword; // Note: plain text in current system
+
+            await _context.SaveChangesAsync();
+
+            try
+            {
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    Username = user.Username,
+                    Role = user.Role,
+                    Action = "PasswordRecovery",
+                    Details = "Password reset using recovery code"
+                });
+                await _context.SaveChangesAsync();
+            }
+            catch { }
+
+            TempData["SuccessMessage"] = "Password updated. You can now log in.";
+            return RedirectToAction("Login", "Home");
         }
     }
 }

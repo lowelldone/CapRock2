@@ -87,6 +87,8 @@ namespace Capstone2.Data
         public DbSet<Capstone2.Models.Menu> Menu { get; set; } = default!;
         public DbSet<Capstone2.Models.MenuPackages> MenuPackages { get; set; } = default!;
         public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<UserRecoveryCode> UserRecoveryCodes { get; set; }
+
     }
 
 }
