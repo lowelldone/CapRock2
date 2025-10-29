@@ -376,6 +376,13 @@
 </style>
 
 <div class="container-fluid modern-bg">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="modern-alert modern-alert-success">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+        </div>
+    }
     @if (TempData["ProfileError"] != null)
     {
         <div class="modern-alert modern-alert-danger">

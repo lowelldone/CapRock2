@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Account Recovery";
+}
+
+<div class="container mt-5" style="max-width:600px;">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Reset your password with a recovery code</h5>
+        </div>
+        <div class="card-body">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger">@ViewBag.Error</div>
+            }
+            <form asp-action="Recovery" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input name="Username" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Recovery Code</label>
+                    <input name="RecoveryCode" class="form-control" placeholder="e.g., ABCD-EFGH" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">New Password</label>
+                    <input name="NewPassword" type="password" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Confirm Password</label>
+                    <input name="ConfirmPassword" type="password" class="form-control" required />
+                </div>
+                <div class="d-flex gap-2 justify-content-between align-items-center">
+                    <button type="submit" class="btn btn-primary flex-fill">Reset Password</button>
+                    <a asp-controller="Home" asp-action="Login" class="btn btn-outline-secondary px-4" style="border-width: 2px; transition: all 0.3s ease; white-space: nowrap;">
+                        <i class="bi bi-arrow-left-circle me-2"></i>Back to Login
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    .btn-outline-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+    }
+</style>
+
+

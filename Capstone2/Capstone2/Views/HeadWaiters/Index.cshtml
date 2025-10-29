@@ -85,6 +85,14 @@
                                         <i class="bi bi-trash"></i>
                                         Delete
                                     </a>
+                                    <form asp-controller="RecoveryCodes" asp-action="Generate" asp-route-userId="@head.User.UserId" method="post" class="d-inline">
+                                        <input type="hidden" name="returnController" value="HeadWaiters" />
+                                        <input type="hidden" name="returnAction" value="Index" />
+                                        <button type="submit" class="modern-table-action-btn btn-outline-secondary">
+                                            <i class="bi bi-key"></i>
+                                            Codes
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

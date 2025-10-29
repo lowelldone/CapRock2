@@ -602,6 +602,41 @@ namespace Capstone2.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Capstone2.Models.UserRecoveryCode", b =>
+                {
+                    b.Property<int>("RecoveryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecoveryId"));
+
+                    b.Property<string>("CodeHash")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("CreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<DateTime?>("UsedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecoveryId");
+
+                    b.ToTable("UserRecoveryCodes");
+                });
+
             modelBuilder.Entity("Capstone2.Models.ViewTransaction", b =>
                 {
                     b.Property<int>("ViewTransactionId")

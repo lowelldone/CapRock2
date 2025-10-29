@@ -54,6 +54,8 @@ namespace Capstone2.Controllers
             HttpContext.Session.SetString("FirstName", user.FirstName);
             HttpContext.Session.SetInt32("UserId", user.UserId);
 
+            TempData["SuccessMessage"] = $"Welcome back, {user.FirstName}! You have successfully logged in.";
+
             string designatedPage = user.Role switch
             {
                 "ADMIN" => "DashboardDateSummary", // change to dashboard
